@@ -5,144 +5,140 @@
     var soDong_new = ViewBag.Data_new.Rows.Count;
     var a = ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuDichVu"].ToString().Replace(",", ".");
 }
-    <div class="dashboard_graph">
-    <div class="row x_title">
-        <div class="col-md-9">
-            <h4 style="color:#808080">Báo cáo ngày <span id="bcNgay" style="color:#808080">@ViewBag.Data_new.Rows[0]["Ngay"]</span>/@DateTime.Now.Year</h4>
-        </div>
-        <div class="col-md-3">
-            <div class="col-md-11 xdisplay_inputx form-group has-feedback">
-                <input type="text" class="form-control has-feedback-left" onchange="LoadData('@DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")');" id="reportrange1" aria-describedby="inputSuccess2Status2" value="@DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")">
-                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                <span id="inputSuccess2Status2" class="sr-only">(success)</span>
-            </div>
-        </div>
-    </div>
 
-    <div class="x_content">
-        <div class="col-md-12 col-sm-12 col-xs-12">
-            <div class="center_col" role="main">
-                <div class="row tile_count">
-                    <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i style="margin-left:2%" class="fa fa-gears"></i> Số lượt dịch vụ</span>
-                        <div class="count" id="LuotDichVu" style="margin-left:2%">@ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"] </div>
-                        @if (soDong_new > 1)
-                            {
-                                if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) != 0)
-                                {
-                                    double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) * 100;
-                            <span class="count_bottom" id="LuotDichVu_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                                else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) == 0)
-                                {
-                            <span class="count_bottom" id="LuotDichVu_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                                else
-                                {
-                                    double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) * 100;
-                            <span class="count_bottom" id="LuotDichVu_Percent"><i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                            }
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i style="margin-left:2%" class="fa fa-car"></i> Xe bán</span>
-                        <div class="count" id="LuotBAXE" style="margin-left:2%">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]))</div>
-                        @if (soDong_new > 1)
-                            {
-                                if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) != 0)
-                                {
-                                    double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) * 100;
-                            <span class="count_bottom" id="LuotBAXE_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                                else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) == 0)
-                                {
-                            <span class="count_bottom" id="LuotBAXE_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                                else
-                                {
-                                    double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) * 100;
-                            <span class="count_bottom" id="LuotBAXE_Percent"><i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                            }
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i style="margin-left:2%" class="fa fa-money"></i> Tổng thu(triệu)</span>
-                        <div class="count" id="TongThu" style="margin-left:2%">@ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]</div>
-                        @if (soDong_new > 1)
-                            {
-                                if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) != 0)
-                                {
-                                    double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) * 100;
-                            <span class="count_bottom" id="TongThu_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                                else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) == 0)
-                                {
-                            <span class="count_bottom" id="TongThu_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                                else
-                                {
-                                    double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) * 100;
-                            <span class="count_bottom" id="TongThu_Percent"><i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                            }
-
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
-                        <span class="count_top"><i style="margin-left:2%" class="fa fa-money"></i> Tổng chi(triệu)</span>
-                        <div class="count" id="TongChi" style="margin-left:2%">@ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]</div>
-                        @if (soDong_new > 1)
-                            {
-                                if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) != 0)
-                                {
-                                    double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) * 100;
-                            <span class="count_bottom" id="TongChi_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                                else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) == 0)
-                                {
-                            <span class="count_bottom" id="TongChi_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                                else
-                                {
-                                    double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) * 100;
-                            <span class="count_bottom" id="TongChi_Percent"><i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
-                                }
-                            }
+<div class="dashboard-v2">
+    <section class="dashboard-header panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-8 col-sm-12">
+                    <p class="dashboard-label">Tổng quan vận hành</p>
+                    <h3 class="dashboard-title">Báo cáo ngày <span id="bcNgay">@ViewBag.Data_new.Rows[0]["Ngay"]</span>/@DateTime.Now.Year</h3>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <label class="dashboard-filter-label" for="reportrange1">Chọn ngày báo cáo</label>
+                    <div class="xdisplay_inputx form-group has-feedback dashboard-filter-wrap">
+                        <input type="text" class="form-control has-feedback-left" onchange="LoadData('@DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")');" id="reportrange1" aria-describedby="inputSuccess2Status2" value="@DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")">
+                        <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                        <span id="inputSuccess2Status2" class="sr-only">(success)</span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <br />
-    <div class="col-md-12 col-sm-12 col-xs-12" style="text-align:center"><b style="color:#808080; font-size:20px;">Báo cáo doanh thu</b></div>
-    <div class="col-md-12 col-sm-12 col-xs-12" id="charts" style="height: 300px; width: 100%"></div>
-    <div class="clearfix"></div>
-</div>
-    
-<br />
+    </section>
 
-<br />
-<div class="dashboard_graph">
+    <section class="dashboard-kpis">
+        <div class="row tile_count">
+            <div class="col-md-3 col-sm-6 col-xs-12 tile_stats_count kpi-card">
+                <span class="count_top"><i class="fa fa-gears"></i> Số lượt dịch vụ</span>
+                <div class="count" id="LuotDichVu">@ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"] </div>
+                @if (soDong_new > 1)
+                {
+                    if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) != 0)
+                    {
+                        double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) * 100;
+                        <span class="count_bottom" id="LuotDichVu_Percent"><i class="green"><i class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                    else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) == 0)
+                    {
+                        <span class="count_bottom" id="LuotDichVu_Percent"><i class="green"><i class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                    else
+                    {
+                        double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) * 100;
+                        <span class="count_bottom" id="LuotDichVu_Percent"><i class="red"><i class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                }
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12 tile_stats_count kpi-card">
+                <span class="count_top"><i class="fa fa-car"></i> Xe bán</span>
+                <div class="count" id="LuotBAXE">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]))</div>
+                @if (soDong_new > 1)
+                {
+                    if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) != 0)
+                    {
+                        double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) * 100;
+                        <span class="count_bottom" id="LuotBAXE_Percent"><i class="green"><i class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                    else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) == 0)
+                    {
+                        <span class="count_bottom" id="LuotBAXE_Percent"><i class="green"><i class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                    else
+                    {
+                        double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) * 100;
+                        <span class="count_bottom" id="LuotBAXE_Percent"><i class="red"><i class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                }
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12 tile_stats_count kpi-card">
+                <span class="count_top"><i class="fa fa-money"></i> Tổng thu (triệu)</span>
+                <div class="count" id="TongThu">@ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]</div>
+                @if (soDong_new > 1)
+                {
+                    if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) != 0)
+                    {
+                        double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) * 100;
+                        <span class="count_bottom" id="TongThu_Percent"><i class="green"><i class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                    else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) == 0)
+                    {
+                        <span class="count_bottom" id="TongThu_Percent"><i class="green"><i class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                    else
+                    {
+                        double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) * 100;
+                        <span class="count_bottom" id="TongThu_Percent"><i class="red"><i class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                }
 
-    <div class="row x_title">
-        <div class="col-md-6">
-            <h4>Báo cáo tuần</h4>
+            </div>
+            <div class="col-md-3 col-sm-6 col-xs-12 tile_stats_count kpi-card">
+                <span class="count_top"><i class="fa fa-money"></i> Tổng chi (triệu)</span>
+                <div class="count" id="TongChi">@ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]</div>
+                @if (soDong_new > 1)
+                {
+                    if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) != 0)
+                    {
+                        double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) * 100;
+                        <span class="count_bottom" id="TongChi_Percent"><i class="green"><i class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                    else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) == 0)
+                    {
+                        <span class="count_bottom" id="TongChi_Percent"><i class="green"><i class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                    else
+                    {
+                        double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) * 100;
+                        <span class="count_bottom" id="TongChi_Percent"><i class="red"><i class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                    }
+                }
+            </div>
         </div>
-        <div class="col-md-6">
-            <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+    </section>
+
+    <section class="chart-card panel panel-default">
+        <div class="panel-heading chart-heading">Báo cáo doanh thu</div>
+        <div class="panel-body">
+            <div class="col-md-12 col-sm-12 col-xs-12" id="charts" style="height: 300px; width: 100%"></div>
+            <div class="clearfix"></div>
+        </div>
+    </section>
+
+    <section class="chart-card panel panel-default">
+        <div class="panel-heading chart-heading chart-heading-flex">
+            <span>Báo cáo tuần</span>
+            <div id="reportrange" class="dashboard-range-picker">
                 <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                 <span id="dateChange"></span> <b class="caret"></b>
             </div>
         </div>
-    </div>
+        <div class="panel-body">
+            <div class="col-md-12 col-sm-12 col-xs-12" id="charts1" style="height: 300px; width: 100%"></div>
+            <div class="col-md-12 col-sm-12 col-xs-12" id="charts3" style="height: 300px; width: 100%;"></div>
+            <div class="clearfix"></div>
+        </div>
+    </section>
 </div>
-    <br />
-    <div class="col-md-12 col-sm-12 col-xs-12" id="charts1" style="height: 300px; width: 100%"></div>
-    <br />
-    <div class="col-md-12 col-sm-12 col-xs-12" id="charts3" style="height: 300px; width: 100%;"></div>
-    <div class="clearfix"></div>
-
-
-
 
 <script>
     //$(document).ready(function () {
