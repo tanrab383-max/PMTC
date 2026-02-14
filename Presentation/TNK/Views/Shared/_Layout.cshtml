@@ -41,7 +41,7 @@
     @*phần về chart*@
     <script type="text/javascript" src="~/Scripts/chart-loader.js"></script>
 </head>
-<body class="nav-md">
+<body class="nav-md modern-app">
     <div class="container body">
         <div class="main_container">
             @Html.Partial("~/Views/Shared/_LeftMenu.cshtml")
@@ -51,7 +51,7 @@
             <!-- /top navigation -->
             <!-- page content -->
 
-            <div class="right_col" role="main">
+            <div class="right_col modern-content" role="main">
                 <div class="col-md-12">
                     @if (ViewBag.Alert != null && ViewBag.Alert != "")
                     {
@@ -66,7 +66,9 @@
                             </div>*@
                     }
                 </div>
-                @RenderBody()
+                <div class="modern-page-shell">
+                    @RenderBody()
+                </div>
             </div>
             <!-- /page content -->
             <!-- footer content -->
@@ -101,7 +103,6 @@
     <script src="~/assests/vendors/select2/dist/js/select2.full.min.js"></script>
     <!-- Custom Theme Scripts -->
     <script src="~/assests/build/js/custom.min.js"></script>
-    <link href="~/Content/Site.css" rel="stylesheet" />
     <script src="~/assests/plugins/jQuery-contextMenu/jquery.contextMenu.js"></script>
     @*<script src="~/assests/js/multiselect/jquery.multiselect.js"></script>
         <script src="~/assests/js/multiselect/jquery.multiselect.filter.js"></script>*@
