@@ -1,0 +1,13 @@
+﻿@model List<TNK.Core.Domain.Menu>
+@{
+    Layout = null;
+    var root = Model.Where(x => x.Parent == 0);
+}
+
+@foreach (var item in root)
+{
+    <li>
+        <a href="@(item.Controller!=null && item.Controller !=""? "/"+(item.Area == "Web" ? "" : item.Area + "/") + item.Controller+"/"+item.ActionDefault:"#")"><i class="fa @item.Icon"></i>@item.Name<span class="fa fa-chevron-down"></span></a>
+        @Html.Action("MenuChildRole", "Role", new { id = item.Id, menus =Model})
+    </li>
+}

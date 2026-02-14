@@ -1,0 +1,123 @@
+﻿@model TNK.Model.LoaiXeModel
+@{
+    var item = Model.Item;
+
+    ViewBag.Title = "Loại xe";
+}
+
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post" class="form-horizontal form-label-left">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(x => item.MaLoaiXe)
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Mã loại</label>
+                                @Html.DisplayTextFor(x => item.MaLoaiXe)
+                            </div>
+                        </div>
+                     
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Model</label>
+                                @Html.DropDownListFor(x => item.MaModel, Model.ListModelXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Grad</label>
+                                @Html.DropDownListFor(x => item.Grad, Model.ListGrad.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Đời</label>
+                                @Html.DropDownListFor(x => item.DoiXe, Model.ListDoiXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Màu</label>
+                                @Html.DropDownListFor(x => item.MaMau, Model.ListMauXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Hãng</label>
+                                @Html.DropDownListFor(x => item.Hang, Model.ListHang.Select(x => new SelectListItem { Text = x.MaDoiTac + "-" + x.TenDoiTac, Value = x.MaDoiTac.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Giá niêm yết</label>
+                                @Html.EditorFor(x => item.GiaNiemYet, new { htmlAttributes = new { @class = "form-control number input-sm" } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                @Html.EditorFor(x => item.GhiChu, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <input type="submit" value="Save" class="btn btn-success" />
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="/LoaiXe/GiaNiemYet">Quay lại</a>
+
+@section scripts{
+    <script>
+        $(".select2").select2();
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,191 @@
+﻿@using System.Data;
+@{
+    ViewBag.Title = "BCQuanLyXePTC";
+}
+
+<div id="BCQuanLyXePTC">
+    <div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed" id="tb_BCQuanLyXe">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='50' class="tile">BÁO CÁO QUẢN LÝ XE  @ViewBag.ShowRoom</th>
+                    </tr>
+                    <tr>
+                        <th colspan='50' class="tile">@ViewBag.TuNgayDenNgay</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="3">TT</th>
+                        <th class="column-title" rowspan="3">LOẠI XE</th>
+                        <th class="column-title" rowspan="3">MÃ XE</th>
+                        <th class="column-title" rowspan="3">MÀU XE</th>
+                        <th class="column-title" rowspan="3">ĐƠN GIÁ</th>
+                        <th class="column-title" colspan="3">TỒN ĐẦU NGÀY</th>
+                        <th class="column-title" colspan="6">SỐ LƯỢNG XE NHẬP</th>
+                        <th class="column-title" colspan="6">SỐ LƯỢNG XE XUẤT</th>
+                        <th class="column-title" rowspan="3">SỐ TIỀN NGÂN HÀNG CÒN NỢ GIẢI NGÂN CHO XE XUẤT</th>
+                        <th class="column-title" colspan="3">TỒN CUỐI NGÀY</th>
+                        <th class="column-title" colspan="2">XE ĐANG TRÊN ĐƯỜNG</th>
+                        <th class="column-title" rowspan="3">SỐ TIỀN KHÁCH HÀNG ĐÃ ĐÓNG NHƯNG CHƯA NHẬN XE</th>
+                        <th class="column-title" colspan="6">KẾ HOẠCH ĐÓNG TIỀN XE CHO HVN</th>
+                        <th class="column-title" colspan="3">XE THẾ CHÂP TẠI NGÂN HÀNG</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title" colspan="2">SỐ LƯỢNG</th>
+                        <th class="column-title" rowspan="2">THÀNH TIỀN</th>
+                        <th class="column-title" colspan="3">XE NHẬP TRONG NGÀY</th>
+                        <th class="column-title" colspan="3">TỔNG XE NHẬP LŨY KẾ TRONG THÁNG</th>
+                        <th class="column-title" colspan="3">XE XUẤT TRONG NGÀY</th>
+                        <th class="column-title" colspan="3">TỔNG XE XUẤT LŨY KẾ TRONG THÁNG</th>
+                        <th class="column-title" colspan="2">SỐ LƯỢNG</th>
+                        <th class="column-title" rowspan="2">THÀNH TIỀN</th>
+                        <th class="column-title" rowspan="2">SỐ LƯỢNG</th>
+                        <th class="column-title" rowspan="2">THÀNH TIỀN</th>
+                        <th class="column-title" colspan="2">HVN PHÂN HÀNG THÁNG 8/2019</th>
+                        <th class="column-title" colspan="2">TNK ĐÃ ĐÓNG TIỀN XE T8</th>
+                        <th class="column-title" colspan="2">XE CÒN PHẢI ĐÓNG TIỀN ĐẾN CUỐI THÁNG THÁNG 8</th>
+                        <th class="column-title" rowspan="2">SỐ LƯỢNG</th>
+                        <th class="column-title" rowspan="2">THÀNH TIỀN</th>
+                        <th class="column-title" rowspan="2">SỐ TIỀN VAY NGÂN HÀNG</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">XE NGOÀI</th>
+                        <th class="column-title">HVN</th>
+                        <th class="column-title">XE NGOÀI</th>
+                        <th class="column-title">HVN</th>
+                        <th class="column-title">TỔNG GIÁ TRỊ NHẬP</th>
+                        <th class="column-title">XE NGOÀI</th>
+                        <th class="column-title">HVN</th>
+                        <th class="column-title">TỔNG GIÁ TRỊ NHẬP</th>
+                        <th class="column-title">XE NGOÀI</th>
+                        <th class="column-title">HVN</th>
+                        <th class="column-title">TỔNG GIÁ TRỊ XUẤT</th>
+                        <th class="column-title">HVN</th>
+                        <th class="column-title">XE NGOÀI</th>
+                        <th class="column-title">TỔNG GIÁ TRỊ XUẤT</th>
+                        <th class="column-title">XE NGOÀI</th>
+                        <th class="column-title">HVN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">THÀNH TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">THÀNH TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">THÀNH TIỀN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (DataRow row in (Model as DataTable).Rows)
+                            {
+                                <tr>
+                                    <td>@row["SoTT"]</td>
+                                    <td>@row["LoaiXe"]</td>
+                                    <td>@row["MaXe"]</td>
+                                    <td>@row["CodeMau"]</td>
+                                    <td class="number">@row["GiaVon"]</td>
+                                    <td class="number">@row["TonXeNgoaiDauNgay"]</td>
+                                    <td class="number">@row["TonXeToyotaDauNgay"]</td>
+                                    <td class="number">@row["ThanhTienDauNgay"]</td>
+                                    <td class="number">@row["SLNhapNgoaiTrongNgay"]</td>
+                                    <td class="number">@row["SLNhapToyotaTrongNgay"]</td>
+                                    <td class="number">@row["TongGiaTriNhap"]</td>
+                                    <td class="number">@row["SLNhapLuyKeXeNgoai"]</td>
+                                    <td class="number">@row["SLNhapLuyKeXeToyota"]</td>
+                                    <td class="number">@row["TongGiaTriNhapLuyKe"]</td>
+                                    <td class="number">@row["SLXuatNgoaiTrongNgay"]</td>
+                                    <td class="number">@row["SLXuatToyotaTrongNgay"]</td>
+                                    <td class="number">@row["TongGiaTriXuat"]</td>
+                                    <td class="number">@row["SLXuatLuyKeXeNgoai"]</td>
+                                    <td class="number">@row["SLXuatLuyKeXeToyota"]</td>
+                                    <td class="number">@row["TongGiaTriXuatLuyKe"]</td>
+                                    @* <td class="number" data-id="val+@row["MaXe"]+@row["CodeMau"]">@row["NoNHChuaGiaiNgan"]</td>*@
+                                    <td class="number" style="text-align:center;vertical-align:middle" data-id="valGiaiNgan">@row["NoNHChuaGiaiNgan"]</td>
+                                    <td class="number">@row["TonXeNgoaiCuoiNgay"]</td>
+                                    <td class="number">@row["TonXeToyotaCuoiNgay"]</td>
+                                    <td class="number">@row["ThanhTienCuoiNgay"]</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td class="number" style="text-align:center;vertical-align:middle" data-id="valff">@row["TongCoc"]</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td class="number">@row["SLTheChap"]</td>
+                                    <td class="number">@row["GiaTriTheChap"]</td>
+                                    <td>-</td>
+                                </tr>
+                            }
+                            <tr style="background-color:lightblue;font-weight:bold">
+                                <td></td>
+                                <td>TỔNG CỘNG</td>
+                                <td></td>
+                                <td></td>
+                                <td>-</td>
+                                @*Total Ton dau ngay*@
+                                <td>@ViewBag.TotalTonXeDauNgay</td>
+                                <td>@ViewBag.TotalTonXeToyotaDauNgay</td>
+                                <td class="number">@ViewBag.TotalThanhTienDauNgay</td>
+                                @*Total So luong xe nhap*@
+                                <td class="number">@ViewBag.TotalNhapNgoaiTrongNgay</td>
+                                <td class="number">@ViewBag.TotalSLNhapToyotaTrongNgay</td>
+                                <td class="number">@ViewBag.TotalTongGiaTriNhap</td>
+                                <td class="number">@ViewBag.TotalSLNhapLuyKeXeNgoai</td>
+                                <td class="number">@ViewBag.TotalSLNhapLuyKeXeToyota</td>
+                                <td class="number">@ViewBag.TotalTongGiaTriNhapLuyKe</td>
+                                @*Total So luong xe xuat*@
+                                <td class="number">@ViewBag.TotalSLXuatNgoaiTrongNgay</td>
+                                <td class="number">@ViewBag.TotalSLXuatToyotaTrongNgay</td>
+                                <td class="number">@ViewBag.TotalTongGiaTriXuat</td>
+                                <td class="number">@ViewBag.TotalSLXuatLuyKeXeNgoai</td>
+                                <td class="number">@ViewBag.TotalSLXuatLuyKeXeToyota</td>
+                                <td class="number">@ViewBag.TotalTongGiaTriXuatLuyKe</td>
+
+                                <td class="number">@ViewBag.TotalNoNHChuaGiaiNgan</td>
+                                @*Total Ton cuoi ngay*@
+                                <td class="number">@ViewBag.TotalTonXeNgoaiCuoiNgay</td>
+                                <td class="number">@ViewBag.TotalTonXeToyotaCuoiNgay</td>
+                                <td class="number">@ViewBag.TotalThanhTienCuoiNgay</td>
+
+                                <td>-</td>
+                                <td>-</td>
+
+                                <td class="number">@ViewBag.TotalTongCoc</td>
+
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                @*Xe the chap tai ngan hang*@
+                                <td class="number">@ViewBag.TotalSLTheChap</td>
+                                <td class="number">@ViewBag.TotalGiaTriTheChap</td>
+
+                                <td>-</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <br />
+</div>
+<script src="~/Scripts/megrerow_bydata_id.js"></script>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

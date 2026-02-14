@@ -1,0 +1,104 @@
+﻿@model List<TNK.Core.Domain.TuiDinhKhoan>
+@{
+    ViewBag.Title = "Danh sách túi tiền";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title </h3>
+      
+    </div>
+</div>
+
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+
+            <div class="x_content">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="success">
+                                <th>Mã túi</th>
+                                <th>Tên túi</th>
+                                <th>Số tiền khởi tạo</th>
+                                <th>Số tiền thay đổi</th>
+                                <th>Số tiền hiện có</th>
+                                <th>Loại túi</th>
+                                <th>Lịch sử</th>
+                                <th>Chi tiết</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                if (item.LastSessionId == ViewBag.LastSessionId)
+                                {
+                                <tr style="color:darkred">
+                                    <td>@item.MaTui</td>
+                                    <td>@item.TenTui</td>
+                                   
+                                    <td class="number2">@TNK.Core.Common.ToCurrencyString((item.SoTienKhoiTao != null ? item.SoTienKhoiTao.Value : 0))</td>
+                                    <td class="number2">@TNK.Core.Common.ToCurrencyString((item.SoTienThayDoi != null ? item.SoTienThayDoi.Value : 0))</td>
+                                    <td class="number2">@TNK.Core.Common.ToCurrencyString((item.SoTienDangCo != null ? item.SoTienDangCo.Value : 0))</td>
+                                    <td>@item.LoaiTui</td>
+                                    <td>
+                                            @if (item.LoaiTui == "NH" || item.LoaiTui == "TM")
+                                            {
+                                                <a href="#"
+                                                   onclick="window.open('/Log/Lichsu?maTui=@item.MaTui&from=@item.CreatedDate' ,'newwindow', 'width=800, height=900,left=200');return false;"
+                                                   target="_blank">Lịch sử</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="#"
+                                                   onclick="window.open('/Log/Lichsu?maTui=@item.MaTui&from=@item.CreatedDate' ,'newwindow', 'width=800, height=900,left=200');return false;"
+                                                   target="_blank" style="display:none;">Lịch sử</a>
+                                            }
+                                    </td>
+                                    <td><a href="#"
+                                           onclick ="window.open('/TuiDinhKhoan/ChiTiet?query=@item.MaTui&type=@item.LoaiTui&maTui=@item.MaTui' ,'newwindow', 'width=800, height=900,left=200');return false;"
+                                            target="_blank">Chi tiết</a></td>
+                                </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>@item.MaTui</td>
+                                        <td>@item.TenTui</td>
+
+                                        <td class="number2">@TNK.Core.Common.ToCurrencyString((item.SoTienKhoiTao != null ? item.SoTienKhoiTao.Value : 0))</td>
+                                        <td class="number2">@TNK.Core.Common.ToCurrencyString((item.SoTienThayDoi != null ? item.SoTienThayDoi.Value : 0))</td>
+                                        <td class="number2">@TNK.Core.Common.ToCurrencyString((item.SoTienDangCo != null ? item.SoTienDangCo.Value : 0))</td>
+                                        <td>@item.LoaiTui</td>
+                                        <td>
+                                            @if (item.LoaiTui == "NH" || item.LoaiTui == "TM")
+                                            {
+                                                <a href="#"
+                                                   onclick="window.open('/Log/Lichsu?maTui=@item.MaTui&from=@item.CreatedDate' ,'newwindow', 'width=800, height=900,left=200');return false;"
+                                                   target="_blank">Lịch sử</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="#"
+                                                   onclick="window.open('/Log/Lichsu?maTui=@item.MaTui&from=@item.CreatedDate' ,'newwindow', 'width=800, height=900,left=200');return false;"
+                                                   target="_blank" style="display:none;">Lịch sử</a>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="#"
+                                               onclick="window.open('/TuiDinhKhoan/ChiTiet?query=@item.MaTui&type=@item.LoaiTui&maTui=@item.MaTui' ,'newwindow', 'width=800, height=900,left=200');return false;"
+                                               target="_blank">Chi tiết</a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

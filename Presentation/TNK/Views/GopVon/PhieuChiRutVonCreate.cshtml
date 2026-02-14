@@ -1,0 +1,311 @@
+﻿@model TNK.Model.SoChiModel
+@{
+    var item = Model.Item;
+    var DoiTac = ViewBag.doiTac;
+    var DotGopVon = ViewBag.DotGopVon;
+    var TongTienThucGop = ViewBag.TongTienThucGop;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Chi tiết phiếu chi</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="form-data" method="post" class="form-horizontal form-label-left">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số chứng từ</label>
+                                @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm soChungTu", @maxlength = "15" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày chi</label>
+                                @Html.EditorFor(x => item.NgayChi, new { htmlAttributes = new { @class = "form-control input-sm date", @Value = @ViewBag.Date } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày hạch toán</label>
+                                @Html.EditorFor(x => item.NgayHachToan, new { htmlAttributes = new { @class = "form-control input-sm date", @Value = @ViewBag.Date } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số tiền cần rút</label>
+                                @Html.EditorFor(x => item.TongCong, new { htmlAttributes = new { @class = "form-control input-sm number", @maxlength = "12", @Value = ViewBag.soTienCanGop, @readonly = "readonly" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Đơn vị rút vốn</label><br />
+                                <select class="form-group col-md-4 col-sm-4 col-xs-12" id="donViGopVon" name="item.DoiTac" style="height:29px; width:100%">
+                                    <option value="@DoiTac.MaDoiTac">@DoiTac.TenDoiTac</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Đợt rút vốn</label><br />
+                                <select class="form-group col-md-4 col-sm-4 col-xs-12" id="dotGopVon" name="item.DotGopVon" style="height:29px; width:100%">
+                                    <option value="">Chọn</option>
+                                    @foreach (var item1 in DotGopVon)
+                                    {
+                                        <option value="@item1.MaKhoiTao">@item1.TenKhoiTao</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            @Html.Partial("~/Views/Shared/_ThanhToanChi.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT }, { "HTTT", Model.HTTT } })
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                <textarea style="width:100%" name="item.ghiChu"></textarea>
+                            </div>
+                        </div>
+                        @Html.Partial("~/Views/Common/UserComfirm.cshtml", null, new ViewDataDictionary { { "User", Model.Users } })
+                    </div>
+                    <div class="form-group center">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <input type="submit" name="submit" id="Create" value="Lưu" class="btn btn-success" />
+                            <input type="submit" name="submit" id="Print" value="In" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/ThuGopVon.js"></script>
+    <script type="text/javascript">
+        //auto complete
+        $(document).ready(function () {
+            var Mang = new Array();
+            $(function () {
+                $.ajax({
+                    url: "/SoChi/AutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            Mang.push(data[i]);
+                        }
+                        return Mang;
+                    }
+                });
+                $("#auto_complete").autocomplete({
+                    source: Mang
+                });
+            });
+        });
+
+
+        $(".date").datepicker({
+            orientation: "left",
+            autoclose: true
+            //format: 'DD-MM-YYYY HH:mm:ss'
+        });
+
+        i = '@Model.CTPT.Count';
+        $(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if (Model.CTPT.Count > 0)
+            {
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].Id + "','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan + "','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+
+        function SetSubmitType(value) {
+            debugger;
+            Cal();
+            $("#submitType").val(value);
+        }
+        function Remove(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            Cal();
+        }
+        function CalCoc(a) {
+            setTimeout(function () {
+                var stsd = $(a).val();
+                stsd = stsd.split(",").join("");
+                var stctsd = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+                if (stctsd - stsd < 0) {
+                    toastError("Số tiền sử dụng cọc không được lớn hơn số tiền có thể sử dụng.Vui lòng nhập lại.");
+                    $(a).focus();
+                    $(a).val(0);
+                    $(a).closest("tr").find(".ConLai").val(stctsd);
+                }
+                else
+                    $(a).closest("tr").find(".ConLai").val((stctsd - stsd).toLocaleString('en-us'));
+            }, 100);
+            Cal();
+        }
+        Cal();
+        function Cal() {
+            setTimeout(function () {
+                debugger;
+                var result = total;
+                $(".SoTienThanhToan").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var num = $(val).val().split(",").join("");
+                        result = result - num;
+                    }
+                });
+                var tienThanhToan = 0;
+                $("#tbody").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien = parseInt($(val).find(".number").val().split(",").join(""));
+                            if (isNaN(sotien))
+                                sotien = 0;
+                            tienThanhToan += sotien;
+                        }
+                    }
+                });
+                $(".Total").html(tienThanhToan.toLocaleString('en-us'));
+                $("#NPT_SoTienNo").val(result);
+            }, 100);
+        }
+        $(document).on("click", ".chkTinhTrang", function () {
+            a = this;
+            $(this).closest("td").children(".TinhTrang").val($(this).is(":checked"));
+        })
+
+        //bắt validate
+
+
+        $("#form-data").submit(function () {
+            debugger;
+            Cal();
+            let flag = true;
+            $("#tbody").find("tr").map(function (key, val) {
+                if ($(val).is(":visible")) {
+                    var tuitien = $(val).find(".Temp").select2('val');
+                    var sotien = $(val).find(".number").val().split(",").join("");
+                    tuitien = tuitien == "Chọn" ? "" : tuitien;
+                    sotien = sotien == "" ? 0 : parseInt(sotien);
+                    if (tuitien != "" && sotien === 0) {
+                        toastWarning("Vui lòng nhập số tiền");
+                        $(val).find(".number").focus();
+                        flag = false;
+                        return;
+                    }
+                    if (tuitien == "" && sotien != 0) {
+                        toastWarning("Vui lòng nhập túi tiền");
+                        $(val).find(".Temp").focus();
+                        flag = false;
+                        return;
+                    }
+                }
+            })
+            if($("#dotGopVon").val() == "")
+            {
+                toastWarning("Vui lòng chọn đợt rút vốn.");
+                return false;
+            }
+            if (!flag) {
+                return false;
+            }
+            if ($("#item_TongCong").val().split(",").join("") < $("#TongCongThanhToan").val().split(",").join(""))
+            {
+                toastWarning("Vui lòng nhập số tiền thanh toán nhỏ hơn số tiền cần rút.");
+                return false;
+            }
+            var TongTienThucGop = @ViewBag.TongTienThucGop;
+            if($("#TongCongThanhToan").val().split(",").join("") > TongTienThucGop)
+            {
+                toastWarning("Vui lòng nhập số tiền thanh toán nhỏ hơn số tiền thực rút.");
+                return false;
+            }
+            if (CheckValidatePhieuBanXe() == false)
+                return false;
+            if (CheckValidateThongTinNguoiThanhToan_PhieuThu() == false)
+                return false;
+            var lst = $(".number");
+            lst.map(function (key, val) {
+                $(val).val($(val).val().split(",").join(""));
+            });
+        });
+
+        $("#txtSoPhieu").focusout(function () {
+            GetInfoTicket();
+        })
+
+        function KeyEnter(e) {
+            if (e.keyCode == 13) {
+                GetInfoTicket();
+            }
+        }
+        $(".number").map(function (key, val) {
+            var val = $(this).val();
+            if (val != "") {
+                val = val.split(",").join("");
+                val = parseInt(val);
+                if (isNaN(val))
+                    val = 0;
+                $(this).val(val.toLocaleString('en-us'));
+            }
+        })
+        $(document).on("keypress", ".date", function () {
+            return false;
+        });
+        $(document).on("change", ".number", function () {
+            var val = $(this).val();
+            val = val.split(",").join("");
+            val = parseInt(val);
+            if (isNaN(val))
+                val = 0;
+            // val = val * 1000;
+            $(this).val(val.toLocaleString('en-us'));
+        });
+        $(document).on("keypress", ".number", function ($event) {
+            return ($event.charCode >= 48 && $event.charCode <= 57) || $event.charCode == 0;
+        });
+        $(document).on("focus", ".number", function () {
+            var tr = $(this).closest("tr");
+            var temp = tr.find(".Temp").val();
+        });
+    </script>
+
+}

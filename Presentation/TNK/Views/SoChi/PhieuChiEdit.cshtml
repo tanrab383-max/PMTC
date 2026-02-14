@@ -1,0 +1,364 @@
+﻿@model TNK.Model.SoChiModel
+
+@{
+    var item = Model.VNDT;
+    string[] list = { "NTHPK", "CTHBH", "NBHBX", "NPTPK", "NTHBH", "NGCNG","NKHAC" };
+    var flag = list.Contains((string)ViewBag.Type);
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b>Thông tin</b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="form-data" method="post" class="form-horizontal form-label-left FormPhieuChi">
+                    <input type="hidden" name="item.MaLoaiPhieu" value="@item.LoaiPhieuNo" />
+                    <input type="hidden" name="item.MaPhieuLienQuan" value="@item.MaPhieuNo" />
+                    <input type="hidden" name="item.MaPhieuChi" value="@item.SoPhieuQuyetToan" />
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số chứng từ</label>
+                                <input type="text" name="item.SoChungTu" class="form-control input-sm" maxlength="20" value="@item.ChungTuThu" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày chi</label>
+                                <input type="text" class="form-control input-sm date " name="item.NgayChi" value="@item.NgayChi.ToString("dd/MM/yyyy")" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày hoạch toán</label>
+                                <input type="text" class="form-control input-sm date " name="item.NgayHachToan" value="@item.NgayHachToan.ToString("dd/MM/yyyy")" />
+                            </div>
+                        </div>
+                        @if (ViewBag.Type == "NGCNG")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Nhà cung cấp</label>
+                                    @*@Html.DropDownListFor(x=>item.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth", @id = "NCC", @onchange = "DanhSachCoc(this)" })*@
+                                    @Html.EditorFor(x => item.DoiTac, new { htmlAttributes = new { @class = "form-control input-sm", @Value = ViewBag.DoiTac,@readonly = "true" } })
+                                    <input hidden value="@ViewBag.MaDoiTac" id="NCC" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Thông tin KH</label>
+                                @if (ViewBag.Type == "NMUTS")
+                                {
+                                    <textarea class="form-control input-sm" rows="3" readonly>@item.DoiTac</textarea>
+                                }
+                                else
+                                {
+                                    <textarea class="form-control input-sm" rows="3" readonly>@item.KhachHang</textarea>
+                                }
+                                
+                            </div>
+                        </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Nội dung</label>
+                                    <textarea name="item.NoiDung" class="form-control input-sm">@item.NoiDung</textarea>
+                                </div>
+                            </div>
+                    </div>
+                    @if (ViewBag.Type == "NGCNG")
+                    {
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group table-responsive">
+                                <label>Cọc: </label>
+                                <table class="table table-striped jambo_table bulk_action" id="Coc">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã Phiếu Cọc</th>
+                                            <th>Tổng cọc</th>
+                                            <th>Số tiền sử dụng</th>
+                                            <th>Còn lại</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DS_ChiCoc">
+                                        @*phan append*@
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>Tổng cộng: </td>
+                                            <td class="number TotalCoc" id="TongCongThanhToanCoc"></td>
+                                            <td class="number TotalCoc" name="CTPC.SoTienThanhToan" id="TongSoTienChi" hidden></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số tiền nợ</label>
+                                <input type="text" class="form-control input-sm number" readonly value="@(item.SoTienNo)" />
+                            </div>
+                        </div>
+                    </div>
+                    @if (!flag)
+                    {
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Còn nợ</label>
+                                    <input type="text" class="form-control input-sm number" readonly value="@(item.SoTienConLai)" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            @Html.Partial("~/Views/Shared/_ThanhToanChi.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT }, { "HTTT", Model.HTTT } })
+                        </div>
+                    </div>
+                    @if (!flag)
+                    {
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Còn lại</label>
+                                    <input type="text" class="form-control input-sm number" name="item.ConLai" readonly value="@item.SoTienConLai" id="ConLai" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                            </div>
+                        </div>
+                        @Html.Partial("~/Views/Common/UserComfirm.cshtml", null, new ViewDataDictionary { { "User", Model.Users }, { "Item", item } })
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group center">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            @*<input type="submit" name="submit" id="Create" value="Lưu" class="btn btn-success" />*@
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="/SoThu/THHHBIndex" class="Back">Quay lại</a>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/SoThuCommon.js"></script>
+    <script>
+        //$("#form-data").submit(function () {
+        //    if(parseInt($("#ConLai").val().split(",").join(""))<0)
+        //    {
+        //        toastError("Số tiền thanh toán không được lớn hơn số tiền còn nợ");
+        //        return false;
+        //    }
+        //    var lst = $(".number");
+        //    lst.map(function (key, val) {
+        //        $(val).val($(val).val().split(",").join(""));
+        //    });
+        //})
+        i = '@Model.CTPT.Count';
+        @*$(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if(Model.CTPT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })*@
+        $(".addHTTT").click(function () {
+            debugger;
+
+            // Tạo bản sao từ template mẫu `tr`
+            // Biến `tr` nên lưu HTML gốc của dòng đầu tiên lúc load page
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if (Model.CTPT.Count > 0)
+            {
+                 @Html.Raw("html=html.replace('" + Model.CTPT[0].Id + "','');")
+            }
+            // Bỏ disabled nếu có
+            if (html.indexOf("disabled") > 0) {
+                html = html.split("disabled").join("");
+            }
+
+            // Chuyển sang DOM để thao tác an toàn
+            var $tempRow = $("<tr>" + html + "</tr>");
+
+            // Reset các input text, number, textarea
+            $tempRow.find("input[type='text'], input[type='number'], textarea").val("");
+
+            // Reset các select (giữ nguyên option và value của option)
+            $tempRow.find("select").each(function () {
+                $(this).val("").trigger("change");
+            });
+
+            // Thêm dòng vào table
+            $("#tbody").append($tempRow);
+
+            i++;
+
+            // Khởi tạo lại select2 cho select mới
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect(); // nếu hàm này bạn dùng để xử lý khác
+            }, 200);
+        });
+
+        var sotienno = '@item.SoTienNo';
+        var conno = '@item.SoTienConLai';
+        function Cal() {
+            setTimeout(function () {
+                var result = conno;
+                $(".SoTienThanhToan").map(function (key, val) {
+                    result = result - ($(val).val().split(",").join(""));
+                });
+                $("#ConLai").val(result.toLocaleString('en-us'));
+            }, 100);
+        }
+        $(document).on("keypress", ".number", function ($event) {
+            return ($event.charCode >= 48 && $event.charCode <= 57) || $event.charCode == 0;
+        });
+        $(document).on("change", ".number", function () {
+            var val = $(this).val();
+            if (val != "") {
+                val = val.split(",").join("");
+                val = parseInt(val);
+              //  val = val * 1000;
+                $(this).val(val.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+            let total = 0;
+            $(".number").map(function (key, val) {
+                let number = $(this).val();
+                if (number != "") {
+                    number = number.split(",").join("");
+                    number = parseInt(number);
+                    total += number;
+                    $(".Total").html(total.toLocaleString('en-us'));
+                }
+            });
+            $("#ConLai").val((conno - total).toLocaleString('en-us'));
+            Cal();
+        });
+        function DanhSachCoc(ID_NCC) {
+            debugger;
+            ID_NCC = $("#NCC").val();
+            $.ajax({
+                data: { maPhieuChi: '@item.MaPhieuChi', Id: ID_NCC },
+                url: "/SoChi/DanhSachCocGCN",
+                type: "POST",
+                dataType: "json",
+                success: function (result) {
+                    if (result != null) {
+                        var tongcong = 0, sotienchi = 0;
+                        $("#DS_ChiCoc").empty();
+                        var html = "";
+                        for (var i = 0; i < result.length; i++) {
+                            //var ConLai = result[i].TongCong - result[i].SoTienChi;
+                            html += "<tr>";
+                            html += "<td><input type='text'  class='form-control input-sm number' name='CTPC[" + i + "].SoThamChieu'  value='" + result[i].MaPhieuChi + "' readonly /></td>";
+                            html += "<td><input type='text'  class='form-control input-sm SoTienCoTheSuDung number' value='" + result[i].TongCong.toLocaleString('en-us') + "' readonly /></td>";
+                            html += "<td><input type='text' class='form-control input-sm number' name='CTPC[" + i + "]' value='" + result[i].SoTienChi.toLocaleString('en-us') + "' maxlength='15' onchange='change(this)'  /></td>";
+                            html += "<td><input type='text' class='form-control input-sm SoTienConLai number' value='" + result[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                            html += "</tr>";
+                            tongcong += result[i].TongCong;
+                            sotienchi += result[i].SoTienChi;
+                        }
+                        $("#DS_ChiCoc").append(html);
+                        $("#TongCongThanhToanCoc").html(tongcong.toLocaleString("en-us"));
+                        $("#TongSoTienChi").html(sotienchi.toLocaleString("en-us"));
+                        $("#TongSoTienChi").val(sotienchi.toLocaleString("en-us"));
+                    }
+                }
+            });
+        }
+        $(document).ready(function () {
+            DanhSachCoc($("#NCC").val);
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

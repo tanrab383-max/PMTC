@@ -1,0 +1,19 @@
+﻿
+
+label {
+    color: #f76e6e;
+}
+
+table thead th {
+    color: #838383;
+}
+
+table tfoot td {
+    color: #000000;
+}
+
+.tt-menu {
+    width: 100% !important;
+    background: white;
+    z-index: 999999999;
+}

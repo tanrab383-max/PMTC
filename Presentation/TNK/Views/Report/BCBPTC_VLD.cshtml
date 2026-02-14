@@ -1,0 +1,325 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo Vốn lưu động";
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>BÁO CÁO VỐN LƯU ĐỘNG</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name"></label>
+                                <div class="col-sm-3" >
+                                    <input type="text" id="FromDate" required="required" class="date form-control" placeholder="Từ ngày" value="@DateTime.Now.ToString("dd/MM/yyyy")" >
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" id="ToDate" required="required" class="date form-control" placeholder="Đến ngày" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                                </div>
+                                <div class="col-sm-5">
+                                    @*<a id="report_1" onclick="GetReportInfo()" class="btn btn-primary"><i class="fa fa-search"></i> Xem Báo Cáo</a>
+        <a id="btnExportExcel" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Xuất excel</a>*@
+                                    <a id="btnExportExcelAll" class="btn btn-success">Xuất excel tất cả báo cáo</a>
+                                    <button id="btnExportExcelAllTitle" class="btn btn-success" disabled="disabled" style="display:none"> <i class="fa fa-spinner fa-spin"></i>&nbsp; Đang download dữ liệu từ server</button>
+                                    <div id="loading" style="display:none"><img src="~/assests/vendors/jquery-smart-wizard/images/loader.gif" /></div>
+                                    @*<a class="fileDownloadCustomRichExperience" href="https://jqueryfiledownload.apphb.com/FileDownload/DownloadReport/4">test</a>*@
+                                </div>
+                            </div>
+                            @*<div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Cửa hàng</label>
+                                        <select id="Store" class="multiselect form-control">
+                                            <option value="PT1Wing1">PT 1 & Wing 1</option>
+                                            <option value="PT2">PT 2</option>
+                                            <option value="PT3">PT 3</option>
+                                            <option value="PT4">PT 4</option>
+                                            <option value="PT5Wing5">PT 5 & Wing 5</option>
+                                            <option value="PT6">PT 6</option>
+                                        </select>
+                                    </div>
+                                </div>*@
+                        </div>
+                    </form>
+                </div>
+                <div class="x_content" style="visibility:hidden">
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tab" role="tablist">
+                            <li role="presentation" class="active" data-url="/Report/BCBPTC_VLD_DATA">
+                                <a href="#tab_BCBPTC_VLD_DATA" role="tab" id="BCBPTC_VLD_DATA-tab" data-toggle="tab" aria-expanded="false">DATA</a>
+                            </li>
+                            <li role="presentation" data-url="/Report/BCBPTC_VLD_KHOPTPK">
+                                <a href="#tab_BCBPTC_VLD_KHOPTPK" id="BCBPTC_VLD_KHOPTPK-tab" role="tab" data-toggle="tab" aria-expanded="true">KHO PTPK</a>
+                            </li>
+                            <li role="presentation" data-url="/Report/BCBPTC_VLD_THUCHI">
+                                <a href="#tab_BCBPTC_VLD_THUCHI" id="BCBPTC_VLD_THUCHI-tab" role="tab" data-toggle="tab" aria-expanded="true">THU CHI</a>
+                            </li>                          
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCBPTC_VLD_DATA" aria-labelledby="nh-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade active in" id="tab_BCBPTC_VLD_KHOPTPK" aria-labelledby="tm-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade active in" id="tab_BCBPTC_VLD_THUCHI" aria-labelledby="ldqh-tab"></div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="idTab" value="#tab_BCBPTC_VLD_DATA" />
+<input type="hidden" id="url" value="/Report/BCBPTC_VLD_DATA" />
+<div id="reportall" style="display:none">
+
+</div>
+@section scripts
+{
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    @*<script src="~/Scripts/jquery-ui-1.10.4.custom.min.js"></script>*@
+    @*<script src="~/Scripts/jquery-ui.js"></script>*@
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script>
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.replace(",", ".");
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+        $("#myTab li").on("click", function () {
+            debugger;
+            $("#FromDate").prop("disabled", false);
+            GetReportInfo();
+        });
+
+
+        function GetReportInfo() {
+            
+            if (checkInvalidDate() == false)
+                return false;
+            var url = $($("#myTab li.active")[0]).attr("data-url");
+            //alert(url);
+            var viewbox = $($($("#myTab li.active a")[0]).attr("href"));
+            viewbox.html('<p align="center"><img src="/assests/images/loading.gif"/></p>');
+            viewbox.show();
+            //alert(url);
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: { "FromDate": $("#FromDate").val(), "ToDate": $("#ToDate").val() },
+                success: function (result) {
+                    viewbox.html(result);
+                    $(viewbox).removeAttr("style");
+                    },
+                    error: function (result) {
+                        viewbox.html('<p align="center">Không thể hiển thị danh sách</p>');
+                        alert("Lỗi: Không thể tải danh sách");
+                    }
+                });
+        };
+
+        $("#btnExportExcel").click(function () {
+            debugger;
+            if (checkInvalidDate() == false)
+                return false;
+            else{
+            if ($($("#myTab li.active")[0]).attr("data-url") != "/Report/CongNo") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = $($("#myTab li.active")[0]).attr("data-url").replace("/Report/", "#");
+                //alert(idtable);
+                //var idtable = $($("#myTab li.active")[0]).attr("data-url").replace("/Report/", "#");
+                var result = $(idtable).html();
+                result = result.replaceAll('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                //result = result.replace('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                //result = result.replace('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                //result = result.replace('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                //result = result.replace('table ', 'table style="border:solid"')//style="text-align:left;width:60% "
+                //result = result.replace('style="text-align:left;width:60% "', 'style="text-align:left;width:60%;border:1px solid black;"');
+                //alert(result);
+                tableToExcel(result, 'Report' + $("#idTab").val().replace("#tab_", "BC") + '_' + postfix + '.xls');
+            }
+            else
+            {
+                window.location = `/Report/CongNo?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            }
+            return false;
+           
+        })
+
+        //var tableToExcel = (function () {
+        //    var data = "data:image/jpeg;base64,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";
+        //    var ws_name = "ABAWD-chart-REPORT";
+        //    ws = data;
+        //    var wb = { SheetNames: ['sheetjs'], Sheets: { sheetjs: ws } };
+        //    var wbout = xlsx.write(wb, { type: "base64" });
+        //    var fname = "Report";
+        //    fname = fname + "." + "xlsx";
+        //    try {
+        //        saveAs(b64toBlob(wbout, "data:application/vnd.ms-excel;base64"), fname);
+        //    } catch (e) { }
+        //    return wbout;
+        //})()
+
+
+        var tableToExcel = (function () {
+            debugger;
+            //var uri = 'data:application/vnd.ms-excel;base64,' phần cũ
+            //, template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            //, base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            //, format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            //return function (table, name) {
+            //    //if (!table.nodeType) table = document.getElementById(table)
+            //    var ctx = { worksheet: name || 'Worksheet', table: table }
+            //    var link = document.createElement("A");
+            //    link.href = uri + base64(format(template, ctx));
+            //    link.download = name || 'Baocao.xls';
+            //    link.target = '_blank';
+            //    document.body.appendChild(link);
+            //    link.click();
+            //    document.body.removeChild(link);
+            //}
+            return function (data, fileName) {//phần trúc mới thêm 27.06.2018
+                var csvData = data;
+                var blob = new Blob([csvData], {
+                    type: "data:application/vnd.ms-excel;base64,"
+                });
+
+                if (window.navigator.msSaveBlob) {
+                    // FOR IE BROWSER
+                    navigator.msSaveBlob(blob, fileName);
+                } else {
+                    // FOR OTHER BROWSERS
+                    var link = document.createElement("a");
+                    var csvUrl = URL.createObjectURL(blob);
+                    link.href = csvUrl;
+                    link.style = "visibility:hidden";
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        })()
+        $(function () {
+            $("#btnExportExcelAll").click(function (e) {
+                debugger;
+                if (checkInvalidDate() == false)
+                    return false;
+                else {
+                    $('#btnExportExcelAll').hide();
+                    $('#btnExportExcelAllTitle').show();
+                  //  $("#btnExportExcelAll").html("Đang xuất....");
+                  //  $("#btnExportExcelAll").disabled = true;
+                    $.fileDownload("/Report/ReportAll_BPTC_VLD", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val()
+                        },
+                        successCallback: function (url) {       
+                            //alert("Download success");
+                            $('#btnExportExcelAll').show();
+                            $('#btnExportExcelAllTitle').hide();
+                        },
+                        failCallback: function (responseHtml, url) {
+                            alert(responseHtml);
+                            alert("Download fail");
+                            $('#btnExportExcelAll').show();
+                            $('#btnExportExcelAllTitle').hide();
+                        }  
+                        
+                    });
+                    
+                    
+                }
+               
+                return false;
+              
+            });
+        })
+        function MergeRow(table) {
+            var rows = table.find($("tr")); // Lấy các dòng trong table ra
+            var colsLength = $(rows[0]).find($("td")).length; // kiểm tra số cột
+            var removeLater = new Array();
+            for (var i = 0; i < colsLength; i++) { // Merge giá trị các dòng cho từng cột
+                var startIndex = 0;
+                var lastIndex = 0;
+                var flag = 0;
+                var startText = $($(rows[0]).find("td")[i]).attr("group");
+                if (startText != "" && startText != null)
+                {
+                    for (var j = 1; j < rows.length ; j++) {
+                        var row = $(rows[j]);
+                        var col = $(row.find("td")[i]);
+                        var currentText = col.attr("group");
+                        if (currentText == startText) {
+
+                            col.css("background", "gray");
+                            removeLater.push(col);
+                            lastIndex = j;
+                        } else {
+
+                            var spanLength = lastIndex - startIndex;
+                            if (spanLength >= 1) {
+                                console.log(startIndex + " - " + lastIndex)
+                                $($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                            }
+                            flag = spanLength;
+                            lastIndex = j;
+                            startIndex = j;
+                            startText = currentText;
+                        }
+                    }
+                }
+                var spanLength = lastIndex - startIndex;
+                debugger;
+                if (spanLength >= 1) {
+                    console.log(startIndex + " - " + lastIndex)
+                    //$($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                }
+            }
+
+            for (var i in removeLater) {
+                $(removeLater[i]).remove();
+            }
+        }
+
+        function checkInvalidDate() {
+            var result = true;
+            var fromDate = parseDate($("#FromDate").val()).getTime();
+            var toDate = parseDate($("#ToDate").val()).getTime();
+            if (fromDate > toDate) {
+                toastWarning("Vui lòng chọn lại ngày.");
+                $("#FromDate").focus();
+                return false;  
+            }
+            return true;
+        }
+        function parseDate(str) {
+            var mdy = str.split('/');
+            return new Date(mdy[2], mdy[1], mdy[0]);
+        }
+    </script>
+
+}

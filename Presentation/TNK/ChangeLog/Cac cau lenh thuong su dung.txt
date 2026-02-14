@@ -1,0 +1,93 @@
+﻿select * from NoPhaiThu where SoTienConLai < 1000 and ABS(SoTienConLai) >0 and IsDeleted = 0 and LoaiPhieuNo ='NDIVU' and MaPhieuThu is null
+select * from PhieuThu where MaLoaiPhieu ='NDIVU'
+
+
+select * FROM [CyberAppGolden_R2_Toyota].[dbo].[PMTC_RO_CT01] where so_ro_hang ='3204078933'
+select * from ChiTietPhieuDichVu C inner join PhieuThu T on C.MaPhieuThu = T.MaPhieuThu and T.SoHopDong = '3204078933' and T.IsDeleted = 0
+
+
+
+1. Tạo phiếu dịch vụ NDIVU2411111111 có số tiền thu đúng bằng số tiền còn nợ
+    - Phiếu thu
+	- Chi tiết phiếu thu có số tiền còn nợ thu bằng tiền mặt
+2. Update NoPhaiThu.MaPhieuThu = 'NDIVU2411111111'
+
+
+select * from NoPhaiTra where SoTienConLai < 1000 and ABS(SoTienConLai) >0 and IsDeleted = 0
+commit transaction
+update NoPhaiThu 
+set SoTienDaTra = SoTienNo, SoTienConLai = 0, MaPhieuThu ='NDIVU2411111111'
+where ABS(SoTienNo) <1000 and abs(SoTienNo) >0
+and SoTienDaTra = 0
+and	MaPhieuNo in (
+select MaPhieuNo 
+from NoPhaiThu 
+where SoTienConLai < 1000 and ABS(SoTienConLai) >0 and IsDeleted = 0 and LoaiPhieuNo ='NDIVU' and MaPhieuThu is null
+)
+
+
+
+sp_getListPhieuTamDVCyberSoft
+
+SELECT *
+  FROM [CyberAppGolden_R2_Toyota].[dbo].[PMTC_RO_CT01]
+where so_ro_hang = '3204018111'
+
+
+-- lay thông tin chi khau hao
+/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT  G.NgayChi NgayDauTu
+	, G.NoiDung
+	, G.GhiChu  
+	, C.NgayChi NgayChiKhauHao
+      ,[SoTienConLai]
+      ,[SoTienKhauHao]
+      ,[ConLaiSauKhauHao]
+  FROM [PMTC_TNK].[dbo].[CHI_TIET_KHAU_HAO] KH inner join PhieuChi C on KH.MaPhieuChiKhauHao = C.MaPhieuChi
+	inner join PhieuChi G on KH.MaPhieuChiGoc = G.MaPhieuChi
+  where MaPhieuChiGoc like 'CDATU%'
+	and c.NgayChi = '2020-12-31'
+	
+
+
+select T.MaPhieuThu, T.SoHopDong,case when T.CyberId = '' then N'Nhập thủ công' else N'Cyber qua' end Loai,CT.COST-CT.GiaVon ChenhLech,CT.Cost GiaBan, CT.GiaVon, CT.JOBSNAME
+from ChiTietPhieuDichVu CT inner join PhieuThu T on CT.MaPhieuThu = T.MaPhieuThu and T.IsDeleted = 0 and CT.IsDeleted = 0
+where T.SoHopDong in ( '3204088687','3204091134','3204095406','3204061578')
+and MaKho <> 'SUACHUA'
+and CT.COST-CT.GiaVon <0
+
+
+-- tim cac phieu BDTK ko co han su dung
+
+select *
+from ChiTietBaoDuongTietKiem
+where MaPhieuThu in
+(select MaPhieuThu
+from ChiTietBaoDuongTietKiem 
+group by MaPhieuThu having count(*) = 1
+)
+
+commit transaction
+declare cur cursor for
+select MaPhieuThu
+from ChiTietBaoDuongTietKiem 
+group by MaPhieuThu having count(*) = 1
+
+declare @maPhieuThu varchar(20), @sl int
+declare @index int = 1
+open cur
+fetch next from cur into @maPhieuThu,@sl
+while(@@FETCH_STATUS = 0)
+begin
+	print cast(@index as varchar(100))
+	print @maPhieuThu
+	declare @ngayThu datetime
+	select @ngayThu = NgayThu from PhieuThu where MaPhieuThu = @maPhieuThu and IsDeleted = 0
+	update ChiTietBaoDuongTietKiem 
+	set HanSuDung = dateadd(month,7,@ngayThu) 
+	where MaPhieuThu = @maPhieuThu and HanSuDung is null
+	set @index = @index + 1
+	fetch next from cur into @maPhieuThu,@sl
+end
+close cur
+deallocate cur

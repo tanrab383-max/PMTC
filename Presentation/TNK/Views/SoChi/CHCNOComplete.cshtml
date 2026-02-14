@@ -1,0 +1,49 @@
+﻿@model List<TNK.Core.Domain.View.ViewCHCNO>
+@{
+    Layout = null;
+    int i = 1;
+}
+
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Mã phiếu chi</th>
+            <th>Ngày chi</th>
+            <th>Số Chứng từ</th>
+            <th>Đối tác</th>
+            <th>Số tiền cọc</th>
+            <th>Số tiền chi</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                <td>@item.MaPhieuChi</td>
+                <td>@item.NgayChi.ToString("dd/MM/yyyy")</td>
+                <td>@item.SoChungTu</td>
+                <td>@item.TenDoiTac</td>
+                <td class="number2">@TNK.Core.Common.ToCurrencyString(item.SoTienCoc)</td>
+                <td class="number2">@TNK.Core.Common.ToCurrencyString(item.SoTienChi)</td>
+                <td style="width:5%" class="center">
+                    <a href="/SoChi/CHCNOEdit/@item.MaPhieuChi"><i title="View" class="fa fa-eye"></i></a>
+                </td>
+                <td style="width:5%" class="center">
+                    <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuChi')"><i title="Delete" class="fa fa-close"></i></a>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+</div>
+
+
+
+

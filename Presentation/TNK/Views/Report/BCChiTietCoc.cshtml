@@ -1,0 +1,93 @@
+﻿@using System.Data;
+<div class="x_content">
+    <div id="BCChiTietCoc" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='8' class="tile">DANH SÁCH CHI TIẾT CÁC KHOẢN CỌC @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan='8' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">STT</th>
+                    <th class="column-title">Ngày chi</th>
+                    <th class="column-title">Nội dung</th>
+                    <th class="column-title">Nhà cung cấp</th>
+                    <th class="column-title">Số tiền</th>
+                    <th class="column-title">Đã phân bổ</th>
+                    <th class="column-title">Còn lại</th>
+                    <th class="column-title">Ngày sử dụng cọc</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    double TongSoTien = 0, TongThanhToan = 0, TongConLai = 0;
+                    int intCount = 0;
+                    foreach (DataRow row in (Model as DataTable).Rows)
+                    {
+                        TongSoTien += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                        TongThanhToan += row["SoTienChi"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienChi"]);
+                        TongConLai += row["ConLai"].ToString() == "" ? 0 : Convert.ToDouble(row["ConLai"]);
+                        <tr class="even pointer">
+                            @if (@row["MaLoaiPhieu"].ToString().ToUpper().Contains("TỔNG CỘNG") == true)
+                            {
+                                if (@row["NoiDung"].ToString() == "Tổng Cộng Tất Cả")
+                                {
+                                    <td group="@row["MaLoaiPhieu"]" colspan="4" style="background-color:darkorange; color:blue"><b>@row["MaLoaiPhieu"]</b></td>
+                                    <td class="number" style="background-color:darkorange; color:blue">@row["TongCong"].ToString().Replace(",", ".")</td>
+                                    <td class="number" style="background-color:darkorange; color:blue">@row["SoTienChi"].ToString().Replace(",", ".")</td>
+                                    <td class="number" style="background-color:darkorange; color:blue">@row["ConLai"].ToString().Replace(",", ".")</td>
+                                    <td style="background-color:darkorange;"></td>
+                                }
+                                else
+                                {
+                                    <td group="@row["MaLoaiPhieu"]" colspan="4" style="background-color:lightblue; color:red"><b>@row["MaLoaiPhieu"]</b></td>
+                                    <td class="number" style="background-color:lightblue; color:red">@row["TongCong"].ToString().Replace(",", ".")</td>
+                                    <td class="number" style="background-color:lightblue; color:red">@row["SoTienChi"].ToString().Replace(",", ".")</td>
+                                    <td class="number" style="background-color:lightblue; color:red">@row["ConLai"].ToString().Replace(",", ".")</td>
+                                    <td style="background-color:lightblue;"></td>
+                                }
+
+
+                            }
+                            else
+                            {
+                                <td>@(++intCount)</td>
+                                <td>@row["NgayChi"]</td>
+                                <td>@row["NoiDung"]</td>
+                                <td>@row["TenDoiTac"].ToString()</td>
+                                <td class="number">@row["TongCong"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SoTienChi"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["ConLai"].ToString().Replace(",", ".")</td>
+                                <td>@row["NgaySuDungCoc"].ToString()</td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+
+
+

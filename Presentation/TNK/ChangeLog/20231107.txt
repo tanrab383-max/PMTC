@@ -1,0 +1,22 @@
+﻿1. Thêm các phân loại trong Thu khác (Hỗ trợ xe xuất,..):
+	- CategoryItem , Parent = 2023
+	- SoThuController
+	- ViewPhieuChi
+2. Thêm cột phân loại trong Chi khác ('KHẤU HAO')
+	- CategoryItem
+	- SoChiController
+	- ViewPhieuChi
+3. viewNoPhaiTra
+	LEFT JOIN (	SELECT I.Code, I.Name 
+			FROM CategoryItem I 
+				INNER JOIN Category C ON I.Parent = C.Id 
+			WHERE I.IsDeleted = 0 AND C.IsDeleted = 0  AND C.Code in('CKA','LOAICHIKHAC') )CI ON CI.Code = T.LyDoChi
+4. ViewTBAXE: thêm cột DonVi trong để xử lý đối tác nội bộ
+- TBAXE_Create
+- TBAXE_Create_New
+- SoThuController.TBAXE_Create
+- SoThuController.TBAXE_Create_New
+- TNK.Core.Domain.View.ViewTBAXE t
+5. PhieuThuService. UpdatePhieuThu
+	obj.NoKhuyenMai = model.NoKhuyenMai;
+6. SoThuController.ImportDate_TKHAC xet cac loai can nhap so khung

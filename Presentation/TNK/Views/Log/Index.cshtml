@@ -1,0 +1,195 @@
+﻿@model List<TNK.Core.Domain.View.ViewGetListLichSuThaoTac>
+@{
+    var Users = ViewBag.Users;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Người tác động</label>
+                            <select class="select2" name="userid" style="height:29px">
+                                <option value="">Chọn</option>
+                                @foreach (var user in Users)
+                                {
+                                    <option value="@user.UserId">@user.UserName</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Thao tác</label>
+                            <select class="select2" name="HanhDong" style="height:29px">
+                                <option value="">Tất cả</option>
+                                <option value="DELETE">Delete</option>
+                                <option value="INSERT">Insert</option>
+                                <option value="UPDATE">Update</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    @*@Html.Partial("~/Views/Common/UserCommon.cshtml", null, new ViewDataDictionary { { "User",item.Item.CreatedBy } })*@
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Mã phiếu,SessionId" placeholder="Mã phiếu,SessionId" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                        </div>
+                    </div>
+                </form>
+                <div class="x_content">
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>STT</th>
+                                    <th></th>
+                                    <th>SessionId</th>
+                                    <th>Mã phiếu</th>
+                                    <th>Cân TK</th>
+                                    <th>Hành động</th>
+                                    @*<th>Chi tiết</th>*@
+                                    <th>Người tác động</th>
+                                    <th>Ngày tác động</th>
+                                    <th>PC tác động</th>
+                                    <th>Chi Tiết</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 1;
+                                    foreach (var a in Model)
+                                    {
+                                        if (a.GhiChu == "Update Loại Xe")
+                                        {
+                                            <tr>
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                @if (Math.Abs(a.SoTienCanTaiKhoan) <= 1000)
+                                                {
+                                                    <td><img src="~/assests/images/like.png" style="width:14px;height:14px" alt="Cân"></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><img src="~/assests/images/dislike.png" style="width:14px;height:14px" alt="Không cân"></td>
+                                                }
+                                                <td>@a.SessionId</td>
+                                                <td>@a.MaPhieu</td>
+                                                <td class="number">@a.SoTienCanTaiKhoan</td>
+                                                <td>
+                                                    @a.HanhDong  @a.ChiTiet
+                                                </td>
+                                                @*@if (a.ChiTiet != null)
+                                                {
+
+                                                    <td>@Html.Raw(a.ChiTiet)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@a.ChiTiet</td>
+                                                }*@
+                                                <td>@a.UserName</td>
+                                                <td>@a.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                                <td>@a.IPClient</td>
+                                                <td>
+                                                    @*<input class="btn btn-primary" type="button" onclick ="window.open('/Log/ChiTiet?query=@a.SessionId&from=@a.CreatedDate' ,'newwindow', 'width=900, height=900,left=200');return false;" target="_blank" value="Chi Tiết" />
+                                                    <input class="btn btn-success" type="button" onclick="window.open('/Log/History?query=@a.SessionId&from=@a.CreatedDate','newwindow','width=900, height=900, left=200');return false;" target="_blank" value="Lịch Sử" />*@
+                                                    <img src="~/assests/images/money.png" style="width:15px;height:15px;" onclick="window.open('/Log/ChiTiet?query=@a.SessionId&from=@a.CreatedDate' ,'newwindow', 'width=900, height=900,left=200');return false;" target="_blank" title="Thay đổi túi tiền" />
+                                                    <img src="~/assests/images/database.png" style="width:15px;height:15px;" onclick="window.open('/Log/History?query=@a.SessionId&from=@a.CreatedDate','newwindow','width=900, height=900, left=200');return false;" target="_blank" title="Lịch sử tác động dữ liệu" />
+                                                </td>
+
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                @if (Math.Abs(a.SoTienCanTaiKhoan) <= 1000)
+                                                {
+                                                    <td><img src="~/assests/images/like.png" style="width:14px;height:14px" alt="Cân"></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><img src="~/assests/images/dislike.png" style="width:14px;height:14px" alt="Không cân"></td>
+                                                }
+                                                <td>@a.SessionId</td>
+                                                <td>@a.MaPhieu</td>
+                                                <td class="number">@a.SoTienCanTaiKhoan</td>
+                                                <td>
+                                                    @a.HanhDong
+                                                </td>
+                                                @*@if (a.ChiTiet != null)
+                                                {
+
+                                                    <td>@Html.Raw(a.ChiTiet)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@a.ChiTiet</td>
+                                                }*@
+                                                <td>@a.UserName</td>
+                                                <td>@a.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                                <td>@a.IPClient</td>
+                                                <td>
+                                                    @*<input class="btn btn-primary" type="button" onclick ="window.open('/Log/ChiTiet?query=@a.SessionId&from=@a.CreatedDate' ,'newwindow', 'width=900, height=900,left=200');return false;" target="_blank" value="Chi Tiết" />
+                                                    <input class="btn btn-success" type="button" onclick="window.open('/Log/History?query=@a.SessionId&from=@a.CreatedDate','newwindow','width=900, height=900, left=200');return false;" target="_blank" value="Lịch Sử" />*@
+                                                    <img src="~/assests/images/money.png" style="width:15px;height:15px;" onclick="window.open('/Log/ChiTiet?query=@a.SessionId&from=@a.CreatedDate' ,'newwindow', 'width=900, height=900,left=200');return false;" target="_blank" title="Thay đổi túi tiền" />
+                                                    <img src="~/assests/images/database.png" style="width:15px;height:15px;" onclick="window.open('/Log/History?query=@a.SessionId&from=@a.CreatedDate','newwindow','width=900, height=900, left=200');return false;" target="_blank" title="Lịch sử tác động dữ liệu" />
+                                                </td>
+
+                                            </tr>
+                                        }
+
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <div class="right">
+                            @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        $(".date").datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+    </script>
+}

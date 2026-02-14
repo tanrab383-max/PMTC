@@ -1,0 +1,27 @@
+﻿@model List<TNK.Core.Domain.RoleInMenuType>
+@{
+    Layout = null;
+}
+<table class="table">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Active</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.Raw(item.Name)
+                </td>
+                <td>
+                    @Html.CheckBoxFor(x => item.Active, htmlAttributes: new { @class = " MenuTypeActive" })
+                    @Html.HiddenFor(x=>item.Id, htmlAttributes: new { @class = "mtId" })
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>

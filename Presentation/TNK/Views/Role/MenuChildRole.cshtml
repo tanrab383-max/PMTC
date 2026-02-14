@@ -1,0 +1,18 @@
+﻿@model List<TNK.Core.Domain.Menu>
+@{
+    Layout = null;
+}
+@{
+    var child = Model.Where(x => x.Parent == ViewBag.Id);
+    if (child != null && child.Count() > 0)
+    {
+        <ul class="nav child_menu">
+            @foreach (var i in child)
+            {
+                var href = i.Controller != "" ? "/" + (i.Area == "Web" ? "" : i.Area + "/") + i.Controller + "/" + i.ActionDefault : "#";
+                <li><a href="@href">@i.Name</a></li>
+                @Html.Action("MenuChildRole", "Role", new { id = i.Id, menus = Model })
+            }
+        </ul>
+    }
+}

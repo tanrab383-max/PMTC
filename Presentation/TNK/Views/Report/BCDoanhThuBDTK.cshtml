@@ -1,0 +1,103 @@
+﻿@using System.Data;
+@{ 
+    int n;
+}
+<div class="x_content">
+    <div id="BCDoanhThuBDTK" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='15' class="tile">DOANH THU BẢO DƯỠNG TIẾT KIỆM</th>
+                </tr>
+                <tr>
+                    <th colspan='15' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">STT</th>
+                    <th class="column-title">Ngày Thu</th>
+                    <th class="column-title">Mã Phiếu Thu</th>
+                    <th class="column-title">Số Chứng Từ</th>
+                    <th class="column-title">Khách Hàng</th>
+                    <th class="column-title">Số Khung</th>
+                    <th class="column-title">Số Hợp Đồng</th>
+                    <th class="column-title">Biển Số Xe</th>
+                    <th class="column-title">Giá Niêm Yết</th>
+                    <th class="column-title">Giá Bán</th>
+                    <th class="column-title">Giảm Giá</th>
+                    <th class="column-title">Thanh Toán</th>
+                    <th class="column-title">Tiền Mặt </th>
+                    <th class="column-title">Ngân Hàng</th>
+                    <th class="column-title">Chuyển Cọc (xe/dv)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.Data != null)
+                {
+                    foreach (DataRow row in (ViewBag.Data as DataTable).Rows)
+                    {
+                        if (@row["row_num"].ToString().ToUpper() == "TỔNG")
+                        {
+                            <tr class="even pointer">
+                                <td colspan="8">@row["row_num"].ToString()</td>
+                                <td class="number">@row["GiaNiemYet"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongThanhToan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TM"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NH"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DC"].ToString().Replace(",", ".")</td>
+                            </tr>
+
+                        }
+                        else if (int.TryParse(row["row_num"].ToString(), out n))
+                        {
+                            <tr class="even pointer">
+                                <td>@row["row_num"].ToString()</td>
+                                <td>@row["NgayThu"]</td>
+                                <td>@row["MaPhieuThu"].ToString()</td>
+                                <td style="text-align:left">@row["SoChungTu"]</td>
+                                <td>@row["Hoten"].ToString()</td>
+                                <td>@row["SoKhung"].ToString()</td>
+                                <td style="text-align:left">@row["SoHopDong"].ToString()</td>
+                                <td>@row["BienSo"].ToString()</td>
+                                <td class="number">@row["GiaNiemYet"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongThanhToan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TM"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NH"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DC"].ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr class="even pointer">
+                                <td colspan="15">@row["row_num"].ToString()</td>
+
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

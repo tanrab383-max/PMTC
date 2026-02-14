@@ -1,0 +1,572 @@
+﻿@using System.Data;
+@{  double dlTotalDauKy = 0;
+    double dlTotalXeBan = 0;
+    double dlTotalXeCoc = 0;
+    double dlTotalXeNo = 0;
+    double dlTotalXeGiaiNgan = 0;
+    double dlTotalXeThe = 0;
+    double dlTotalDichVuCK = 0;
+    double dlTotalPhuKienBAN = 0;
+    //   double dlTotalDSonBAN = 0;
+    //   double dlTotalDichVuBAN = 0;
+    double dlTotalDichVuCOC = 0;
+    double dlTotalDICHVUNO = 0;
+    double dlTotalDICHVUTHE = 0;
+    double dlTotalDICHVUGIAINGAN = 0;
+    double dlTotalDICHVUPHUKIENSALES = 0;
+    double dlTotalBAOHIEM_HOAHONG = 0;
+    double dlTotalBAOHIEM_THUHO = 0;
+    double dlTotalHOAHONGHOLDBACK = 0;
+    double dlTotalTHUKHAC = 0;
+    double dlTotalChiXeHANG = 0;
+    double dlTotalChiXeNGOAI = 0;
+    double dlTotalChiPhuTungHANG = 0;
+    double dlTotalChiPhuTungNGOAI = 0;
+    double dlTotalChiPHUKIEN = 0;
+    double dlTotalChiDONGSON = 0;
+    double dlTotalChiQuaTang = 0;
+    double dlTotalChiGIACONG = 0;
+    double dlTotalChiDATCOC = 0;
+    double dlTotal_ChiGIACONG = 0;
+    double dlTotalChiKHAC = 0;
+    double dlTotalChiPhi = 0;
+    double dlTotalPhiNH = 0;
+    double dlTotalPhiCaThe = 0;
+    double dlTotalNganHangTHUVAY = 0;
+    double dlTotalNganHangCHITRAVAY = 0;
+    double dlTotalNganHangTHULAI = 0;
+    double dlTotalNganHangCHILAI = 0;
+    double dlTotalNganHangNOP = 0;
+    double dlTotalNganHangRut = 0;
+    double dlTotalCuoiKy = 0;
+    double dlTotalThucTe = 0;
+    double dlTotalTreo = 0;
+    double dlTotalChiKHAC_Total = 0;
+    double dlTotalTRACOC = 0;
+    double dlTotalBH_THUHO = 0;
+    double dlTotalBH_KHUYENMAI = 0;
+
+    double dlTotalGHBH_THUHO = 0;
+    double dlTotalGHBH_HOAHONG = 0;
+    double dlTotalCHI_THUHOGHBH = 0;
+    double dlTotalCHI_GHBHKHUYENMAI = 0;
+}
+
+
+@*<div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='36' class="tile">BÁO CÁO NGÂN HÀNG</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="4">NGÂN HÀNG</th>
+                        <th class="column-title" rowspan="4">ĐẦU KỲ</th>
+                        <th class="column-title" colspan="16">THU</th>
+                        <th class="column-title" colspan="11">CHI</th>
+                        <th class="column-title" colspan="6" rowspan="2">NGÂN HÀNG</th>
+                        <th class="column-title" rowspan="4">CUỐI KỲ</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title" colspan="5">XE</th>
+                        <th class="column-title" colspan="7">PHỤ TÙNG+P.KIỆN +Đ.SƠN +DỊCH VỤ</th>
+                        <th class="column-title" colspan="2">BẢO HIỂM</th>
+                        <th class="column-title" rowspan="3">HOA HỒNG  ( HOLD BACK, TFS)</th>
+                        <th class="column-title" rowspan="3">THU KHÁC</th>
+                        <th class="column-title" colspan="8">THANH TOÁN</th>
+                        <th class="column-title" colspan="3">CHI PHÍ</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="2">BÁN</th>
+                        <th class="column-title" rowspan="2">CỌC</th>
+                        <th class="column-title" rowspan="2">NỢ</th>
+                        <th class="column-title" rowspan="2">GIẢI NGÂN</th>
+                        <th class="column-title" rowspan="2">THẺ</th>
+                        <th class="column-title" colspan="4">BÁN</th>
+                        <th class="column-title" rowspan="2">CỌC</th>
+                        <th class="column-title" rowspan="2">NỢ</th>
+                        <th class="column-title" rowspan="2">THẺ</th>
+                        <th class="column-title" rowspan="2">HOA HỒNG</th>
+                        <th class="column-title" rowspan="2">THU HỘ</th>
+                        <th class="column-title" colspan="2">XE</th>
+                        <th class="column-title" colspan="2">P.TÙNG</th>
+                        <th class="column-title" rowspan="2">P.KIỆN</th>
+                        <th class="column-title" rowspan="2">Đ.SƠN</th>
+                        <th class="column-title" rowspan="2">GIA CÔNG</th>
+                        <th class="column-title" rowspan="2">KHÁC</th>
+                        <th class="column-title" rowspan="2">CHI PHÍ</th>
+                        <th class="column-title" rowspan="2">PHÍ NH</th>
+                        <th class="column-title" rowspan="2">PHÍ CÀ THẺ</th>
+                        <th class="column-title" rowspan="2">THU VAY</th>
+                        <th class="column-title" rowspan="2">CHI TRẢ VAY</th>
+                        <th class="column-title" rowspan="2">THU LÃI</th>
+                        <th class="column-title" rowspan="2">CHI LÃI VAY</th>
+                        <th class="column-title" rowspan="2">NỘP</th>
+                        <th class="column-title" rowspan="2">RÚT</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">P.TÙNG</th>
+                        <th class="column-title">P.KIỆN</th>
+                        <th class="column-title">Đ.SƠN</th>
+                        <th class="column-title">D.VỤ</th>
+                        <th class="column-title">TOYOTA</th>
+                        <th class="column-title">NGOÀI</th>
+                        <th class="column-title">HÃNG</th>
+                        <th class="column-title">NGOÀI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (DataRow row in (Model as DataTable).Rows)
+                        {
+                            dlTotalDauKy += row["DauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["DauKy"]);
+                            dlTotalXeBan += row["XE_BAN"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_BAN"]);
+                            dlTotalXeCoc += row["XE_COC"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_COC"]);
+                            dlTotalXeNo += row["XE_NO"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_NO"]);
+                            dlTotalXeGiaiNgan += row["XE_GIAINGAN"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_GIAINGAN"]);
+                            dlTotalXeThe += row["XE_THE"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_THE"]);
+                            dlTotalPhuTungBAN += row["PhuTungBAN"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuTungBAN"]);
+                            dlTotalPhuKienBAN += row["PhuKienBAN"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienBAN"]);
+                            dlTotalDSonBAN += row["DSonBAN"].ToString() == "" ? 0 : Convert.ToDouble(row["DSonBAN"]);
+                            dlTotalDichVuBAN += row["DSonBAN"].ToString() == "" ? 0 : Convert.ToDouble(row["DSonBAN"]);
+                            dlTotalDichVuCOC += row["DICHVU_COC"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_COC"]);
+                            dlTotalDICHVUNO += row["DICHVU_NO"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_NO"]);
+                            dlTotalDICHVUTHE += row["DICHVU_THE"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_THE"]);
+                            dlTotalBAOHIEM_HOAHONG += row["BAOHIEM_HOAHONG"].ToString() == "" ? 0 : Convert.ToDouble(row["BAOHIEM_HOAHONG"]);
+                            dlTotalBAOHIEM_THUHO += row["BAOHIEM_THUHO"].ToString() == "" ? 0 : Convert.ToDouble(row["BAOHIEM_THUHO"]);
+                            dlTotalHOAHONGHOLDBACK += row["HOAHONGHOLDBACK"].ToString() == "" ? 0 : Convert.ToDouble(row["HOAHONGHOLDBACK"]);
+                            dlTotalTHUKHAC += row["THUKHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["THUKHAC"]);
+                            dlTotalChiXeHANG += row["CHI_XE_HANG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_XE_HANG"]);
+                            dlTotalChiXeNGOAI += row["CHI_XE_NGOAI"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_XE_NGOAI"]);
+                            dlTotalChiPhuTungHANG += row["CHI_PHUTUNG_HANG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_PHUTUNG_HANG"]);
+                            dlTotalChiPhuTungNGOAI += row["CHI_PHUTUNG_NGOAI"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_PHUTUNG_NGOAI"]);
+                            dlTotalChiPHUKIEN += row["CHI_PHUKIEN"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_PHUKIEN"]);
+                            dlTotalChiDONGSON += row["CHI_DONGSON"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_DONGSON"]);
+                            dlTotalChiGIACONG += row["CHI_GIACONG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_GIACONG"]);
+                            dlTotalChiKHAC += row["CHI_KHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_KHAC"]);
+                            dlTotalChiPhi += row["ChiPhi"].ToString() == "" ? 0 : Convert.ToDouble(row["ChiPhi"]);
+                            dlTotalPhiNH += row["PhiNH"].ToString() == "" ? 0 : Convert.ToDouble(row["PhiNH"]);
+                            dlTotalPhiCaThe += row["PhiCaThe"].ToString() == "" ? 0 : Convert.ToDouble(row["PhiCaThe"]);
+                            dlTotalNganHangTHUVAY += row["NGANHANG_THUVAY"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_THUVAY"]);
+                            dlTotalNganHangCHITRAVAY += row["NGANHANG_CHITRAVAY"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_CHITRAVAY"]);
+                            dlTotalNganHangTHULAI += row["NGANHANG_THULAI"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_THULAI"]);
+                            dlTotalNganHangCHILAI += row["NGANHANG_CHILAI"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_CHILAI"]);
+                            dlTotalNganHangNOP += row["NGANHANG_NOP"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_NOP"]);
+                            dlTotalNganHangRut += row["NGANHANG_RUT"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_RUT"]);
+                            dlTotalCuoiKy += row["CuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["CuoiKy"]);
+
+                        <tr class="even pointer">
+                            <td>@row["NganHang"]</td>
+                            <td>@row["DauKy"]</td>
+                            <td>@row["XE_BAN"]</td>
+                            <td>@row["XE_COC"]</td>
+                            <td>@row["XE_NO"]</td>
+                            <td>@row["XE_GIAINGAN"]</td>
+                            <td>@row["XE_THE"]</td>
+                            <td>@row["PhuTungBAN"]</td>
+                            <td>@row["PhuKienBAN"]</td>
+                            <td>@row["DSonBAN"]</td>
+                            <td>@row["DichVuBAN"]</td>
+                            <td>@row["DICHVU_COC"]</td>
+                            <td>@row["DICHVU_NO"]</td>
+                            <td>@row["DICHVU_THE"]</td>
+                            <td>@row["BAOHIEM_HOAHONG"]</td>
+                            <td>@row["BAOHIEM_THUHO"]</td>
+                            <td>@row["HOAHONGHOLDBACK"]</td>
+                            <td>@row["THUKHAC"]</td>
+                            <td>@row["CHI_XE_HANG"]</td>
+                            <td>@row["CHI_XE_NGOAI"]</td>
+                            <td>@row["CHI_PHUTUNG_HANG"]</td>
+                            <td>@row["CHI_PHUTUNG_NGOAI"]</td>
+                            <td>@row["CHI_PHUKIEN"]</td>
+                            <td>@row["CHI_DONGSON"]</td>
+                            <td>@row["CHI_GIACONG"]</td>
+                            <td>@row["CHI_KHAC"]</td>
+                            <td>@row["ChiPhi"]</td>
+                            <td>@row["PhiNH"]</td>
+                            <td>@row["PhiCaThe"]</td>
+                            <td>@row["NGANHANG_THUVAY"]</td>
+                            <td>@row["NGANHANG_CHITRAVAY"]</td>
+                            <td>@row["NGANHANG_THULAI"]</td>
+                            <td>@row["NGANHANG_CHILAI"]</td>
+                            <td>@row["NGANHANG_NOP"]</td>
+                            <td>@row["NGANHANG_RUT"]</td>
+                            <td>@row["CuoiKy"]</td>
+                        </tr>
+                        }
+                    }
+                    <tr class="even pointer">
+                        <td>Tổng cộng</td>
+                        <td>@dlTotalDauKy</td>
+                        <td>@dlTotalXeBan</td>
+                        <td>@dlTotalXeCoc</td>
+                        <td>@dlTotalXeNo</td>
+                        <td>@dlTotalXeGiaiNgan</td>
+                        <td>@dlTotalXeThe</td>
+                        <td>@dlTotalPhuTungBAN</td>
+                        <td>@dlTotalPhuKienBAN</td>
+                        <td>@dlTotalDSonBAN</td>
+                        <td>@dlTotalDichVuBAN</td>
+                        <td>@dlTotalDichVuCOC</td>
+                        <td>@dlTotalDICHVUNO</td>
+                        <td>@dlTotalDICHVUTHE</td>
+                        <td>@dlTotalBAOHIEM_HOAHONG</td>
+                        <td>@dlTotalBAOHIEM_THUHO</td>
+                        <td>@dlTotalHOAHONGHOLDBACK</td>
+                        <td>@dlTotalTHUKHAC</td>
+                        <td>@dlTotalChiXeHANG</td>
+                        <td>@dlTotalChiXeNGOAI</td>
+                        <td>@dlTotalChiPhuTungHANG</td>
+                        <td>@dlTotalChiPhuTungNGOAI</td>
+                        <td>@dlTotalChiPHUKIEN</td>
+                        <td>@dlTotalChiDONGSON</td>
+                        <td>@dlTotalChiGIACONG</td>
+                        <td>@dlTotalChiKHAC</td>
+                        <td>@dlTotalChiPhi</td>
+                        <td>@dlTotalPhiNH</td>
+                        <td>@dlTotalPhiCaThe</td>
+                        <td>@dlTotalNganHangTHUVAY</td>
+                        <td>@dlTotalNganHangCHITRAVAY</td>
+                        <td>@dlTotalNganHangTHULAI</td>
+                        <td>@dlTotalNganHangCHILAI</td>
+                        <td>@dlTotalNganHangNOP</td>
+                        <td>@dlTotalNganHangRut</td>
+                        <td>@dlTotalCuoiKy</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>*@
+
+
+<div class="x_content">
+    <div id="BCNganHang">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='47' class="tile">BÁO CÁO NGÂN HÀNG @ViewBag.ShowRoom</th>
+                    </tr>
+                    <tr>
+                        <th colspan='47' class="tile">@ViewBag.TuNgayDenNgay</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="4">NGÂN HÀNG</th>
+                        <th class="column-title" rowspan="4">ĐẦU KỲ</th>
+                        <th class="column-title" colspan="17">THU</th>
+                        <th class="column-title" colspan="17">CHI</th>
+                        <th class="column-title" colspan="6" rowspan="2">NGÂN HÀNG</th>
+                        <th class="column-title" rowspan="4">CUỐI KỲ</th>
+                        <th class="column-title" rowspan="4">ĐANG CÓ TRONG TÀI KHOẢN</th>
+                        <th class="column-title" rowspan="4">CÒN TREO</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title" colspan="5">XE</th>
+                        <th class="column-title" colspan="5">PHỤ TÙNG+P.KIỆN +Đ.SƠN +DỊCH VỤ</th>
+                        <th class="column-title" rowspan="3">PHỤ KIỆN SALE  </th>
+                        <th class="column-title" colspan="2">BẢO HIỂM</th>
+                        <th class="column-title" colspan="2">GIA HẠN BẢO HÀNH</th>
+                        <th class="column-title" rowspan="3">HOA HỒNG (HOLD BACK, TFS)</th>
+                        <th class="column-title" rowspan="3">THU KHÁC</th>
+                        <th class="column-title" colspan="14">THANH TOÁN</th>
+                        <th class="column-title" colspan="3">CHI PHÍ</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title" colspan="2">BÁN</th>
+                        <th class="column-title" rowspan="2">CỌC</th>
+                        <th class="column-title" rowspan="2">NỢ</th>
+                        <th class="column-title" rowspan="2">GIẢI NGÂN NH</th>
+                        <th class="column-title" colspan="2">BÁN</th>
+                        <th class="column-title" rowspan="2">CỌC</th>
+                        <th class="column-title" rowspan="2">NỢ</th>
+                        <th class="column-title" rowspan="2">THU NỢ BH</th>
+                        <th class="column-title" rowspan="2">HOA HỒNG</th>
+                        <th class="column-title" rowspan="2">THU HỘ</th>
+                        <th class="column-title" rowspan="2">HOA HỒNG</th>
+                        <th class="column-title" rowspan="2">THU HỘ</th>
+                        <th class="column-title" colspan="2">XE</th>
+                        <th class="column-title" rowspan="2">P.TÙNG</th>
+                        <th class="column-title" rowspan="2">P.KIỆN</th>
+                        <th class="column-title" rowspan="2">Đ.SƠN</th>
+                        <th class="column-title" rowspan="2">QUÀ TẶNG</th>
+                        <th class="column-title" rowspan="2">GCN</th>
+                        <th class="column-title" rowspan="2">ĐẶT CỌC</th>
+                        <th class="column-title" rowspan="2">TRẢ CỌC</th>
+                        <th class="column-title" rowspan="2">BẢO HIỂM THU HỘ</th>
+                        <th class="column-title" rowspan="2">BẢO HIỂM KHUYẾN MÃI</th>
+                        <th class="column-title" rowspan="2">GHBH THU HỘ</th>
+                        <th class="column-title" rowspan="2">GHBH KHUYẾN MÃI</th>
+                        <th class="column-title" rowspan="2">KHÁC</th>
+                        <th class="column-title" rowspan="2">CHI PHÍ</th>
+                        <th class="column-title" rowspan="2">PHÍ NH</th>
+                        <th class="column-title" rowspan="2">PHÍ CÀ THẺ</th>
+                        <th class="column-title" rowspan="2">THU VAY</th>
+                        <th class="column-title" rowspan="2">CHI TRẢ VAY</th>
+                        <th class="column-title" rowspan="2">THU LÃI</th>
+                        <th class="column-title" rowspan="2">CHI LÃI VAY</th>
+                        <th class="column-title" rowspan="2">NỘP</th>
+                        <th class="column-title" rowspan="2">RÚT</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">CHUYỂN KHOẢN</th>
+                        <th class="column-title">THẺ</th>
+                        <th class="column-title">CHUYỂN KHOẢN</th>
+                        <th class="column-title">THẺ</th>
+                        <th class="column-title">HÃNG</th>
+                        <th class="column-title">NGOÀI</th>
+                        @*<th class="column-title">HÃNG</th>
+                            <th class="column-title">NGOÀI</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (DataRow row in (Model as DataTable).Rows)
+                        {
+                            dlTotalDauKy += row["DauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["DauKy"]);
+                            dlTotalXeBan += row["XE_BAN_CK"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_BAN_CK"]);
+                            dlTotalXeCoc += row["XE_COC"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_COC"]);
+                            dlTotalXeNo += row["XE_NO"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_NO"]);
+                            dlTotalXeGiaiNgan += row["XE_GIAINGAN"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_GIAINGAN"]);
+                            dlTotalXeThe += row["XE_THE"].ToString() == "" ? 0 : Convert.ToDouble(row["XE_THE"]);
+
+                            dlTotalDichVuCK += row["DICHVU_CK"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_CK"]);
+                            dlTotalDICHVUTHE += row["DICHVU_THE"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_THE"]);
+                            // dlTotalDSonBAN += row["DSonBAN"].ToString() == "" ? 0 : Convert.ToDouble(row["DSonBAN"]);
+                            // dlTotalDichVuBAN += row["DSonBAN"].ToString() == "" ? 0 : Convert.ToDouble(row["DSonBAN"]);
+                            dlTotalDichVuCOC += row["DICHVU_COC"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_COC"]);
+                            dlTotalDICHVUNO += row["DICHVU_NO"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_NO"]);
+                            dlTotalDICHVUGIAINGAN += row["DICHVU_GIAINGAN"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_GIAINGAN"]);
+                            dlTotalDICHVUPHUKIENSALES += row["DICHVU_PHUKIENSALES"].ToString() == "" ? 0 : Convert.ToDouble(row["DICHVU_PHUKIENSALES"]);
+                            dlTotalBAOHIEM_HOAHONG += row["BAOHIEM_HOAHONG"].ToString() == "" ? 0 : Convert.ToDouble(row["BAOHIEM_HOAHONG"]);
+                            dlTotalBAOHIEM_THUHO += row["BAOHIEM_THUHO"].ToString() == "" ? 0 : Convert.ToDouble(row["BAOHIEM_THUHO"]);
+                            dlTotalHOAHONGHOLDBACK += row["HOAHONGHOLDBACK"].ToString() == "" ? 0 : Convert.ToDouble(row["HOAHONGHOLDBACK"]);
+                            dlTotalTHUKHAC += row["THUKHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["THUKHAC"]);
+                            dlTotalChiXeHANG += row["CHI_XE_HANG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_XE_HANG"]);
+                            dlTotalChiXeNGOAI += row["CHI_XE_NGOAI"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_XE_NGOAI"]);
+                            dlTotalChiPhuTungHANG += row["CHI_PHUTUNG_HANG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_PHUTUNG_HANG"]);
+                            //dlTotalChiPhuTungNGOAI += row["CHI_PHUTUNG_NGOAI"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_PHUTUNG_NGOAI"]);
+                            dlTotalChiPHUKIEN += row["CHI_PHUKIEN"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_PHUKIEN"]);
+                            dlTotalChiDONGSON += row["CHI_DONGSON"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_DONGSON"]);
+                            dlTotalChiQuaTang += row["CHI_QUATANG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_QUATANG"]);
+                            dlTotalChiGIACONG += row["CHI_GIACONG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_GIACONG"]);
+                            dlTotalChiDATCOC += row["CHI_DATCOC"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_DATCOC"]);
+                            dlTotalTRACOC += row["CHI_TRACOC"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_TRACOC"]);
+                            dlTotalChiKHAC += row["CHI_KHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_KHAC"]);
+                            dlTotalBH_THUHO += row["CHI_THUHOBAOHIEM"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_THUHOBAOHIEM"]);
+                            dlTotalBH_KHUYENMAI += row["CHI_BAOHIEMKHUYENMAI"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_BAOHIEMKHUYENMAI"]);
+                            dlTotalChiPhi += row["ChiPhi"].ToString() == "" ? 0 : Convert.ToDouble(row["ChiPhi"]);
+                            dlTotalPhiNH += row["PhiNH"].ToString() == "" ? 0 : Convert.ToDouble(row["PhiNH"]);
+                            dlTotalPhiCaThe += row["PhiCaThe"].ToString() == "" ? 0 : Convert.ToDouble(row["PhiCaThe"]);
+                            dlTotalNganHangTHUVAY += row["NGANHANG_THUVAY"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_THUVAY"]);
+                            dlTotalNganHangCHITRAVAY += row["NGANHANG_CHITRAVAY"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_CHITRAVAY"]);
+                            dlTotalNganHangTHULAI += row["NGANHANG_THULAI"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_THULAI"]);
+                            dlTotalNganHangCHILAI += row["NGANHANG_CHILAI"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_CHILAI"]);
+                            dlTotalNganHangNOP += row["NGANHANG_NOP"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_NOP"]);
+                            dlTotalNganHangRut += row["NGANHANG_RUT"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_RUT"]);
+                            dlTotalCuoiKy += row["CuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["CuoiKy"]);
+                            dlTotalThucTe += row["NGANHANG_THUCTE"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_THUCTE"]);
+                            dlTotalTreo += row["NGANHANG_TREO"].ToString() == "" ? 0 : Convert.ToDouble(row["NGANHANG_TREO"]);
+                            dlTotal_ChiGIACONG = row["CHI_GIACONG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_GIACONG"]);
+                            dlTotalChiKHAC_Total += row["CHI_KHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_KHAC"]);
+                            //dlTotalChiKHAC_GIACONG_Total = row["CHI_GIACONG"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_GIACONG"]);
+                            //dlTotalChiKHAC_GIACONG_Total += row["CHI_KHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_KHAC"]);
+                            //dlTotalChiKHAC_GIACONG_Total += dlTotalChiKHAC_GIACONG;
+
+                            dlTotalGHBH_THUHO += row["GHBH_THUHO"].ToString() == "" ? 0 : Convert.ToDouble(row["GHBH_THUHO"]);
+                            dlTotalGHBH_HOAHONG += row["GHBH_HOAHONG"].ToString() == "" ? 0 : Convert.ToDouble(row["GHBH_HOAHONG"]);
+                            dlTotalCHI_THUHOGHBH = row["CHI_THUHOGHBH"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_THUHOGHBH"]);
+                            dlTotalCHI_GHBHKHUYENMAI += row["CHI_GHBHKHUYENMAI"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI_GHBHKHUYENMAI"]);
+
+                            <tr class="even pointer">
+                                <td>@row["NganHang"]</td>
+                                <td class="number">@row["DauKy"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["XE_BAN_CK"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["XE_THE"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["XE_COC"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["XE_NO"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["XE_GIAINGAN"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DICHVU_CK"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DICHVU_THE"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DICHVU_COC"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DICHVU_NO"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DICHVU_GIAINGAN"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DICHVU_PHUKIENSALES"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["BAOHIEM_HOAHONG"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["BAOHIEM_THUHO"].ToString().Replace(",", ".")</td>
+                                @*thứ 2 chỉnh lại cho bảo hành*@
+                                <td class="number">@row["GHBH_HOAHONG"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["GHBH_THUHO"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["HOAHONGHOLDBACK"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["THUKHAC"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_XE_HANG"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_XE_NGOAI"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_PHUTUNG_HANG"].ToString().Replace(",", ".")</td>
+                                @*<td class="number">@row["CHI_PHUTUNG_NGOAI"].ToString().Replace(",", ".")</td>*@
+                                <td class="number">@row["CHI_PHUKIEN"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_DONGSON"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_QUATANG"].ToString().Replace(",", ".")</td>
+                                @*<td class="number">@row["CHI_GIACONG"].ToString().Replace(",", ".")</td>*@
+                                <td class="number">@row["CHI_GIACONG"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_DATCOC"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_TRACOC"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_THUHOBAOHIEM"].ToString().Replace(",",".")</td>    
+                                <td class="number">@row["CHI_BAOHIEMKHUYENMAI"].ToString().Replace(",",".")</td>
+                                @*thứ 2 chỉnh lại cho gia hạn bảo hành*@
+                                <td class="number">@row["CHI_THUHOGHBH"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CHI_GHBHKHUYENMAI"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["CHI_KHAC"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["ChiPhi"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhiNH"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhiCaThe"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NGANHANG_THUVAY"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NGANHANG_CHITRAVAY"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NGANHANG_THULAI"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NGANHANG_CHILAI"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NGANHANG_NOP"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NGANHANG_RUT"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CuoiKy"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NGANHANG_THUCTE"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["NGANHANG_TREO"].ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td>Tổng cộng</td>
+                        <td class="number">@dlTotalDauKy.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalXeBan.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalXeThe.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalXeCoc.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalXeNo.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalXeGiaiNgan.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalDichVuCK.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalDICHVUTHE.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalDichVuCOC.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalDICHVUNO.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalDICHVUGIAINGAN.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalDICHVUPHUKIENSALES.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalBAOHIEM_HOAHONG.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalBAOHIEM_THUHO.ToString().Replace(",", ".")</td>
+                        @*thứ 2 chỉnh lại cho gia hạn bảo hành*@
+                        <td class="number">@dlTotalGHBH_HOAHONG.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalGHBH_THUHO.ToString().Replace(",", ".")</td>
+                        
+                        <td class="number">@dlTotalHOAHONGHOLDBACK.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalTHUKHAC.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiXeHANG.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiXeNGOAI.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiPhuTungHANG.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiPHUKIEN.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiDONGSON.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiQuaTang.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiGIACONG.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiDATCOC.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalTRACOC.ToString().Replace(",",".")</td>
+                        <td class="number">@dlTotalBH_THUHO.ToString().Replace(",",".")</td>
+                        <td class="number">@dlTotalBH_KHUYENMAI.ToString().Replace(",",".")</td>
+                        @*thứ 2 chỉnh lại cho gia hạn bảo hành*@
+                        <td class="number">@dlTotalCHI_THUHOGHBH.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalCHI_GHBHKHUYENMAI.ToString().Replace(",", ".")</td>
+
+                        <td class="number">@dlTotalChiKHAC_Total.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalChiPhi.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalPhiNH.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalPhiCaThe.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalNganHangTHUVAY.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalNganHangCHITRAVAY.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalNganHangTHULAI.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalNganHangCHILAI.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalNganHangNOP.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalNganHangRut.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalCuoiKy.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalThucTe.ToString().Replace(",", ".")</td>
+                        <td class="number">@dlTotalTreo.ToString().Replace(",", ".")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='6' class="tile">VAY NGÂN HÀNG</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    @if (ViewBag.NoNH != null)
+                    {
+                        double tongVay = 0, tongHangMuc = 0, tongTheChap = 0;
+                        int soLuongXeTheChap = 0;
+                        foreach (DataRow r in ((DataTable)ViewBag.NoNH).Rows)
+                        {
+                            <tr>
+                                <td rowspan="4"><b>@r["DonViNo"]</b></td>
+                                <td>NỢ ĐK</td>
+                                <td class="number">@r["NoDauKy"].ToString().Replace(",", ".")</td>
+                                <td>HẠN MỨC CÒN SỬ DỤNG</td>
+                                <td>SL XE</td>
+                                <td>THẾ CHẤP</td>
+                            </tr>
+                            <tr>
+                                <td>THU VAY</td>
+                                <td class="number">@r["ThuVay"].ToString().Replace(",", ".")</td>
+                                <td rowspan="2"></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>TRẢ VAY</td>
+                                <td class="number">@r["TraVay"]</td>
+
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>NỢ CK</td>
+                                <td class="number">@r["NoVayCuoiKy"].ToString().Replace(",", ".")</td>
+                                <td class="number">@r["HanMucSuDung"].ToString().Replace(",", ".")</td>
+                                <td class="number">@r["SoLuongTheChap"].ToString().Replace(",", ".")</td>
+                                <td class="number">@r["SoTienTheChap"].ToString().Replace(",", ".")</td>
+                            </tr>
+                            tongVay += double.Parse(r["NoVayCuoiKy"].ToString());
+                            tongHangMuc += double.Parse(r["HanMucSuDung"].ToString());
+                            tongTheChap += double.Parse(r["SoTienTheChap"].ToString());
+                            soLuongXeTheChap += int.Parse(r["SoLuongTheChap"].ToString());
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="2"><b>TỔNG VAY</b></td>
+                            <td class="number">@tongVay.ToString().Replace(",", ".")</td>
+                            <td class="number">@tongHangMuc.ToString().Replace(",", ".")</td>
+                            <td class="number">@soLuongXeTheChap.ToString().Replace(",", ".")</td>
+                            <td class="number">@tongTheChap.ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+@*<div class="x_content">
+
+
+    </div>*@
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

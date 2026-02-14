@@ -1,0 +1,111 @@
+﻿@model TNK.Web.Models.MenuDetailModel
+@{
+    ViewBag.Title = "Details";
+    var obj = Model.Detail;
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b></b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    @if (ViewBag.Alert != null && ViewBag.Alert != "")
+                    {
+                        <div class="alert alert-success alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            @ViewBag.Alert
+                        </div>
+                    }
+
+                    <br>
+
+                    <div class="form-horizontal form-label-left">
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => obj.Name, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">@obj.Name </label>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => obj.Icon, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">@obj.Icon </label>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => obj.Area, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">@obj.Area </label>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => obj.Controller, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">@obj.Controller </label>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => obj.ActionDefault, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12">@obj.ActionDefault </label>
+                        </div>
+                        <div class="ln_solid"></div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b>Actions</b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Active</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Types)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>
+                                        @Html.CheckBoxFor(x => item.IsActive, htmlAttributes: new { @class = "MenuTypeActive" ,@readonly="readonly"})
+                                        @Html.HiddenFor(x => item.Id, htmlAttributes: new { @class = "id" })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</div>
+
+<div>
+    @Html.ActionLink("Quay lại", "Index")
+</div>

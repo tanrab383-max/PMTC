@@ -1,0 +1,80 @@
+﻿@using System.Data;
+<div class="x_content">
+    <div id="BCKhoPhuTungNgay" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='7' class="tile">DANH SÁCH XUẤT NHẬP TỒN KHO PHỤ TÙNG @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan='7' class="tile">@ViewBag.ToDate</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">STT</th>
+                    <th class="column-title">Tên kho</th>
+                    <th class="column-title">Đầu kỳ</th>
+                    <th class="column-title" width="130px">Nhập kho</th>
+                    <th class="column-title">Xuất kho</th>
+                    <th class="column-title">Điều chỉnh kho</th>
+                    <th class="column-title">Cuối kỳ </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    double TongTienDauKy = 0, TongTienNhapKho = 0, TongTienXuatKho = 0, TongTienCuoiKy = 0, TongDieuChinhKho = 0;
+                    int intCount = 0;
+                    foreach (DataRow row in (Model as DataTable).Rows)
+                    {
+
+                        double dauky = @row["DauKy"].ToString() == "" ? 0 : Convert.ToDouble(@row["DauKy"]);
+                        TongTienDauKy += dauky;
+                        double nhapkho = @row["NhapKho"].ToString() == "" ? 0 : Convert.ToDouble(@row["NhapKho"]);
+                        TongTienNhapKho += nhapkho;
+                        double xuatkho = @row["XuatKho"].ToString() == "" ? 0 : Convert.ToDouble(@row["XuatKho"]);
+                        TongTienXuatKho += xuatkho;
+                        double cuoiky = @row["CuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(@row["CuoiKy"]);
+                        TongTienCuoiKy += cuoiky;
+                        double dieuchinhkho = @row["TongDieuChinhKho_TrongKy"].ToString() == "" ? 0 : Convert.ToDouble(@row["TongDieuChinhKho_TrongKy"]);
+                        TongDieuChinhKho += dieuchinhkho;
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["MaKho"]</td>
+                            <td class="number">@TNK.Core.Common.ToCurrencyString(dauky)</td>
+                            <td class="number">@TNK.Core.Common.ToCurrencyString(nhapkho)</td>
+                            <td class="number">@TNK.Core.Common.ToCurrencyString(xuatkho)</td>
+                            <td class="number">@TNK.Core.Common.ToCurrencyString(dieuchinhkho)</td>
+                            <td class="number">@TNK.Core.Common.ToCurrencyString(cuoiky)</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG CỘNG :</b></td>
+                        <td class="number">@TNK.Core.Common.ToCurrencyString(TongTienDauKy)</td>
+                        <td class="number">@TNK.Core.Common.ToCurrencyString(TongTienNhapKho)</td>
+                        <td class="number">@TNK.Core.Common.ToCurrencyString(TongTienXuatKho))</td>
+                        <td class="number">@TNK.Core.Common.ToCurrencyString(TongDieuChinhKho))</td>
+                        <td class="number">@TNK.Core.Common.ToCurrencyString(TongTienCuoiKy)</td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

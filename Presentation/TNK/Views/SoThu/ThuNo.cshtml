@@ -1,0 +1,1723 @@
+﻿@model List<TNK.Core.Domain.View.ViewNoPhaiThuBHDV>
+@{
+    int i = 1;
+    var flag = ViewBag.Type == "NBHDV" || ViewBag.Type == "NHHBH";
+    var count = Model.Count;
+    //var ModelGiaiTrinh = ViewBag.ModelGiaiTrinh;
+    var activeSearch = ViewBag.Submit == "Search" ? "active" : "";
+    var activeGiaiTrinh = ViewBag.Submit == "SearchGiaiTrinh" ? "active" : "";
+    var lstLoaiBH = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "KL", Text = "Thu hộ" },
+        new SelectListItem { Value = "KM", Text = "Khuyến mãi" },
+    };
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs" id="tab_data">
+                @if (ViewBag.Submit == "Search")
+                {
+                    <li class='active' data-url="/SoThu/PhieuThu/@ViewBag.Type">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Phiếu nợ
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="" data-url="/SoThu/PhieuThu/@ViewBag.Type">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Phiếu nợ
+                        </a>
+                    </li>
+                }
+                <li class="">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                        Chi tiết phiếu thu nợ
+                    </a>
+                </li>
+                @if (ViewBag.Type == "NBHDV")
+                {
+                    if (ViewBag.Submit == "SearchGiaiTrinh")
+                    {
+                        <li class="active">
+                            <a id="a_2" href="#tab_2" data-toggle="tab" aria-expanded="false">
+                                Giải trình
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a id="a_2" href="#tab_2" data-toggle="tab" aria-expanded="false">
+                                Giải trình
+                            </a>
+                        </li>
+                    }
+                }
+            </ul>
+            <div class="tab-content">
+
+                <div class='tab-pane @activeSearch' id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            @if (ViewBag.Type == "NHHGP" || ViewBag.Type == "NHHHB" || ViewBag.Type == "NTKHA" || ViewBag.Type == "NHANG")
+                            {
+                                <div class="title_right" style="margin-left:88%">
+                                    <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu(*.xlxs)</span></a>
+                                </div>
+                            }
+                            <form method="get" class="row">
+                                <input name="id" type="hidden" value="@ViewBag.Type" />
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" id="FromDate" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="ToDate" />
+                                    </div>
+                                </div>
+                                @if (ViewBag.Type != "NHHBH")
+                                {
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" title="@ViewBag.SearchHolder" placeholder="@ViewBag.SearchHolder" class="form-control input-sm " value="@ViewBag.Query" name="query" id="query" />
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Loại bảo hiểm</label>
+                                            @Html.DropDownList("loaiBH", lstLoaiBH, "Chọn", new { @class = "select2 fullwidth", @id = "LoaiBH" })
+                                        </div>
+                                    </div>
+                                     <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" title="@ViewBag.SearchHolder" placeholder="@ViewBag.SearchHolder" class="form-control input-sm " value="@ViewBag.Query" name="query" id="query" />
+                                        </div>
+                                    </div>
+                                }
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" id="SearchNPT" name="submit" value="Tìm kiếm" title="Tìm kiếm phiếu nợ" class="btn btn-success" />
+                                        @if (ViewBag.Type == "NHHGP")
+                                        {
+                                            <input type="submit" name="export_Excel" id="exportExcel" value="Xuất Excel" class="btn btn-info" />
+                                            <input style="width:50%" onclick="ImportData_NHHGP()" id="btnimportData" title="Import số tiền nợ HHGP" value="Import số tiền nợ HHGP" class="btn btn-primary" />
+                                            <div style="display:none"><input type="file" id="txtUploadFile1" /></div>
+                                        }
+                                        else if (ViewBag.Type == "NHHHB")
+                                        {
+                                            <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                            <input style="width: 50%" onclick="ImportData_CKTM()" id="btnimportCKTM" title="Import chiết khấu thương mại" value="Import CKTM" class="btn btn-primary" />
+                                            <div style="display:none"><input type="file" id="txtUploadFile2" /></div>
+                                        }
+                                        else if (ViewBag.Type == "NTKHA")
+                                        {
+                                            <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                            <input style="width: 50%" onclick="ImportData_NTKHA()" id="btnImportNTKHA" title="Import nợ thu khác" value="Import NTKHA" class="btn btn-primary" />
+                                            <div style="display:none"><input type="file" id="txtUploadFile3" /></div>
+                                        }
+                                        else if (ViewBag.Type == "NHANG")
+                                        {
+                                            <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                            <input style="width: 50%" onclick="ImportData_NHANG()" id="btnImportNHANG" title="Import nợ hãng" value="Import" class="btn btn-primary" />
+                                            <div style="display:none"><input type="file" id="txtUploadFile3" /></div>
+                                        }
+                                        else
+                                        {
+                                            <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                            <input style="width:50%" onclick="ImportData_HoaDon()" id="btnimportData" title="Import hóa đơn" value="Import hóa đơn" class="btn btn-primary" />
+                                            <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+                                        }
+
+
+                                    </div>
+                                </div>
+                                @if (ViewBag.Type == "NNHBX" || ViewBag.Type == "NBHDV"
+                                    || ViewBag.Type == "NDIVU" || ViewBag.Type == "NHHBH"
+                                    || ViewBag.Type == "NDIVU" || ViewBag.Type == "NPTPK"
+                                    || ViewBag.Type == "NTAUN" || ViewBag.Type == "NTKHA"
+                                    || ViewBag.Type == "NBAXE" || ViewBag.Type == "NVAMU"
+                                    || ViewBag.Type == "NoTMV" || ViewBag.Type == "NHHHB"
+                                    || ViewBag.Type == "NHHGP" || ViewBag.Type == "CHIHO"
+                                    )
+                                {
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            @Html.RadioButton("tinhtrang", "", true, new { id = "All" }) Tất Cả
+                                            @*@Html.RadioButton("tinhtrang", "D", false, new { id = "D" }) Đang sử dụng*@
+                                            @Html.RadioButton("tinhtrang", "H", false, new { id = "H" }) Hoàn tất
+                                            @Html.RadioButton("tinhtrang", "C", false, new { id = "C" }) Chưa hoàn tất
+                                        </div>
+                                    </div>
+                                }
+                            </form>
+                            <div class="table-responsive" id="@ViewBag.Type">
+                                @if (flag || ViewBag.Type == "NHHHB" || ViewBag.Type == "NHHGP"
+                                    || ViewBag.Type == "NTKHA" || ViewBag.Type == "NHANG" || ViewBag.Type == "CHIHO")
+                                {
+                                    <div class="right">
+                                        <i class="fa fa-plus" style="cursor:pointer" id="ThemMoi"></i>
+                                    </div>
+                                }
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            @if (flag || ViewBag.Type == "NHHHB" || ViewBag.Type == "NHHGP" || ViewBag.Type == "NTKHA" || ViewBag.Type == "NHANG" || ViewBag.Type == "CHIHO")
+                                            {
+                                                <th>
+                                                    <input type="checkbox" id="CHKALL" />
+                                                </th>
+                                            }
+                                            <th>Ngày nợ</th>
+                                            <th>Mã phiếu</th>
+
+                                            @if (ViewBag.Type == "NHHHB")
+                                            {
+                                                <th>Số khung</th>
+                                                <th>Số máy</th>
+                                                <th>Nhà cung cấp</th>
+                                            }
+
+                                            @if (ViewBag.Type == "NVAMU")
+                                            {
+                                                <th>Người vay</th>
+                                            }
+                                            @if (ViewBag.Type == "NBAXE" || ViewBag.Type == "NTAUN")
+                                            {
+                                                <th>Họ tên</th>
+                                            }
+                                            @if (ViewBag.Type == "NBATS")
+                                            {
+                                                <th>Khách hàng</th>
+                                                <th>Số điện thoại</th>
+                                            }
+                                            @if (flag || ViewBag.Type == "NNHBX")
+                                            {
+                                                <th>@ViewBag.KhachHangNoTitle</th>
+                                                <th>Khách hàng</th>
+                                                if (ViewBag.Type == "NBHDV")
+                                                {
+                                                    <th>Số phiếu quyết toán</th>
+                                                }
+                                                else
+                                                {
+                                                    <th>Số hợp đồng</th>
+                                                }
+                                            }
+                                            @if (ViewBag.Type == "NDIVU" || ViewBag.Type == "NPTPK")
+                                            {
+                                                <th>Khách hàng</th>
+                                                <th>Biển số</th>
+                                                <th>Điện thoại</th>
+                                            }
+                                            @if (ViewBag.Type == "NBHDV")
+                                            {
+                                                <th>Biển số</th>
+                                            }
+                                            @if (ViewBag.Type == "NBAXE")
+                                            {
+                                                <th>Số hợp đồng</th>
+                                                <th>Ngày Thu</th>
+                                            }
+                                            @if (ViewBag.Type == "NTKHA" || ViewBag.Type == "CHIHO")
+                                            {
+                                                <th>Số khung</th>
+                                                <th>Đối tác</th>
+                                                <th>Thông tin khác</th>
+                                                <th>Số quyết toán</th>
+                                            }
+                                            @if (ViewBag.Type == "NHANG")
+                                            {
+                                                <th>Đối tác</th>
+                                                <th>Thông tin khác</th>
+                                            }
+                                            @*@if (ViewBag.Type == "NHHHB")
+                                                {
+                                                    <th>Số khung</th>
+                                                    <th>Nhà cung cấp</th>
+                                                }*@
+
+                                            @if (ViewBag.Type == "NHHGP")
+                                            {
+                                                <th>Ngân hàng</th>
+                                                <th>Khách hàng</th>
+
+                                            }
+                                            <th>Nội dung</th>
+                                            @if (ViewBag.Type == "NTAUN")
+                                            {
+                                                <th>Lý do chi</th>
+                                            }
+                                            @if (ViewBag.Type == "NHHBH")
+                                            {
+                                                <th>Loại bảo hiểm</th>
+                                            }
+                                            <th>Số tiền nợ</th>
+                                            <th>Đã thanh toán</th>
+                                            <th>Còn nợ</th>
+                                            @if (ViewBag.Type == "NNHBX" || ViewBag.Type == "NBHDV"
+                                                || ViewBag.Type == "NDIVU" || ViewBag.Type == "NHHBH"
+                                                || ViewBag.Type == "NDIVU" || ViewBag.Type == "NPTPK"
+                                                || ViewBag.Type == "NTAUN" || ViewBag.Type == "NTKHA"
+                                                || ViewBag.Type == "NBAXE" || ViewBag.Type == "NVAMU"
+                                                || ViewBag.Type == "NoTMV" || ViewBag.Type == "NHHHB"
+                                                )
+                                            {
+                                                <th style="display:@ViewBag.HienThiNguoiBaoLanh">Người bảo lãnh</th>
+                                            }
+
+                                            <th>Tình trạng</th>
+                                            @if (ViewBag.Type == "NNHBX" || ViewBag.Type == "NBAXE")
+                                            {
+                                                <th>Hoa hồng</th>
+                                                <th>Sales</th>
+                                                <th>Ghi chú</th>
+                                            }
+                                            @if (!flag)
+                                            {
+                                                <th></th>
+                                                <th></th>
+                                            }
+                                            @if (ViewBag.Type == "NBHDV")
+                                            {
+                                                <th style="width:200px">Số hóa đơn</th>
+                                                <th style="width:200px" title="Ngày xuất hóa đơn">Ngày XHĐ</th>
+                                                <th style="width:200px" title="Ngày thao tác trên bên mềm việc xuất hóa đơn">Ngày thao tác XHĐ</th>
+                                                <th style="width:200px" title="Ngày xác nhận công nợ">Ngày XNCN</th>
+                                                <th style="width:200px" title="Ngày thao tác trên phần mềm ghi nhận công nợ">Ngày thao tác XNCN</th>
+                                                <th>Ghi chú</th>
+                                            }
+                                            @if (ViewBag.Type == "NNHBX")
+                                            {
+                                                <th></th>
+                                            }
+                                            else if (ViewBag.Type == "NBHDV")
+                                            {
+                                                <th></th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+
+                                                @if (flag || ViewBag.Type == "NHHHB" || ViewBag.Type == "NHHGP" || ViewBag.Type == "NTKHA" || ViewBag.Type == "NHANG" || ViewBag.Type == "CHIHO")
+                                                {
+                                                    <th>
+                                                        @if (item.TinhTrang.Length > 8)
+                                                        {
+                                                            if (ViewBag.Type == "NBHDV" && item.NgayXacNhanCongNo == null)
+                                                            {
+                                                                <input type="checkbox" id="chk_@item.MaPhieuNo" value="@item.MaPhieuNo" style="display:none" class="checkbox" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="checkbox" id="chk_@item.MaPhieuNo" value="@item.MaPhieuNo" class="checkbox" />
+                                                            }
+                                                        }
+                                                        @if (flag)
+                                                        {
+
+                                                            <input type="hidden" value="@(string.IsNullOrEmpty(item.KhachHang) ? "null" : item.KhachHang)" />
+
+                                                        }
+                                                        else if (ViewBag.Type == "NHHHB" || ViewBag.Type == "NTKHA" || ViewBag.Type == "NHHGP" || ViewBag.Type == "NHANG" || ViewBag.Type == "CHIHO")
+                                                        {
+                                                            <input type="hidden" value="@(string.IsNullOrEmpty(item.TenDoiTac) ? "null" : item.TenDoiTac)" />
+                                                        }
+                                                        else if (ViewBag.Type == "NHHGP")
+                                                        {
+                                                            <input type="hidden" value="@(string.IsNullOrEmpty(item.Hoten) ? "null" : item.Hoten)" />
+                                                        }
+                                                    </th>
+                                                }
+                                                <td class="NgayNo_@item.MaPhieuNo">@item.NgayNo.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.MaPhieuNo</td>
+
+                                                @if (ViewBag.Type == "NHHHB")
+                                                {
+                                                    <td>@item.SoKhung</td>
+                                                    <td>@item.SoMay</td>
+                                                    <td>@item.TenDoiTac</td>
+                                                }
+                                                @if (ViewBag.Type == "NVAMU")
+                                                {
+                                                    <td>@item.KhachHang</td>
+                                                }
+                                                @if (ViewBag.Type == "NBAXE")
+                                                {
+                                                    <td>@item.Hoten</td>
+                                                }
+                                                @if (ViewBag.Type == "NTAUN")
+                                                {
+                                                    <td>@item.KhachHang</td>
+                                                }
+                                                @if (ViewBag.Type == "NBATS")
+                                                {
+                                                    <td>@item.Hoten</td>
+                                                    <td>@item.DienThoai</td>
+                                                }
+                                                @if (flag || ViewBag.Type == "NNHBX")
+                                                {
+
+                                                    <td>@item.KhachHang</td>
+                                                    if (ViewBag.Type == "NBHDV" || ViewBag.Type == "NNHBX")
+                                                    {
+                                                        <td>@item.Hoten</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@item.HoTenKH</td>
+                                                    }
+                                                    if (ViewBag.Type == "NBHDV")
+                                                    {
+                                                        <td>@item.SoHopDong</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        if (@item.SoHopDong != null && @item.SoHopDong != "")
+                                                        {
+                                                            <td>@item.SoHopDong</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@item.ChungTuThu</td>
+                                                        }
+                                                    }
+                                                }
+                                                @if (ViewBag.Type == "NDIVU" || ViewBag.Type == "NPTPK")
+                                                {
+                                                    <td>@item.Hoten</td>
+                                                    <td>@item.BienSo</td>
+                                                    <td>@item.DienThoai</td>
+                                                }
+                                                @if (ViewBag.Type == "NBHDV")
+                                                {
+                                                    <td>@item.BienSo</td>
+                                                }
+                                                @if (ViewBag.Type == "NBAXE")
+                                                {
+                                                    <td>@item.SoHopDong</td>
+                                                    <td>@item.NgayThu.ToString("yyyy/MM/dd")</td>
+                                                }
+                                                @if (ViewBag.Type == "NTKHA" || ViewBag.Type == "CHIHO")
+                                                {
+                                                    <td>@item.SoKhung</td>
+                                                    <td>@item.TenDoiTac</td>
+                                                    <td>@item.ThongTinKhac</td>
+                                                    <td>@item.SoQuyetToanDV</td>
+                                                }
+                                                @if (ViewBag.Type == "NHANG")
+                                                {
+                                                    <td>@item.TenDoiTac</td>
+                                                    <td>@item.ThongTinKhac</td>
+                                                    @*<td>@item.LoaiThanhToanHang</td>*@
+                                                }
+                                                @*@if (ViewBag.Type == "NHHHB")
+                                                    {
+                                                        <td>@item.SoKhung</td>
+                                                        <td>@item.DonViNo</td>
+                                                    }*@
+
+                                                @if (ViewBag.Type == "NHHGP")
+                                                {
+                                                    if (item.MaPhieuPhatSinh.Contains("TBAXE") == true)
+                                                    {
+                                                        <td>@item.TenDoiTac</td>
+                                                        <td>@item.Hoten</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@item.Hoten</td>
+                                                        <td>@item.KhachHang</td>
+                                                    }
+                                                }
+
+                                                <td>@item.NoiDung</td>
+                                                @if (ViewBag.Type == "NTAUN")
+                                                {
+                                                    switch (item.LyDoChi)
+                                                    {
+                                                        case "CP":
+                                                            <td>Chi Phí</td>
+                                                            break;
+                                                        case "GCN":
+                                                            <td>Gia Công Ngoài</td>
+                                                            break;
+                                                        case "VTX":
+                                                            <td>Vật Tư Xưởng</td>
+                                                            break;
+                                                        case "GTX":
+                                                            <td>Giấy Tờ Xe</td>
+                                                            break;
+                                                        case "KHAC":
+                                                            <td>Khác</td>
+                                                            break;
+                                                        default:
+                                                            <td></td>
+                                                            break;
+                                                    }
+                                                }
+                                                @if (ViewBag.Type == "NHHBH")
+                                                {
+                                                    if (item.LoaiNo == "KM")
+                                                    {
+                                                        <td>Khuyến mãi</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>Thu hộ</td>
+                                                    }
+                                                }
+                                                @if (ViewBag.Type == "NHHGP" && item.SoTienDaTra == 0 && (item.IsActive == true || ViewBag.IsPTC == true))
+                                                {
+                                                    <td><input id="STN_@item.MaPhieuNo" class="form-control input-sm number" value="@TNK.Core.Common.ToCurrencyString(item.SoTienNo)" style="width:100%" /> </td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="number2">@TNK.Core.Common.ToCurrencyString(item.SoTienNo)</td>
+                                                }
+                                                <td class="number2 soTienDaTra_@item.MaPhieuNo">
+                                                    @TNK.Core.Common.ToCurrencyString(item.SoTienDaTra)
+                                                    <input id="soTienDaTra_@item.MaPhieuNo" type="hidden" value="@item.SoTienDaTra" />
+
+                                                </td>
+                                                <td class="number2">@TNK.Core.Common.ToCurrencyString(item.SoTienConLai)</td>
+                                                @if (ViewBag.Type == "NNHBX" || ViewBag.Type == "NBHDV"
+                                                    || ViewBag.Type == "NDIVU" || ViewBag.Type == "NHHBH"
+                                                    || ViewBag.Type == "NDIVU" || ViewBag.Type == "NPTPK"
+                                                    || ViewBag.Type == "NTAUN" || ViewBag.Type == "NTKHA"
+                                                    || ViewBag.Type == "NBAXE" || ViewBag.Type == "NVAMU"
+                                                    || ViewBag.Type == "NoTMV" || ViewBag.Type == "NHHHB"
+                                                    )
+                                                {
+                                                    <td style="display:@ViewBag.HienThiNguoiBaoLanh">@item.NguoiBaoLanh</td>
+                                                }
+
+
+                                                @if (!string.IsNullOrEmpty(item.MaPhieuThu))
+                                                {
+                                                    <td style="width:5%" class="center">
+                                                        <a href="/SoThu/ThuNoEdit/@item.MaPhieuThu?type=@ViewBag.Type" style="color:blue;" title="Xem chi tiết phiếu thu nợ">
+                                                            @item.TinhTrang
+                                                        </a>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@item.TinhTrang</td>
+                                                }
+                                                @if (ViewBag.Type == "NNHBX" || ViewBag.Type == "NBAXE")
+                                                {
+                                                    <td>@TNK.Core.Common.ToCurrencyString(item.HoaHong ?? 0.0)</td>
+                                                    <td><input id="Sales_@item.MaPhieuNo" class="form-control input-sm" value="@item.Sales" style="width:100%" /></td>
+                                                    <td><input id="GhiChu_@item.MaPhieuNo" class="form-control input-sm" value="@item.GhiChu" style="width:100%" /></td>
+                                                }
+                                                @*@if (!flag && ViewBag.Type != "NTKHA")
+                                                    {
+                                                        <td style="width:5%" class="center">
+                                                            @if (item.SoTienConLai > 0)
+                                                            {
+                                                                <a href="/SoThu/ThuNoCreate/@item.MaPhieuNo?type=@ViewBag.Type"><i title="Tạo phiếu thu nợ" class="fa fa-plus"></i></a>
+                                                            }
+                                                        </td>
+                                                    }*@
+                                                @if (ViewBag.Type == "NPTPK" || ViewBag.Type == "NDIVU" || ViewBag.Type == "NBHDV")
+                                                {
+                                                    if (item.SoTienConLai > 0 && item.NgayXacNhanCongNo != null)
+                                                    {
+                                                        <td style="width:5%" class="center">
+                                                            <a href="/SoThu/ThuNoCreate/@item.MaPhieuNo?type=@ViewBag.Type"><i title="Tạo phiếu thu nợ" class="fa fa-plus"></i></a>
+                                                        </td>
+                                                    }
+                                                }
+                                                else if (!flag && ViewBag.Type != "NTKHA")
+                                                {
+                                                    <td style="width:5%" class="center">
+                                                        <a href="/SoThu/ThuNoCreate/@item.MaPhieuNo?type=@ViewBag.Type"><i title="Tạo phiếu thu nợ" class="fa fa-plus"></i></a>
+                                                        @if (ViewBag.Type == "NHHGP" && item.SoTienDaTra == 0 && (item.IsActive == true || ViewBag.IsPTC == true))
+                                                        {
+                                                            <a onclick="UpdateSoTienNo('@item.MaPhieuNo')"><i title="Cập nhật số tiền nợ" class="fa fa-save"></i></a>
+                                                        }
+                                                    </td>
+                                                }
+
+                                                @if (ViewBag.Type == "NBHDV")
+                                                {
+                                                    <td style="width:200px">
+                                                        <div class="input-group" width="200px">
+                                                            <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="SHD_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="@item.SoHoaDon" style="width:70px" />
+                                                        </div>
+                                                    </td>
+                                                    <td style="width:200px">
+                                                        <div class="input-group">
+                                                            @if (item.NgayXuatHoaDon != null)
+                                                            {
+                                                                <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="NgayXHD_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="@item.NgayXuatHoaDon.Value.ToString("dd/MM/yyyy")" style="width:85px" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="NgayXHD_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="" style="width:85px" />
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @if (item.NgayTaoSoHoaDonLenHeThong != null)
+                                                        {
+                                                            @item.NgayTaoSoHoaDonLenHeThong.Value.ToString("dd/MM/yyyy")
+                                                        }
+                                                    </td>
+                                                    <td style="width:200px">
+                                                        <div class="input-group">
+                                                            @if (item.NgayXacNhanCongNo != null)
+                                                            {
+                                                                <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="NgayXNCN_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="@item.NgayXacNhanCongNo.Value.ToString("dd/MM/yyyy")" style="width:85px" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="NgayXNCN_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="" style="width:85px" />
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @if (item.NgayTaoXacNhanCongNoLenHeThong != null)
+                                                        {
+                                                            @item.NgayTaoXacNhanCongNoLenHeThong.Value.ToString("dd/MM/yyyy")
+                                                        }
+                                                    </td>
+                                                    <td style="width:200px">
+                                                        <div class="input-group" width="200px">
+                                                            <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="GhiChu_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="@item.GhiChu" onmousemove="ShowTitle(this);" style="width:70px" />
+                                                        </div>
+                                                    </td>
+                                                }
+                                                @if (ViewBag.Type == "NNHBX" || ViewBag.Type == "NBAXE")
+                                                {
+                                                    <td><a href=""><i class="fa fa-save" onclick="Save('@item.MaPhieuNo')"></i></a></td>
+                                                }
+                                                else if (ViewBag.Type == "NBHDV")
+                                                {
+                                                    <td><i class="fa fa-save" title="Lưu số hóa đơn cho mã phiếu nợ @item.MaPhieuNo" style="cursor:pointer" onclick="SaveSHD('@item.MaPhieuNo')"></i></td>
+                                                }
+                                            </tr>
+                                            //i++;
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!---===-->
+                <div class="tab-pane" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày thu</label>
+                                        <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày thu</label>
+                                        <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="queryGiaiTrinh" title="Tìm kiếm thông tin nợ: @ViewBag.SearchHolder, Số phiếu quyết toán" placeholder="@ViewBag.SearchHolder,Số phiếu quyết toán" class="form-control input-sm " value="@ViewBag.QueryGiaiTrinh" name="queryGiaiTrinh" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" id="Search" class="btn btn-success" />
+                                        <input type="button" value="Xuất excel" class="btn btn-info" id="exportExcel1" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive" id="tbody">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (ViewBag.Type == "NBHDV")
+                {
+                    <!-- Giải trình công nợ -->
+                    <div class='tab-pane @activeGiaiTrinh' id="tab_2">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <form method="get" class="row">
+                                    <input name="id" type="hidden" value="@ViewBag.Type" />
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="01/01/2000" name="from" id="FromDateGiaiTrinh" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="ToDateGiaiTrinh" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" id="query1" title="Tìm kiếm giải trỉnh: @ViewBag.SearchHolder, Số phiếu quyết toán" placeholder="@ViewBag.SearchHolder,Số phiếu quyết toán" class="form-control input-sm " value="@ViewBag.QueryGiaiTrinh" name="query1" />
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" id="SearchGiaiTrinh" name="submit" value="Tìm kiếm" class="btn btn-success" />
+                                            <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcelGiaiTrinh" />
+                                            <input style="width:50%" onclick="ImportData_GiaiTrinh()" id="btnimportDataGiaiTrinh" title="Import giải trình" value="Import giải trình" class="btn btn-primary" />
+                                            <div style="display:none"><input type="file" id="txtUploadFileGiaiTrinh" /></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group" style="align-content:center">
+                                            <center>
+                                                @Html.RadioButton("dagiaitrinh", "All", false, new { id = "giaitrinh" }) Tất Cả
+                                                @Html.RadioButton("dagiaitrinh", "CGT", true, new { id = "giaitrinh" }) Chưa giải trình
+                                                @Html.RadioButton("dagiaitrinh", "DGT", false, new { id = "giaitrinh" }) Đã giải trình
+                                            </center>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group" style="align-content:center ; text-align:center">
+                                            <center>
+                                                @Html.RadioButton("giaitrinh", "All", true, new { id = "giaitrinh" }) Tất Cả
+                                                @*@Html.RadioButton("tinhtrang", "D", false, new { id = "D" }) Đang sử dụng*@
+                                                @Html.RadioButton("giaitrinh", "CHTQH", false, new { id = "giaitrinh" }) Hồ sơ CHT - Quá hạn
+                                                @Html.RadioButton("giaitrinh", "XNCNQH", false, new { id = "giaitrinh" }) Xác nhận CN - Quá hạn
+                                                @Html.RadioButton("giaitrinh", "CNQH", false, new { id = "giaitrinh" }) Công nợ - Quá hạn
+                                            </center>
+                                        </div>
+                                    </div>
+
+                                </form>
+                                <div class="table" id="tableGiaiTrinh">
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        $(".select2").select2();
+        //$(document).ready(function () {
+        //    $('#SearchGiaiTrinh').trigger('click');
+        //})
+        $("#CHKALL").change(function () {
+            debugger;
+            $("input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+        var chk = "";
+        var flag = true;
+        $(".checkbox").change(function () {
+            debugger;
+            chk = "";
+            $(".checkbox").map(function (key, val) {
+                flag = true;
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    if (chk == "") {
+                        chk = a;
+                    }
+                    else {
+                        if (a != chk) {
+                            flag = false;
+                            toastError("Chỉ được chọn các phiếu nợ của cùng 1 @ViewBag.KhachHangNoTitle.ToLower()");
+                            $(val).attr("checked", "false");
+                            $(val).click();
+                        }
+                    }
+                }
+            })
+
+        })
+
+        //$("#CHKALL").change(function () {
+        //    debugger;
+        //      if (! $('input:checkbox').is('checked')) {
+        //          $('input:checkbox').attr('checked','checked');
+        //      } else {
+        //          $('input:checkbox').removeAttr('checked');
+        //      }
+        //});
+
+        function setCookie(cname, cvalue) {
+            document.cookie = cname + "=" + cvalue + ";path=/SoThu/ThuNoCreate/";
+        }
+
+        $("#ThemMoi").click(function () {
+            debugger;
+            var result = "";
+            var flag = true;
+            var ctbh = "";
+            $(".checkbox").map(function (key, val) {
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    if (ctbh == "") {
+                        ctbh = a;
+                    }
+                    if (a != ctbh) {
+                        if (flag) {
+                            toastError("Chỉ được chọn các phiếu nợ của cùng 1 " + '@ViewBag.KhachHangNoTitle.ToLower()');
+                        }
+                        flag = false;
+                        return;
+                    }
+                    result += $(val).val() + ",";
+                }
+            })
+            if (result != "") {
+                result = result.substring(0, result.length - 1);
+            }
+            if (result != "" && flag == true)
+            {
+                setCookie("link", result);
+                window.location = "/SoThu/ThuNoCreate/" + 0 + "?type=@ViewBag.Type";
+            }
+
+        })
+
+        var type = '@ViewBag.Type';
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#queryGiaiTrinh").val();
+            var pageSizes = document.getElementById("pageSizeThuNoComplete");
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            $.get("/SoThu/ThuNoComplete?id=" + type + "&query=" + query + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tbody").html(response);
+                $("#tbody").find(".number2").map(function (key, val) {
+                    var val = $(this).html();
+                    if (val != "") {
+                        val = val.split(",").join("");
+                        val = parseInt(val);
+                        $(this).html(val.toLocaleString());
+                    }
+                })
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+
+            })
+        }
+
+        $("#SearchGiaiTrinh").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            SearchGiaiTrinh(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function SearchGiaiTrinh(obj) {
+            var from = $("#FromDateGiaiTrinh").val();
+            var to = $("#ToDateGiaiTrinh").val();
+            var query = $("#query1").val();
+            var pageSizes = document.getElementById('pageSizeThuNo_GiaiTrinhNBHDV');
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            //alert(query);
+            p = pageSizes != undefined? p: '';
+            debugger;
+            var tinhtrang = $('input[name="giaitrinh"]:checked').val();
+            var dagiaitrinh = $('input[name="dagiaitrinh"]:checked').val();
+
+            $.get("/SoThu/ThuNo_GiaiTrinhNBHDV?id=" + type + "&tinhtrang=" + tinhtrang + "&queryGiaiTrinh=" + query + "&dagiaitrinh=" + dagiaitrinh + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tableGiaiTrinh").html(response);
+                var count = $('#tableGiaiTrinh tr').length -1;
+                $("#tableGiaiTrinh").find(".number2").map(function (key, val) {
+                    var val = $(this).html();
+                    if (val != "") {
+                        val = val.split(",").join("");
+                        val = parseInt(val);
+                        $(this).html(val.toLocaleString());
+                    }
+                })
+                $("#a_2").html("Giải trình(" + count.toString() + ")");
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+
+            })
+        }
+
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            debugger;
+            try {
+                //a = $(this).attr("href");
+                //var b = a.split("&");
+                //p = b[3].split("=")[1];
+                //Search();
+            } catch (ex) {
+                log.console(ex);
+            }
+
+            //return false;
+        })
+        $(document).on("click", "#tableGiaiTrinh a", function () {
+            debugger;
+            try {
+                a = $(this).attr("href");
+                var b = a.split("&");
+                p = b[4].split("=")[1];
+                SearchGiaiTrinh();
+            } catch (ex) {
+                //log.console(ex);
+            }
+
+            return false;
+        })
+        $(document).on("change", ".number", function () {
+            debugger;
+            var valnumber = $(this).val();
+            if (valnumber != "") {
+                valnumber = valnumber.split(",").join("");
+                valnumber = parseInt(valnumber);
+                // val = val * 1000;
+                $(this).val(valnumber.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+        })
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'ThuNo' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                    Search($("#Search"));
+                });
+            }
+        }
+        //phan xuat excel
+        @*$("#btnExportExcel").click(function () {
+            debugger;
+            if ($($("#tab_data li.active")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = $($("#tab_data li.active")).attr("data-url").replace("/SoThu/PhieuThu/", "#");
+                //alert(idtable);
+                var result = $(idtable).html();
+                alert(result)
+                tableToExcel(result, 'SoThu' + '_@ViewBag.Type' + '_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/SoThu/PhieuThu?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })*@
+        $("#exportExcel").click(function () {
+            debugger;
+            if ($($("#tab_data li.unactive")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = "#@ViewBag.Type";
+                var result = $(idtable).html();
+                result = result.replace('class="table"', 'class="table" border="1"');
+                //alert(result)
+                tableToExcel(result, 'ThuNo' + '_@ViewBag.Type' + '_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/SoThu/ThuNo/NHHGP?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+        $("#exportExcel1").click(function () {
+            debugger;
+            if ($($("#tab_data li.unactive")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = "#tbody";
+                var result = $(idtable).html();
+                result = result.replace('class="table"', 'class="table" border="1"');
+                //alert(result)
+                tableToExcel(result, 'ThuNo' + '_@ViewBag.Type' + 'Complete_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/SoThu/ThuNo/NHHGP?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+        var tableToExcel = (function () {
+            debugger;
+            var uri = 'data:application/vnd.ms-excel;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            return function (table, name) {
+                //if (!table.nodeType) table = document.getElementById(table)
+                var ctx = { worksheet: name || 'Worksheet', table: table }
+                var link = document.createElement("A");
+                link.href = uri + base64(format(template, ctx));
+                link.download = name || 'Baocao.xls';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })()
+        function Save(MaPhieuNo)
+        {
+            debugger;
+            var Sales = $("#Sales_" + MaPhieuNo).val();
+            var GhiChu = $("#GhiChu_" + MaPhieuNo).val();
+            $.ajax({
+                url: "/SoThu/Update_SalesNote",
+                type: "POST",
+                data: { MaPhieuNo: MaPhieuNo, Sales: Sales, GhiChu: GhiChu },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi: Cập nhật Sales và Ghi chú.");
+                }
+            });
+        }
+
+        function SaveGiaiTrinh(MaPhieuNo) {
+            debugger;
+            var GiaiTrinh = $("#GiaiTrinh_" + MaPhieuNo).val();
+
+            if ($("#LDQH_" + MaPhieuNo).val() === "" && GiaiTrinh != "") {
+                toastWarning("Vui lòng chọn lý do quá hạn");
+                $("#LDQH_" + MaPhieuNo).focus();
+                return false;
+            }
+            var LyDoQuaHan = $("#LDQH_" + MaPhieuNo).val();
+            //var GhiChu = $("#GhiChu_" + MaPhieuNo).val();
+            $.ajax({
+                url: "/SoThu/Update_GiaiTrinh",
+                type: "POST",
+                data: { MaPhieuNo: MaPhieuNo, GiaiTrinh: GiaiTrinh, LyDoQuaHan: LyDoQuaHan },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi cập nhật giải trình.");
+                }
+            });
+        }
+        function SaveSHD(MaPhieuNo) {
+            debugger;
+            var SoHoaDon = $("#SHD_" + MaPhieuNo).val();
+            var NgayXHD = $("#NgayXHD_" + MaPhieuNo).val();
+            var NgayXNCN = $("#NgayXNCN_" + MaPhieuNo).val();
+            var NgayNo = $(".NgayNo_" + MaPhieuNo).text();
+            var SoTienDaTra = $(".soTienDaTra_" + MaPhieuNo).text();
+            var GhiChu = $("#GhiChu_" + MaPhieuNo).val();
+            if (SoTienDaTra != "0" && (NgayXNCN == "" || SoHoaDon == "" || NgayXHD == ""))
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập đầy đủ thông tin hóa đơn và công nợ vì phiếu đã có thu tiền nợ.");
+                if (NgayXNCN == "") $("#NgayXNCN_" + MaPhieuNo).focus();
+                if (NgayXHD == "") $("#NgayXHD_" + MaPhieuNo).focus();
+                if (SoHoaDon == "") $("#SHD_" + MaPhieuNo).focus();
+                return;
+            }
+            if (NgayXHD.length == 8) {
+                NgayXHD = NgayXHD.substring(0, 2) + '/' + NgayXHD.substring(2, 4) + '/' + NgayXHD.substring(4, 8);
+            }
+            if (NgayXNCN.length == 8) {
+                NgayXNCN = NgayXNCN.substring(0, 2) + '/' + NgayXNCN.substring(2, 4) + '/' + NgayXNCN.substring(4, 8);
+            }
+           // alert(ngayNo.text());
+            console.log("Ngày XHĐ:" + NgayXHD);
+            console.log("NgàyXNCN:" + NgayXNCN);
+            //kiểm tra định dạng ngày
+            if (NgayXHD != "" && !isDate(NgayXHD))
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Ngày xuất hóa đơn] theo định dạng dd/MM/yyyy ");
+                $("#NgayXHD_" + MaPhieuNo).focus();
+                return;
+            }
+            if (NgayXNCN != "" && !isDate(NgayXNCN))
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Ngày ghi nhận công nợ] theo định dạng dd/MM/yyyy ");
+                $("#NgayXNCN_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra neu co số hóa đơn thì phải bắt nhập nsgày nhập hóa đơn
+            if (SoHoaDon != "" && NgayXHD == "")
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Ngày xuất hóa đơn]");
+                $("#NgayXHD_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra neu co số hóa đơn thì phải bắt nhập nsgày nhập hóa đơn
+            if (SoHoaDon == "" && NgayXHD != "") {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Số hóa đơn]");
+                $("#SHD_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra neu co ngày xác nhạn công nợ thì phải có nhập số hóa đơn + ngày xuất hóa đơn
+            if (NgayXHD == "" && NgayXNCN != "")
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Ngày xuất hóa đơn] và [Số hóa đơn]");
+                $("#NgayXHD_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra ngày xuất hóa đơn >= ngày nợ
+            if (isDate(NgayXHD) && toDate(NgayXHD) < toDate(NgayNo))
+            {
+                toastWarning("[" + MaPhieuNo + "]: [Ngày xuất hóa đơn] không được nhỏ hơn [Ngày nợ]");
+                $("#NgayXHD_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra ngày ghi nhận công nợ >= ngày xuất hóa đơn
+            if (isDate(NgayXHD) && isDate(NgayXNCN) && toDate(NgayXNCN) < toDate(NgayXHD))
+            {
+                toastWarning("[" + MaPhieuNo + "]: [Ngày xác nhận công nợ] không được nhỏ hơn [Ngày xuất hóa đơn]");
+                $("#NgayXNCN_" + MaPhieuNo).focus();
+                return;
+            }
+
+            console.log(NgayNo);
+            $.ajax({
+                url: "/SoThu/Update_SHDBHDVByMaPhieuNo",
+                type: "POST",
+                data: { maPhieuNo: MaPhieuNo, soHoaDon: SoHoaDon, ngayXuatHoaDon: NgayXHD, ngayXacNhanCongNo: NgayXNCN, ghiChu: GhiChu },
+                success: function (result) {
+                    debugger;
+                    if (!result.IsError) {
+                        toastSuccess("[" + MaPhieuNo + "]: " + result.Message);
+                        //ản hiện checkbox chọn
+                        if (isDate(NgayXNCN))
+                            $("#chk_" + MaPhieuNo).show();
+                        else
+                            $("#chk_" + MaPhieuNo).hide();
+                    }
+                    else {
+                        toastWarning("[" + MaPhieuNo + "]: " + result.Message);
+
+                    }
+                },
+                error: function (result) {
+                    toastError("[" + MaPhieuNo + "] Lỗi: Cập nhật số hóa đơn cho mã phiếu nợ " + MaPhieuNo + ".");
+                }
+            });
+        }
+        function UpdateSoTienNo(MaPhieuNo) {
+            var sotienno = parseInt($("#STN_" + MaPhieuNo).val().split(",").join(""));
+            var ngayNo = $(".NgayNo_" + MaPhieuNo).text();
+            if (sotienno <= 0) {
+                toastError("Vui lòng nhập số tiền nợ lơn hơn 0.");
+                return;
+            }
+            debugger
+                $.ajax({
+                    url: "/SoThu/UpdateSoTienNo",
+                    type: "POST",
+                    data: { "MaPhieuNo" :MaPhieuNo, "NgayNo": ngayNo, "SoTienNo" : sotienno },
+                    success: function (result) {
+                        if (!result.IsError) {
+                            toastSuccess(result.Message);
+                            setTimeout(function () {
+                                $("#SearchNPT").click();
+                            }, 800)
+                        }
+                        else {
+                            toastWarning(result.Message);
+                        }
+                    },
+                    error: function (result) {
+                        toastWarning("Lỗi: Cập nhật số tiền nợ.");
+                    }
+                });
+        }
+        //function ExportExcel()
+        //{
+        //    if(LoaiPhieu == "NTKHA")
+        //    {
+        //        $.ajax({
+        //            url: "/SoThu/Excel_NTKHA",
+        //            type: "POST",
+        //            data: { "FromDate" : $("#FromDate").val(), "ToDate": $("#ToDate").val()},
+        //            success: function (result) {
+        //                if (!result.IsError) {
+        //                    toastSuccess(result.Message);
+        //                }
+        //                else {
+        //                    toastWarning(result.Message);
+        //                }
+        //            },
+        //            error: function (result) {
+        //                toastWarning("Lỗi: Cập nhật Sales và Ghi chú.");
+        //            }
+        //        });
+        //    }
+        //}
+
+        $("#btnExportExcelGiaiTrinh").click(function () {
+            var dagiaitrinh = $('input[name="dagiaitrinh"]:checked').val();
+            $.fileDownload("/SoThu/Export_Excel_GiaiTrinhNBHDV", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDateGiaiTrinh").val(),
+                        ToDate: $("#ToDateGiaiTrinh").val(),
+                        Query: $("#query1").val(),
+                        tinhtrang: $("#giaitrinh").val(),
+                        dagiaitrinh: dagiaitrinh,
+                    },
+                    failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+
+
+        $("#btnExportExcel").click(function () {
+            debugger;
+            if(type == 'NTKHA')
+            {
+
+                $.fileDownload("/SoThu/Export_Excel_NTKHA", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        Query: $("#query").val(),
+
+                    },
+                    failMessageHtml: "Có lỗi trong khi tải file excel."
+                });
+            }
+            if (type == 'NHANG') {
+
+                $.fileDownload("/SoThu/Export_Excel_NHANG", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        Query: $("#query").val(),
+
+                    },
+                    failMessageHtml: "Có lỗi trong khi tải file excel."
+                });
+            }
+            if (type == 'NBHDV') {
+                var radioValue = $("input[name='tinhtrang']:checked").val();
+                $.fileDownload("/SoThu/Export_Excel_NBHDV", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        Query: $("#query").val(),
+                        Tinhtrang: radioValue,
+                    },
+                    failMessageHtml: "Có lỗi trong khi tải file excel."
+                });
+            }
+            if (type == 'NDIVU') {
+                var radioValue = $("input[name='tinhtrang']:checked").val();
+                $.fileDownload("/SoThu/Export_Excel_NDIVU", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        Query: $("#query").val(),
+                        Tinhtrang: radioValue,
+                    },
+                    failMessageHtml: "Có lỗi trong khi tải file excel."
+                });
+            }
+            if (type == 'NNHBX' || type == 'NVAMU') {
+                var radioValue = $("input[name='tinhtrang']:checked").val();
+                $.fileDownload("/SoThu/XuatExcelPhieuNo_excel", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        Query: $("#query").val(),
+                        Tinhtrang: radioValue,
+                        MaLoaiPhieu: type,
+                    },
+                    failMessageHtml: "Có lỗi trong khi tải file excel."
+                });
+            }
+            return false;
+        });
+        var datafile = new FormData();
+        function ImportData_HoaDon() {
+            //$("#btnimportData").val("Loading...");
+            //$("#btnimportData").prop('disabled', true);
+            $("#txtUploadFile").trigger('click');
+        }
+        function ImportData_NHHGP() {
+            //$("#btnimportData").val("Loading...");
+            //$("#btnimportData").prop('disabled', true);
+            $("#txtUploadFile1").trigger('click');
+        }
+        $("#FileMau").click(function () {
+            debugger;
+            var type = '@ViewBag.Type'
+            $.fileDownload("/SoThu/ExportFileType?type=" + type, {
+                httpMethod: "POST",
+                data: {},
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+           $('#txtUploadFile1').on('change', function (e) {
+            //    //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFile1").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_NHHGP",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile1").value = "";
+                        datafile.delete('file');
+                        //Search($("#Search"));
+                        //window.location.reload();
+                       // $("#SearchNPT").click();
+                    },
+                    success: function (result) {
+                        if (result.IsError) {
+                           toastError("Các dòng không import được:" + result.Message);
+                        }
+                        else {
+
+                            //Search($("#Search"));
+                            //window.location.reload();
+                           // $("#SearchNPT").click();
+                            setTimeout(function () {
+                                $("#SearchNPT").click();
+                            }, 800)
+                            toastSuccess("Import thành công");
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+
+                       // $("#SearchNPT").click();
+                        toastError("Lỗi: Import file excel.");
+                        //Search($("#Search"));
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+        $('#txtUploadFile').on('change', function (e) {
+            //    //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFile").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_HoaDon",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile").value = "";
+                        datafile.delete('file');
+                        //Search($("#Search"));
+                        //window.location.reload();
+                       // $("#SearchNPT").click();
+                    },
+                    success: function (result) {
+                        if (result.IsError) {
+
+                          //  $("#SearchNPT").click();
+                           // toastError("Các dòng không import được:" + result.Message);
+                            //Search($("#Search"));
+                            window.location.reload();
+                        }
+                        else {
+
+                            //Search($("#Search"));
+                            //window.location.reload();
+                           // $("#SearchNPT").click();
+                           // toastSuccess("Import thành công");
+                            window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+
+                       // $("#SearchNPT").click();
+                        //toastError("Lỗi: Import file excel.");
+                        //Search($("#Search"));
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+        function ImportData_GiaiTrinh() {
+            //$("#btnimportData").val("Loading...");
+            //$("#btnimportData").prop('disabled', true);
+            $("#txtUploadFileGiaiTrinh").trigger('click');
+        }
+        $('#txtUploadFileGiaiTrinh').on('change', function (e) {
+            //    //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFileGiaiTrinh").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_GiaiTrinhNBHDV",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFileGiaiTrinh").value = "";
+                        datafile.delete('file');
+                        //Search($("#Search"));
+                        //window.location.reload();
+                        // $("#SearchNPT").click();
+                    },
+                    success: function (result) {
+                        if (result.IsError) {
+
+                            //  $("#SearchNPT").click();
+                            toastError("Các dòng không import được:" + result.Message);
+
+                            //Search($("#Search"));
+                            //window.location.reload();
+                        }
+                        else {
+
+                            //Search($("#Search"));
+                            //window.location.reload();
+                            // $("#SearchNPT").click();
+                            toastSuccess("Import thành công");
+                            //window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+
+                        // $("#SearchNPT").click();
+                        toastError("Lỗi: Import file excel.");
+                        //Search($("#Search"));
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+        //-------------------------------------------------------
+        function ImportData_CKTM() {
+            //$("#btnimportData").val("Loading...");
+            //$("#btnimportData").prop('disabled', true);
+            $("#txtUploadFile2").trigger('click');
+        }
+        $('#txtUploadFile2').on('change', function (e) {
+            //    //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFile2").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_CKTM",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile2").value = "";
+                        datafile.delete('file');
+                        //Search($("#Search"));
+                        //window.location.reload();
+                        // $("#SearchNPT").click();
+                    },
+                    success: function (result) {
+                        if (result.IsError) {
+                            toastError("Các dòng không import được:" + result.Message);
+                        }
+                        else {
+
+                            //Search($("#Search"));
+                            //window.location.reload();
+                            // $("#SearchNPT").click();
+                            setTimeout(function () {
+                                $("#SearchNPT").click();
+                            }, 800)
+                            toastSuccess("Import thành công");
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+
+                        // $("#SearchNPT").click();
+                        toastError("Lỗi: Import file excel.");
+                        //Search($("#Search"));
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+        function ImportData_NHANG() {
+            ImportData_NTKHA();
+        }
+
+        //-------------------------------------------------------
+        function ImportData_NTKHA() {
+            //$("#btnimportData").val("Loading...");
+            //$("#btnimportData").prop('disabled', true);
+            $("#txtUploadFile3").trigger('click');
+        }
+        $('#txtUploadFile3').on('change', function (e) {
+            //    //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFile3").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_NTKHA",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile3").value = "";
+                        datafile.delete('file');
+                        //Search($("#Search"));
+                        //window.location.reload();
+                        // $("#SearchNPT").click();
+                    },
+                    success: function (result) {
+                        if (result.IsError) {
+                            toastError("Các dòng không import được:" + result.Message);
+                        }
+                        else {
+
+                            //Search($("#Search"));
+                            //window.location.reload();
+                            // $("#SearchNPT").click();
+                            setTimeout(function () {
+                                $("#SearchNPT").click();
+                            }, 800)
+                            toastSuccess("Import thành công");
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+
+                        // $("#SearchNPT").click();
+                        toastError("Lỗi: Import file excel.");
+                        //Search($("#Search"));
+                        window.location.reload();
+                    }
+                });
+            }
+        });
+        //kiem tra du lieu ngay thang theo dinh dang dd/MM/yyyy
+        function isDate(ExpiryDate) {
+            var objDate,  // date object initialized from the ExpiryDate string
+                mSeconds, // ExpiryDate in milliseconds
+                day,      // day
+                month,    // month
+                year;     // year
+            // date length should be 10 characters (no more no less)
+            if (ExpiryDate.length < 8) {
+                return false;
+            }
+
+            if (ExpiryDate.length !== 10) {
+                return false;
+            }
+            // third and sixth character should be '/'
+            if (ExpiryDate.substring(2, 3) !== '/' || ExpiryDate.substring(5, 6) !== '/') {
+                return false;
+            }
+            // extract month, day and year from the ExpiryDate (expected format is mm/dd/yyyy)
+            // subtraction will cast variables to integer implicitly (needed
+            // for !== comparing)
+            day = ExpiryDate.substring(0, 2) - 0; // because months in JS start from 0
+            month = ExpiryDate.substring(3, 5) - 1;
+            year = ExpiryDate.substring(6, 10) - 0;
+            // test year range
+            if (year < 1000 || year > 3000) {
+                return false;
+            }
+            // convert ExpiryDate to milliseconds
+            mSeconds = (new Date(year, month, day)).getTime();
+            // initialize Date() object from calculated milliseconds
+            objDate = new Date();
+            objDate.setTime(mSeconds);
+            // compare input date and parts from Date() object
+            // if difference exists then date isn't valid
+            if (objDate.getFullYear() !== year ||
+                objDate.getMonth() !== month ||
+                objDate.getDate() !== day) {
+                return false;
+            }
+            // otherwise return true
+            return true;
+        }
+        function toDate(ExpiryDate) {
+            // date length should be 10 characters (no more no less)
+            if (ExpiryDate.length !== 10) {
+                return null;
+            }
+            // third and sixth character should be '/'
+            if (ExpiryDate.substring(2, 3) !== '/' || ExpiryDate.substring(5, 6) !== '/') {
+                return null;
+            }
+            // extract month, day and year from the ExpiryDate (expected format is mm/dd/yyyy)
+            // subtraction will cast variables to integer implicitly (needed
+            // for !== comparing)
+            day = ExpiryDate.substring(0, 2) - 0; // because months in JS start from 0
+            month = ExpiryDate.substring(3, 5) - 1;
+            year = ExpiryDate.substring(6, 10) - 0;
+            return new Date(year, month, day);
+        }
+
+        //$("#query1").on('change', function (e) {
+        //    alert("Handler for .change() called.");
+        //});
+        function ShowTitle(obj) {
+            $(obj).attr('title', $(obj).val());
+        }
+    </script>
+}

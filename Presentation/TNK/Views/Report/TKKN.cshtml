@@ -1,0 +1,530 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo nội bộ";
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>BÁO CÁO NỘI BỘ</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name"></label>
+                                <div class="col-sm-3" >
+                                    <input type="text" id="FromDate" required="required" class="date form-control" placeholder="Từ ngày" value="@DateTime.Now.ToString("dd/MM/yyyy")" >
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" id="ToDate" required="required" class="date form-control" placeholder="Đến ngày" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                                </div>
+                                <div class="col-sm-5">
+                                    <a id="report_1" onclick="GetReportInfo()" class="btn btn-primary"><i class="fa fa-search"></i> Xem Báo Cáo</a>
+                                    <a id="btnExportExcel" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Xuất excel</a>
+                                    <button id="btnExportExcelAll" class="btn btn-success"><i class="fa fa-file-excel"></i> Xuất excel tất cả báo cáo</button>
+                                    <button id="btnExportExcelAllTitle" class="btn btn-success" disabled="disabled" style="display:none"> <i class="fa fa-spinner fa-spin"></i>&nbsp; Đang download dữ liệu từ server</button>
+                                    <div id="loading" style="display:none"><img src="~/assests/vendors/jquery-smart-wizard/images/loader.gif" /></div>
+                                    @*<a class="fileDownloadCustomRichExperience" href="https://jqueryfiledownload.apphb.com/FileDownload/DownloadReport/4">test</a>*@
+                                </div>
+                            </div>
+                            @*<div class="col-sm-3">
+                                    <div class="form-group">
+                                        <label>Cửa hàng</label>
+                                        <select id="Store" class="multiselect form-control">
+                                            <option value="PT1Wing1">PT 1 & Wing 1</option>
+                                            <option value="PT2">PT 2</option>
+                                            <option value="PT3">PT 3</option>
+                                            <option value="PT4">PT 4</option>
+                                            <option value="PT5Wing5">PT 5 & Wing 5</option>
+                                            <option value="PT6">PT 6</option>
+                                        </select>
+                                    </div>
+                                </div>*@
+                        </div>
+                    </form>
+                </div>
+                <div class="x_content">
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tab" role="tablist">
+                             @if (ViewBag.Reports != null)
+                            {
+                                foreach (var item in ViewBag.Reports)
+                                {
+                                    <li role="presentation" class="@(item.SortOrder == ViewBag.MinSortOrder ? "active":"")" data-url="@item.Url" data-expirDate="@item.ExpirDate">
+                                        <a href="@item.Href" id="@item.TabId" role="tab" data-toggle="tab" aria-expanded="true">@item.ReportName</a>
+                                    </li>
+                                }
+                            }
+                            <!--<li role="presentation" class="active" data-url="/Report/BCTienMat">
+                                <a href="#tab_TM" id="tm-tab" role="tab" data-toggle="tab" aria-expanded="true">TM</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNganHang">
+                                <a href="#tab_NH" role="tab" id="nh-tab" data-toggle="tab" aria-expanded="false">NH</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCXe">
+                                <a href="#tab_XE" role="tab" id="xe-tab" data-toggle="tab" aria-expanded="false">XE</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCPTDV">
+                                <a href="#tab_PTDV" role="tab" id="ptdv-tab" data-toggle="tab" aria-expanded="false">DOANH THU PT, DV</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCDTPTDV">
+                                <a href="#tab_DTPTDV" role="tab" id="dtptdv-tab" data-toggle="tab" aria-expanded="false">CHI TIẾT THANH TOÁN DV&PT</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCXNT">
+                                <a href="#tab_XNT" role="tab" id="xnt-tab" data-toggle="tab" aria-expanded="false">XNT</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCXNTTong">
+                                <a href="#tab_XNTTong" role="tab" id="xnttong-tab" data-toggle="tab" aria-expanded="false">XNT Tổng</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCChiPhi">
+                                <a href="#tab_ChiPhi" role="tab" id="chiphi-tab" data-toggle="tab" aria-expanded="false">Chi Phí</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCTongChiPhi">
+                                <a href="#tab_TongChiPhi" role="tab" id="tongchiphi-tab" data-toggle="tab" aria-expanded="false">Tổng Chi Phí</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCGiaiNgan">
+                                <a href="#tab_GiaiNgan" role="tab" id="giaingan-tab" data-toggle="tab" aria-expanded="false">Giải Ngân</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNoDichVu">
+                                <a href="#tab_NoDV" role="tab" id="nodv-tab" data-toggle="tab" aria-expanded="false">Nợ DV</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNoBanXe">
+                                <a href="#tab_NoBX" role="tab" id="nodv-tab" data-toggle="tab" aria-expanded="false">Nợ Xe</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCTongCocXe">
+                                <a href="#tab_TongCocXe" role="tab" id="tongcocxe-tab" data-toggle="tab" aria-expanded="false">Tổng Cọc Xe</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCThuChiCocXe">
+                                <a href="#tab_TCCocXe" role="tab" id="tccocxe-tab" data-toggle="tab" aria-expanded="false">CT Cọc Xe</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCCocXe">
+                                <a href="#tab_CocXe" role="tab" id="cocxe-tab" data-toggle="tab" aria-expanded="false">Cọc Xe</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCTongCocPT">
+                                <a href="#tab_TongCocPT" role="tab" id="tongcocpt-tab" data-toggle="tab" aria-expanded="false">Tổng cọc PT</a>
+                            </li>
+
+                            <li role="presentation" class="" data-url="/Report/BCThuChiCocPT">
+                                <a href="#tab_TCCocPT" role="tab" id="tccocpt-tab" data-toggle="tab" aria-expanded="false">CT Cọc PT</a>
+                            </li>
+
+                            <li role="presentation" class="" data-url="/Report/BCCocPT">
+                                <a href="#tab_CocPT" role="tab" id="cocpt-tab" data-toggle="tab" aria-expanded="false">Cọc PT</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCKHBoCocXe">
+                                <a href="#tab_KHBoCocXe" role="tab" id="khbococxe-tab" data-toggle="tab" aria-expanded="false">KH Bỏ Cọc</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNTHBH">
+                                <a href="#tab_NTHBH" role="tab" id="nthbh-tab" data-toggle="tab" aria-expanded="false">Nợ Bảo Hiểm</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNGHBH">
+                                <a href="#tab_GHBH" role="tab" id="ghbh-tab" data-toggle="tab" aria-expanded="false">Nợ GHBH</a>
+                            </li>-->
+                            @* <li role="presentation" class="" data-url="/Report/BCNoHHBH">
+            <a href="#tab_NoHHBH" role="tab" id="nhhbh-tab" data-toggle="tab" aria-expanded="false">Nợ HHBH</a>
+        </li>*@
+                            <!--<li role="presentation" class="" data-url="/Report/BCChiTamUng">
+                                <a href="#tab_ChiTamUng" role="tab" id="ctamung-tab" data-toggle="tab" aria-expanded="false">Chi Tạm Ứng</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCDoanhThuBHTH">
+                                <a href="#tab_DoanhThuBHTH" role="tab" id="doanhthubhth-tab" data-toggle="tab" aria-expanded="false">Doanh Thu BHTH</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCButToanLui">
+                                <a href="#tab_ButToanLui" role="tab" id="butoanlui-tab" data-toggle="tab" aria-expanded="false">Bút Toán Lùi</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCKhoPhuTungNgay">
+                                <a href="#tab_KhoPhuTungNgay" role="tab" id="khophutungngay-tab" data-toggle="tab" aria-expanded="false">Kho Phụ Tùng</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCXeTon">
+                                <a href="#tab_XeTon" role="tab" id="xeton-tab" data-toggle="tab" aria-expanded="false">Xe Tồn</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCCongNoKhac">
+                                <a href="#tab_CongNoKhac" role="tab" id="CongNoKhac-tab" data-toggle="tab" aria-expanded="false">Công Nợ Khác</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNoThuHHHB">
+                                <a href="#tab_NoThuHHHB" role="tab" id="NoThuHHHB-tab" data-toggle="tab" aria-expanded="false">Chiết khấu TM</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCGiayToXe">
+                                <a href="#tab_GiayToXe" role="tab" id="GiayToXe-tab" data-toggle="tab" aria-expanded="false">Giấy Tờ Xe</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCThuHoXang">
+                                <a href="#tab_ThuHoXang" role="tab" id="ThuHoXang-tab" data-toggle="tab" aria-expanded="false">Thu Hộ Xăng - PKD - Khác</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCCNPTKhac">
+                                <a href="#tab_NoPhaiThuKhac" role="tab" id="NoPhaiThuKhac-tab" data-toggle="tab" aria-expanded="false">Nợ Phải Thu Khác</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNPTraKhac">
+                                <a href="#tab_NoPhaiTraKhac" role="tab" id="NoPhaiTraKhac-tab" data-toggle="tab" aria-expanded="false">Nợ Phải Trả Khác</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNoMuaPTPK">
+                                <a href="#tab_NoMuaPTPK" role="tab" id="NoMuaPTPK-tab" data-toggle="tab" aria-expanded="false">Nợ Mua PT-PK</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCChiTietCoc">
+                                <a href="#tab_BCChiTietCoc" role="tab" id="BCChiTietCoc-tab" data-toggle="tab" aria-expanded="false">Chi Đặt Cọc</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCVonTaiSan">
+                                <a href="#tab_BCVonTaiSan" role="tab" id="BCVonTaiSan-tab" data-toggle="tab" aria-expanded="false">Vốn - Tài Sản</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCTongNoBHDV">
+                                <a href="#tab_BCTongNoBHDV" role="tab" id="BCTongNoBHDV-tab" data-toggle="tab" aria-expanded="false">Tổng nợ BHDV</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCNoHHBanXe">
+                                <a href="#tab_BCNoHHBanXe" role="tab" id="BCNoHHBanXe-tab" data-toggle="tab" aria-expanded="false">Nợ hoa hồng bán xe</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCHHBHTH">
+                                <a href="#tab_BCHHBHTH" role="tab" id="BCHHBHTH-tab" data-toggle="tab" aria-expanded="false">Hoa Hồng BHTH</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCHHBHKM">
+                                <a href="#tab_BCHHBHKM" role="tab" id="BCHHBHKM-tab" data-toggle="tab" aria-expanded="false">Hoa Hồng BHKM</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCDoanhThuGHBH">
+                                <a href="#tab_BCDoanhThuGHBH" role="tab" id="BCDoanhThuGHBH-tab" data-toggle="tab" aria-expanded="false">Doanh Thu GHBH</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCChiTietTGHBH">
+                                <a href="#tab_BCChiTietTGHBH" role="tab" id="BCChiTietTGHBH-tab" data-toggle="tab" aria-expanded="false">Chi Tiết Thu GHBH</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCHHGHBH">
+                                <a href="#tab_BCHHGHBH" role="tab" id="BCHHGHBH-tab" data-toggle="tab" aria-expanded="false">Hoa Hồng GHBH</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCHHKMGHBH">
+                                <a href="#tab_BCHHKMGHBH" role="tab" id="BCHHKMGHBH-tab" data-toggle="tab" aria-expanded="false">Hoa Hồng KM GHBH</a>
+                            </li>-->
+                            @*<li role="presentation" class="" data-url="/Report/CongNo">
+            <a href="#tab_Congno" role="tab" id="congno-tab" data-toggle="tab" aria-expanded="false">Công nợ</a>
+        </li>*@
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                              @if (ViewBag.Reports != null)
+                                {
+                                    foreach (var item in ViewBag.Reports)
+                                    {
+                                        <div role="tabpanel" class="@(item.SortOrder == ViewBag.MinSortOrder ? "tab-pane fade active in" : "tab-pane fade")" id="@item.Href.Replace("#", "")" aria-labelledby="@item.TabId"></div>
+                                    }
+                                }
+                            <!--<div role="tabpanel" class="tab-pane fade active in" id="tab_TM" aria-labelledby="tm-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_NH" aria-labelledby="nh-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_XE" aria-labelledby="xe-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_PTDV" aria-labelledby="ptdv-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_DTPTDV" aria-labelledby="dtptdv-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_XNT" aria-labelledby="xnt-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_XNTTong" aria-labelledby="xnttong-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_GiaiNgan" aria-labelledby="giaingan-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_NoDV" aria-labelledby="nodv-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_NoBX" aria-labelledby="nodv-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_ChiPhi" aria-labelledby="chiphi-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_TongChiPhi" aria-labelledby="tongchiphi-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_TongCocXe" aria-labelledby="tongcocxe-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_TCCocXe" aria-labelledby="tccocxe-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_CocXe" aria-labelledby="cocxe-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_TongCocPT" aria-labelledby="tongcocpt-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_TCCocPT" aria-labelledby="tccocpt-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_CocPT" aria-labelledby="cocpt-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_KHBoCocXe" aria-labelledby="khbococxe-tab"></div>-->
+                            @*<div role="tabpanel" class="tab-pane fade" id="tab_Congno" aria-labelledby="congno-tab"></div>*@
+                            <!--<div role="tabpanel" class="tab-pane fade" id="tab_NTHBH" aria-labelledby="nthbh-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_GHBH" aria-labelledby="ghbh-tab"></div>-->
+                            @*<div role="tabpanel" class="tab-pane fade" id="tab_NoHHBH" aria-labelledby="nhhbh-tab"></div>*@
+                            <!--<div role="tabpanel" class="tab-pane fade" id="tab_ChiTamUng" aria-labelledby="ctamung-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_DoanhThuBHTH" aria-labelledby="doanhthubhth-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_ButToanLui" aria-labelledby="butoanlui-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_KhoPhuTungNgay" aria-labelledby="khophutungngay-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_XeTon" aria-labelledby="xeton-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_CongNoKhac" aria-labelledby="CongNoKhac-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_NoThuHHHB" aria-labelledby="NoThuHHHB-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_GiayToXe" aria-labelledby="GiayToXe-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_NoPhaiThuKhac" aria-labelledby="NoPhaiThuKhac-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_NoPhaiTraKhac" aria-labelledby="NoPhaiTraKhac-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_ThuHoXang" aria-labelledby="ThuHoXang-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_NoMuaPTPK" aria-labelledby="NoMuaPTPK-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCChiTietCoc" aria-labelledby="BCChiTietCoc-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCVonTaiSan" aria-labelledby="BCVonTaiSan-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCTongNoBHDV" aria-labelledby="BCTongNoBHDV-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCNoHHBanXe" aria-labelledby="BCNoHHBanXe-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCHHBHTH" aria-labelledby="BCHHBHTH-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCHHBHKM" aria-labelledby="BCHHBHKM-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCDoanhThuGHBH" aria-labelledby="BCDoanhThuGHBH-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCChiTietTGHBH" aria-labelledby="BCChiTietTGHBH-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCHHGHBH" aria-labelledby="BCHHGHBH-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_BCHHKMGHBH" aria-labelledby="BCHHKMGHBH-tab"></div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="idTab" value="#tab_TM" />
+<input type="hidden" id="url" value="/Report/BCTienMat" />
+<div id="reportall" style="display:none">
+
+</div>
+@section scripts
+{
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    @*<script src="~/Scripts/jquery-ui-1.10.4.custom.min.js"></script>*@
+    @*<script src="~/Scripts/jquery-ui.js"></script>*@
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script>
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.replace(",", ".");
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+        $("#myTab li").on("click", function () {
+            debugger;
+            $("#FromDate").prop("disabled", false);
+            GetReportInfo();
+        });
+
+
+        function GetReportInfo() {
+            var expirDate = $($("#myTab li.active")[0]).attr("data-expirDate");
+            var url = $($("#myTab li.active")[0]).attr("data-url");
+            //if (url == '/Report/BCPTDV' || url == '/Report/BCKhoPhuTungNgayV2') {
+            var fromDate = $("#FromDate").val(); // Lấy giá trị ngày từ input
+            var parsedFromDate = moment(fromDate, "DD/MM/YYYY"); // Chuyển đổi sang đối tượng moment
+
+            if (parsedFromDate.isSameOrAfter(moment(expirDate, "DD/MM/YYYY")) ) {
+                alert("Báo cáo chỉ được xuất từ " + expirDate + " trở về trước!");
+                return false;
+            }
+
+
+            //}
+            if (checkInvalidDate() == false)
+                return false;
+            //alert(url);
+            var viewbox = $($($("#myTab li.active a")[0]).attr("href"));
+            viewbox.html('<p align="center"><img src="/assests/images/loading.gif"/></p>');
+            viewbox.show();
+            $("#report_1").text("Đang xuất");
+            $("#report_1").prop('disabled', true);
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: { "FromDate": $("#FromDate").val(), "ToDate": $("#ToDate").val() },
+                success: function (result) {
+                    viewbox.html(result);
+                    //alert(result);
+                    //debugger;
+                    if (viewbox.selector == "#tab_XNT") {
+                        var tablenxtx = viewbox.find($("table#nxtx tbody"));
+                        MergeRow(tablenxtx);
+                        var tablexn = viewbox.find($("table#xn tbody"));
+                        MergeRow(tablexn);
+                    } else if (viewbox.selector == "#tab_XNTTong") {
+                        var table = viewbox.find($("table tbody"));
+                        MergeRow(table);
+                    }
+
+                        $(viewbox).removeAttr("style");
+                    },
+                    error: function (result) {
+                        viewbox.html('<p align="center">Không thể hiển thị danh sách</p>');
+                        alert("Lỗi: Không thể tải danh sách");
+                    }
+            });
+            $("#report_1").text("Xem báo cáo");
+            $("#report_1").prop('disabled', false);
+        };
+
+        $("#btnExportExcel").click(function () {
+            debugger;
+            if (checkInvalidDate() == false)
+                return false;
+            else{
+            if ($($("#myTab li.active")[0]).attr("data-url") != "/Report/CongNo") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = $($("#myTab li.active")[0]).attr("data-url").replace("/Report/", "#");
+                //alert(idtable);
+                //var idtable = $($("#myTab li.active")[0]).attr("data-url").replace("/Report/", "#");
+                var result = $(idtable).html();
+                var s = 'aaabbbcccc'.replace(/'b'/g,'"2"')
+                result = result.replaceAll('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', 'border="1"');
+                //result = result.replace('table ', 'table style="border:solid"')//style="text-align:left;width:60% "
+                //result = result.replace('style="text-align:left;width:60% "', 'style="text-align:left;width:60%;border:1px solid black;"');
+                //alert(result);
+                tableToExcel(result, 'Report' + $("#idTab").val().replace("#tab_", "BC") + '_' + postfix + '.xls');
+            }
+            else
+            {
+                window.location = `/Report/CongNo?from=${$("#FromDate").val()}& =${$("#ToDate").val()}&export=Excel`;
+            }
+            }
+            return false;
+           
+        })
+
+        //var tableToExcel = (function () {
+        //    var data = "data:image/jpeg;base64,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";
+        //    var ws_name = "ABAWD-chart-REPORT";
+        //    ws = data;
+        //    var wb = { SheetNames: ['sheetjs'], Sheets: { sheetjs: ws } };
+        //    var wbout = xlsx.write(wb, { type: "base64" });
+        //    var fname = "Report";
+        //    fname = fname + "." + "xlsx";
+        //    try {
+        //        saveAs(b64toBlob(wbout, "data:application/vnd.ms-excel;base64"), fname);
+        //    } catch (e) { }
+        //    return wbout;
+        //})()
+
+
+        var tableToExcel = (function () {
+            debugger;
+            //var uri = 'data:application/vnd.ms-excel;base64,' phần cũ
+            //, template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            //, base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            //, format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            //return function (table, name) {
+            //    //if (!table.nodeType) table = document.getElementById(table)
+            //    var ctx = { worksheet: name || 'Worksheet', table: table }
+            //    var link = document.createElement("A");
+            //    link.href = uri + base64(format(template, ctx));
+            //    link.download = name || 'Baocao.xls';
+            //    link.target = '_blank';
+            //    document.body.appendChild(link);
+            //    link.click();
+            //    document.body.removeChild(link);
+            //}
+            return function (data, fileName) {//phần trúc mới thêm 27.06.2018
+                var csvData = data;
+                var blob = new Blob([csvData], {
+                    type: "data:application/vnd.ms-excel;base64,"
+                });
+
+                if (window.navigator.msSaveBlob) {
+                    // FOR IE BROWSER
+                    navigator.msSaveBlob(blob, fileName);
+                } else {
+                    // FOR OTHER BROWSERS
+                    var link = document.createElement("a");
+                    var csvUrl = URL.createObjectURL(blob);
+                    link.href = csvUrl;
+                    link.style = "visibility:hidden";
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        })()
+        $(function () {
+            $("#btnExportExcelAll").click(function (e) {
+                if (checkInvalidDate() == false)
+                    return false;
+                else {
+                    $('#btnExportExcelAll').hide();
+                    $('#btnExportExcelAllTitle').show();
+                    $.fileDownload("/Report/ReportAll", {
+                        httpMethod: "POST",
+                        data: {
+                            FromDate: $("#FromDate").val(),
+                            ToDate: $("#ToDate").val()
+                        },
+                        successCallback: function (url) {
+                            $('#btnExportExcelAll').show();
+                            $('#btnExportExcelAllTitle').hide();
+                        },
+                        failCallback: function (responseHtml, url, error) {
+                            $('#btnExportExcelAll').show();
+                            $('#btnExportExcelAllTitle').hide();
+                        }
+                    });
+                }
+                return false;
+              
+            });
+        })
+        
+
+        function MergeRow(table) {
+            var rows = table.find($("tr")); // Lấy các dòng trong table ra
+            var colsLength = $(rows[0]).find($("td")).length; // kiểm tra số cột
+            var removeLater = new Array();
+            for (var i = 0; i < colsLength; i++) { // Merge giá trị các dòng cho từng cột
+                var startIndex = 0;
+                var lastIndex = 0;
+                var flag = 0;
+                var startText = $($(rows[0]).find("td")[i]).attr("group");
+                if (startText != "" && startText != null)
+                {
+                    for (var j = 1; j < rows.length ; j++) {
+                        var row = $(rows[j]);
+                        var col = $(row.find("td")[i]);
+                        var currentText = col.attr("group");
+                        if (currentText == startText) {
+
+                            col.css("background", "gray");
+                            removeLater.push(col);
+                            lastIndex = j;
+                        } else {
+
+                            var spanLength = lastIndex - startIndex;
+                            if (spanLength >= 1) {
+                                console.log(startIndex + " - " + lastIndex)
+                                $($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                            }
+                            flag = spanLength;
+                            lastIndex = j;
+                            startIndex = j;
+                            startText = currentText;
+                        }
+                    }
+                }
+                var spanLength = lastIndex - startIndex;
+                debugger;
+                if (spanLength >= 1) {
+                    console.log(startIndex + " - " + lastIndex)
+                    //$($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                }
+            }
+
+            for (var i in removeLater) {
+                $(removeLater[i]).remove();
+            }
+        }
+
+        function checkInvalidDate() {
+            var result = true;
+            var fromDate = parseDate($("#FromDate").val()).getTime();
+            var toDate = parseDate($("#ToDate").val()).getTime();
+            if (fromDate > toDate) {
+                toastWarning("Vui lòng chọn lại ngày.");
+                $("#FromDate").focus();
+                return false;  
+            }
+            return true;
+        }
+        function parseDate(str) {
+            var mdy = str.split('/');
+            return new Date(mdy[2], mdy[1], mdy[0]);
+        }
+    </script>
+
+}

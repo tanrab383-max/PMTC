@@ -1,0 +1,215 @@
+﻿<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày</label>
+                            <input type="text" id="FromDate" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày</label>
+                            <input type="text" id="ToDate" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Mã Túi</label>
+                            <select class="select2" name="MaTui" style="height:29px">
+                                <option value="">Chọn</option>
+                                @foreach (var item in ViewBag.MaTuiTien)
+                                {
+                                    <option value="@item.MaTui">@item.TenTui</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Mã phiếu,SessionId" placeholder="Mã phiếu,SessionId" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                            <input type="button" value="Xuất Excel" id="btnExportExcel" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+                <div class="x_content">
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>STT</th>
+                                    <th>SessionID</th>
+                                    <th>Mã Phiếu</th>
+                                    <th>Mã túi tiền</th>
+                                    <th>Số tiền thay đổi</th>
+                                    <th>Ngày tác động</th>
+                                    <th>IPClient</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 1;
+                                    if (ViewBag.List.Rows.Count > 0)
+                                    {
+                                        foreach (var row in ViewBag.List.Rows)
+                                        {
+                                            <tr>
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                <td>@row["SessionId"]</td>
+                                                <td>@row["MaPhieu"]</td>
+                                                <td>@row["MaTui"]</td>
+                                                <td class="number">@row["SoTienThayDoi"].ToString().Replace(",", ".")</td>
+                                                <td>@row["CreatedDate"].ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                                <td>@row["IPClient"]</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <div class="right">
+                            @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<div hidden id="Excel">
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+            <tr class="success">
+                <th>STT</th>
+                <th>SessionID</th>
+                <th>Mã Phiếu</th>
+                <th>Mã túi</th>
+                <th>Số tiền thay đổi</th>
+                <th>Ngày tác động</th>
+                <th>IPClient</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int j = 1;
+                if (ViewBag.getLSTDTT.Rows.Count > 0)
+                {
+                    foreach (var row in ViewBag.getLSTDTT.Rows)
+                    {
+                        <tr>
+                            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + j++)</td>
+                            <td>@row["SessionId"]</td>
+                            <td>@row["MaPhieu"]</td>
+                            <td>@row["MaTui"]</td>
+                            <td class="number">@row["SoTienThayDoi"].ToString().Replace(",", ".")</td>
+                            <td>@row["CreatedDate"].ToString("dd/MM/yyyy HH:mm:ss")</td>
+                            <td>@row["IPClient"]</td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        //$(".date").datepicker({
+        //    orientation: "left",
+        //    autoclose: true
+        //});
+
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.replace(",", ".");
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+
+        $(function () {
+            $("#btnExport").click(function (e) {
+                if (checkInvalidDate() == false)
+                    return false;
+                else {
+                    $.fileDownload("/Log/ReportExcel", {
+                        httpMethod: "POST",
+                        data: {
+                            FromDate: $("#FromDate").val(),
+                            ToDate: $("#ToDate").val()
+                        }
+                    });
+                }
+                return false;
+
+            });
+        })
+
+
+
+        $("#btnExportExcel").click(function () {
+            debugger;
+            var dt = new Date();
+            var day = dt.getDate();
+            var month = dt.getMonth() + 1;
+            var year = dt.getFullYear();
+            var hour = dt.getHours();
+            var mins = dt.getMinutes();
+            var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+            var result = $("#Excel").html();
+            result = result.replace('class="table table-striped table-bordered table-condensed"', 'border="1"');
+            tableToExcel(result, 'Report' + "Lich_Su_Tui_Tien" + '_' + postfix + '.xls');
+            return false;
+
+        })
+
+        var tableToExcel = (function () {
+            debugger;
+            return function (data, fileName) {//phần trúc mới thêm 27.06.2018
+                var csvData = data;
+                var blob = new Blob([csvData], {
+                    type: "application/vnd.ms-excel;base64,"
+                });
+
+                if (window.navigator.msSaveBlob) {
+                    // FOR IE BROWSER
+                    navigator.msSaveBlob(blob, fileName);
+                } else {
+                    // FOR OTHER BROWSERS
+                    var link = document.createElement("a");
+                    var csvUrl = URL.createObjectURL(blob);
+                    link.href = csvUrl;
+                    link.style = "visibility:hidden";
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            }
+        })()
+    </script>
+}

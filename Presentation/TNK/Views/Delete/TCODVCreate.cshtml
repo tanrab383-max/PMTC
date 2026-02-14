@@ -1,0 +1,210 @@
+﻿@model TNK.Model.SoThuModel
+@{
+    var item = Model.Item;
+}
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Tạo mới @ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b>Thông tin hóa đơn</b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form id="form-data" method="post" class="form-horizontal form-label-left">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số chứng từ</label>
+                                    @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "10",@required="" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày thu</label>
+                                    <input type="text" class="form-control input-sm date " name="item.NgayThu" value="@item.NgayThu.ToString("MM/dd/yyyy")" required />
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Họ tên</label>
+                                    @Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm", @required = "" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Điện thoại</label>
+                                    @Html.EditorFor(x => item.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="form-group">
+                                    <label>Địa chỉ</label>
+                                    @Html.EditorFor(x => item.DiaChi, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Biển số</label>
+                                    @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm", @required = "" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Mã xe</label>
+                                    @Html.DropDownListFor(x => item.MaXe, Model.MaXe.Select(x => new SelectListItem { Text = x.Name, Value = x.Code.ToString() }), "Chọn", new { @class = "select2 fullwidth", @required = "" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Màu</label>
+                                    @Html.DropDownListFor(x => item.MauXe, Model.MauXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Code.ToString() }), "Chọn", new { @class = "select2 fullwidth", @required = "" })
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Nội dung</label>
+                                    @Html.TextAreaFor(x => item.NoiDung, new { @class = "form-control input-sm", @required = "" })
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Thanh toán</label>
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:40%">Túi tiền</th>
+                                                <th style="width:30%">Số tiền</th>
+                                                <th style="width:30%">Số tham chiếu</th>
+                                                <th>Treo</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody">
+                                            @for (int j = 0; j < Model.CTPT.Count; j++)
+                                            {
+                                                <tr id="tr" class="animated fadeIn">
+                                                    <td>
+                                                        <select required class="select2 fullwidth Temp" name="httt[@j].Temp">
+                                                            <option value="">Chọn</option>
+                                                            @foreach (var i in Model.HTTT)
+                                                            {
+                                                                <option value="@i.GiaTri" @(Model.CTPT[j].Temp == i.GiaTri ? "selected" : "")>@i.HienThi</option>
+                                                            }
+                                                        </select>
+                                                    </td>
+                                                    <td><input required type="text" name="httt[@j].SoTienThanhToan" value="@Model.CTPT[j].SoTienThanhToan" class="form-control input-sm number" /></td>
+                                                    <td><input name="httt[@j].SoThamChieu" value="@Model.CTPT[j].SoThamChieu" class="form-control input-sm SoThamChieu" /></td>
+                                                    <td>
+                                                        <input type="checkbox" class="chkTinhTrang" @(Model.CTPT[j].TinhTrang ? "checked" : "") />
+                                                        <input type="hidden" class="TinhTrang" name="httt[@j].TinhTrang" value="@Model.CTPT[j].TinhTrang" />
+                                                        <input type="hidden" class="IsDeleted" name="httt[@j].IsDeleted" value="false" />
+                                                    </td>
+                                                    <td><i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>Tổng cộng: </td>
+                                                <td class="Total ">@item.TongCong</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="right"><i class="fa fa-plus addHTTT" style="cursor:pointer"></i></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ghi chú</label>
+                                    @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label>Kế toán trưởng</label>
+                                    @Html.DropDownListFor(x => item.KeToanTruong, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth", @required = "" })
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label>Người lập phiếu</label>
+                                    @Html.DropDownListFor(x => item.NguoiLapPhieu, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth", @required = "" })
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label>Người nộp tiền</label>
+                                    @Html.DropDownListFor(x => item.NguoiNopTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth", @required = "" })
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label>Người thu tiền</label>
+                                    @Html.DropDownListFor(x => item.NguoiThuTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth", @required = "" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                        <div class="form-group center">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <input type="submit" name="submit" id="Create" value="Lưu" class="btn btn-success" />
+                                <input type="submit" name="submit" id="New" value="Lưu và thêm mới" class="btn btn-success" />
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="/SoThu/TCODVIndex">Quay lại</a>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/SoThuCommon.js"></script>
+    <script>
+        
+        i = '@Model.CTPT.Count';
+        $(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if(Model.CTPT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+
+</script>
+}
+
+

@@ -1,0 +1,108 @@
+﻿@using System.Data;
+@{
+    ViewBag.Title = "BC KM hứa tặng";
+}
+
+<div id="BCKM_HuaTang">
+    <div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed" id="tb_BCQuanLyXe">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='10' class="tile">DANH SÁCH CHI TIẾT CÔNG NỢ PHẢI TRẢ KHUYẾN MÃI HỨA TẶNG  @ViewBag.ShowRoom</th>
+                    </tr>
+                    <tr>
+                        <th colspan='10' class="tile">@ViewBag.TuNgayDenNgay</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title">STT</th>
+                        <th class="column-title">SỐ HỢP ĐỒNG</th>
+                        <th class="column-title">SỐ KHUNG</th>
+                        <th class="column-title">NGÀY NỢ</th>
+                        <th class="column-title">KHÁCH HÀNG</th>
+                        <th class="column-title">NỘI DUNG</th>
+                        <th class="column-title">NỢ KHUYẾN MÃI</th>
+                        <th class="column-title">ĐÃ XUẤT TRẢ</th>
+                        <th class="column-title">CÒN NỢ</th>
+                        <th class="column-title">NGÀY TRẢ KM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (DataRow row in (Model as DataTable).Rows)
+                            {
+                                if (@row["SoKhung"].ToString() != "TỔNG CỘNG")
+                                {
+                                    <tr>
+                                        <td>@row["RN"]</td>
+                                        <td>@row["SoHopDong"]</td>
+                                        <td>@row["SoKhung"]</td>
+                                        <td>@row["NgayNo"]</td>
+                                        <td>@row["Hoten"]</td>
+                                        <td>@row["Noidung"]</td>
+                                        <td class="number">@row["SoTienNo"]</td>
+                                        <td class="number">@row["SoTienTraKM"]</td>
+                                        <td class="number">@row["ConNo"]</td>
+                                        <td>@row["NgayTraKM"]</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                        <td>@row["RN"]</td>
+                                        <td>@row["SoHopDong"]</td>
+                                        <td>@row["SoKhung"]</td>
+                                        <td>@row["NgayNo"]</td>
+                                        <td>@row["Hoten"]</td>
+                                        <td>@row["Noidung"]</td>
+                                        <td class="number">@row["SoTienNo"]</td>
+                                        <td class="number">@row["SoTienTraKM"]</td>
+                                        <td class="number">@row["ConNo"]</td>
+                                        <td>@row["NgayTraKM"]</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <table class="table table-striped table-bordered table-condensed" style="width:50%">
+                <tbody>
+                    <tr>
+                        <td><b>Nợ đầu kỳ</b></td>
+                        <td class="number">@ViewBag.tblTH.Rows[0]["NoDauKy"]</td>
+                    </tr>
+                    <tr>
+                        <td><b>Phát sinh nợ</b></td>
+                        <td class="number">@ViewBag.tblTH.Rows[0]["PSNo"]</td>
+                    </tr>
+                    <tr>
+                        <td><b>Thu nợ</b></td>
+                        <td class="number">@ViewBag.tblTH.Rows[0]["DaTraTrongKy"]</td>
+                    </tr>
+                    <tr>
+                        <td><b>Cuối kỳ</b></td>
+                        <td class="number">@ViewBag.tblTH.Rows[0]["CuoiKy"]</td>
+                    </tr>
+            </table>
+        </div>
+
+    </div>
+    <br />
+</div>
+<script src="~/Scripts/megrerow_bydata_id.js"></script>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

@@ -1,0 +1,145 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuThuCNO>
+@{
+    ViewBag.Title = "Thu công nợ";
+    int i = 1;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Thu công nợ</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form method="get" class="row" id="formSearch">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="query" placeholder="Mã Phiếu chi, Số chứng từ, Nhà cung cấp" title="Mã Phiếu chi, Số chứng từ, Nhà cung cấp" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                                        <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li>
+                                        <a href="/SoThu/TCONOCreate?id=0"><i title="Add" class="fa fa-plus addNew"></i></a>
+                                    </li>
+                                </ul>
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Ngày thu</th>
+                                            <th>Mã phiếu thu</th>
+                                            <th>Đối tác</th>
+                                            <th>Số chứng từ</th>
+                                            <th>Số tiền thu</th>
+                                            <th>Số tiền đã phân bổ</th>
+                                            <th>Số tiền đã hoàn</th>
+                                            <th>Số tiền chưa phân bổ</th>
+                                            <th>Ghi chú</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                                <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.MaPhieuThu</td>
+                                                <td>@item.DoiTacPhieuThu</td>
+                                                <td>@item.SoChungTu</td>
+                                                <td>@TNK.Core.Common.ToCurrencyString(item.SoTienThu)</td>
+                                                <td>@TNK.Core.Common.ToCurrencyString(item.SoTienDaSuDung)</td>
+                                                <td>@TNK.Core.Common.ToCurrencyString(item.SoTienChiTra)</td>
+                                                <td>@TNK.Core.Common.ToCurrencyString(item.ConLai)</td>
+                                                <td>@item.GhiChu</td>
+                                                <td style="width:5%" class="center">
+                                                    <a href="/SoThu/TCONOEdit/@item.MaPhieuThu"><i title="Edit" class="fa fa-edit"></i></a>
+                                                </td>
+                                                <td style="width:5%" class="center">
+                                                    <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                                                </td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+       
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        function Delete(a, id) {
+            debugger;
+            if (confirm('Xác nhận')) {
+                data = { id: id };
+                $.post("/SoThu/DeletePhieuCongNo", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+    </script>
+}
+
+
+
+

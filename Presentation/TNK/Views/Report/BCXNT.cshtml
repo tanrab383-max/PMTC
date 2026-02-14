@@ -1,0 +1,253 @@
+﻿@using System.Data;
+@{ 
+    int sodong = ViewBag.dtbCarInOut1.Rows.Count;
+    int sodong1 = ViewBag.ListCarOutside.Rows.Count;
+}
+<div id="BCXNT">
+    <div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='14' class="tile">NHẬP XUẤT TỒN XE @ViewBag.ShowRoom</th>
+                    </tr>
+                    <tr>
+                        <th colspan='14' class="tile">@ViewBag.TuNgayDenNgay</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="2">LOẠI XE</th>
+                        <th class="column-title" rowspan="2">MÃ</th>
+                        <th class="column-title" rowspan="2">MÀU</th>
+                        <th class="column-title" rowspan="2">MÃ MÀU</th>
+                        <th class="column-title" rowspan="2">XUẤT XỨ</th>
+                        <th class="column-title" rowspan="2">GIÁ VỐN (VAT)</th>
+                        <th class="column-title" colspan="2">TỒN ĐK</th>
+                        <th class="column-title" colspan="2">NHẬP</th>
+                        <th class="column-title" colspan="2">XUẤT BÁN</th>
+                        <th class="column-title" colspan="2">TỒN CK</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">SL</th>
+                        <th class="column-title">TT</th>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">TT</th>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">TT</th>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">TT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @{
+                    if (Model != null)
+                    {
+
+                        string maXeCheck = ViewBag.str;
+                        foreach (DataRow row in (Model as DataTable).Rows)
+                        {
+                            if (@row["MaModel"].ToString() == "" || @row["MaModel"].ToString() == "0")
+                            {
+                                if (@row["MaModel"].ToString() == "0")
+                                {
+                                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                        <td group="@row["MaModel"]">@row["TenModel"]</td>
+                                        <td group="@row["MaModel"]"></td>
+                                        <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                        <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                        <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                        <td group="@row["MaModel"]@row["MaMau"]@row["GiaVon"].ToString().Replace(",", ".")"></td>
+                                        <td class="number">@row["SoLuongTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongTienTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongNhap"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@Math.Round(Convert.ToDouble(row["TongTienNhap"])).ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongXuat"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongTienXuat"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@Math.Round(Convert.ToDouble(row["TongTienTonKhoCuoiKy"])).ToString().Replace(",", ".")</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr class="even pointer" style="background-color:#ceefef;font-weight:bold">
+                                        <td group="@row["MaModel"]">@row["TenModel"]</td>
+                                        <td group="@row["MaModel"]"></td>
+                                        <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                        <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                        <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                        <td group="@row["MaModel"]@row["MaMau"]@row["GiaVon"].ToString().Replace(",", ".")"></td>
+                                        <td class="number">@row["SoLuongTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongTienTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongNhap"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@Math.Round(Convert.ToDouble(row["TongTienNhap"])).ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongXuat"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongTienXuat"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@Math.Round(Convert.ToDouble(row["TongTienTonKhoCuoiKy"])).ToString().Replace(",", ".")</td>
+                                    </tr>
+
+                                }
+
+                            }
+                            else
+                            {
+                                <tr class="even pointer" >
+                                    <td group="@row["MaModel"]">@row["TenModel"]</td>
+                                    <td group="@row["MaModel"]">@row["MaModel"]</td>
+                                    <td group="@row["MaModel"]@row["MaMau"]">@row["TenMau"]</td>
+                                    <td group="@row["MaModel"]@row["MaMau"]">@row["MaMau"]</td>
+                                    <td group="@row["MaModel"]@row["MaMau"]">@row["XuatXu"]</td>
+                                    <td class="number" group ="@row["MaModel"]@row["MaMau"]@row["GiaVon"]">@row["GiaVon"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["SoLuongTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["TongTienTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["SoLuongNhap"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@Math.Round(Convert.ToDouble(row["TongTienNhap"])).ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["SoLuongXuat"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["TongTienXuat"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["SoLuongTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@Math.Round(Convert.ToDouble(row["TongTienTonKhoCuoiKy"])).ToString().Replace(",", ".")</td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+                </tbody>
+            </table>
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='14' class="tile">XE NGOÀI</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="2">LOẠI XE</th>
+                        <th class="column-title" rowspan="2">MÃ</th>
+                        <th class="column-title" rowspan="2">MÀU</th>
+                        <th class="column-title" rowspan="2">MÃ MÀU</th>
+                        <th class="column-title" rowspan="2">XUẤT XỨ</th>
+                        <th class="column-title" rowspan="2">GIÁ VỐN (VAT)</th>
+                        <th class="column-title" colspan="2">TỒN ĐK</th>
+                        <th class="column-title" colspan="2">NHẬP</th>
+                        <th class="column-title" colspan="2">XUẤT BÁN</th>
+                        <th class="column-title" colspan="2">TỒN CK</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">SL</th>
+                        <th class="column-title">TT</th>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">TT</th>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">TT</th>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">TT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (ViewBag.ListCarOutside != null)
+                        {
+                            foreach (DataRow row in (ViewBag.ListCarOutside as DataTable).Rows)
+                            {
+                                if (@row["MaModel"].ToString() == "" || @row["MaModel"].ToString() == "0")
+                                {
+                                    if (@row["MaModel"].ToString() == "0")
+                                    {
+                                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                            <td group="@row["MaModel"]">@row["TenModel"]</td>
+                                            <td group="@row["MaModel"]"></td>
+                                            <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                            <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                            <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                            <td group="@row["MaModel"]@row["MaMau"]@row["GiaVon"]"></td>
+                                            <td class="number">@row["SoLuongTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["TongTienTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["SoLuongNhap"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["TongTienNhap"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["SoLuongXuat"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["TongTienXuat"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["SoLuongTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["TongTienTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr class="even pointer" style="background-color:#ceefef;font-weight:bold">
+                                            <td group="@row["MaModel"]">@row["TenModel"]</td>
+                                            <td group="@row["MaModel"]"></td>
+                                            <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                            <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                            <td group="@row["MaModel"]@row["MaMau"]"></td>
+                                            <td group="@row["MaModel"]@row["MaMau"]@row["GiaVon"]"></td>
+                                            <td class="number">@row["SoLuongTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["TongTienTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["SoLuongNhap"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["TongTienNhap"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["SoLuongXuat"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["TongTienXuat"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["SoLuongTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                            <td class="number">@row["TongTienTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                        </tr>
+
+                                    }
+                                }
+                                else
+                                {
+                                    <tr class="even pointer">
+                                        <td class="@row["MaModel"]">@row["TenModel"]</td>
+                                        <td class="@row["MaModel"]">@row["MaModel"]</td>
+                                        <td class="@row["MaModel"] + @row["MaMau"]">@row["TenMau"]</td>
+                                        <td class="@row["MaModel"] + @row["MaMau"]">@row["MaMau"]</td>
+                                        <td class="@row["MaModel"] + @row["MaMau"]">@row["XuatXu"]</td>
+                                        <td class="number @row["MaModel"] + @row["MaMau"] + @row["GiaVon"]">@row["GiaVon"]</td>
+                                        <td class="number">@row["SoLuongTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongTienTonKhoDauKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongNhap"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongTienNhap"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongXuat"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongTienXuat"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["SoLuongTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongTienTonKhoCuoiKy"].ToString().Replace(",", ".")</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                        }
+                </tbody>
+            </table>
+            @*phan tong cong*@ 
+            @{ 
+                double SLDK = 0, TTDK = 0 , SLN = 0 , TTN = 0, SLXB = 0, TTXB = 0 ,SLCK = 0, TTCK = 0;
+                SLDK = ViewBag.dtbCarInOut1.Rows[sodong -1]["SoLuongTonKhoDauKy"] + ViewBag.ListCarOutside.Rows[sodong1 - 1]["SoLuongTonKhoDauKy"];
+                TTDK = ViewBag.dtbCarInOut1.Rows[sodong -1]["TongTienTonKhoDauKy"] + ViewBag.ListCarOutside.Rows[sodong1 - 1]["TongTienTonKhoDauKy"];
+                SLN = ViewBag.dtbCarInOut1.Rows[sodong -1]["SoLuongNhap"] + ViewBag.ListCarOutside.Rows[sodong1 - 1]["SoLuongNhap"];
+                TTN = ViewBag.dtbCarInOut1.Rows[sodong -1]["TongTienNhap"] + ViewBag.ListCarOutside.Rows[sodong1 - 1 ]["TongTienNhap"];
+                SLXB = ViewBag.dtbCarInOut1.Rows[sodong -1]["SoLuongXuat"] + ViewBag.ListCarOutside.Rows[sodong1 - 1]["SoLuongXuat"];
+                TTXB = ViewBag.dtbCarInOut1.Rows[sodong -1]["TongTienXuat"] + ViewBag.ListCarOutside.Rows[sodong1 - 1]["TongTienXuat"];
+                SLCK = ViewBag.dtbCarInOut1.Rows[sodong -1]["SoLuongTonKhoCuoiKy"] + ViewBag.ListCarOutside.Rows[sodong1 - 1]["SoLuongTonKhoCuoiKy"];
+                TTCK = ViewBag.dtbCarInOut1.Rows[sodong -1]["TongTienTonKhoCuoiKy"] + ViewBag.ListCarOutside.Rows[sodong1 - 1]["TongTienTonKhoCuoiKy"];
+             }
+            <table class="table table-striped table-bordered table-condensed">
+                <tr class="even pointer" style="background-color:#ceefef;font-weight:bold">
+                    <td width="51%">TỔNG</td>
+                    <td>@SLDK</td>
+                    <td class="number">@TTDK.ToString().Replace(",", ".")</td>
+                    <td>@SLN</td>
+                    <td class="number">@TTN.ToString().Replace(",", ".")</td>
+                    <td>@SLXB</td>
+                    <td class="number">@TTXB.ToString().Replace(",", ".")</td>
+                    <td>@SLCK</td>
+                    <td class="number">@TTCK.ToString().Replace(",", ".")</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

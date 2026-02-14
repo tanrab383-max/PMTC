@@ -1,0 +1,588 @@
+﻿@using System.Data;
+
+
+<div id="tab_KQKD">
+    <div class="x_content">
+        <div class="table-responsive" id="BCKiemToan_KetQuaKinhDoanh_div">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='30' class="tile">BÁO CÁO KẾT QUẢ HOẠT ĐỘNG KINH DOANH <br />
+                            Từ ngày @ViewBag.From đến ngày @ViewBag.To
+                        </th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="2">NGÀY</th>
+                        <th class="column-title" rowspan="2">HỌ VÀ TÊN</th>
+                        <th class="column-title" rowspan="2">HỢP ĐỒNG</th>
+                        <th class="column-title" rowspan="2">TÊN HÀNG</th>
+                        <th class="column-title" rowspan="2">LOẠI XE</th>
+                        <th class="column-title" rowspan="2">SỐ LƯỢNG</th>
+                        <th class="column-title" rowspan="2">GIÁ VỐN TMV BÁO GIÁ</th>
+                        <th class="column-title" rowspan="2">GIÁ HÃNG NIÊM YẾT</th>
+                        <th class="column-title" rowspan="2">%  LỢI NHUẬN NIÊM YẾT</th>
+                        <th class="column-title" rowspan="2">GIẢM GIÁ</th>
+                        <th class="column-title" rowspan="2">%  GIẢM GIÁ</th>
+                        <th class="column-title" rowspan="2">GIÁ BÁN</th>
+                        <th class="column-title" colspan="8">KHUYẾN MÃI</th>
+                        <th class="column-title" colspan="2">LỢI NHUẬN <br />(ĐÃ TRỪ HOA HỒNG)</th>
+                        <th class="column-title" rowspan="2">LÝ GIẢI</th>
+                        <th class="column-title" rowspan="2">TYT TIỀN GIANG BÁN</th>
+                        <th class="column-title" rowspan="2">AN GIANG BÁN</th>
+                        <th class="column-title" rowspan="2">KIÊN GIANG BÁN</th>
+                        <th class="column-title" rowspan="2">CÀ MAU BÁN</th>
+                        <th class="column-title" rowspan="2">VAY NH</th>
+                        <th class="column-title" rowspan="2">NGÀY CHI PHÍ TRƯỚC BẠ</th>
+                        <th class="column-title" rowspan="2">NGÀY CHI HOA HỒNG NMG</th>
+                    </tr>
+                    <tr>
+                        <th class="column-title">QUÀ TẶNG</th>
+                        <th class="column-title">PHỤ KIỆN</th>
+                        <th class="column-title">ĐỒNG SƠN</th>
+                        <th class="column-title">PHỤ TÙNG</th>
+                        <th class="column-title">PHÍ T.BẠ <br/>(CTY HỖ TRỢ)</th>
+                        <th class="column-title">BẢO HIỂM</th>
+                        <th class="column-title">CHI HOA HỒNG NMG</th>
+                        <th class="column-title">KHÁC</th>
+                        <th class="column-title">GIÁ TRỊ</th>
+                        <th class="column-title">%</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        double TotalSoLuong = 0, TotalGiaVon = 0, TotalGiaNiemYet = 0, TotalLoiNhuanNiemYet = 0, TotalGiamGia = 0, TotalPTTotalGiamGia = 0,
+                        TotalGiaBan = 0, TotalQuaTang = 0, TotalPhuKien = 0, TotalDongSon = 0, TotalPhuTung = 0, TotalPhiTruocBa = 0, TotalBaoHiem = 0,
+                        TotalChiHoHongNMG = 0, TotalKhac = 0, TotalGiaTri = 0, TotalPhanTram = 0, TotalTienGiang = 0, TotalAnGiang = 0, TotalKienGiang = 0, TotalCaMau = 0, TotalVayNH = 0;
+                        double TotalLoiNhuanNiemYet_PT = 0, TotalPTTotalGiamGia_PT = 0;
+                        double TotalLoiNhuanNiemYet_PT_CBU = 0, TotalPTTotalGiamGia_PT_CBU = 0;
+                        double PhanTramCKD = 0, PhanTramCBU = 0;
+                    }
+                    @if (ViewBag.dtbCKD.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in (ViewBag.dtbCKD as DataTable).Rows)
+                        {
+                            TotalSoLuong+= row["SoLuong"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong"]);
+                            TotalGiaVon += row["GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaVon"]);
+                            TotalGiaNiemYet += row["GiaNiemYet"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaNiemYet"]);
+                            TotalLoiNhuanNiemYet += row["LN_GNY"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_GNY"]);
+                            TotalGiamGia += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                            TotalPTTotalGiamGia += row["GiamGia_GNY"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia_GNY"]);
+                            TotalGiaBan += row["GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan"]);
+                            TotalQuaTang += row["KM_QUATANG"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_QUATANG"]);
+                            TotalPhuKien += row["KM_PKIEN"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PKIEN"]);
+                            TotalDongSon += row["KM_DONGSON"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_DONGSON"]);
+                            TotalPhuTung += row["KM_PHUTUNG"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PHUTUNG"]);
+                            TotalPhiTruocBa += row["KM_PHITRUOCBA"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PHITRUOCBA"]);
+
+                            TotalBaoHiem += row["KM_BaoHiem"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_BaoHiem"]);
+                            TotalChiHoHongNMG += row["KM_HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_HoaHong"]);
+                            TotalKhac += row["KM_KHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_KHAC"]);
+                            TotalGiaTri += row["LN_DATRUKM"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_DATRUKM"]);
+
+                            TotalPhanTram += row["LN_DATRUKM_PhanTram"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_DATRUKM_PhanTram"]);
+                            TotalTienGiang += row["TienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["TienGiang"]);
+                            TotalAnGiang += row["AnGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["AnGiang"]);
+                            TotalKienGiang += row["KienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["KienGiang"]);
+                            TotalCaMau += row["CaMau"].ToString() == "" ? 0 : Convert.ToDouble(row["CaMau"]);
+                            TotalVayNH += row["VayNH"].ToString() == "" ? 0 : Convert.ToDouble(row["VayNH"]);
+
+                            <tr>
+                                <td>@row["Ngay"]</td>
+                                <td>@row["HoTen"]</td>
+                                <td>@row["SoHopDong"]</td>
+                                <td>@row["CodeModel"]</td>
+                                <td>@row["TenModel"]</td>
+                                <td>@row["SoLuong"]</td>
+                                <td class="number">@row["GiaVon"]</td>
+
+                                <td class="number">@row["GiaNiemYet"]</td>
+                                <td class="number2">@row["LN_GNY"]</td>
+                                <td class="number">@row["GiamGia"]</td>
+                                <td class="number2">@row["GiamGia_GNY"]</td>
+                                <td class="number">@row["GiaBan"]</td>
+                                <td class="number">@row["KM_QUATANG"]</td>
+                                <td class="number">@row["KM_PKIEN"]</td>
+
+                                <td class="number">@row["KM_DONGSON"]</td>
+                                <td class="number">@row["KM_PHUTUNG"]</td>
+                                <td class="number">@row["KM_PHITRUOCBA"]</td>
+                                <td class="number">@row["KM_BaoHiem"]</td>
+                                <td class="number">@row["KM_HoaHong"]</td>
+                                <td class="number">@row["KM_KHAC"]</td>
+                                <td class="number2">@row["LN_DATRUKM"]</td>
+
+                                <td class="number2">@row["LN_DATRUKM_PhanTram"]</td>
+                                <td>@row["NoiDung"]</td>
+                                <td class="number">@row["TienGiang"]</td>
+                                <td class="number">@row["AnGiang"]</td>
+                                <td class="number">@row["KienGiang"]</td>
+                                <td class="number">@row["CaMau"]</td>
+                                <td class="number">@row["VayNH"]</td>
+
+                                <td>@row["NgayChiPhiTruocBa"]</td>
+                                <td>@row["NgayChiHoaHongNMG"]</td>
+                            </tr>
+                        }
+                        {
+                            TotalLoiNhuanNiemYet_PT = (TotalGiaNiemYet - TotalGiaVon) / TotalGiaNiemYet;
+                            TotalLoiNhuanNiemYet_PT = TotalLoiNhuanNiemYet_PT * 100;
+                            TotalPTTotalGiamGia_PT = (TotalGiamGia / TotalGiaNiemYet) * 100;
+                            PhanTramCKD = (TotalGiaTri / TotalGiaBan) * 100;
+                        }
+                        <tr style="background-color:lightblue">
+                            <td colspan="5">Tổng CKD</td>
+                            <td class="number">@TotalSoLuong.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaVon.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaNiemYet.ToString().Replace(",", ".")</td>
+                            <td class="number2">@TotalLoiNhuanNiemYet_PT.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiamGia.ToString().Replace(",", ".")</td>
+                            <td class="number2">@TotalPTTotalGiamGia_PT.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaBan.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalQuaTang.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhuKien.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalDongSon.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhuTung.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhiTruocBa.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalBaoHiem.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalChiHoHongNMG.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalKhac.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaTri.ToString().Replace(",", ".")</td>
+                            <td class="number2">@PhanTramCKD.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td class="number">@TotalTienGiang.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalAnGiang.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalKienGiang.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalCaMau.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalVayNH.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                    @{
+                        double TotalSoLuong1 = 0, TotalGiaVon1 = 0, TotalGiaNiemYet1 = 0, TotalLoiNhuanNiemYet1 = 0, TotalGiamGia1 = 0, TotalPTTotalGiamGia1 = 0,
+                        TotalGiaBan1 = 0, TotalQuaTang1 = 0, TotalPhuKien1 = 0, TotalDongSon1 = 0, TotalPhuTung1 = 0, TotalPhiTruocBa1 = 0, TotalBaoHiem1 = 0,
+                        TotalChiHoHongNMG1 = 0, TotalKhac1 = 0, TotalGiaTri1 = 0, TotalPhanTram1 = 0, TotalTienGiang1 = 0, TotalAnGiang1 = 0, TotalKienGiang1 = 0, TotalCaMau1 = 0, TotalVayNH1 = 0;
+                    }
+                    @if (ViewBag.dtbCBU != null)
+                    {
+                        if (ViewBag.dtbCBU.Rows.Count > 0)
+                        {
+                            foreach (DataRow row in (ViewBag.dtbCBU as DataTable).Rows)
+                            {
+                                TotalSoLuong1 += row["SoLuong"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong"]);
+                                TotalGiaVon1 += row["GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaVon"]);
+                                TotalGiaNiemYet1 += row["GiaNiemYet"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaNiemYet"]);
+                                TotalLoiNhuanNiemYet1 += row["LN_GNY"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_GNY"]);
+                                TotalGiamGia1 += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                                TotalPTTotalGiamGia1 += row["GiamGia_GNY"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia_GNY"]);
+                                TotalGiaBan1 += row["GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan"]);
+                                TotalQuaTang1 += row["KM_QUATANG"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_QUATANG"]);
+                                TotalPhuKien1 += row["KM_PKIEN"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PKIEN"]);
+                                TotalDongSon1 += row["KM_DONGSON"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_DONGSON"]);
+                                TotalPhuTung1 += row["KM_PHUTUNG"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PHUTUNG"]);
+                                TotalPhiTruocBa1 += row["KM_PHITRUOCBA"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PHITRUOCBA"]);
+
+                                TotalBaoHiem1 += row["KM_BaoHiem"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_BaoHiem"]);
+                                TotalChiHoHongNMG1 += row["KM_HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_HoaHong"]);
+                                TotalKhac1 += row["KM_KHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_KHAC"]);
+                                TotalGiaTri1 += row["LN_DATRUKM"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_DATRUKM"]);
+
+                                TotalPhanTram1 += row["LN_DATRUKM_PhanTram"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_DATRUKM_PhanTram"]);
+                                TotalTienGiang1 += row["TienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["TienGiang"]);
+                                TotalAnGiang1 += row["AnGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["AnGiang"]);
+                                TotalKienGiang1 += row["KienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["KienGiang"]);
+                                TotalCaMau1 += row["CaMau"].ToString() == "" ? 0 : Convert.ToDouble(row["CaMau"]);
+                                TotalVayNH1 += row["VayNH"].ToString() == "" ? 0 : Convert.ToDouble(row["VayNH"]);
+
+                                <tr>
+                                    <td>@row["Ngay"]</td>
+                                    <td>@row["HoTen"]</td>
+                                    <td>@row["SoHopDong"]</td>
+                                    <td>@row["CodeModel"]</td>
+                                    <td>@row["TenModel"]</td>
+                                    <td>@row["SoLuong"]</td>
+                                    <td class="number">@row["GiaVon"]</td>
+
+                                    <td class="number">@row["GiaNiemYet"]</td>
+                                    <td class="number2">@row["LN_GNY"]</td>
+                                    <td class="number">@row["GiamGia"]</td>
+                                    <td class="number2">@row["GiamGia_GNY"]</td>
+                                    <td class="number">@row["GiaBan"]</td>
+                                    <td class="number">@row["KM_QUATANG"]</td>
+                                    <td class="number">@row["KM_PKIEN"]</td>
+
+                                    <td class="number">@row["KM_DONGSON"]</td>
+                                    <td class="number">@row["KM_PHUTUNG"]</td>
+                                    <td class="number">@row["KM_PHITRUOCBA"]</td>
+                                    <td class="number">@row["KM_BaoHiem"]</td>
+                                    <td class="number">@row["KM_HoaHong"]</td>
+                                    <td class="number">@row["KM_KHAC"]</td>
+                                    <td class="number">@row["LN_DATRUKM"]</td>
+
+                                    <td class="number2">@row["LN_DATRUKM_PhanTram"]</td>
+                                    <td>@row["NoiDung"]</td>
+                                    <td class="number">@row["TienGiang"]</td>
+                                    <td class="number">@row["AnGiang"]</td>
+                                    <td class="number">@row["KienGiang"]</td>
+                                    <td class="number">@row["CaMau"]</td>
+                                    <td class="number">@row["VayNH"]</td>
+
+                                    <td>@row["NgayChiPhiTruocBa"]</td>
+                                    <td>@row["NgayChiHoaHongNMG"]</td>
+                                </tr>
+                            }
+
+                        }
+                        {
+                            if(TotalLoiNhuanNiemYet_PT_CBU > 0 && TotalGiaVon1 > 0 && TotalGiamGia1 > 0)
+                            {
+                                TotalLoiNhuanNiemYet_PT_CBU = (TotalGiaNiemYet1 - TotalGiaVon1) / TotalGiaNiemYet1;
+                                TotalLoiNhuanNiemYet_PT_CBU = TotalLoiNhuanNiemYet_PT_CBU * 100;
+                                TotalPTTotalGiamGia_PT_CBU = (TotalGiamGia1 / TotalGiaNiemYet1) * 100;
+                                PhanTramCBU = (TotalGiaTri1 / TotalGiaBan1) * 100;
+                            }
+
+                        }
+                        <tr style="background-color:lightblue">
+                            <td colspan="5">Tổng CBU</td>
+                            <td class="number">@TotalSoLuong1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaVon1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaNiemYet1.ToString().Replace(",", ".")</td>
+                            <td class="number2">@TotalLoiNhuanNiemYet_PT_CBU.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiamGia1.ToString().Replace(",", ".")</td>
+                            <td class="number2">@TotalPTTotalGiamGia_PT_CBU.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaBan1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalQuaTang1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhuKien1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalDongSon1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhuTung1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhiTruocBa1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalBaoHiem1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalChiHoHongNMG1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalKhac1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaTri1.ToString().Replace(",", ".")</td>
+                            <td class="number2">@PhanTramCBU.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td class="number">@TotalTienGiang1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalAnGiang1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalKienGiang1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalCaMau1.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalVayNH1.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+
+                    @{
+                        double TotalSoLuongTotal = TotalSoLuong + TotalSoLuong1,
+                            TotalGiaVonTotal = TotalGiaVon + TotalGiaVon1,
+                            TotalGiaNiemYetTotal = TotalGiaNiemYet + TotalGiaNiemYet1,
+                            TotalLoiNhuanNiemYetTotal = TotalLoiNhuanNiemYet + TotalLoiNhuanNiemYet1,
+                            TotalGiamGiaTotal = TotalGiamGia + TotalGiamGia1,
+                            TotalPTTotalGiamGiaTotal = TotalPTTotalGiamGia + TotalPTTotalGiamGia1,
+                            TotalGiaBanTotal = TotalGiaBan + TotalGiaBan1,
+                            TotalQuaTangTotal = TotalQuaTang + TotalQuaTang1,
+                            TotalPhuKienTotal = TotalPhuKien + TotalPhuKien1,
+                            TotalDongSonTotal = TotalDongSon + TotalDongSon1,
+                            TotalPhuTungTotal = TotalPhuTung + TotalPhuTung1,
+                            TotalPhiTruocBaTotal = TotalPhiTruocBa + TotalPhiTruocBa1,
+                            TotalBaoHiemTotal = TotalBaoHiem + TotalBaoHiem1,
+                            TotalChiHoHongNMGTotal = TotalChiHoHongNMG + TotalChiHoHongNMG1,
+                            TotalKhacTotal = TotalKhac + TotalKhac1,
+                            TotalGiaTriTotal = TotalGiaTri + TotalGiaTri1,
+                            TotalPhanTramTotal = TotalPhanTram + TotalPhanTram1,
+                            TotalTienGiangTotal = TotalTienGiang + TotalTienGiang1,
+                            TotalAnGiangTotal = TotalAnGiang + TotalAnGiang1,
+                            TotalKienGiangTotal = TotalKienGiang + TotalKienGiang1,
+                            TotalCaMauTotal = TotalCaMau + TotalCaMau1,
+                            TotalVayNHTotal = TotalVayNH + TotalVayNH1;
+
+                        //Tính phần trăm
+                        double Grand_LN_PT = (TotalGiaNiemYetTotal - TotalGiaVonTotal) / TotalGiaNiemYetTotal;
+                        Grand_LN_PT = Grand_LN_PT * 100;
+                        double GrandGiaGia_PT = (TotalGiamGiaTotal / TotalGiaNiemYetTotal) * 100;
+                        double PhanTramGrand = (TotalGiaTriTotal / TotalGiaBanTotal) *100;
+                    }
+
+                    <tr></tr>
+                    <tr></tr>
+                    <tr></tr>
+                    <tr style="background-color:lightblue">
+                        <td colspan="5">Grand Total</td>
+                        <td class="number">@TotalSoLuongTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiaVonTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiaNiemYetTotal.ToString().Replace(",", ".")</td>
+                        <td class="number2">@Grand_LN_PT.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiamGiaTotal.ToString().Replace(",", ".")</td>
+                        <td class="number2">@GrandGiaGia_PT.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiaBanTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalQuaTangTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhuKienTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalDongSonTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhuTungTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhiTruocBaTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalBaoHiemTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalChiHoHongNMGTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalKhacTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiaTriTotal.ToString().Replace(",", ".")</td>
+                        <td class="number2">@PhanTramGrand.ToString().Replace(",", ".")</td>
+                        <td></td>
+                        <td class="number">@TotalTienGiangTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalAnGiangTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalKienGiangTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalCaMauTotal.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalVayNHTotal.ToString().Replace(",", ".")</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    @{
+                        if (TotalSoLuongTotal == 0)
+                        {
+                            TotalSoLuongTotal = 1;
+                        }
+                        double TotalSoLuongTotal1 = TotalSoLuongTotal / TotalSoLuongTotal,
+                            TotalGiaVonTotal1 = TotalGiaVonTotal / TotalSoLuongTotal,
+                            TotalGiaNiemYetTotal1 = TotalGiaNiemYetTotal / TotalSoLuongTotal,
+                            TotalLoiNhuanNiemYetTotal1 = TotalLoiNhuanNiemYetTotal / TotalSoLuongTotal,
+                            TotalGiamGiaTotal1 = TotalGiamGiaTotal / TotalSoLuongTotal,
+                            TotalPTTotalGiamGiaTotal1 = TotalPTTotalGiamGiaTotal / TotalSoLuongTotal,
+                            TotalGiaBanTotal1 = TotalGiaBanTotal / TotalSoLuongTotal,
+                            TotalQuaTangTotal1 = TotalQuaTangTotal / TotalSoLuongTotal,
+                            TotalPhuKienTotal1 = TotalPhuKienTotal / TotalSoLuongTotal,
+                            TotalDongSonTotal1 = TotalDongSonTotal / TotalSoLuongTotal,
+                            TotalPhuTungTotal1 = TotalPhuTungTotal / TotalSoLuongTotal,
+                            TotalPhiTruocBaTotal1 = TotalPhiTruocBaTotal / TotalSoLuongTotal,
+                            TotalBaoHiemTotal1 = TotalBaoHiemTotal / TotalSoLuongTotal,
+                            TotalChiHoHongNMGTotal1 = TotalChiHoHongNMGTotal / TotalSoLuongTotal,
+                            TotalKhacTotal1 = TotalKhacTotal / TotalSoLuongTotal,
+                            TotalGiaTriTotal1 = TotalGiaTriTotal / TotalSoLuongTotal,
+                            TotalPhanTramTotal1 = TotalPhanTramTotal / TotalSoLuongTotal1,
+                            TotalTienGiangTotal1 = TotalTienGiangTotal / TotalSoLuongTotal,
+                            TotalAnGiangTotal1 = TotalAnGiangTotal / TotalSoLuongTotal,
+                            TotalKienGiangTotal1 = TotalKienGiangTotal / TotalSoLuongTotal,
+                            TotalCaMauTotal1 = TotalCaMauTotal / TotalSoLuongTotal,
+                            TotalVayNHTotal1 = TotalVayNHTotal / TotalSoLuongTotal;
+                        //tính phần phần trăm
+                        double GrandAVG_LN_PT = (TotalGiaNiemYetTotal1 - TotalGiaVonTotal1) / TotalGiaNiemYetTotal1;
+                        GrandAVG_LN_PT = GrandAVG_LN_PT * 100;
+                        double GrandAVGGiaGia_PT = (TotalGiamGiaTotal1 / TotalGiaNiemYetTotal1) * 100;
+                        double PhanTramAVGGrand = (TotalGiaTriTotal1 / TotalGiaBanTotal1) * 100;
+                    }
+                    
+                    <tr style="background-color:lightblue">
+                        <td colspan="5">Grand Average</td>
+                        <td class="number">@TotalSoLuongTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiaVonTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiaNiemYetTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number2">@GrandAVG_LN_PT.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiamGiaTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number2">@GrandAVGGiaGia_PT.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiaBanTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalQuaTangTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhuKienTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalDongSonTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhuTungTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhiTruocBaTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalBaoHiemTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalChiHoHongNMGTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalKhacTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalGiaTriTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number2">@PhanTramAVGGrand.ToString().Replace(",", ".")</td>
+                        <td></td>
+                        @*<td class="number">@TotalTienGiangTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalAnGiangTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalKienGiangTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalCaMauTotal1.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalVayNHTotal1.ToString().Replace(",", ".")</td>*@
+                        <td class="number">0</td>
+                        <td class="number">0</td>
+                        <td class="number">0</td>
+                        <td class="number">0</td>
+                        <td class="number">0</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr></tr>
+                    <tr></tr>
+                    <tr></tr>
+                    @{
+                        double TotalSoLuongLe = 0, TotalGiaVonLe = 0, TotalGiaNiemYetLe = 0, TotalLoiNhuanNiemYetLe = 0, TotalGiamGiaLe = 0, TotalPTTotalGiamGiaLe = 0,
+                        TotalGiaBanLe = 0, TotalQuaTangLe = 0, TotalPhuKienLe = 0, TotalDongSonLe = 0, TotalPhuTungLe = 0, TotalPhiTruocBaLe = 0, TotalBaoHiemLe = 0,
+                        TotalChiHoHongNMGLe = 0, TotalKhacLe = 0, TotalGiaTriLe = 0, TotalPhanTramLe = 0, TotalTienGiangLe = 0, TotalAnGiangLe = 0, TotalKienGiangLe = 0, TotalCaMauLe = 0, TotalVayNHLe = 0;
+                        double TotalLoiNhuanNiemYet_Le_PT = 0, TotalPTTotalGiamGia_Le_PT = 0, PhanTramCKD_Le = 0;
+                    }
+                    @if (ViewBag.dtbLe.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in (ViewBag.dtbLe as DataTable).Rows)
+                        {
+                            TotalSoLuongLe += row["SoLuong"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong"]);
+                            TotalGiaVonLe += row["GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaVon"]);
+                            TotalGiaNiemYetLe += row["GiaNiemYet"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaNiemYet"]);
+                            TotalLoiNhuanNiemYetLe += row["LN_GNY"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_GNY"]);
+                            TotalGiamGiaLe += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                            TotalPTTotalGiamGiaLe += row["GiamGia_GNY"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia_GNY"]);
+                            TotalGiaBanLe += row["GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan"]);
+                            TotalQuaTangLe += row["KM_QUATANG"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_QUATANG"]);
+                            TotalPhuKienLe += row["KM_PKIEN"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PKIEN"]);
+                            TotalDongSonLe += row["KM_DONGSON"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_DONGSON"]);
+                            TotalPhuTungLe += row["KM_PHUTUNG"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PHUTUNG"]);
+                            TotalPhiTruocBaLe += row["KM_PHITRUOCBA"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PHITRUOCBA"]);
+
+                            TotalBaoHiemLe += row["KM_BaoHiem"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_BaoHiem"]);
+                            TotalChiHoHongNMGLe += row["KM_HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_HoaHong"]);
+                            TotalKhacLe += row["KM_KHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_KHAC"]);
+                            TotalGiaTriLe += row["LN_DATRUKM"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_DATRUKM"]);
+
+                            TotalPhanTramLe += row["LN_DATRUKM_PhanTram"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_DATRUKM_PhanTram"]);
+                            TotalTienGiangLe += row["TienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["TienGiang"]);
+                            TotalAnGiangLe += row["AnGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["AnGiang"]);
+                            TotalKienGiangLe += row["KienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["KienGiang"]);
+                            TotalCaMauLe += row["CaMau"].ToString() == "" ? 0 : Convert.ToDouble(row["CaMau"]);
+                            TotalVayNHLe += row["VayNH"].ToString() == "" ? 0 : Convert.ToDouble(row["VayNH"]);
+                        }
+                        {
+                            TotalLoiNhuanNiemYet_Le_PT = (TotalGiaNiemYetLe - TotalGiaVonLe) / TotalGiaNiemYetLe;
+                            TotalLoiNhuanNiemYet_Le_PT = TotalLoiNhuanNiemYet_Le_PT * 100;
+                            TotalPTTotalGiamGia_Le_PT = (TotalGiamGiaLe / TotalGiaNiemYetLe) * 100;
+                            PhanTramCKD_Le = (TotalGiaTriLe / TotalGiaBanLe) * 100;
+                        }
+                        <tr style="background-color:lightblue">
+                            <td colspan="5">Lẻ</td>
+                            <td class="number">@TotalSoLuongLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaVonLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaNiemYetLe.ToString().Replace(",", ".")</td>
+                            <td class="number2">@TotalLoiNhuanNiemYet_Le_PT.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiamGiaLe.ToString().Replace(",", ".")</td>
+                            <td class="number2">@TotalPTTotalGiamGia_Le_PT.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaBanLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalQuaTangLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhuKienLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalDongSonLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhuTungLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhiTruocBaLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalBaoHiemLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalChiHoHongNMGLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalKhacLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaTriLe.ToString().Replace(",", ".")</td>
+                            <td class="number2">@PhanTramCKD_Le.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td class="number">@TotalTienGiangLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalAnGiangLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalKienGiangLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalCaMauLe.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalVayNHLe.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                    @{
+                        double TotalSoLuongGop = 0, TotalGiaVonGop = 0, TotalGiaNiemYetGop = 0, TotalLoiNhuanNiemYetGop = 0, TotalGiamGiaGop = 0, TotalPTTotalGiamGiaGop = 0,
+                        TotalGiaBanGop = 0, TotalQuaTangGop = 0, TotalPhuKienGop = 0, TotalDongSonGop = 0, TotalPhuTungGop = 0, TotalPhiTruocBaGop = 0, TotalBaoHiemGop = 0,
+                        TotalChiHoHongNMGGop = 0, TotalKhacGop = 0, TotalGiaTriGop = 0, TotalPhanTramGop = 0, TotalTienGiangGop = 0, TotalAnGiangGop = 0, TotalKienGiangGop = 0, TotalCaMauGop = 0, TotalVayNHGop = 0;
+                        double TotalLoiNhuanNiemYet_Gop_PT = 0, TotalPTTotalGiamGia_Gop_PT = 0, PhanTramCKD_Gop = 0;
+                    }
+                    @if (ViewBag.dtbGop.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in (ViewBag.dtbGop as DataTable).Rows)
+                        {
+                            TotalSoLuongGop += row["SoLuong"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong"]);
+                            TotalGiaVonGop += row["GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaVon"]);
+                            TotalGiaNiemYetGop += row["GiaNiemYet"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaNiemYet"]);
+                            TotalLoiNhuanNiemYetGop += row["LN_GNY"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_GNY"]);
+                            TotalGiamGiaGop += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                            TotalPTTotalGiamGiaGop += row["GiamGia_GNY"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia_GNY"]);
+                            TotalGiaBanGop += row["GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan"]);
+                            TotalQuaTangGop += row["KM_QUATANG"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_QUATANG"]);
+                            TotalPhuKienGop += row["KM_PKIEN"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PKIEN"]);
+                            TotalDongSonGop += row["KM_DONGSON"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_DONGSON"]);
+                            TotalPhuTungGop += row["KM_PHUTUNG"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PHUTUNG"]);
+                            TotalPhiTruocBaGop += row["KM_PHITRUOCBA"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PHITRUOCBA"]);
+
+                            TotalBaoHiemGop += row["KM_BaoHiem"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_BaoHiem"]);
+                            TotalChiHoHongNMGGop += row["KM_HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_HoaHong"]);
+                            TotalKhacGop += row["KM_KHAC"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_KHAC"]);
+                            TotalGiaTriGop += row["LN_DATRUKM"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_DATRUKM"]);
+
+                            TotalPhanTramGop += row["LN_DATRUKM_PhanTram"].ToString() == "" ? 0 : Convert.ToDouble(row["LN_DATRUKM_PhanTram"]);
+                            TotalTienGiangGop += row["TienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["TienGiang"]);
+                            TotalAnGiangGop += row["AnGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["AnGiang"]);
+                            TotalKienGiangGop += row["KienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["KienGiang"]);
+                            TotalCaMauGop += row["CaMau"].ToString() == "" ? 0 : Convert.ToDouble(row["CaMau"]);
+                            TotalVayNHGop += row["VayNH"].ToString() == "" ? 0 : Convert.ToDouble(row["VayNH"]);
+                        }
+                        {
+                            TotalLoiNhuanNiemYet_Gop_PT = (TotalGiaNiemYetGop - TotalGiaVonGop) / TotalGiaNiemYetGop;
+                            TotalLoiNhuanNiemYet_Gop_PT = TotalLoiNhuanNiemYet_Gop_PT * 100;
+                            TotalPTTotalGiamGia_Gop_PT = (TotalGiamGiaGop / TotalGiaNiemYetGop) * 100;
+                            PhanTramCKD_Gop = (TotalGiaTriGop / TotalGiaBanGop) * 100;
+                        }
+                        <tr style="background-color:lightblue">
+                            <td colspan="5">Góp</td>
+                            <td class="number">@TotalSoLuongGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaVonGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaNiemYetGop.ToString().Replace(",", ".")</td>
+                            <td class="number2">@TotalLoiNhuanNiemYet_Gop_PT.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiamGiaGop.ToString().Replace(",", ".")</td>
+                            <td class="number2">@TotalPTTotalGiamGia_Gop_PT.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaBanGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalQuaTangGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhuKienGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalDongSonGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhuTungGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalPhiTruocBaGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalBaoHiemGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalChiHoHongNMGGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalKhacGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalGiaTriGop.ToString().Replace(",", ".")</td>
+                            <td class="number2">@PhanTramCKD_Gop.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td class="number">@TotalTienGiangGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalAnGiangGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalKienGiangGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalCaMauGop.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalVayNHGop.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @*<br />
+            <br />
+            <table class="table table-striped table-bordered table-condensed">
+                <tbody>
+                    
+                </tbody>
+            </table>
+            <br />
+            <br />
+            <table class="table table-striped table-bordered table-condensed">
+                <tbody>
+                   
+                </tbody>
+            </table>*@
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        //val = val.toFixed(2);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.number2").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = Math.round(val * 100) / 100;
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

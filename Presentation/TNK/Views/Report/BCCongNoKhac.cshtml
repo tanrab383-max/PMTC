@@ -1,0 +1,446 @@
+﻿@using System.Data;
+
+@{
+    DateTime ToDate = ViewBag.ToDate;
+    double TotalNoDau = 0, TotalPSNo = 0, TotalPSThuNo = 0, TotalNoCuoi = 0, TotalPSChiNo = 0;
+}
+
+<div class="x_content">
+    <div id="BCCongNoKhac" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">CÔNG NỢ PHẢI THU KHÁC @ViewBag.ShowRoom</th>
+                </tr>
+                <tr class="headings">
+                    <th colspan='6' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br /> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">THU NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.dtbNPTK != null)
+                {
+                    int intCount = 0;
+                    foreach (DataRow row in ViewBag.dtbNPTK.Rows)
+                    {
+
+                        TotalNoDau += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPSNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalPSThuNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoi += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG</b></td>
+                        <td class="number">@TotalNoDau.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSThuNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalNoCuoi.ToString().Replace(',', '.')</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">CÔNG NỢ PHẢI TRẢ KHÁC @ViewBag.ShowRoom</th>
+                </tr>
+                <tr class="headings">
+                    <th colspan='6' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br /> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">CHI NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.dtbNPTRK != null)
+                {
+                    int intCount = 0;
+                    TotalNoDau = 0; TotalPSNo = 0; TotalPSThuNo = 0; TotalNoCuoi = 0; TotalPSChiNo = 0;
+                    foreach (DataRow row in ViewBag.dtbNPTRK.Rows)
+                    {
+
+                        TotalNoDau += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPSNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalPSChiNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoi += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG</b></td>
+                        <td class="number">@TotalNoDau.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSChiNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalNoCuoi.ToString().Replace(',', '.')</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">NỢ PHẢI THU VAY MƯỢN NGẮN HẠN @ViewBag.ShowRoom</th>
+                </tr>
+                <tr class="headings">
+                    <th colspan='6' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br /> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">THU NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.dtbNTVV != null)
+                {
+                    TotalNoDau = 0; TotalPSNo = 0; TotalPSThuNo = 0; TotalNoCuoi = 0; TotalPSChiNo = 0;
+                    int intCount = 0;
+                    foreach (DataRow row in ViewBag.dtbNTVV.Rows)
+                    {
+
+                        TotalNoDau += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPSNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalPSThuNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoi += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG</b></td>
+                        <td class="number">@TotalNoDau.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSThuNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalNoCuoi.ToString().Replace(',', '.')</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">NỢ PHẢI THU VAY MƯỢN DÀI HẠN @ViewBag.ShowRoom</th>
+                </tr>
+                <tr class="headings">
+                    <th colspan='6' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br /> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">THU NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.dtbNTVV_DaiHan != null)
+                {
+                    TotalNoDau = 0; TotalPSNo = 0; TotalPSThuNo = 0; TotalNoCuoi = 0; TotalPSChiNo = 0;
+                    int intCount = 0;
+                    foreach (DataRow row in ViewBag.dtbNTVV_DaiHan.Rows)
+                    {
+
+                        TotalNoDau += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPSNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalPSThuNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoi += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG</b></td>
+                        <td class="number">@TotalNoDau.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSThuNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalNoCuoi.ToString().Replace(',', '.')</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">NỢ PHẢI TRẢ VAY MƯỢN NGẮN HẠN @ViewBag.ShowRoom</th>
+                </tr>
+                <tr class="headings">
+                    <th colspan='6' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br /> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">CHI NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.dtbNTVM != null)
+                {
+                    TotalNoDau = 0; TotalPSNo = 0; TotalPSThuNo = 0; TotalNoCuoi = 0; TotalPSChiNo = 0;
+                    int intCount = 0;
+                    foreach (DataRow row in ViewBag.dtbNTVM.Rows)
+                    {
+
+                        TotalNoDau += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPSNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalPSThuNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoi += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG</b></td>
+                        <td class="number">@TotalNoDau.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSThuNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalNoCuoi.ToString().Replace(',', '.')</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">NỢ PHẢI TRẢ VAY MƯỢN DÀI HẠN @ViewBag.ShowRoom</th>
+                </tr>
+                <tr class="headings">
+                    <th colspan='6' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br /> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">CHI NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.dtbNTVM_DaiHan != null)
+                {
+                    TotalNoDau = 0; TotalPSNo = 0; TotalPSThuNo = 0; TotalNoCuoi = 0; TotalPSChiNo = 0;
+                    int intCount = 0;
+                    foreach (DataRow row in ViewBag.dtbNTVM_DaiHan.Rows)
+                    {
+
+                        TotalNoDau += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPSNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalPSThuNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoi += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG</b></td>
+                        <td class="number">@TotalNoDau.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSThuNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalNoCuoi.ToString().Replace(',', '.')</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">NỢ PHẢI TRẢ GIẤY TỜ XE @ViewBag.ShowRoom</th>
+                </tr>
+                <tr class="headings">
+                    <th colspan='6' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br /> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">CHI NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.dtbNPTGTX != null)
+                {
+                    TotalNoDau = 0; TotalPSNo = 0; TotalPSThuNo = 0; TotalNoCuoi = 0; TotalPSChiNo = 0;
+                    int intCount = 0;
+                    foreach (DataRow row in ViewBag.dtbNPTGTX.Rows)
+                    {
+
+                        TotalNoDau += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPSNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalPSThuNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoi += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG</b></td>
+                        <td class="number">@TotalNoDau.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSThuNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalNoCuoi.ToString().Replace(',', '.')</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">NỢ PHẢI TRẢ THU HỘ KHÁC @ViewBag.ShowRoom</th>
+                </tr>
+                <tr class="headings">
+                    <th colspan='6' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br /> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">CHI NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.dtbNPTNTHK != null)
+                {
+                    TotalNoDau = 0; TotalPSNo = 0; TotalPSThuNo = 0; TotalNoCuoi = 0; TotalPSChiNo = 0;
+                    int intCount = 0;
+                    foreach (DataRow row in ViewBag.dtbNPTNTHK.Rows)
+                    {
+
+                        TotalNoDau += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPSNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalPSThuNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoi += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2"><b>TỔNG</b></td>
+                        <td class="number">@TotalNoDau.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalPSThuNo.ToString().Replace(',', '.')</td>
+                        <td class="number">@TotalNoCuoi.ToString().Replace(',', '.')</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

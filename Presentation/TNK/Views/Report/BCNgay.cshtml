@@ -1,0 +1,505 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo kiểm toán";
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_center">
+            <label class="title__report">BÁO CÁO KIỂM TOÁN</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel" style="border-radius:10px">
+                <div class="x_content">
+                    <br />
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                        <div class="row">
+                            <div class="form-group">
+                                @*<label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name"></label>*@
+                                <div class="col-sm-2">
+                                    <label>Từ ngày</label>
+                                    <input type="text" id="fromDate" required="required" class="date form-control" placeholder="Từ ngày" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                                </div>
+                                <div class="col-sm-2">
+                                    <label>Đến ngày</label>
+                                    <input type="text" id="toDate" required="required" class="date form-control" placeholder="Đến ngày" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                                </div>
+                                @*<div class="col-sm-3">
+                                    <label>Báo cáo</label>
+                                    <select class="form-control" id="reportType">
+                                        <option value="BCKT_TatCa">Tất Cả</option>
+                                        <option value="BCKT_CanDoi">Cân Đối</option>
+                                        <option value="BCKT_TongHop">Tổng Hợp</option>
+                                        <option value="BCKT_ChiTiet">Chi Tiết</option>
+                                        <option value="">KQKD</option>
+                                        <option value="">HDD</option>
+                                        <option value="BCKT_XNT">XNT</option>
+                                        <option value="">Phát Tiến ĐT</option>
+                                        <option value="">Mua TĐP-XD-SC-MMTB</option>
+                                        <option value="">Long Thành</option>
+                                        <option value="">Xe TestDrive</option>
+                                        <option value="BCKT_TamUng">Tạm Ứng</option>
+                                        <option value="BCKT_CongNoDV_BH">Công Nợ DV-BH</option>
+                                    </select>
+                                </div>*@
+                                <div class="col-sm-5">
+                                    @*<a onclick="GetReportInfo()" style="margin-top:25px" class="btn btn-primary"><i class="fa fa-search"></i> Xem báo cáo</a>&nbsp;*@
+                                    @*<a id="btnViewReport" style="margin-top:25px" class="btn btn-primary"><i class="fa fa-search"></i> Xem báo cáo</a>&nbsp;*@
+                                    <a id="btnExportExcel_v2" class="btn btn-success" style="margin-top:25px"><i class="fa fa-file-excel-o"></i> Xuất excel</a>&nbsp;
+                                    @*<a id="btnExportExcelAll" class="btn btn-success"><i class="fa fa-file-excel-o"></i> Xuất excel tất cả báo cáo</a>*@
+                                    @*<div id="loading" style="display:none"><img src="~/assests/vendors/jquery-smart-wizard/images/loader.gif" /></div>*@
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="x_content report_loading" style="text-align:center; display:none">
+                    <img class="img_loading" src="~/assests/imgloading/Loader.gif" />
+                    <span class="content_loading">Đang xuất báo cáo vui lòng chờ ........</span>
+                </div>
+                <!--<div class="x_content">
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tab" role="tablist">
+                            <li role="presentation" class="active" data-url="/Report/BCKiemToan_CanDoi">
+                                <a href="#tab_CD" id="th-tab" role="tab" data-toggle="tab" aria-expanded="true">Cân đối</a>
+                            </li>
+                            <li role="presentation" class="" data-url="/Report/BCKiemToan_TongHop">
+                                <a href="#tab_TH" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">Tổng hợp</a>
+                            </li>-->
+                @*<li role="presentation" class="" data-url="/Report/BCKiemToan_BCThang">
+                        <a href="#tab_BCThang" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">BC Thang</a>
+                    </li>*@
+                <!--<li role="presentation" class="" data-url="/Report/BCKiemToan_ChiTiet">
+                        <a href="#tab_CT" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">Chi tiết</a>
+                    </li>
+                    <li role="presentation" class="" data-url="/Report/BCKiemToan_KetQuaKinhDoanh">
+                        <a href="#tab_KQKD" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">KQKD</a>
+                    </li>
+                    <li role="presentation" class="" data-url="/Report/BCKiemToan_XuatNhapTon">
+                        <a href="#tab_XNT" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">XNT</a>
+                    </li>
+                    <li role="presentation" class="" data-url="/Report/BCKiemToan_CNBH">
+                        <a href="#tab_CNBH" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">CNBH</a>
+                    </li>
+                    <li role="presentation" class="" data-url="/Report/BCKiemToan_TamUng">
+                        <a href="#tab_TAUN" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">TamUng</a>
+                    </li>
+                    <li role="presentation" class="" data-url="/Report/BCKiemToan_DuThau">
+                        <a href="#tab_DuThau" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">DuThau</a>
+                    </li>
+                    <li role="presentation" class="" data-url="/Report/BCKiemToan_MMTB_CCDC">
+                        <a href="#tab_MMTB_CCDC" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">MMTB_CCDC</a>
+                    </li>
+                    <li role="presentation" class="" data-url="/Report/BCKiemToan_XDSC">
+                        <a href="#tab_XDSC" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="false">XDSC_T.Diver</a>
+                    </li>
+                </ul>
+
+
+                <div id="myTabContent" class="tab-content">
+                    <div role="tabpanel" class="tab-pane fade active in" id="tab_CD" aria-labelledby="th-tab"></div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_TH" aria-labelledby="th-tab"></div>-->
+                @*<div role="tabpanel" class="tab-pane fade" id="tab_BCThang" aria-labelledby="ct-tab"></div>*@
+                <!--<div role="tabpanel" class="tab-pane fade" id="tab_CT" aria-labelledby="ct-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_KQKD" aria-labelledby="ct-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_XNT" aria-labelledby="ct-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_CNBH" aria-labelledby="ct-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_TAUN" aria-labelledby="ct-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_DuThau" aria-labelledby="ct-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_MMTB_CCDC" aria-labelledby="ct-tab"></div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_XDSC" aria-labelledby="ct-tab"></div>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>
+@*<input type="hidden" id="idTab" value="#tab_TH" />
+    <input type="hidden" id="url" value="/Report/BCKiemToan_TongHop" />
+
+    <div id="reportall" style="display:none">
+    </div>*@
+
+<style type="text/css">
+
+    .title_center {
+        width: 100%;
+        float: left;
+        /* height: 40px; */
+        display: block;
+        text-align: center;
+    }
+
+    .title__report {
+        font-weight: bold;
+        font-size: 24px;
+        text-align: center;
+        color: red;
+    }
+
+    .form-control {
+        border-radius: 5px;
+    }
+
+    .img_loading {
+        width: 100px;
+    }
+
+    .content_loading {
+        display: block;
+        margin: 15px 0;
+        color: deeppink;
+        font-weight: bold;
+    }
+</style>
+
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script>
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.replace(",", ".");
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+        $("#myTab li").on("click", function () {
+            debugger;
+            $("#FromDate").prop("disabled", false);
+            GetReportInfo();
+        });
+
+        function GetReportInfo() {
+            debugger;
+            var url = $($("#myTab li.active")[0]).attr("data-url");
+            //alert(url);
+            var viewbox = $($($("#myTab li.active a")[0]).attr("href"));
+            viewbox.html('<p align="center"><img src="/assests/images/loading.gif"/></p>');
+            viewbox.show();
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: { "FromDate": $("#FromDate").val(), "ToDate": $("#ToDate").val() },
+                success: function (result) {
+                    viewbox.html(result);
+                    switch (viewbox.selector) {
+                        case "#tab_TH":
+                            var tableTH = viewbox.find($("div#BCKiemToan_TongHop_div tbody"));
+                            MergeRow(tableTH);
+                            var tableTH_New = viewbox.find($("#dtBangThanhToanNHapNH"));
+                            MergeRow(tableTH_New);
+                            break;
+                        case "#tab_CT":
+                            var tableCT = viewbox.find($("div#BCKiemToan_ChiTiet_div tbody"));
+                            MergeRow(tableCT);
+
+                            break;
+                        case "#tab_KQKD":
+                            var tableKQKD = viewbox.find($("div#BCKiemToan_KetQuaKinhDoanh_div tbody"));
+                            MergeRow(tableKQKD);
+                            break;
+                        case "#tab_XNT":
+                            var tableXNT = viewbox.find($("div#BCKiemToan_XuatNhapTon_div tbody"));
+                            MergeRow(tableXNT);
+                        //case "#tab_TAUN" :
+                        //    var tableTAUN = viewbox.find($("div#BCKiemToan_TamUng_div tbody"));
+                        //    MergeRow(tableTAUN);
+                        case "#tab_THBH":
+                            var tableTHBH = viewbox.find($("div#BCKiemToan_THBH_div tbody"));
+                            MergeRow(tableTHBH);
+                        default:
+                            break;
+                    }
+                    $(viewbox).removeAttr("style");
+                },
+                error: function (result) {
+                    viewbox.html('<p align="center">Không thể hiển thị danh sách</p>');
+                    alert("Lỗi: Không thể tải danh sách");
+                }
+            });
+        };
+
+        $('#btnViewReport').on('click', function () {
+            // xuất Excel
+            let fromDate = $('#fromDate').val();
+            let toDate = $('#toDate').val();
+            let reportType = $('#reportType').val();
+            if (dateDiff(newDate(fromDate), newDate(toDate)) < 0)
+                toastWarning("Vui lòng chọn đến ngày lớn hơn từ ngày");
+            else {
+                // loading
+                $('#btnViewReport').attr('disabled', true);
+                $('.report_loading').css('display', 'block');
+                // load view
+
+                $.ajax({
+                    url: "/Report/Report_BC_KTNB",
+                    type: "POST",
+                    data: { "fromDate": fromDate, "toDate": toDate, "reportType": reportType, "type": "view" },
+                    success: function (result) {
+                        closeLoading();
+                        download(result.Obj, "BCKiemToan" + "_" + fromDate + "_" + toDate);
+                    },
+                    error: function (result) {
+                        console.log(result);
+                    }
+                });
+            }
+        });
+
+
+        $('#btnExportExcel_v2').on('click', function () {
+            // xuất Excel
+            let fromDate = $('#fromDate').val();
+            let toDate = $('#toDate').val();
+            let reportType = $('#reportType').val()
+
+            if (dateDiff(newDate(fromDate), newDate(toDate)) < 0)
+                toastWarning("Vui lòng chọn đến ngày lớn hơn từ ngày");
+            else {
+                // loading
+                $('#btnExportExcel_v2').attr('disabled', true);
+                $('.report_loading').css('display', 'block');
+
+                // xuất excel
+
+                $.ajax({
+                    url: "/Report/Report_BC_KTNB",
+                    type: "POST",
+                    data: { "fromDate": fromDate, "toDate": toDate, "reportType": reportType },
+                    success: function (result) {
+                        closeLoading();
+                        download(result.Obj, "BCKiemToan" + "_" + fromDate + "_" + toDate);
+                    },
+                    error: function (result) {
+                        console.log(result);
+                    }
+                });
+            }
+        });
+
+        function closeLoading() {
+            $('.report_loading').css('display', 'none');
+            $('#btnExportExcel_v2').attr('disabled', false);
+        }
+
+        function newDate(input) {
+            let iTemp = input.split("/");
+            return new Date(iTemp[2], iTemp[1], iTemp[0]);
+        }
+
+        function dateDiff(fromDate, toDate) {
+            return toDate - fromDate;
+        }
+
+        $("#btnExportExcel").click(function () {
+            debugger;
+            if ($($("#myTab li.active")[0]).attr("data-url") != "/Report/CongNo") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = $($("#myTab li.active")[0]).attr("data-url").replace("/Report/", "#");
+                idtable = idtable + "_div";
+                //alert(idtable);
+                //var idtable = $($("#myTab li.active")[0]).attr("data-url").replace("/Report/", "#");
+                var result = $(idtable).html();
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                if (idtable == "#BCKiemToan_TongHop_div") {
+                    for (var i = 0; i <= 100; i++) {
+                        result = result.replace('<td hidden></td>', '');
+                    }
+                }
+
+                //result = result.replace('table ', 'table style="border:solid"')//style="text-align:left;width:60% "
+                //result = result.replace('style="text-align:left;width:60% "', 'style="text-align:left;width:60%;border:1px solid black;"');
+                //alert(result);
+
+                tableToExcel(result, 'Report' + $("#idTab").val().replace("#tab_", "BC") + '_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/Report/CongNo?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+
+        var tableToExcel = (function () {
+            var uri = 'data:application/vnd.ms-excel;base64,'
+                , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+                , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+                , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            return function (table, name) {
+                //if (!table.nodeType) table = document.getElementById(table)
+                var ctx = { worksheet: name || 'Worksheet', table: table }
+                var link = document.createElement("A");
+                link.href = uri + base64(format(template, ctx));
+                link.download = name || 'Baocao.xls';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })()
+
+        $("#btnExportExcelAll").click(function () {
+            debugger;
+            $.fileDownload("/Report/ReportAll_KiemToan", {
+                httpMethod: "POST",
+                data: {
+                    FromDate: $("#FromDate").val(),
+                    ToDate: $("#ToDate").val()
+                },
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+
+        function MergeRow(table) {
+            debugger;
+            var rows = table.find($("tr")); // Lấy các dòng trong table ra
+            var colsLength = $(rows[0]).find($("td")).length; // kiểm tra số cột
+            var removeLater = new Array();
+            for (var i = 0; i < colsLength; i++) { // Merge giá trị các dòng cho từng cột
+                var startIndex = 0;
+                var lastIndex = 0;
+                var flag = 0;
+                var startText = $($(rows[0]).find("td")[i]).attr("group");
+                if (startText != "" && startText != null) {
+                    for (var j = 1; j < rows.length; j++) {
+                        var row = $(rows[j]);
+                        var col = $(row.find("td")[i]);
+                        var currentText = col.attr("group");
+                        if (currentText == startText) {
+
+                            col.css("background", "gray");
+                            removeLater.push(col);
+                            lastIndex = j;
+                        } else {
+
+                            var spanLength = lastIndex - startIndex;
+                            if (spanLength >= 1) {
+                                console.log(startIndex + " - " + lastIndex)
+                                $($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                            }
+                            flag = spanLength;
+                            lastIndex = j;
+                            startIndex = j;
+                            startText = currentText;
+                        }
+                    }
+                }
+                var spanLength = lastIndex - startIndex;
+                debugger;
+                if (spanLength >= 1) {
+                    console.log(startIndex + " - " + lastIndex)
+                    //$($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                }
+            }
+
+            for (var i in removeLater) {
+                $(removeLater[i]).remove();
+            }
+        }
+
+        function parseDate(str) {
+            var mdy = str.split('/');
+            return new Date(mdy[2], mdy[1], mdy[0]);
+        }
+
+        function MergeRow1(table) {
+            debugger;
+            var rows = table.find($("tr")); // Lấy các dòng trong table ra
+            var colsLength = $(rows[0]).find($("td")).length; // kiểm tra số cột
+            var removeLater = new Array();
+            for (var i = 0; i < colsLength; i++) { // Merge giá trị các dòng cho từng cột
+                var startIndex = 0;
+                var lastIndex = 0;
+                var flag = 0;
+                var startText = $($(rows[0]).find("td")[i]).attr("group1");
+                if (startText != "" && startText != null) {
+                    for (var j = 1; j < rows.length; j++) {
+                        var row = $(rows[j]);
+                        var col = $(row.find("td")[i]);
+                        var currentText = col.attr("group1");
+                        if (currentText == startText) {
+
+                            col.css("background", "gray");
+                            removeLater.push(col);
+                            lastIndex = j;
+                        } else {
+
+                            var spanLength = lastIndex - startIndex;
+                            if (spanLength >= 1) {
+                                console.log(startIndex + " - " + lastIndex)
+                                $($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                            }
+                            flag = spanLength;
+                            lastIndex = j;
+                            startIndex = j;
+                            startText = currentText;
+                        }
+                    }
+                }
+                var spanLength = lastIndex - startIndex;
+                debugger;
+                if (spanLength >= 1) {
+                    console.log(startIndex + " - " + lastIndex)
+                    //$($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                }
+            }
+
+            for (var i in removeLater) {
+                $(removeLater[i]).remove();
+            }
+        }
+
+        function download(data, filename) {
+            var file = new Blob([s2ab(atob(data))], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            if (window.navigator.msSaveOrOpenBlob) // IE10+
+                window.navigator.msSaveOrOpenBlob(file, filename);
+            else { // Others
+                var a = document.createElement("a"),
+                    url = URL.createObjectURL(file);
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function () {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 0);
+            }
+        }
+
+        function s2ab(s) {
+            var buf = new ArrayBuffer(s.length);
+            var view = new Uint8Array(buf);
+            for (var i = 0; i != s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+            return buf;
+        }
+
+    </script>
+
+}

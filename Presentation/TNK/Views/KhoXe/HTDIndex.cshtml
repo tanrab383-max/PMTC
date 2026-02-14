@@ -1,0 +1,149 @@
+﻿@model List<TNK.Core.Domain.View.ViewTuiHangTrenDuong>
+@{ 
+    ViewBag.Title = "Kho xe hàng trên đường";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+    <div class="title_right" style="margin-left:88%">
+        <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu(*.xlxs)</span></a>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">                           
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>Nhà cung cấp</th>
+                                            <th>Số tiền đang có</th>                                         
+                                            <th></th> 
+                                            <th></th> 
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@item.NhaCungCap</td>
+                                                <td class="number">@TNK.Core.Common.ToCurrencyString( item.SoTienDangCo)</td>  
+                                                <th><a href="#" onclick="ImportData('@item.MaTui')" title="Import dữ liệu">Import Excel</a></th>
+                                                <td><a href="/KhoXe/HTDCreate?p=@item.NhaCungCap"> Nhập xe </a></td>                                          
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @*@Html.Partial("~/Views/Shared/_Paging.cshtml");*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+@section scripts
+{
+<script src="~/Scripts/jquery.fileDownload.js"></script>
+<script type="text/javascript">
+
+    @*$(document).ready(function () {
+        var id = '@ViewBag.result';
+        if (id != "") {
+            toastWarning("Số khung đã bị trùng.");
+            return false;
+        }
+    });*@
+        var datafile = new FormData();
+        var maTui = "";
+        function ImportData(matui) {
+            maTui = matui;
+            $("#txtUploadFile").trigger('click');
+        }
+        $('#txtUploadFile').on('change', function (e) {
+            if (document.getElementById("txtUploadFile").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/KhoXe/ImportData?maTui=" + maTui,
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile").value = "";
+                        datafile.delete('file');
+                    },
+                    success: function (result) {
+                        if (result.IsError)
+                            toastError(result.Message);
+                        else {
+                            toastSuccess("Import thành công");
+                            //window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        toastError("Lỗi: Import file excel.");
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+        function laygilemau()
+        {
+            @*$.ajax({
+                url: "@Url.Action("CreateExcel")",
+                async: true,
+            type: "POST",
+            traditional: true,
+            cache: false,
+            statusCode: {
+                400: function () {
+                    alert("Sorry! We cannot process you request");
+                },
+                200: function () {
+                    $("#fileHolder")
+                    .attr('src', 
+                    '@Url.Action("ExcelResult")?reportHeader=' + 
+                    reportHeader);
+                }
+            }
+        });*@
+        }
+    $("#FileMau").click(function () {
+        $.fileDownload("/KhoXe/ExportFile", {
+            httpMethod: "POST",
+            data: {},
+            failMessageHtml: "Có lỗi trong khi tải file excel."
+        });
+        return false;
+    });
+</script>
+}

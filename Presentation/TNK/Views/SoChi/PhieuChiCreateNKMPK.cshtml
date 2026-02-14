@@ -1,0 +1,717 @@
+﻿@model TNK.Model.SoChiModel
+@{
+    var item = Model.Item;
+    string type = "TKMPHKI";
+    string action = "Create";
+    double totalCoc = 0;
+    double ThucThu = 0;
+    int SoDong = ViewBag.ListPhuTung.Rows.Count;
+
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Chi tiết phiếu chi</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="form-data" method="post" class="form-horizontal form-label-left">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(x => item.MaPhieuChi)
+                    @Html.HiddenFor(x => item.MaLoaiPhieu)
+                    @Html.HiddenFor(x => item.UpdatedDate)
+                    @Html.HiddenFor(x => item.MaPhieuLienQuan)
+                    <input type="hidden" name="nokhuyenmai" id="nokhuyenmai" value="@ViewBag.NoKhuyenMai" />
+                    @*<input type="hidden" name="type" id="type" value="@type" />*@
+
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số chứng từ (*)</label>
+                                @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "10" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày chi</label>
+                                <input type="text" class="form-control input-sm date " name="item.NgayThu" value="@item.NgayChi.ToString("dd/MM/yyyy")" />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                @*Lộc: Xét ràng buộc TPHKI*@
+                                <label>Số hợp đồng (*)</label>
+                                @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong", @id = "SoHopDong" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group" id="DT">
+                                <label>Điện thoại</label>
+                                @Html.EditorFor(x => item.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm", @id = "dienthoai" } })
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-sm-8 col-xs-12">
+                            <div class="form-group" id="DC">
+                                <label>Địa chỉ</label>
+                                @Html.EditorFor(x => item.DiaChi, new { htmlAttributes = new { @class = "form-control input-sm", @id = "diachi" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group" id="HTKH">
+                                <label>Họ tên khách hàng (*)</label>
+                                @Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm HoTen", @id = "hoten" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Biển Số</label>
+                                @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm BienSo" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số khung</label>
+                                @Html.EditorFor(x => item.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm HoTen", @maxlength = "17" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Loại xe</label>
+                                @Html.DropDownListFor(x => item.LoaiXe, Model.MaXe.Select(x => new SelectListItem { Text = x.MaModel + "-" + x.TenModel, Value = x.Id.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Nợ khuyến mãi</label>
+                                @Html.EditorFor(x => item.TongCong, new { htmlAttributes = new { @class = "form-control input-sm number" } })
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Nội dung</label>
+                                @Html.TextAreaFor(x => item.NoiDung, new { @class = "form-control input-sm" })
+                            </div>
+                        </div>
+                        @*//phần trúc thêm design mới*@
+                        @*// Lộc update: 2020/08/25*@
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr>
+                                        <th>Kho Xuất</th>
+                                        <th>Tên Phụ Tùng</th>
+                                        <th>Công lắp</th>
+                                        <th>Giá vốn</th>
+                                        <th>Tổng khuyến mãi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.ListPhuTung.Rows.Count > 0)
+                                    {
+
+                                        for (int j = 0; j < ViewBag.ListPhuTung.Rows.Count; j++)
+                                        {
+                                            var a = ViewBag.ListPhuTung.Rows[j]["TenHang"];
+                                            if (ViewBag.ListPhuTung.Rows[j]["TongKM"].ToString() != "")
+                                            {
+                                                ThucThu += Convert.ToDouble(ViewBag.ListPhuTung.Rows[j]["TongKM"]);
+                                            }
+                                            //var i = ViewBag.ListPhuTung[j];
+                                            <tr>
+                                                <td><input type="text" value="@ViewBag.ListPhuTung.Rows[j]["MaKho"]" name="LPT[@j].MaKho" id="LPT[@j].MaKho" readonly style="border:hidden" hidden />@ViewBag.ListPhuTung.Rows[j]["TenKho"]</td>
+                                                @if (ViewBag.ListPhuTung.Rows[j]["TenHang"].ToString() != "")
+                                                {
+                                                    <td><input type="text" class="form-control input-sm" name="LPT[@j].TenHang" value="@ViewBag.ListPhuTung.Rows[j]["TenHang"]" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><input type="text" class="form-control input-sm" name="LPT[@j].TenHang" /></td>
+                                                }
+                                                @if (ViewBag.ListPhuTung.Rows[j]["TienCong"].ToString() != "")
+                                                {
+                                                    <td><input type="text" class="form-control input-sm number" name="LPT[@j].TienCong" id="LPT[@j]TienCong" value="@ViewBag.ListPhuTung.Rows[j]["TienCong"]" onchange="TienCong(this)" maxlength="15" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><input type="text" class="form-control input-sm number" name="LPT[@j].TienCong" id="LPT[@j]TienCong" value="0" onchange="TienCong(this)" maxlength="15" /></td>
+                                                }
+                                                @if (ViewBag.ListPhuTung.Rows[j]["GiaVon"].ToString() != "")
+                                                {
+                                                    <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiaVon" id="LPT[@j]GiaVon" value="@ViewBag.ListPhuTung.Rows[j]["GiaVon"]" onchange="GiaVon(this)" maxlength="15" /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiaVon" id="LPT[@j]GiaVon" value="0" onchange="GiaVon(this)" maxlength="15" /></td>
+                                                }
+                                                @if (ViewBag.ListPhuTung.Rows[j]["TongKM"].ToString() != "")
+                                                {
+                                                    <td><input type="text" class="form-control input-sm number" name="LPT[@j].TongKM" id="LPT[@j]TongKM" value="@ViewBag.ListPhuTung.Rows[j]["TongKM"]" onchange="TongKM(this)" maxlength="15" readonly /></td>
+                                                }
+                                                else
+                                                {
+                                                    <td><input type="text" class="form-control input-sm number" name="LPT[@j].TongKM" id="LPT[@j]TongKM" value="0" onchange="TongKM(this)" maxlength="15" readonly /></td>
+                                                }
+                                            </tr>
+                                        }
+                                    }
+                                    <tr>
+                                        <td colspan="2">Tổng cộng</td>
+                                        <td id="TongTienCong"><input value="0" type="text" style="border:hidden;color:black" /></td>
+                                        <td id="TongGiaVon"><input value="0" type="text" style="border:hidden;color:black" /></td>
+                                        <td id="TongKM"><input value="0" type="text" style="border:hidden;color:black" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Kế toán trưởng</label>
+                                @Html.DropDownListFor(x => item.KeToanTruong, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người lập phiếu</label>
+                                @Html.DropDownListFor(x => item.NguoiLapPhieu, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người nộp tiền</label>
+                                @Html.DropDownListFor(x => item.NguoiNopTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người thu tiền (*)</label>
+                                @Html.DropDownListFor(x => item.NguoiThuTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth", @id = "NguoiThuTien" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ln_solid"></div>
+                    <div class="form-group center">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            @if ((type == "TCOBX" || type == "TCODV") && item.ConLai != item.TongCong)
+                            {
+                                //coc da su dung khong cho hien thi nut luu
+                            }
+                            else if (action == "View")
+                            {
+                                <a class="Back" href="/SoThu/Index">Quay lại</a>
+                            }
+                            else
+                            {
+                                if (ViewBag.CurrentUser != "banhang")
+                                {
+                                    <input type="submit" name="submit" id="Create" value="Lưu" class="btn btn-success" onsubmit="return submit()" />
+                                    <input type="submit" name="submit" id="New" value="Lưu và thêm mới" class="btn btn-success" />
+                                }
+
+                            }
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<a class="Back" href="/SoThu/@(type)Index">Quay lại</a>*@
+
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/SoThuCommon.js?v=1.0.0.2"></script>
+    <script>
+        $("#TongCongThanhToan").val(parseFloat($("#TongCongThanhToan").text()));
+        var maPhieuThu = '@item.MaPhieuChi';
+        function Cal() {
+            CalPK();
+        }
+    </script>
+    <script>
+        $(".addHTTT").click(function () {
+
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            if(html.indexOf("disabled") > 0)
+                html = html.split("disabled").join("");
+            //alert(html);
+            @if (Model.CTPT.Count > 0)
+            {
+                 @Html.Raw("html=html.replace('" + Model.CTPT[0].Id + "','');")
+                 @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan + "','');")
+                 @Html.Raw("html=html.replace('selected','');")
+                 @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+
+        $(document).on("change", ".number", function () {
+
+            var valnumber = $(this).val();
+            if (valnumber != "") {
+                valnumber = valnumber.split(",").join("");
+                valnumber = parseInt(valnumber);
+                // val = val * 1000;
+                $(this).val(valnumber.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+            let total = 0;
+            //03032018
+            if($("#type").val() == "TBAHI")
+            {
+                var tongcong = 0;
+                setTimeout(function () {
+                    $("#tbody").find("tr").map(function (key, val) {
+                        if ($(val).is(":visible")) {
+                            var isDeleted = $(val).find(".IsDeleted").val();
+
+                            if (isDeleted != "true") {
+                                let i = parseInt($(val).find(".number").val().split(",").join(""));
+                                if (!isNaN(i))
+                                    tongcong += i;
+                            }
+
+                        }
+                    });
+                });
+                $("#ThanhToan").find(".Total").html(tongcong.toLocaleString('en-us'));
+                $("#ThanhToan").find(".Total").val(tongcong.toLocaleString('en-us'));
+            }
+            CalThanhToan($(this));
+            //if($("#type").val() == "TKHAC")
+            //    TinhConLai_TKHAC();
+        });
+        $(document).on("change", ".ThanhTienBH,.GiamGiaBH", function () {
+
+            let GiaBanBH = 0;
+            let GiamGiaBH = 0;
+            let ThanhTienBH = 0;
+            let HoaHong = 0;
+            ThanhTienBH = GiaBanBH = parseInt($(".ThanhTienBH").val().split(",").join(""));
+            GiaBanBH = parseInt($(".GiaBanBH").val().split(",").join(""));
+            GiamGiaBH = parseInt($(".GiamGiaBH").val().split(",").join(""));
+            $(".GiaBanBH").val((ThanhTienBH + GiamGiaBH).toLocaleString('en-us'));
+        });
+        //$("#Create").click(function(){
+        //
+        //    if (CheckValidatePhieuThu() == false)
+        //        return false;
+        //})
+        $("#form-data").submit(function () {
+
+            CalThanhToan(this);
+            let flag = true;
+            $("#tbody").find("tr").map(function (key, val) {
+                if ($(val).is(":visible")) {
+                    var tuitien = $(val).find(".Temp").select2('val');
+                    var sotien = $(val).find(".number").val().split(",").join("");
+                    tuitien = tuitien == "Chọn" ? "" : tuitien;
+                    sotien = sotien == "" ? 0 : parseInt(sotien);
+                    if (tuitien != "" && sotien === 0 && $("#type").val() != "TBDTKKM"){
+                        toastWarning("Vui lòng nhập số tiền");
+                        $(val).find(".number").focus();
+                        flag = false;
+                        return;
+                    }
+                    if (tuitien == "" && sotien != 0 && $("#type").val() != "TBDTKKM") {
+                        toastWarning("Vui lòng nhập túi tiền");
+                        $(val).find(".Temp").focus();
+                        flag = false;
+                        return;
+                    }
+                }
+            })
+            if (!flag) {
+                return false;
+            }
+            if (CheckValidatePhieuThu() == false)
+                return false;
+            if (CheckValidateThongTinNguoiThanhToan_PhieuThu() == false)
+                return false;
+            var lst = $(".number");
+            lst.map(function (key, val) {
+                $(val).val($(val).val().split(",").join(""));
+            });
+
+        })
+        function change(a) {
+
+            var num = $(a).val().split(",").join("");
+            var tot = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+            if(parseInt(num) > parseInt(tot))
+            {
+                var conlai = 0;
+                $(a).val(tot.toLocaleString('en-us'));
+                $(a).html(tot.toLocaleString('en-us'));
+                $(a).closest("tr").find(".SoTienConLai").val(conlai.toLocaleString('en-us'));
+            }
+            else
+            {
+                $(a).closest("tr").find(".SoTienConLai").val((tot - num).toLocaleString('en-us'));
+            }
+            Cal();
+            TinhConLai();
+            if($("#type").val() == "TKHAC")
+                TinhConLai_TKHAC();
+        }
+    </script>
+    <script>
+            var Dem = @SoDong;
+            function TienCong()
+                {
+                    var TongTienCong = 0;
+                    for (var i = 0; i < Dem; i++)
+                    {
+                        var TienCong = parseInt($("#LPT\\[" + i + "\\]TienCong").val().split(",").join(""));
+                        var GiaVon = parseInt($("#LPT\\[" + i + "\\]GiaVon").val().split(",").join(""));
+                        if (isNaN(TienCong) != true)
+                        {
+                            TongTienCong += TienCong;
+                            $("#LPT\\[" + i + "\\]TongKM").val((TienCong + GiaVon).toLocaleString('en-us'));
+                            TongKM();
+                        }
+                        else
+                        {
+                            TienCong = 0;
+                            $("#LPT\\[" + i + "\\]TongKM").val((TienCong + GiaVon).toLocaleString('en-us'));
+                            TongTienCong += 0;
+                        }
+                        //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                    }
+                $("#TongTienCong").html(TongTienCong.toLocaleString('en-us'));
+            }
+            function GiaVon() {
+                var TongGiaVon = 0;
+                for (var i = 0; i < Dem; i++) {
+                    var TienCong = parseInt($("#LPT\\[" + i + "\\]TienCong").val().split(",").join(""));
+                    var GiaVon = parseInt($("#LPT\\[" + i + "\\]GiaVon").val().split(",").join(""));
+                    if (isNaN(GiaVon) != true) {
+                        TongGiaVon += GiaVon;
+                        $("#LPT\\[" + i + "\\]TongKM").val((TienCong + GiaVon).toLocaleString('en-us'));
+                        TongKM();
+                    }
+                    else {
+                        GiaVon = 0
+                        $("#LPT\\[" + i + "\\]TongKM").val((TienCong + GiaVon).toLocaleString('en-us'));
+                        TongGiaVon += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongGiaVon").html(TongGiaVon.toLocaleString('en-us'));
+            }
+            function TongKM() {
+                var TongKM = 0;
+                for (var i = 0; i < Dem; i++) {
+                    var KM = parseInt( $("#LPT\\[" + i + "\\]TongKM").val().split(",").join(""));
+                    if (isNaN(KM) != true) {
+                        TongKM += KM;
+                    }
+                    else {
+                        TongKM += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $($("#LPT\\[" + i + "\\]TongKM")).html(TongKM.toLocaleString('en-us'));
+                $("#TongKM").html(TongKM.toLocaleString('en-us'));
+            }
+            $(document).ready(function(){
+
+                TienCong();
+                GiaVon();
+                TongKM();
+            });
+    </script>
+    <script>
+        function CheckValidatePhieuThu() {
+            //if ($("#item_SoChungTu").val() == "") {
+            //    toastWarning("Vui lòng nhập Số chứng từ.");
+            //    $("#item_SoChungTu").focus();
+            //    return false;
+            //}
+
+            if ($("#item_NgayThu").val() == "") {
+                toastWarning("Vui lòng nhập Ngày thu.");
+                $("#item_NgayThu").focus();
+                return false;
+            }
+            if ($("#item_SoChungTu").val() == "") {
+                toastWarning("Vui lòng nhập Số chứng từ.");
+                $("#item_SoChungTu").focus();
+                return false;
+            }
+            var type = $("#type").val();
+            //chi kiem tra phieu khac phieu thu phu kien
+            if ($("#type").val() != "TKHAC" && $("#type").val() != "TPHKI" && $("#type").val() != "TBAHI" && $("#type").val() != "TBDTKKM" && $("#type").val() != "TBDTK")
+            {
+                var s = $("#TongCongThanhToan").val();
+                if ($("#TongCongThanhToan").val() == "0") {
+                    toastWarning("Vui lòng nhập thanh toán.");
+                    return false;
+                }
+            }
+
+            if ($("#SoHopDong").val() == "") {
+                toastWarning("Vui lòng nhập Số hợp đồng.");
+                $("#SoHopDong").focus();
+                return false;
+            }
+            if ($("#hoten").val() == "") {
+                toastWarning("Vui lòng nhập Họ tên khách hàng.");
+                $("#hoten").focus();
+                return false;
+            }
+            if ($("#item_SoKhung").val() == "") {
+                toastWarning("Vui lòng nhập Số khung.");
+                $("#item_SoKhung").focus();
+                return false;
+            }
+            if ($("#TongKM").text() == "0") {
+                toastWarning("Vui lòng nhập giá trị khuyến mãi.");
+                $("#LPT[0]TienCong").focus();
+                return false;
+            }
+            var TongKM = $("#TongKM").text().split(",").join("");
+            if (TongKM > @ViewBag.NoKhuyenMai) {
+                toastWarning("Vui lòng nhập giá trị khuyến mãi nhỏ hơn nợ khuyến mãi.");
+                $("#LPT[0]TienCong").focus();
+                return false;
+
+            }
+            var s = $("#NguoiThuTien").val();
+            //if ($("#NguoiThuTien").val() == "") {
+            //    toastWarning("Vui lòng chọn người thu tiền.");
+            //    $("#LPT[0]TienCong").focus();
+            //    return false;
+
+            //}
+            return true;
+        }
+        function KeyEnter(e) {
+            if (e.keyCode == 13) {
+                GetInfoTicket();
+            }
+        }
+
+        $(document).ready(function()
+        {
+
+            var type = '@ViewBag.Type';
+            var action = '@ViewBag.Action';
+            $("#TongCongThanhToan").val(parseFloat($("#TongCongThanhToan").text()));
+            if(type == "TCOBX" && action == "Create")
+            {
+                $("input[name='item.SoHopDong']").focusout(function(){
+
+                    var SHD = $("#SoHopDong").val();
+                    $.ajax({
+                        url: "/SoThu/LaySHD",
+                        type: "POST",
+                        data: { soHopDong: SHD },
+                        success: function (result) {
+                            if(result == "")
+                            {
+                                $("#HTKH").empty();
+                                $("#DT").empty();
+                                $("#DC").empty();
+                                var html = "",html1="",html2="";
+                                html += "<label>Họ tên khách hàng(*)</label> <br />";
+                                html +="<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value=''>";
+                                html1 += "<label>Điện thoại</label> <br />";
+                                html1 +="<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value=''>";
+                                html2 += "<label>Địa chỉ</label> <br />";
+                                html2 +="<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value=''>";
+
+                                $("#HTKH").append(html);
+                                $("#DT").append(html1);
+                                $("#DC").append(html2);
+                                //return false;
+                            }
+                            else
+                            {
+                                $("#HTKH").empty();
+                                $("#DT").empty();
+                                $("#DC").empty();
+                                var html = "",html1="",html2="";
+                                for (var i = 0; i < result.length; i++) {
+                                    if(result[i].HoTen == "null" || result[i].HoTen == null)
+                                        result[i].HoTen = "";
+                                    if(result[i].DienThoai == "null" || result[i].DienThoai == null)
+                                        result[i].DienThoai = "";
+                                    if(result[i].DiaChi == "null" || result[i].DiaChi == null)
+                                        result[i].DiaChi = "";
+                                    html += "<label>Họ tên khách hàng(*)</label> <br />";
+                                    html +="<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value='"+result[i].HoTen+"'>";
+                                    html1 += "<label>Điện thoại</label> <br />";
+                                    html1 +="<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value='"+result[i].DienThoai+"'>";
+                                    html2 += "<label>Địa chỉ</label> <br />";
+                                    html2 +="<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value='"+result[i].DiaChi+"'>";
+                                }
+                                $("#HTKH").append(html);
+                                $("#DT").append(html1);
+                                $("#DC").append(html2);
+                            }
+                        }
+                    });
+                }).focus();
+            }
+            if(type == "TCODV")
+            {
+                $("input[name='item.BienSo']").onchange(function(){
+
+                    var BSX = $("#BSX").val();
+                    $.ajax({
+                        url: "/SoThu/LayBSX",
+                        type: "POST",
+                        data: { bsx: BSX },
+                        success: function (result) {
+                            if(result == "")
+                            {
+                                $("#HTKH").empty();
+                                $("#DT").empty();
+                                $("#DC").empty();
+                                var html = "",html1="",html2="";
+                                html += "<label>Họ tên khách hàng(*)</label> <br />";
+                                html +="<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value=''>";
+                                html1 += "<label>Điện thoại</label> <br />";
+                                html1 +="<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value=''>";
+                                html2 += "<label>Địa chỉ</label> <br />";
+                                html2 +="<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value=''>";
+                                $("#HTKH").append(html);
+                                $("#DT").append(html1);
+                                $("#DC").append(html2);
+                                //return false;
+                            }
+                            else
+                            {
+                                $("#HTKH").empty();
+                                $("#DT").empty();
+                                $("#DC").empty();
+                                var html = "",html1="",html2="";
+                                for (var i = 0; i < result.length; i++) {
+                                    html += "<label>Họ tên khách hàng(*)</label> <br />";
+                                    html +="<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value='"+ result[i].HoTen+"'>";
+                                    html1 += "<label>Điện thoại</label> <br />";
+                                    html1 +="<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value='"+result[i].DienThoai+"'>";
+                                    html2 += "<label>Địa chỉ</label> <br />";
+                                    html2 +="<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value='"+result[i].DiaChi+"'>";
+                                }
+                                $("#HTKH").append(html);
+                                $("#DT").append(html1);
+                                $("#DC").append(html2);
+                            }
+                        }
+                    });
+                }).focus();
+            }
+
+        });
+        //phan cho phan bao hiem
+        function Checked(a)
+        {
+            if(a.checked)
+            {
+                $.ajax({
+                    url: "/SoThu/ThuHoaHongNgay",
+                    type: "POST",
+                    data: {},
+                    success: function (result) {
+                        if(result != "")
+                        {
+                            var html = "";
+                            for(var i = 0; i < result.length;i++)
+                            {
+                                html+= "<option value="+result[i].GiaTri+">"+result[i].HienThi+"</option>";
+                            }
+                            $("#hoahongngay").append(html);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                $("#hoahongngay").empty();
+            }
+        }
+        // phan tinh thuc ban va giam gia
+        $(document).on("change", ".TienTraBH, .HoaHong,#item_TongCong", function () {
+
+            let TienTraBH = 0;
+            let HoaHong = 0;
+            let Thucban = 0;
+            let GiaVon = 0,GiamGia = 0;
+            TienTraBH = parseInt($("#item_TienTraBH").val().split(",").join(""));
+            HoaHong = parseInt($("#item_HoaHong").val().split(",").join(""));
+            Thucban = parseInt($("#item_TongCong").val().split(",").join(""));
+            $("#item_GiaVon").val((TienTraBH + HoaHong).toLocaleString('en-us'));
+            GiaVon = parseInt($("#item_GiaVon").val().split(",").join(""));
+            $("#item_GiamGia").val((GiaVon - Thucban).toLocaleString('en-us'));
+        });
+        function TinhConLai()
+        {
+
+            var TongThucThu = 0,TongCoc = 0,TongThanhToan = 0;
+            var a = $("#TongThucThu").val();
+            if($("#TongThucThu").val() != 0 && $("#TongThucThu").val() !=  undefined)
+            {
+                TongThucThu = parseInt($("#TongThucThu").val().split(",").join(""));
+            }
+            if($("#TongCongThanhToanCoc").val() != 0 && $("#TongCongThanhToanCoc").val() != undefined)
+            {
+                TongCoc = parseInt($("#TongCongThanhToanCoc").val().split(",").join(""));
+            }
+            if($("#TongCongThanhToan").val() != 0 && $("#TongCongThanhToan").val() !=  undefined)
+            {
+                TongThanhToan = parseInt($("#TongCongThanhToan").val().split(",").join(""));
+            }
+            if("@type" == "TPHKI")
+            {
+                if($("#TongCongThanhToan").val() == "")
+                {
+                    TongThanhToan = parseInt("@ViewBag.TongCong");
+                }
+            }
+            var SoTien = TongThucThu - TongCoc - TongThanhToan;
+            $("#item_ConLai").val(SoTien.toLocaleString('en-us'));
+            $("#item_ConLai").html(SoTien.toLocaleString('en-us'));
+        }
+        function TinhConLai_TKHAC() {
+
+            var total = parseInt($("#TongCongThanhToan").text().split(",").join(""));
+            var price = $("#TCTKHAC").val() == "" ? 0 : parseInt($("#TCTKHAC").val().split(",").join(""));
+            var rest = price - total;
+            $("#TCTKHAC").val(price.toLocaleString('en-us'));
+            $("#Item_ConLai").val(rest.toLocaleString('en-us'));
+            $("#Item_ConLai").html(rest.toLocaleString('en-us'));
+        }
+    </script>
+}

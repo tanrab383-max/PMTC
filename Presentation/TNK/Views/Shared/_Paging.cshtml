@@ -1,0 +1,77 @@
+﻿@{
+    int pageCount = (int)Math.Ceiling(Convert.ToDouble(ViewBag.Total) / Convert.ToDouble(ViewBag.PageSize));
+    string LinkText = ViewBag.Url;
+    
+    int CurrentPageNumber = ViewBag.PageIndex;
+}
+<ul class="pagination">
+    <li><span class="redColor" >Tìm thấy <b>@ViewBag.Total</b> dòng</span></li>
+    </ul>
+    @if (pageCount > 1)
+    {
+        <ul class="pagination">
+
+            @if (CurrentPageNumber > 1 && !Request.Browser.IsMobileDevice)
+            {
+                <li><a class="redColor" href="@(LinkText + 1)" title="Trang 1"><i class="glyphicon glyphicon-backward red"></i></a></li>
+                <li><a class="redColor" href="@(LinkText + (CurrentPageNumber - 1))"><i class="glyphicon glyphicon-step-backward red"></i></a></li>
+            }
+            @if (!Request.Browser.IsMobileDevice)
+            {
+                <li><span>Trang</span></li>
+            }
+            @if (CurrentPageNumber <= 4)
+            {
+                for (int i = 1; i <= 7 && i <= pageCount; i++)
+                {
+                    if (i == CurrentPageNumber)
+                    {
+                        <li class="active"><a class="redColor" href="@(LinkText + i)"><span>@i</span></a></li>
+                    }
+                    else
+                    {
+                        <li><a class="redColor" href="@(LinkText + i)"><span>@i</span></a></li>
+                    }
+                }
+            }
+            else if (CurrentPageNumber >= pageCount - 3)
+            {
+                for (int i = pageCount > 6 ? pageCount - 6 : 1; i <= pageCount; i++)
+                {
+                    if (i == CurrentPageNumber)
+                    {
+                        <li class="active"><a class="redColor" href="@(LinkText + i)"><span>@i</span></a></li>
+                    }
+                    else
+                    {
+                        <li><a class="redColor" href="@(LinkText + i)"><span>@i</span></a></li>
+                    }
+                }
+            }
+            else
+            {
+                for (int i = CurrentPageNumber - 3; i <= CurrentPageNumber + 3; i++)
+                {
+                    if (i == CurrentPageNumber)
+                    {
+                        <li class="active"><a class="redColor" href="@(LinkText + i)"><span>@i</span></a></li>
+                    }
+                    else
+                    {
+                        <li><a class="redColor" href="@(LinkText + i)"><span>@i</span></a></li>
+                    }
+                }
+            }
+
+            @if (CurrentPageNumber < pageCount - 4)
+            {
+                <li><span>....</span></li>
+                <li><a class="redColor" href="@(LinkText + pageCount)"><span>@pageCount</span></a></li>
+            }
+            @if (CurrentPageNumber < pageCount && !Request.Browser.IsMobileDevice)
+            {
+                <li><a class="redColor" href="@(LinkText + (CurrentPageNumber + 1))"><i class="glyphicon glyphicon-step-forward red"></i></a></li>
+                <li><a class="redColor" href="@(LinkText + pageCount)" title="Trang cuối"><i class="glyphicon glyphicon-forward red"></i></a></li>
+            }
+        </ul>
+    }

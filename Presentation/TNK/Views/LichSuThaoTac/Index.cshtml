@@ -1,0 +1,109 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuChi>
+@{
+    
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Người tác động</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Mã phiếu,SessionId" placeholder="Mã phiếu,SessionId" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                        </div>
+                    </div>
+                </form>
+                <div class="x_content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>SessionId</th>
+                                    <th>Mã phiếu</th>
+                                    <th>Chi tiết</th>
+                                    <th>Người tác động</th>
+                                    <th>Ngày tác động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*@foreach (var item in Model)
+                                {
+                                    <tr>
+
+                                        <td>@item.NgayChi.ToString(ViewBag.DateFormat)</td>
+                                        <td>@item.MaPhieuChi</td>
+                                        <td>@item.SoChungTu</td>
+                                        <td>@item.TenDoiTac</td>
+                                        <td>@item.MaXe</td>
+                                        <td>@item.SoKhung</td>
+                                        <td>@item.SoMay</td>
+                                        <td>@item.GiaVon.ToString("0,0")</td>
+                                        @* @<td>@item.TongCong.ToString("0,0")</td>*
+                                        <td>@item.ConLaiPhaiTra.ToString("0,0")</td>
+                                        @if (item.ConLaiPhaiTra <= 0)
+                                        {
+                                            <td>Hoàn thành</td>
+                                        }
+                                        else
+                                        {
+                                            <td>Còn nợ</td>
+                                        }
+                                        <td style="width:5%" class="center">
+                                            <a href="/SoChi/CMXTTEdit/@item.MaPhieuChi"><i title="Edit" class="fa fa-edit"></i></a>
+                                        </td>
+                                        <td style="width:5%" class="center">
+                                            <a href="/Sochi/CMXTTDelete/@item.MaPhieuChi" onclick="return confirm('Xác nhận xóa?');"><i title="Delete" class="fa fa-close"></i></a>
+                                        </td>
+                                    </tr>
+                                }*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+    </script>
+}

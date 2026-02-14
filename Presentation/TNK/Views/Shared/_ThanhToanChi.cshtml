@@ -1,0 +1,58 @@
+﻿@{
+    var CTPT = (List<TNK.Core.Domain.ChiTietPhieuChi>)ViewData["CTPT"];
+    var HTTT = (List<TNK.Core.Domain.View.ViewHinhThucThanhToan>)ViewData["HTTT"];
+    double tongcong = 0;
+}
+
+    <div class="form-group table-responsive">
+        <label>Thanh toán (*)</label>
+        <table id="ThanhToan" class="table table-striped jambo_table bulk_action">
+            <thead>
+                <tr>
+                    <th style="width:40%">Túi tiền</th>
+                    <th style="width:30%">Số tiền</th>
+                    <th style="width:30%">Số tham chiếu</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                @for (int j = 0; j < CTPT.Count; j++)
+                {
+                    tongcong += CTPT[j].SoTienThanhToan;
+                    <tr id="tr" class="animated fadeIn">
+                        <td>
+                            <input type="hidden" name="httt[@j].Id" class="CTPTId" value="@CTPT[j].Id" />
+                            <select element="htttBank" class="select2 fullwidth Temp" name="httt[@j].Temp">
+                                <option value="">Chọn</option>
+                                @foreach (var i in HTTT)
+                                {
+                                    if (CTPT[j].Temp != null)
+                                    {
+                                        <option value="@i.GiaTri" @(CTPT[j].Temp.ToUpper() == i.GiaTri.ToUpper() ? "selected" : "")>@i.HienThi</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@i.GiaTri" @(CTPT[j].Temp == i.GiaTri ? "selected" : "")>@i.HienThi</option>
+                                    }
+                                }
+                            </select>
+                        </td>
+                        <td><input element="htttSoTien" type="text" name="httt[@j].SoTienThanhToan"  onchange="CalThanhToan(this)" value="@CTPT[j].SoTienThanhToan" class="form-control input-sm number" maxlength="15" /></td>
+                        <td><input name="httt[@j].SoThamChieu" value="@CTPT[j].SoThamChieu" class="form-control input-sm SoThamChieu" /></td>
+                        <td>
+                            <input type="hidden" class="IsDeleted" name="httt[@j].IsDeleted" value="false" />
+                            <i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Tổng cộng: </td>
+                    <td class="Total" id="TongCongThanhToan" name ="item.SoTienChi">@tongcong</td>
+                    <td></td>
+                    <td class="right"><i class="fa fa-plus addHTTT" style="cursor:pointer"></i></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>

@@ -1,0 +1,208 @@
+﻿@using System.Data;
+@{
+    double TotalNoDauKy = 0;
+    double TotalPhatSinhNo = 0;
+    double TotalThuNo = 0;
+    double TotalNoCuoiKy = 0;
+}
+
+<div class="x_content">
+    <div id="BCNoDichVu" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='6' class="tile">CÔNG NỢ PHẢI THU DỊCH VỤ @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan='6' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">NỢ ĐẦU <br/> @(ViewBag.FromDate.ToString("dd/MM"))</th>
+                    <th class="column-title" colspan="2">PHÁT SINH TRONG KỲ</th>
+                    <th class="column-title" rowspan="2">NỢ CUỐI <br /> @(ViewBag.ToDate.ToString("dd/MM"))</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">P/S NỢ</th>
+                    <th class="column-title">THU NỢ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+
+                    DataView vwThuChi = (Model as DataTable).DefaultView;
+                    vwThuChi.RowFilter = "Loai='BH'";
+                    int intCount = 0;
+                    foreach (DataRow row in (vwThuChi.ToTable()).Rows)
+                    {
+
+                        TotalNoDauKy += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPhatSinhNo += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalThuNo += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoiKy += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2">A - TỔNG NỢ BẢO HIỂM</td>
+                        <td class="number">@TotalNoDauKy.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhatSinhNo.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalThuNo.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalNoCuoiKy.ToString().Replace(",", ".")</td>
+                    </tr>
+
+                    vwThuChi.RowFilter = "Loai='NHANG'";
+                    double TotalNoDauKy_HANG = 0;
+                    double TotalPhatSinhNo_HANG = 0;
+                    double TotalThuNo_HANG = 0;
+                    double TotalNoCuoiKy_HANG = 0;
+                    foreach (DataRow row in (vwThuChi.ToTable()).Rows)
+                    {
+
+                        TotalNoDauKy_HANG += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPhatSinhNo_HANG += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalThuNo_HANG += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoiKy_HANG += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="numberRE">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2">B - TỔNG NỢ HÃNG</td>
+                        <td class="number">@TotalNoDauKy_HANG.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhatSinhNo_HANG.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalThuNo_HANG.ToString().Replace(",", ".")</td>
+                        <td class="numberRE">@TotalNoCuoiKy_HANG.ToString().Replace(",", ".")</td>
+                    </tr>
+
+
+                    vwThuChi.RowFilter = "Loai='KL'";
+                    double TotalNoDauKy_KL = 0;
+                    double TotalPhatSinhNo_KL = 0;
+                    double TotalThuNo_KL = 0;
+                    double TotalNoCuoiKy_KL = 0;
+                    foreach (DataRow row in (vwThuChi.ToTable()).Rows)
+                    {
+
+                        TotalNoDauKy_KL += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPhatSinhNo_KL += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalThuNo_KL += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoiKy_KL += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="numberRE">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2">C - TỔNG NỢ KHÁCH LẺ</td>
+                        <td class="number">@TotalNoDauKy_KL.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhatSinhNo_KL.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalThuNo_KL.ToString().Replace(",", ".")</td>
+                        <td class="numberRE">@TotalNoCuoiKy_KL.ToString().Replace(",", ".")</td>
+                    </tr>
+                    //PTPK
+                    double TotalNoDauKy_PTPK = 0, TotalPhatSinhNo_PTPK = 0, TotalThuNo_PTPK = 0, TotalNoCuoiKy_PTPK = 0;
+                    vwThuChi.RowFilter = "Loai='PK'";
+                    foreach (DataRow row in (vwThuChi.ToTable()).Rows)
+                    {
+
+                        TotalNoDauKy_PTPK += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                        TotalPhatSinhNo_PTPK += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                        TotalThuNo_PTPK += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                        TotalNoCuoiKy_PTPK += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                        <tr class="even pointer">
+                            <td>@(++intCount)</td>
+                            <td>@row["DonViNo"]</td>
+                            <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                            <td class="numberRE">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2">D - TỔNG NỢ KHÁCH MUA PT-PK</td>
+                        <td class="number">@TotalNoDauKy_PTPK.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhatSinhNo_PTPK.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalThuNo_PTPK.ToString().Replace(",", ".")</td>
+                        <td class="numberRE">@TotalNoCuoiKy_PTPK.ToString().Replace(",", ".")</td>
+                    </tr>
+
+                    vwThuChi.RowFilter = "Loai='CONO'";
+                    double TotalNoDauKy_CONO = 0;
+                    double TotalPhatSinhNo_CONO = 0;
+                    double TotalThuNo_CONO = 0;
+                    double TotalNoCuoiKy_CONO = 0;
+                    if (vwThuChi != null)
+                    {
+                        foreach (DataRow row in (vwThuChi.ToTable()).Rows)
+                        {
+
+                            TotalNoDauKy_CONO += row["NoDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoDauKy"]);
+                            TotalPhatSinhNo_CONO += row["PhatSinhNo"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhNo"]);
+                            TotalThuNo_CONO += row["ThuNo"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuNo"]);
+                            TotalNoCuoiKy_CONO += row["NoCuoiKy"].ToString() == "" ? 0 : Convert.ToDouble(row["NoCuoiKy"]);
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["DonViNo"]</td>
+                                <td class="number">@row["NoDauKy"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhatSinhNo"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["ThuNo"].ToString().Replace(",", ".")</td>
+                                <td class="numberRE">@row["NoCuoiKy"].ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2">E - CÔNG NỢ ĐÃ THU CHƯA PHÂN BỔ</td>
+                        <td class="number">@TotalNoDauKy_CONO.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalPhatSinhNo_CONO.ToString().Replace(",", ".")</td>
+                        <td class="number">@TotalThuNo_CONO.ToString().Replace(",", ".")</td>
+                        <td class="numberRE">@TotalNoCuoiKy_CONO.ToString().Replace(",", ".")</td>
+                    </tr>
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="2">TỔNG NỢ</td>
+                        <td class="numberRE">@(TotalNoDauKy + TotalNoDauKy_KL + TotalNoDauKy_PTPK + TotalNoDauKy_HANG - TotalNoDauKy_CONO )</td>
+                        <td class="numberRE">@(TotalPhatSinhNo + TotalPhatSinhNo_KL + TotalPhatSinhNo_PTPK + TotalPhatSinhNo_HANG - TotalPhatSinhNo_CONO )</td>
+                        <td class="numberRE">@(TotalThuNo + TotalThuNo_KL + TotalThuNo_PTPK + TotalThuNo_HANG - TotalThuNo_CONO) </td>
+                        <td class="numberRE">@(TotalNoCuoiKy + TotalNoCuoiKy_KL + TotalNoCuoiKy_PTPK + TotalNoCuoiKy_HANG - TotalNoCuoiKy_CONO) </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

@@ -1,0 +1,235 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuChi>
+@{
+    ViewBag.Title = "Thu hoàn đặt cọc";
+    int i = 1;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Thu hoàn đặt cọc</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs" id="tab_data">
+                <li class="active">
+                    <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                        Phiếu nợ
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                        Chi tiết phiếu thu
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form method="get" class="row" id="formSearch">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày nợ</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày nợ</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="query" placeholder="Mã Phiếu chi, Số chứng từ, Nhà cung cấp" title="Mã Phiếu chi, Số chứng từ, Nhà cung cấp" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                                        <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-10 col-sm-10 col-xs-12">
+                                    <div class="form-group">
+                                        @Html.RadioButton("maloaiphieu", "", true, new { id = "All" }) Tất Cả
+                                        @Html.RadioButton("maloaiphieu", "CCOMX", false, new { id = "CCOMX" }) Cọc mua xe
+                                        @Html.RadioButton("maloaiphieu", "CDACO", false, new { id = "CDACO" }) Cọc tài sản
+                                        @Html.RadioButton("maloaiphieu", "CCOPT", false, new { id = "CCOPT" }) Cọc mua phụ tùng
+                                        @Html.RadioButton("maloaiphieu", "CCOGC", false, new { id = "CCOGC" }) Cọc gia công ngoài
+                                        @Html.RadioButton("maloaiphieu", "CCOTH", false, new { id = "CCOTH" }) Cọc tổng hợp
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Mã phiếu chi</th>
+                                            <th>Ngày chi</th>
+                                            <th>Số chứng từ</th>
+                                            <th>Nhà cung cấp</th>
+                                            <th>Lý do chi</th>
+                                            <th>Tổng tiền</th>
+                                            <th>Số tiền đã sử dụng</th>
+                                            <th>Đã thu</th>
+                                            <th>Còn lại</th>
+                                            <th>Loại cọc</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach(var item in Model)
+                                        {
+                                            <tr>
+                                                @if (item.SoTienHoanCoc == null)
+                                                {
+                                                    item.SoTienHoanCoc = 0;
+                                                }
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                                <td>@item.MaPhieuChi</td>
+                                                <td>@item.NgayChi.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.SoChungTu</td>
+                                                <td>@item.TenDoiTac</td>
+                                                <td>@item.LyDoChi</td>
+                                                <td>@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>
+                                                <td>@TNK.Core.Common.ToCurrencyString(item.TongCong - item.ConLai - item.SoTienHoanCoc.Value)</td>
+                                                @if (item.SoTienHoanCoc.Value > 0)
+                                                {
+                                                    <td>@TNK.Core.Common.ToCurrencyString(item.SoTienHoanCoc.Value)</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>@TNK.Core.Common.ToCurrencyString(item.SoTienHoanCoc.Value)</td>
+                                                }
+                                                <td>@TNK.Core.Common.ToCurrencyString(item.ConLai)</td>
+                                                @if (item.MaLoaiPhieu == "CCOMX")
+                                                {
+                                                    <td>Cọc mua xe</td>
+                                                }
+                                                else if (item.MaLoaiPhieu == "CDACO")
+                                                {
+                                                    <td>Cọc tài sản</td>
+                                                }
+                                                else if (item.MaLoaiPhieu == "CCOPT")
+                                                {
+                                                    <td>Cọc phụ tùng</td>
+                                                }
+                                                else if (item.MaLoaiPhieu == "CCOGC")
+                                                {
+                                                    <td>Cọc gia công</td>
+                                                }
+                                                else if (item.MaLoaiPhieu == "CCOTH")
+                                                {
+                                                    <td>Cọc tổng hợp</td>
+                                                }
+                                                <td style="width:5%" class="center">
+                                                    <a href="/SoChi/THDCCreate/@item.MaPhieuChi"><i title="Add" class="fa fa-plus addNew"></i></a>
+                                                </td>
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày chi</label>
+                                        <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày chi</label>
+                                        <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="query" placeholder="Mã Phiếu chi, Số chứng từ, Nhà cung cấp" title="Mã Phiếu chi, Số chứng từ, Nhà cung cấp" class="form-control input-sm" value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Search" id="Search" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive" id="tbody">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            debugger;
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+            var query = $("#query").val();
+            var pageSizes = document.getElementById('pageSizeTHDCComplete');
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            $.get("/SoChi/THDCComplete?query=" + query + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tbody").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        function Delete(a, id) {
+            debugger;
+            if (confirm('Xác nhận')) {
+                data = { id: id };
+                $.post("/SoChi/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+    </script>
+}

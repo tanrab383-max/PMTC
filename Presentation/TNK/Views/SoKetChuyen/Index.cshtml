@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "Sổ khóa kho";
+
+
+    string strDateKC = "";
+    if (!string.IsNullOrEmpty(ViewBag.DateKC))
+    {
+        strDateKC = ViewBag.DateKC;
+    }
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>KHÓA KHO</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Tháng Khóa kho cuối cùng</label>
+                                <div class="col-sm-3">
+                                    <input type="text" id="DateKC" value="@strDateKC" class="form-control">
+                                </div>
+                                <div class="col-sm-5">
+                                    <a class="btn btn-primary" @Html.Raw(ViewBag.DateKC == "" ? "disabled='disabled'" : "onclick='KetChuyen()'")><i class="fa fa-plus"></i> Khóa kho</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label><i>(Không được phép tạo/sửa phiếu từ tháng khóa kho cuối cùng về trước)</i></label>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="x_content">
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tab" role="tablist">
+                            <li role="presentation" class="active">
+                                <a href="#tab_SKC" id="sck-tab" role="tab" data-toggle="tab" aria-expanded="true">Sổ Khóa Kho</a>
+                            </li>
+                            <li role="presentation" class="">
+                                <a href="#tab_DSH" id="dsh-tab" role="tab" data-toggle="tab" aria-expanded="false">Danh Sách Hủy</a>
+                            </li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade active in" id="tab_SKC" aria-labelledby="sck-tab">
+
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="tab_DSH" aria-labelledby="dsh-tab"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="idTab" value="#tab_TM" />
+<input type="hidden" id="url" value="/Report/BCTienMat" />
+
+@section scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            $("#DateKC").prop("disabled", true);
+            $("#sck-tab").click();
+        });
+
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+
+        $("#sck-tab").click(function () {
+            $("#idTab").val("#tab_SKC");
+            $("#url").val("/SoKetChuyen/SoKetChuyen");
+            GetInfo();
+        });
+
+        $("#dsh-tab").click(function () {
+            $("#idTab").val("#tab_DSH");
+            $("#url").val("/SoKetChuyen/DanhSachHuy");
+            GetInfo();
+        });
+
+        function GetInfo() {
+            var viewbox = $($("#idTab").val());
+            viewbox.html('<p align="center"><img src="/assests/images/loading.gif"/></p>');
+            viewbox.show();
+
+            $.ajax({
+                url: $("#url").val(),
+                type: "POST",
+                data: { "DateKC": $("#DateKC").val() },
+                success: function (result) {
+                    viewbox.html(result);
+                    $(viewbox).removeAttr("style");
+                },
+                error: function (result) {
+                    viewbox.html('<p align="center">Không thể hiển thị danh sách</p>');
+                    alert("Lỗi: Không thể tải danh sách");
+                }
+            });
+        };
+
+        function KetChuyen() {
+            if ($("#DateKC").val() === undefined || $("#DateKC").val() === "" || $("#DateKC").val() === null) {
+                alert("Không được phép kết chuyển.");
+                return false;
+            }
+            if (confirm("Bạn thật sự muốn tạo kết chuyển?")) {
+                $.ajax({
+                    url: "/SoKetChuyen/TaoKetChuyen",
+                    type: "POST",
+                    data: { "strNgayKetChuyen": $("#DateKC").val() },
+                    success: function (result) {
+                        if (!result.IsError) {
+                            $("#sck-tab").click();
+                           // alert("Kết chuyển thành công.");
+                            window.location.replace('/SoKetChuyen/Index');
+                        } else {
+                            alert(result.Message);
+                        }
+                    },
+                    error: function (result) {
+                        alert("Lỗi kết chuyển");
+                    }
+                });
+            }
+        }
+
+        function HuyKC(id) {
+            console.log(id);
+            if (confirm("Bạn thật sự muốn hủy kết chuyển?")) {
+                $.ajax({
+                    url: "/SoKetChuyen/HuyKetChuyen",
+                    type: "POST",
+                    data: { "gdId": id, "strGhiChu": "" },
+                    success: function (result) {
+                        if (!result.IsError) {
+                            $("#sck-tab").click();
+                            alert("Hủy kết chuyển thành công.");
+                            window.location.replace('/SoKetChuyen/Index');
+                        } else {
+                            alert(result.Message);
+                        }
+                    },
+                    error: function (result) {
+                        alert("Lỗi hủy kết chuyển");
+                    }
+                });
+            }
+        }
+    </script>
+}

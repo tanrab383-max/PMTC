@@ -1,0 +1,126 @@
+﻿@{ 
+    int Colunm_old = ViewBag.lsColumns2.Count;
+    int Colunm_new = ViewBag.lsColumns1.Count;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>LỊCH SỬ THAY ĐỔI DỮ LIỆU</h3>
+
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    @*<div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                <li class="">
+                    <a href="#tab_0" data-toggle="tab" aria-expanded="false">
+                        TRƯỚC
+                    </a>
+                </li>
+                <li class="active">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="true">
+                        SAU
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div class="table-responsive" style="overflow:auto">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            @{
+                                                for (int i = 0; i < ViewBag.lsColumns2.Count; i++)
+                                                {
+                                                    <th>@ViewBag.lsColumns2[i]</th>
+                                                }
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                            @{
+                                                for (int i = 0; i < ViewBag.D2.Rows.Count; i++)
+                                                {
+                                                    <tr>
+                                                        @{
+                                                            for (int j = 0; j < Colunm_old; j++)
+                                                            {
+                                                                <td>@ViewBag.D2.Rows[i][j]</td>
+                                                            }
+                                                        }  
+                                                    </tr>
+                                                }
+                                            }
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane active" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div class="table-responsive" style="overflow:auto">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            @{
+                                                for (int i = 0; i < ViewBag.lsColumns1.Count; i++)
+                                                {
+                                                    <th>@ViewBag.lsColumns1[i]</th>
+                                                }
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                            @{
+                                                for (int x = 0; x < ViewBag.D1.Rows.Count; x++)
+                                                {
+                                                    <tr>
+                                                        @{
+                                                            for (int y = 0; y < Colunm_new; y++)
+                                                            {
+                                                                <td>@ViewBag.D1.Rows[x][y]</td>
+                                                            }
+                                                        }
+                                                    </tr>
+                                                    
+                                                }
+                                            }
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+    <div class="col-md-12">
+        <div class="col-md-6 table-responsive" style="overflow:auto">
+               @Html.Raw(ViewBag.Data1)
+        </div>
+        <div class="col-md-6 table-responsive" style="overflow:auto">
+               @Html.Raw(ViewBag.Data2)
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+<script src="~/assests/plugins/select2/select2.min.js"></script>
+<script src="~/Scripts/IndexCommon.js"></script>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseInt(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

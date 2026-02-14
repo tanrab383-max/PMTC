@@ -1,0 +1,96 @@
+﻿@model TNK.Model.SoChiModel
+@{ 
+    ViewBag.Title = "Chi gia công ngoài";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                        Danh sách cần chi
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                        Phiếu đã chi
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane" id="tab_0">
+
+                </div>
+                <div class="tab-pane active" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>Id</th>
+                                            <th>Số phiếu</th>
+                                            <th>Biển số</th>
+                                            <th>Khách hàng</th>
+                                            <th>Số điện thoại</th>
+                                            <th>Số khungsố máy</th>
+                                            <th>Loại xe</th>
+                                            <th>Ngày sửa</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.ListNoPhaiTraTuPhieuThu)
+                                        {
+                                        <tr>
+                                            <td>@item.MaPhieuNo</td>
+                                            <td>@item.MaPhieuPhatSinh</td>
+                                            <td>@item.NgayThu</td>
+                                            <td>@item.BienSo</td>
+                                            <td>@item.LoaiXe</td>
+                                            <td>@item.SoTienNo</td>
+                                            <td>@item.SoTienConLai</td>
+                                            <td>@item.NguoiPheDuyet</td>
+                                            <td style="width:5%" class="center">
+                                                <a href="/@Model.LoaiPhieu/Create/@item.MaPhieuNo"><i title="Edit" class="fa fa-edit"></i></a>
+                                            </td>
+                                            <td style="width:5%" class="center">
+                                                <a href="/@Model.LoaiPhieu/Delete/@item.MaPhieuNo"><i title="Delete" class="fa fa-close"></i></a>
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+@section scripts{
+<script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        $("#a_1").click(function () {
+            if ($("#tab_0").html().trim() == "") {
+                $.get("/<@Model.LoaiPhieu/Complete").success(function (response) {
+                    $("#tab_0").html(response);
+                });
+            }
+        });
+    </script>
+}

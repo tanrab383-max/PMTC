@@ -1,0 +1,225 @@
+﻿@model TNK.Model.KhoXeModel
+@{
+    var item = Model.Item;
+    //if(item == null)
+    //{
+    //    item = ViewBag.KX;
+    //}
+}
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Tạo mới phiếu mua xe hàng trên đường</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b>Thông tin</b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form method="post" id="form-data" class="form-horizontal form-label-left FormPhieuChi">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(x => Model.PhieuNhapKho.MaPhieuChi)
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày nhập</label>
+                                    @Html.EditorFor(x => Model.PhieuNhapKho.NgayNhap, new { htmlAttributes = new { @class = "form-control input-sm date", @Value = ViewBag.Date } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Nhà cung cấp</label>
+                                    @Html.EditorFor(x => Model.Item.NhaCungCap, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "10", @readonly = "",@Value= Model.TuiHangTrenDuong.NhaCungCap } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Tổng tiền</label>
+                                    @Html.EditorFor(x => Model.TuiHangTrenDuong.SoTienDangCo, new { htmlAttributes = new { @class = "form-control input-sm number3", @readonly = "" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Loại xe</label>
+                                    @Html.DropDownListFor(x => item.MaLoaiXe, Model.MaXe.Select(x => new SelectListItem { Text = x.MaLoaiXe, Value = x.MaLoaiXe.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số TMSS</label>
+                                    @Html.EditorFor(x => item.SoTMSS, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số hóa đơn</label>
+                                    @Html.EditorFor(x => item.SoHoaDon, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số khung</label>
+                                    @Html.EditorFor(x => item.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "20" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số máy</label>
+                                    @Html.EditorFor(x => item.SoMay, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "20" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Giá nhập (TMV)</label>
+                                    @Html.EditorFor(x => item.GiaVon, new { htmlAttributes = new { @class = "form-control input-sm number", @Value = 0, @id ="GNTMV", @maxlength = "15", @onchange = "change()" } })@*@onchange="change()"*@
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12" hidden>
+                                <div class="form-group">
+                                    <label>Giá nhập (HĐ)</label>
+                                    @Html.EditorFor(x => item.GiaHoaDon, new { htmlAttributes = new { @class = "form-control input-sm number", @Value = 0, @onchange = "change()", @id = "GNHD",@maxlength="15" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Hoa hồng Holdback</label>
+                                    @Html.EditorFor(x => Model.PhieuNhapKho.HoaHongHB, new { htmlAttributes = new { @class = "form-control input-sm number", @Value = 0, @id = "HHHB" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Thanh toán từ khuyến mãi TMV</label>
+                                    @Html.EditorFor(x => Model.PhieuNhapKho.SoTienKMTMV, new { htmlAttributes = new { @class = "form-control input-sm number", @Value = 0, @readonly="true",@id="TTTKMTMV" } })
+                                </div>
+                            </div>
+                            
+                            @*<div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số tiền khuyến mãi đang có:</label><br />
+                                    <b>@ViewBag.SoTienConLai.ToString("#,##0").Replace(".", ",")</b>
+                                    Html.EditorFor(x => Model.PhieuNhapKho.SoTienKMTMV, new { htmlAttributes = new { @class = "form-control input-sm number", @Value = 0 } })
+                                </div>
+                            </div>*@
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ghi chú</label>
+                                    @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <input type="submit" value="Save" class="btn btn-success" />
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="/KhoXe/HTDIndex">Quay lại</a>
+@section scripts
+{
+   <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+<script src="~/assests/plugins/select2/select2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/SoThuCommon.js?version=19.07.2019"></script>
+    <script>
+        $(document).on("change", ".number", function () {
+            debugger;
+            var val = $(this).val();
+            if (val != "") {
+                val = val.split(",").join("");
+                val = parseInt(val);
+                // val = val * 1000;
+                $(this).val(val.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+            let total = 0;
+        });
+        $("#form-data").submit(function () {
+            debugger;
+            return CheckValidate();
+        }
+        );
+        function CheckValidate() {
+            debugger;
+            if ($("#item_MaLoaiXe").val() == "") {
+                toastWarning("Vui lòng chọn loại xe.");
+                $("#item_MaLoaiXe").focus();
+                return false;
+            }
+
+            if ($("#item_SoKhung").val() == "") {
+                toastWarning("Vui lòng nhập số khung.");
+                $("#item_SoKhung").focus();
+                return false;
+            }
+            //doi voi cac phieu thu (tru phieu bán xe và dịch vụ) thì bắt số tiền nhập phải >0
+            if ($("#item_GiaVon").length > 0) {
+                if (parseFloat($("#item_GiaVon").val()) <=0) {
+                    toastWarning("Vui lòng nhập giá vốn.");
+                    $("#item_GiaVon").focus();
+                    return false;
+                }
+            }
+
+           // alert($("#item_GiaVon").val());
+
+            //doi voi cac phieu thu (tru phieu bán xe và dịch vụ) thì bắt số tiền nhập phải >0
+            //if (parseFloat($("#item_GiaVon").val().split(",").join("")) != undefined && parseFloat($("#item_GiaVon").val().split(",").join("")) > parseFloat($("#TuiHangTrenDuong_SoTienDangCo").val().split(",").join(""))) {
+            //    toastWarning("Túi tiền trên đường không đủ để nhập xe.Số tiền đang có :" + $("#item_GiaVon").val() + ". Số tiền trong túi:" + $("#TuiHangTrenDuong_SoTienDangCo").val());
+            //    $("#item_GiaVon").focus();
+            //    return false;
+            //}
+            return true;
+        }
+        function change()
+        {
+            debugger;
+            var GNTMV = 0, GNHD = 0;
+            GNTMV = parseInt($("#GNTMV").val().split(",").join(""));
+            GNHD = parseInt($("#GNTMV").val().split(",").join(""));
+            if (isNaN(GNTMV))
+                GNTMV = 0;
+            if (isNaN(GNHD))
+                GNHD = 0;
+            if (GNHD > GNTMV)
+            {
+                GNHD = GNTMV;
+                toastWarning("Giá hóa đơn không được lớn hơn giá TMV");
+                $("#GNHD").val(GNHD.toLocaleString('en-us'));
+                $("#GNHD").html(GNHD.toLocaleString('en-us'));
+                $("#TTTKMTMV").html((GNTMV - GNHD).toLocaleString('en-us'));
+                $("#TTTKMTMV").val((GNTMV - GNHD).toLocaleString('en-us'));
+            }
+            else
+            {
+                $("#TTTKMTMV").html((GNTMV - GNHD).toLocaleString('en-us'));
+                $("#TTTKMTMV").val((GNTMV - GNHD).toLocaleString('en-us'));
+            }
+            //TTTKMTMV
+        }
+</script>
+}
+
+

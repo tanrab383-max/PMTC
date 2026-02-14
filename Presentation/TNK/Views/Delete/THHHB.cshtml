@@ -1,0 +1,185 @@
+﻿@model TNK.Model.SoThuModel
+@{
+    var item = Model.Item;
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b>Thông tin hóa đơn</b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form method="post" class="form-horizontal form-label-left">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số chứng từ</label>
+                                    @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "10",@required="" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày thu</label>
+                                    @Html.EditorFor(x => item.NgayThu, new { htmlAttributes = new { @class = "form-control input-sm date", @required = "" } })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đối tác</label>
+                                    @Html.EditorFor(x => item.DoiTac, new { htmlAttributes = new { @class = "form-control input-sm", @required = "" } })
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Nội dung</label>
+                                    @Html.TextAreaFor(x => item.NoiDung, new { @class = "form-control input-sm", @required = "" })
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Thanh toán</label>
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:40%">Túi tiền</th>
+                                                <th style="width:30%">Số tiền</th>
+                                                <th style="width:30%">Số tham chiếu</th>
+                                                <th>Treo</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody">
+                                            @for (int j = 0; j < Model.CTPT.Count; j++)
+                                            {
+                                                <tr id="tr" class="animated fadeIn">
+                                                    <td>
+                                                        <select class="form-control input-sm HTTT" name="httt[@j].HinhThucThanhToan">
+                                                            <option value="">Chọn</option>
+                                                            @foreach (var i in Model.HTTT)
+                                                            {
+                                                                <option value="@i.GiaTri" @(Model.CTPT[j].HinhThucThanhToan == i.GiaTri ? "selected" : "")>@i.HienThi</option>
+                                                            }
+                                                        </select>
+                                                    </td>
+                                                    <td><input type="number" name="httt[@j].SoTienThanhToan" value="@Model.CTPT[j].SoTienThanhToan" class="form-control input-sm" /></td>
+                                                    <td><input name="httt[@j].SoThamChieu" value="@Model.CTPT[j].SoThamChieu" class="form-control input-sm" /></td>
+                                                    <td>
+                                                        <input type="checkbox" class="chkTinhTrang" @(Model.CTPT[j].TinhTrang ? "checked" : "") />
+                                                        <input type="hidden" class="TinhTrang" name="httt[@j].TinhTrang" value="@Model.CTPT[j].TinhTrang" />
+                                                    </td>
+                                                    <td><i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="5" class="right"><i class="fa fa-plus addHTTT" style="cursor:pointer"></i></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ghi chú</label>
+                                    @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label>Kế toán trưởng</label>
+                                    @Html.DropDownListFor(x => item.KeToanTruong, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), new { @class = "select2" })
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label>Người lập phiếu</label>
+                                    @Html.DropDownListFor(x => item.NguoiLapPhieu, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), new { @class = "select2" })
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label>Người nộp tiền</label>
+                                    @Html.DropDownListFor(x => item.NguoiNopTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), new { @class = "select2" })
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <div class="form-group">
+                                    <label>Người thu tiền</label>
+                                    @Html.DropDownListFor(x => item.NguoiThuTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), new { @class = "select2" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <input type="submit" value="Save" class="btn btn-success" />
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script>
+        var tr = $("#tr").html();
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+        $('.date').daterangepicker({
+            singleDatePicker: true,
+            singleClasses: "picker_1"
+        }, function (start, end, label) {
+            console.log(start.toISOString(), end.toISOString(), label);
+        });
+        i = 0;
+        $(".addHTTT").click(function () {
+            i++;
+            $("#tbody").append("<tr>" + tr.replace("httt[0]", "httt[" + i + "]") + "</tr>");
+        })
+        function Remove(a){
+            var tr = a.closest("tr");
+            $(tr).hide();
+            $(tr).find(".HTTT").val("");
+
+        }
+        var a;
+        $(document).on("click", ".chkTinhTrang", function () {
+            a = this;
+
+            $(this).closest("td").children(".TinhTrang").val($(this).is(":checked"));
+        })
+
+    </script>
+}
+
+
+
+
+
+

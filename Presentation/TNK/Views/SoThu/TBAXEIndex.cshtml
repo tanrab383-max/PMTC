@@ -1,0 +1,467 @@
+﻿@model List<TNK.Core.Domain.View.ViewTBAXE>
+@{
+    ViewBag.Title = "Phiếu bán xe";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+    <div class="title_right" style="margin-left:88%">
+        <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu(*.xlxs)</span></a>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                @if (ViewBag.Tab == 1)
+                {
+                    <li class="active">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Phiếu tạm
+                        </a>
+                    </li>
+                    <li class="">
+                        <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                            Phiếu hoàn thành
+                        </a>
+                    </li>
+                }
+                else if (ViewBag.Tab == 2)
+                {
+                    <li class="">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="false">
+                            Phiếu tạm
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="true">
+                            Phiếu hoàn thành
+                        </a>
+                    </li>
+                }
+            </ul>
+            @if (ViewBag.Tab == 1)
+            {
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_0">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <form id="formSearch" method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" title="Số hợp đồng, Khách hàng, SK/SM, Số điện thoại" placeholder="Số hợp đồng, Khách hàng, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                                            <input style="width:40%" onclick="ImportData()" title="Import dữ liệu" value="Import Excel" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            @Html.RadioButton("tinhtrang", "", true, new { id = "All" }) Tất cả
+                                            @Html.RadioButton("tinhtrang", "TK", false, new { id = "TK" }) Trong kho
+                                            @Html.RadioButton("tinhtrang", "CNK", false, new { id = "CNK" }) Chưa nhập kho
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="right">
+                                    <a href="/SoThu/TBAXECreate?id=0"> <i class="fa fa-plus addNew" style="cursor:pointer" id="ThemMoi"></i></a>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th></th>
+                                                <th>Số HĐ</th>
+                                                <th>Ngày hợp đồng</th>
+                                                <th>Khách hàng</th>
+                                                <th>Số điện thoại</th>
+                                                <th>SK/SM</th>
+                                                <th>Loại xe</th>
+                                                <th>Giá niêm yết</th>
+                                                <th>Phụ kiện hứa tặng</th>
+                                                <th>Tình trạng</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                if (Model != null)
+                                                {
+                                                    int i = 1;
+                                                    foreach (var item in Model)
+                                                    {
+                                                        <tr>
+                                                            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                            <td>@item.SoHopDong</td>
+                                                            <td>@item.NgayHopDong.ToString(ViewBag.DateFormat)</td>
+                                                            <td>@item.HoTen</td>
+                                                            <td>@item.DienThoai</td>
+                                                            <td>@item.SoKhung</td>
+                                                            <td>@item.LoaiXe</td>
+                                                            <td class="number2">@item.GiaNiemYet</td>
+                                                            <td class="number2">@item.PhuKienHuaTang</td>
+                                                            @if (@item.TinhTrang == "TK")
+                                                            {
+                                                                <td>
+                                                                    Trong kho
+                                                                </td>
+                                                            }
+                                                            @if (@item.TinhTrang == "Sai_GNY")
+                                                            {
+                                                                <td>
+                                                                    Sai GNY
+                                                                </td>
+                                                            }
+                                                            @if (@item.TinhTrang == "CNK")
+                                                            {
+                                                                <td>
+                                                                    Chưa nhập kho
+                                                                </td>
+                                                            }
+                                                            @if (@item.TinhTrang == "TC")
+                                                            {
+                                                                <td>
+                                                                    Đang thế chấp
+                                                                </td>
+                                                            }
+                                                            <td style="width:5%" class="center">
+                                                                @if (@item.TinhTrang == "TK")
+                                                                {
+                                                                    <a href="/SoThu/TBAXECreate/@HttpUtility.UrlEncode(item.SoKhung)"><i title="Edit" class="fa fa-edit"></i></a>
+
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div class="right">
+                                        @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_1">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <div method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" id="query" title="Id,Số hợp đồng, Khách hàng, SK/SM, Số điện thoại" placeholder="Id,Số hợp đồng, Khách hàng, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" id="Search" class="btn btn-success" />
+                                            <input id="btnExportExcel" style="width:30%" name="export" value="Xuất Excel" class="btn btn-info" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive" id="tbody">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (ViewBag.Tab == 2)
+            {
+                <div class="tab-content">
+                    <div class="tab-pane" id="tab_0">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <form id="formSearch" method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" title="Số hợp đồng, Khách hàng, SK/SM, Số điện thoại" placeholder="Số hợp đồng, Khách hàng, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input id="Search" value="Tìm kiếm" class="btn btn-success search" />
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="right">
+                                    <a href="/SoThu/TBAXECreate?id=0"> <i class="fa fa-plus addNew" style="cursor:pointer" id="ThemMoi"></i></a>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>Số HĐ</th>
+                                                <th>Ngày hợp đồng</th>
+                                                <th>Khách hàng</th>
+                                                <th>Số điện thoại</th>
+                                                <th>SK/SM</th>
+                                                <th>Loại xe</th>
+                                                <th>Giá niêm yết</th>
+                                                <th>Tình trạng</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{
+                                                int i = 1;
+                                                foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                        <td>@item.SoHopDong</td>
+                                                        <td>@item.NgayHopDong.ToString(ViewBag.DateFormat)</td>
+                                                        <td>@item.HoTen</td>
+                                                        <td>@item.DienThoai</td>
+                                                        <td>@item.SoKhung</td>
+                                                        <td>@item.LoaiXe</td>
+                                                        <td class="number2">@item.GiaNiemYet</td>
+                                                        @if (@item.TinhTrang == "TK")
+                                                        {
+                                                            <td>
+                                                                Trong kho
+                                                            </td>
+                                                        }
+                                                        @if (@item.TinhTrang == "Sai_GNY")
+                                                        {
+                                                            <td>
+                                                                Sai GNY
+                                                            </td>
+                                                        }
+                                                        @if (@item.TinhTrang == "CNK")
+                                                        {
+                                                            <td>
+                                                                Chưa nhập kho
+                                                            </td>
+                                                        }
+                                                        <td style="width:5%" class="center">
+                                                            @if (@item.TinhTrang == "TK")
+                                                            {
+                                                                <a href="/SoThu/TBAXECreate/@item.SoKhung"><i title="Edit" class="fa fa-edit"></i></a>
+
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div class="right">
+                                        @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane active" id="tab_1">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <div method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" id="query" title="Id,Số hợp đồng, Khách hàng, SK/SM, Số điện thoại" placeholder="Id,Số hợp đồng, Khách hàng, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" id="Search" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive" id="tbody">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+    <div class="clearfix"></div>
+    <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        //$(document).ready(function () {
+        //    $('#Search').trigger('click');
+        //});
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+            var pageSizes = document.getElementById('pageSizeTBAXEComplete');
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            $.get("/SoThu/TBAXEComplete?query=" + query + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tbody").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            a = $(this).attr("href");
+            var b = a.split("&");
+            p = b[3].split("=")[1];
+            console.log(p);
+            Search();
+            return false;
+        })
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'TBAXE' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        $("#FileMau").click(function () {
+            debugger;
+            $.fileDownload("/SoThu/ExportFile_BanXe", {
+                httpMethod: "POST",
+                data: {},
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+        var datafile = new FormData();
+        function ImportData() {
+            $("#txtUploadFile").trigger('click');
+        }
+        $('#txtUploadFile').on('change', function (e) {
+            //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFile").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_ThuBanXe",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile").value = "";
+                        datafile.delete('file');
+                    },
+                    success: function (result) {
+                        if (result.IsError)
+                            toastError(result.Message);
+                        else {
+                            toastSuccess("Import thành công");
+                            //window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        toastError("Lỗi: Import file excel.");
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+}

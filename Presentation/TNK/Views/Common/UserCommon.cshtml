@@ -1,0 +1,11 @@
+﻿@model TNK.Model.LichSuThaoTacModel
+@{
+    var Users = (List<TNK.Core.Domain.User>)ViewData["User"];
+    var item = Model.Item;
+}
+<div class="col-md-2 col-sm-2 col-xs-12">
+    <div class="form-group">
+        <label>Người tác động</label>
+        @Html.DropDownList("item.CreatedBy", Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+    </div>
+</div>

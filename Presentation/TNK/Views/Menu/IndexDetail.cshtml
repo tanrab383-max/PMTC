@@ -1,0 +1,57 @@
+﻿@model IEnumerable<TNK.Core.Domain.MenuRole>
+@{
+    Layout = null;
+    int tab = ViewBag.Tab;
+}
+
+@if (Model != null)
+{
+    int tabchild = tab + 1;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td style="width:20px">
+                <i class="@item.Icon"></i>
+            </td>
+            <td >
+                @for (int i = 0; i < tab; i++)
+                {
+                    @Html.Raw("-- ");
+                }
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+           
+            <td class="center">
+                @Html.DisplayFor(modelItem => item.Controller)
+            </td>
+
+            <td class="center">
+                @Html.DisplayFor(modelItem => item.ActionDefault)
+            </td>
+            <td class="center">
+                @Html.DisplayFor(modelItem => item.OrderBy)
+            </td>
+            <td class="center">
+                @Html.CheckBoxFor(x => item.IsActive, htmlAttributes: new { @class = " MenuActive" })
+                @Html.HiddenFor(x => item.Id, htmlAttributes: new {@class="id"})
+            </td>
+            <td style="width:5%" class="center">
+                <a href="/Menu/Create/@item.Id"><i title="Create Child" class="fa fa-plus"></i></a>
+            </td>
+            <td style="width:5%" class="center">
+                <a href="/Menu/Edit/@item.Id"><i title="Edit" class="fa fa-edit"></i></a>
+            </td>
+            <td style="width:5%" class="center">
+                <a href="/Menu/Details/@item.Id"><i title="Details" class="fa fa-building-o"></i></a>
+            </td>
+            <td style="width:5%" class="center">
+                <a href="/Menu/Delete/@item.Id"><i title="Delete" class="fa fa-close"></i></a>
+            </td>
+        </tr>
+        if (item.total > 0)
+        {
+            @Html.Action("IndexDetail", "Menu", new { id = item.Id, tab = tabchild })
+        }
+    }
+}
+

@@ -1,0 +1,184 @@
+﻿@model TNK.Model.SoChiModel
+@{
+    var item = Model.Item;
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>Cập nhật @ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b>Thông tin hóa đơn</b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="form-data" method="post" class="form-horizontal form-label-left FormPhieuChi">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(x => item.MaPhieuChi)
+                    @Html.HiddenFor(x => item.MaLoaiPhieu)
+                    @Html.HiddenFor(x => item.MaPhieuLienQuan)
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số chứng từ (*)</label>
+                                    @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "10", @required = "" } })
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label>Đối tác</label>
+                                        @Html.DropDownListFor(x => item.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaVietTat }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày chi</label>
+                                    <input type="text" class="form-control input-sm date1 " name="item.NgayChi" value="@item.NgayChi.ToString("dd/MM/yyyy")" required />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày HT</label>
+                                    <input type="text" class="form-control input-sm date1 " name="item.NgayHachToan" value="@(item.NgayHachToan.HasValue ? item.NgayHachToan.Value.ToString("dd/MM/yyyy") : "")" required />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số tiền thu</label>
+                                    <input type="text" value="@item.TongCong" class="form-control input-sm number" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số tiền đã hoàn</label>
+                                    <input type="text" class="form-control input-sm  number" value="@item.SoTienChi" readonly />
+                                </div>
+                            </div>
+                            @*<div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đã sử dụng</label>
+                                    @Html.EditorFor(x => item.S, new { htmlAttributes = new { @class = "form-control input-sm  number", @readonly = "" } })
+                                </div>
+                            </div>*@
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                @Html.Partial("~/Views/Shared/_ThanhToanChi.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT }, { "HTTT", Model.HTTT } })
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ghi chú</label>
+                                    @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm " })
+                                </div>
+                            </div>
+                            @Html.Partial("~/Views/Common/UserComfirm.cshtml", null, new ViewDataDictionary { { "User", Model.Users }, { "Item", item } })
+                        </div>
+                        <div class="ln_solid"></div>
+                        <div class="form-group center">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                @*<input type="submit" name="submit" id="Create" value="Lưu" class="btn btn-success" />*@
+                                @*<input type="submit" name="submit" id="New" value="Lưu và thêm mới" class="btn btn-success" />*@
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+</form>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/SoThuCommon.js"></script>
+    <script>
+        var conlai = @item.ConLai;
+        $("#form-data").submit(function () {
+            var lst = $(".number,.number2");
+            lst.map(function (key, val) {
+                $(val).val($(val).val().split(",").join(""));
+            });
+        })
+        $(document).on("change", ".number", function () {
+
+            var val = $(this).val();
+
+            if (val != "") {
+                val = val.split(",").join("");
+                val = parseInt(val);
+           //     val = val * 1000;
+                $(this).val(val.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+            Cal();
+            //let total = 0;
+            //$("table").find(".number").map(function (key, val) {
+            //    let number = $(this).val();
+            //    if (number != "") {
+            //        number = number.split(",").join("");
+            //        number = parseInt(number);
+            //        total += number;
+            //        $(".Total").html(total.toLocaleString('en-us'));
+            //    }
+            //});
+            //console.log(total);
+            //$(".ConLai").val((conlai-total).toLocaleString('en-us'));
+        });
+        function Cal()
+        {
+            let total = 0;
+            $("table").find(".number").map(function (key, val) {
+                let number = $(this).val();
+                if (number != "") {
+                    number = number.split(",").join("");
+                    number = parseInt(number);
+                    total += number;
+                    $(".Total").html(total.toLocaleString('en-us'));
+                }
+            });
+            console.log(total);
+            $(".ConLai").val((conlai-total).toLocaleString('en-us'));
+        }
+        i = '@Model.CTPT.Count';
+        $(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if(Model.CTPT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+    </script>
+}

@@ -1,0 +1,51 @@
+﻿@model List<TNK.Core.Domain.View.ViewNKMPK>
+@{
+    Layout = null;
+    int i = 1;
+}
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Ngày thu</th>
+            <th>Mã phiếu thu</th>
+            <th>Số hợp đồng</th>
+            <th>Chứng từ thu</th>
+            <th>Khách hàng</th>
+            <th>Số khung</th>
+            <th>Công lắp</th>
+            <th>Giá vốn</th>
+            <th>Tổng khuyến mãi</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                <td>@item.MaPhieuThu</td>
+                <td>@item.SoHopDong</td>
+                <td>@item.SoChungTu</td>
+                <td>@item.HoTen</td>
+                <td>@item.SoKhung</td>
+                <td class="number">@TNK.Core.Common.ToCurrencyString(item.TienCongPK)</td>
+                <td class="number">@TNK.Core.Common.ToCurrencyString(item.GiaVonKM)</td>
+                <td class="number">@TNK.Core.Common.ToCurrencyString(item.TongKM) </td>
+                @*<td class="number">@TNK.Core.Common.ToCurrencyString(item.ConLai)</td>*@
+                <td style="width:5%" class="center">
+                    <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=NKMPK&actiontype=Update"><i title="Edit" class="fa fa-edit"></i></a>
+                </td>
+                <td style="width:5%" class="center">
+                    <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+</div>

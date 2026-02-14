@@ -1,0 +1,330 @@
+﻿
+@model List<TNK.Core.Domain.View.ViewNoPhaiTra>
+@{
+    int i = 1;
+    string[] list = { "NTHPK", "CTHBH", "NBHBX", "NPTPK", "NTHBH" };
+    bool flag = list.Contains((string)ViewBag.Type);
+
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs" id="tab_data">
+                <li class="active" data-url="/SoChi/PhieuChi/@ViewBag.Type">
+                    <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                        Phiếu nợ
+                    </a>
+                </li>
+                <li class="unactive">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                        Chi tiết phiếu chi
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form method="get" class="row" id="formSearch">
+                                <input name="id" type="hidden" value="@ViewBag.Type" />
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày nợ</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày nợ</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" placeholder="Số hợp đồng, Khách hàng, Số khung, Biển số" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                                        <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        @Html.RadioButton("tinhtrang", "", true, new { id = "All" }) Tất Cả
+                                        @Html.RadioButton("tinhtrang", "D", false, new { id = "D" }) Đã trả
+                                        @Html.RadioButton("tinhtrang", "C", false, new { id = "C" }) Còn nợ
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive" id="@ViewBag.Type">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Ngày nợ</th>
+                                            <th>Mã phiếu</th>
+                                            <th>@ViewBag.KhachHangNoTitle</th>
+                                            <th>Số hợp đồng</th>
+                                            <th>Biển số</th>
+                                            <th>Số khung</th>
+                                            <th>Số tiền nợ</th>
+                                            <th>Đã thanh toán</th>
+                                            <th>Còn nợ</th>
+                                            <th>Tình trạng</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model != null)
+                                        {
+                                            foreach (var item in Model)
+                                            {
+                                        <tr>
+                                            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                            <td>@item.NgayNo.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <a href="" style="color:blue" onclick="window.open('/SoThu/ChiTietCocMuaXe?MaPhieuThu=@item.MaPhieuNo', 'newwindow', 'width=900, height=900,left=200'); return false;" target="_blank" title="LỊCH SỬ DÙNG CỌC">@item.MaPhieuNo</a>
+                                            </td>                                            
+                                            <td>@Html.Raw(item.KhachHang)</td>
+                                            <td>@item.SoHopDong</td>
+                                            <td>@item.BienSo</td>
+                                            <td>@item.SoKhung</td>
+                                            <td class="number">@TNK.Core.Common.ToCurrencyString(item.SoTienNo)</td>
+                                            <td class="number">@TNK.Core.Common.ToCurrencyString(item.SoTienDaTra)</td>
+                                            <td class="number">@TNK.Core.Common.ToCurrencyString(item.SoTienConLai)</td>
+                                            @if (item.SoTienConLai > 1)
+                                            {
+                                                <td>Còn nợ</td>
+                                            }
+                                            else
+                                            {
+                                                <td>Đã trả</td>
+                                            }
+                                        <td style="width:5%" class="center">
+                                            @if (item.SoTienConLai > 0)
+                                            {
+                                                @*<a href= "/SoThu/PhieuThu?type=NKMPK&&id=@item.MaPhieuNo" onclick= "AddClick()"><i title="Edit" class="fa fa-plus"></i></a>*@
+                                                <a href="javascript:void(0)" onclick="AddClick()"><i title="Edit" class="fa fa-plus"></i></a>
+                                            }
+                                        </td>
+                                        </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày chi</label>
+                                        <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày chi</label>
+                                        <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="query_complete" placeholder="Id, Số phiếu, Khách hàng" class="form-control input-sm " value="@ViewBag.Query_Complete" name="query_complete" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Search" id="Search" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive" id="tbody">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts
+{
+    <script>
+        var type = '@ViewBag.Type';
+        var chk = "";
+        var flag = true;
+        var dem_all = 0;
+        function AddClick() {
+            alert("Chức năng này đã bị khóa. Vui lòng vào mục [Quản lý-->Hứa tặng -->Trả phụ kiện] để trả nợ KMPK");            
+        }
+        function setCookie(cname, cvalue) {
+            document.cookie = cname + "=" + cvalue + ";path=/SoChi/PhieuChiCreate/";
+        }
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            var pageSizes = document.getElementById('pageSizePhieuChiComplete');
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            debugger;
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query_complete").val();
+            $.get("/SoChi/NKMPKComplete?id=" + type + "&query_complete=" + query + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tbody").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            debugger;
+            a = $(this).attr("href");
+            var b = a.split("&");
+            p = b[4].split("=")[1];
+            Search();
+            return false;
+        })
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+
+        function DeletePhieuChi(a,id) {
+
+            if (confirm('Xác nhận')) {
+                data = { id: id};
+                $.post("/SoChi/Delete", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        //phan xuat excel
+        $("#btnExportExcel").click(function () {
+            debugger;
+            if ($($("#tab_data li.active")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = $($("#tab_data li.active")).attr("data-url").replace("/SoChi/PhieuChi/", "#");
+                //alert(idtable);
+                var result = $(idtable).html();
+                result = result.replace('class="table"', 'class="table" border="1"');
+                //alert(result)
+                tableToExcel(result, 'SoChi' + '_@ViewBag.Type' + '_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/SoChi/PhieuChi?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+        $("#export").click(function () {
+            debugger;
+            if ($($("#tab_data li.unactive")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();s
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                //var idtable = $($("#tab_data li.unactive")).attr("data-url").replace("/SoChi/PhieuChi/", "#");
+                //alert(idtable);
+                var idtable = "#tbody";
+                var result = $(idtable).html();
+                //alert(result)
+                tableToExcel(result, 'SoChi' + '_@ViewBag.Type' + '_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/SoChi/PhieuChi?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+        var tableToExcel = (function () {
+            var uri = 'data:application/vnd.ms-excel;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            return function (table, name) {
+                //if (!table.nodeType) table = document.getElementById(table)
+                var ctx = { worksheet: name || 'Worksheet', table: table }
+                var link = document.createElement("A");
+                link.href = uri + base64(format(template, ctx));
+                link.download = name || 'Baocao.xls';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })()
+        function DeletePhieuChi(a, id) {
+
+            if (confirm('Xác nhận')) {
+                data = { id: id };
+                $.post("/SoChi/Delete", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'TPHKI' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+    </script>
+}

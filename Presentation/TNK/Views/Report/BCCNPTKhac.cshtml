@@ -1,0 +1,85 @@
+﻿@using System.Data;
+@{
+    double SoTienNoTotal = 0, SoTienDaTraTotal = 0, SoTienConLaiTotal = 0;
+    double TONGCONG = 0;
+}
+<div class="x_content">
+    <div id="BCCNPTKhac" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='9' class="tile">DANH SÁCH CHI TIẾT CÔNG NỢ PHẢI THU KHÁC @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan='9' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">STT</th>
+                    <th class="column-title">Ngày nợ</th>
+                    <th class="column-title">Khách hàng</th>
+                    <th class="column-title">Nội dung</th>
+                    <th class="column-title">Số tiền nợ</th>
+                    <th class="column-title">Đã thanh toán</th>
+                    <th class="column-title">Còn nợ</th>
+                    <th class="column-title">Ngày thanh toán</th>
+					<th class="column-title">Lý do</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    double SoTienNo = 0, SoTienDaTra = 0, SoTienConLai = 0;
+                    string dau = "", cuoi = "";
+                    int dem = 0;
+                    DataView ViewTongHop = (Model as DataTable).DefaultView;
+                    foreach (DataRow row in ViewTongHop.ToTable().Rows)
+                    {
+
+                        //dau = @row["TenDoiTac"].ToString();
+                        //SoTienNo += double.Parse(string.IsNullOrEmpty(@row["SoTienNo"].ToString()) ? "0" : (@row["SoTienNo"].ToString()));
+                        //SoTienDaTra = double.Parse(string.IsNullOrEmpty(@row["SoTienDaTra"].ToString()) ? "0" : (@row["SoTienDaTra"].ToString()));
+                        //SoTienConLai += double.Parse(string.IsNullOrEmpty(@row["SoTienConLai"].ToString()) ? "0" : (@row["SoTienConLai"].ToString()));
+                        <tr class="even pointer">
+                            @if (@row["NoiDung"].ToString().ToUpper() == "TỔNG CỘNG")
+                            {
+                                //SoTienNoTotal += double.Parse(string.IsNullOrEmpty(@row["SoTienNo"].ToString()) ? "0" : (@row["SoTienNo"].ToString()));
+                                //SoTienDaTraTotal += double.Parse(string.IsNullOrEmpty(@row["SoTienDaTra"].ToString()) ? "0" : (@row["SoTienDaTra"].ToString()));
+                                //SoTienConLaiTotal = double.Parse(string.IsNullOrEmpty(@row["SoTienConLai"].ToString()) ? "0" : (@row["SoTienConLai"].ToString()));
+                                <td group="@row["NoiDung"]" colspan="4" style="background-color:lightblue; color:red"><b>@row["NoiDung"]</b></td>
+                                <td class="number" style="background-color:lightblue; color:red">@row["SoTienNo"].ToString().Replace(",", ".")</td>
+                                <td class="number" style="background-color:lightblue; color:red">@row["SoTienDaTra"].ToString().Replace(",", ".")</td>
+                                <td class="number" style="background-color:lightblue; color:red">@row["SoTienConLai"].ToString().Replace(",", ".")</td>
+                                <td style="background-color:lightblue; color:red"></td>
+								 <td style="background-color:lightblue; color:red"></td>
+                            }
+                            else
+                            {
+                                <td>@(++dem)</td>
+                                <td>@row["NgayNo"]</td>
+                                <td>@row["TenDoiTac"]</td>
+                                <td>@row["NoiDung"]</td>
+                                <td class="number">@row["SoTienNo"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SoTienDaTra"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SoTienConLai"].ToString().Replace(",", ".")</td>
+                                <td>@row["NgayThanhToan"]</td>
+								 <td>@row["LyDo"]</td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

@@ -1,0 +1,227 @@
+﻿@model List<TNK.Core.Domain.View.ViewNoDaTra>
+@{
+    Layout = null;
+    string[] list = { "NTHPK", "CTHBH", "NPTPK","NTHBH", "NBHBX", "NMPTU", "N2THK" , "NGCNG", "N2GTX", "HHTXE","NKHAC" };
+    var flag = list.Contains((string)ViewBag.Type);
+    int i = 1;
+}
+
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            @if (ViewBag.Type == "NBHXH" || ViewBag.Type == "NGCNG" || ViewBag.Type == "N2GTX" || ViewBag.Type == "HHTXE")
+            {
+                <th>Mã phiếu nợ</th>
+            }
+            else
+            {
+                <th>Mã phiếu chi</th>
+            }
+            @if (ViewBag.Type == "NMPTU")
+            {
+                <th style="width:200px">Mã phiếu nợ liên quan</th>
+            }
+            @if (ViewBag.Type == "NGCNG" || ViewBag.Type == "N2GTX" || ViewBag.Type == "HHTXE")
+            {
+                <th>Mã phiểu chi</th>
+            }
+            <th>Ngày chi</th>
+            <th>Chứng từ chi</th>
+            @if (ViewBag.Type == "NKHAC" || ViewBag.Type == "NBDTK" || ViewBag.Type == "NTOHO")
+            {
+                <th>Mã phiếu nợ</th>
+            }
+            @*<th>Lý do nợ</th>*@
+            @if (ViewBag.Type == "NTHBH" || ViewBag.Type == "NBHBX")
+            {
+                <th>Khách hàng</th>
+            }
+            @if (ViewBag.Type == "NGCNG")
+            {
+                <th>Nhà cung cấp</th>
+            }
+            @if (ViewBag.Type == "NKHAC")
+            {
+                <th>Khách hàng</th>
+            }
+            else if (ViewBag.Type == "NBHXH")
+            {
+                <th>Nội dung</th>
+            }
+            else
+            {
+                <th>@ViewBag.KhachHangNoTitle</th>
+            }
+            @if (ViewBag.Type == "NTOHO")
+            {
+                <th>Lý Do Chi</th>
+            }
+            @if (ViewBag.Type == "N2GTX")
+            {
+                <th>Tên Khách hàng</th>
+            }
+            @if (ViewBag.Type == "NKHAC")
+            {
+                <th>Số hợp đồng</th>
+            }
+            <th>Số tiền nợ</th>
+            <th>Số tiền thanh toán</th>
+            @if (!flag && ViewBag.Type != "NBHXH" && ViewBag.Type != "NBDTK")
+            {
+                <th>Số tiền còn lại</th>
+            }
+            @*@if (ViewBag.Type == "NGCNG")
+        {
+            @*<th>Số phiếu quyết toán</th>
+            <th>Số phiếu liên quan</th>
+        }*@
+            <th></th>
+            <th></th>
+            @*<th></th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+        <tr>
+            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+            @if (ViewBag.Type == "NBHXH")
+            {
+                <td>@Html.Raw(HttpUtility.HtmlDecode(item.SoPhieuQuyetToan))</td>
+            }
+            else if (ViewBag.Type != "NKHAC")
+            {
+                if ((ViewBag.Type == "NMPTU" && item.SoPhieuQuyetToan == null)
+                    || (ViewBag.Type == "N2THK" && item.SoPhieuQuyetToan == null)
+                    || (ViewBag.Type == "N2GTX" && item.SoPhieuQuyetToan == null))
+                {
+                    <td>@Html.Raw(HttpUtility.HtmlDecode(item.MaPhieuNo))</td>
+                }
+                else if (ViewBag.Type == "HHTXE")
+                {
+                    <td>@Html.Raw(HttpUtility.HtmlDecode(item.MaPhieuLienQuan))</td>
+                }
+                else
+                {
+                    <td>@Html.Raw(HttpUtility.HtmlDecode(item.SoPhieuQuyetToan))</td>
+                }
+                @*<td>@Html.Raw(HttpUtility.HtmlDecode(item.SoPhieuQuyetToan))</td>*@
+            }
+            @if (ViewBag.Type == "NGCNG" || ViewBag.Type == "N2GTX" || ViewBag.Type == "HHTXE" || ViewBag.Type == "NKHAC")
+            {
+                if (ViewBag.Type == "HHTXE" || ViewBag.Type == "NKHAC")
+                {
+                    <td>@item.MaPhieuChi</td>
+                }
+                else
+                {
+                    <td>@item.MaPhieuNo</td>
+                }
+            }
+            @if (ViewBag.Type == "NMPTU")
+            {
+                var strMaPhieuLienQuan = item.MaPhieuLienQuan.Replace(";", "&lt;br&gt;");
+                <td> @Html.Raw(HttpUtility.HtmlDecode(strMaPhieuLienQuan)) </td>
+            }
+            <td>@item.NgayChi.ToString("dd/MM/yyyy")</td>
+            <td>@item.ChungTuThu</td>
+            @if (ViewBag.Type == "NKHAC" || ViewBag.Type == "NBDTK" || ViewBag.Type == "NTOHO")
+            {
+                <td>@item.MaPhieuLienQuan</td>
+            }
+            @*<td>@item.LyDoNo</td>*@
+            @if (ViewBag.Type == "NTHBH" || ViewBag.Type == "NBHBX")
+            {
+                <td>@item.Hoten</td>
+            }
+            @if (ViewBag.Type == "NGCNG")
+            {
+                @*<td>@item.DoiTac</td>*@
+                <td>@item.KhachHang</td>
+            }
+            @if (ViewBag.Type == "NMUTS")
+            {
+                <td>@item.DoiTac</td>
+            }
+            @if (ViewBag.Type == "NKHAC")
+            {
+                <td>@item.Hoten</td>
+            }
+            else if (ViewBag.Type == "NBHXH")
+            {
+                <td>@item.NoiDung</td>
+            }
+            else
+            {
+                if (ViewBag.Type == "N2THK" || ViewBag.Type == "N2GTX")
+                {
+                    <td>@item.DoiTac</td>
+                }
+                if (ViewBag.Type == "NGCNG" || ViewBag.Type == "HHTXE")
+                {
+                    <td>@item.Hoten</td>
+                }
+                else
+                {
+                    <td>@item.KhachHang</td>
+                }
+            }
+            @if (ViewBag.Type == "NTOHO")
+            {
+                <td>@item.LyDoChi</td>
+            }
+            @if (ViewBag.Type == "N2GTX")
+            {
+                <td>@item.NoiDung</td>
+            }
+            @if (ViewBag.Type == "NKHAC")
+            {
+                <th>@item.SoHopDong</th>
+            }
+            <td>@TNK.Core.Common.ToCurrencyString(item.SoTienNo)</td>
+            <td>@TNK.Core.Common.ToCurrencyString(item.SoTienThanhToan)</td>
+            @if (!flag && ViewBag.Type != "NBHXH" && ViewBag.Type != "NBDTK")
+            {
+                <td>@TNK.Core.Common.ToCurrencyString(item.SoTienConLai)</td>
+            }
+            @*@if (ViewBag.Type == "NGCNG")
+        {
+            <td>@item.MaPhieuLienQuan</td>
+        }*@
+            @if (flag && item.LoaiPhieuNo != "HHTXE")
+            {
+                <td style="width:5%" class="center">
+                    <a href="/SoChi/PhieuChiEdit/@item.MaPhieuNo?type=@ViewBag.Type"><i title="View" class="fa fa-eye"></i></a>
+                </td>
+            }
+            else if (item.LoaiPhieuNo.Contains("N1") || item.LoaiPhieuNo.Contains("K1"))
+            {
+                <td style="width:5%" class="center">
+                    <a href="/SoChi/PhieuChiHoEdit/@item.MaPhieuNo?type=@ViewBag.Type"><i title="View" class="fa fa-eye"></i></a>
+                </td>
+            }
+            else
+            {
+                <td style="width:5%" class="center">
+                    <a href="/SoChi/PhieuChiEdit/@item.SoPhieuQuyetToan?type=@ViewBag.Type"><i title="View" class="fa fa-eye"></i></a>
+                </td>
+            }
+            <td style="width:5%" class="center">
+                <a href="javascript:;" onclick="DeletePhieuChi(this,'@item.MaPhieuChi')"><i title="Delete" class="fa fa-close"></i></a>
+            </td>
+        </tr>
+                i++;
+            }
+        }
+
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+</div>
+
+
+

@@ -1,0 +1,310 @@
+﻿
+@{
+    ViewBag.Title = "Báo cáo tháng";
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>BÁO CÁO THÁNG</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="control-label col-md-1 col-sm-1 col-xs-12" for="first-name"></label>
+                                <div class="col-sm-3">
+                                    <input type="text" id="FromDate" required="required" class="date form-control" placeholder="Từ ngày" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" id="ToDate" required="required" class="date form-control" placeholder="Đến ngày" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                                </div>
+                                <div class="col-sm-5">
+                                    <a onclick="GetReportInfo()" class="btn btn-primary"><i class="fa fa-search"></i> Xem Báo Cáo</a>
+                                    <a id="btnExportExcel" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Xuất excel</a>
+                                    <a id="btnExportExcelAll" class="btn btn-success"><i class="fa fa-file-excel"></i> Xuất excel tất cả báo cáo</a>
+                                    <div id="loading" style="display:none"><img src="~/assests/vendors/jquery-smart-wizard/images/loader.gif" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="x_content">
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTab" class="nav nav-tabs bar_tab" role="tablist">
+                            <li role="presentation" class="active" data-url="/Report/BCKiemToan_BCThang">
+                                <a href="#tab_BCThang" id="ct-tab" role="tab" data-toggle="tab" aria-expanded="true">Báo Cáo Tháng</a>
+                            </li>
+                        </ul>
+                        <div id="myTabContent" class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade active in" id="tab_BCThang" aria-labelledby="ct-tab"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="idTab" value="#tab_BCThang" />
+<input type="hidden" id="url" value="/Report/BCKiemToan_BCThang" />
+
+<div id="reportall" style="display:none">
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script>
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.replace(",", ".");
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+        $("#myTab li").on("click", function () {
+            debugger;
+            $("#FromDate").prop("disabled", false);
+            GetReportInfo();
+        });
+
+
+        function GetReportInfo() {
+            debugger;
+            var url = $($("#myTab li.active")[0]).attr("data-url");
+            //alert(url);
+            var viewbox = $($($("#myTab li.active a")[0]).attr("href"));
+            viewbox.html('<p align="center"><img src="/assests/images/loading.gif"/></p>');
+            viewbox.show();
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: { "FromDate": $("#FromDate").val(), "ToDate": $("#ToDate").val() },
+                success: function (result) {
+                    viewbox.html(result);
+                    switch(viewbox.selector)
+                    {
+                        case "#tab_TH":
+                            var tableTH = viewbox.find($("div#BCKiemToan_TongHop_div tbody"));
+                            MergeRow(tableTH);
+                            var tableTH_New = viewbox.find($("#dtBangThanhToanNHapNH"));
+                            MergeRow(tableTH_New);
+                            break;
+                        case "#tab_CT":
+                            var tableCT = viewbox.find($("div#BCKiemToan_ChiTiet_div tbody"));
+                            MergeRow(tableCT);
+
+                            break;
+                        case "#tab_KQKD":
+                            var tableKQKD = viewbox.find($("div#BCKiemToan_KetQuaKinhDoanh_div tbody"));
+                            MergeRow(tableKQKD);
+                            break;
+                        case "#tab_XNT" :
+                            var tableXNT = viewbox.find($("div#BCKiemToan_XuatNhapTon_div tbody"));
+                            MergeRow(tableXNT);
+                        //case "#tab_TAUN" :
+                        //    var tableTAUN = viewbox.find($("div#BCKiemToan_TamUng_div tbody"));
+                        //    MergeRow(tableTAUN);
+                        case "#tab_THBH":
+                            var tableTHBH = viewbox.find($("div#BCKiemToan_THBH_div tbody"));
+                            MergeRow(tableTHBH);
+                        default:
+                            break;
+                    }
+                    $(viewbox).removeAttr("style");
+                },
+                error: function (result) {
+                    viewbox.html('<p align="center">Không thể hiển thị danh sách</p>');
+                    alert("Lỗi: Không thể tải danh sách");
+                }
+            });
+        };
+
+        $("#btnExportExcel").click(function () {
+            debugger;
+            if ($($("#myTab li.active")[0]).attr("data-url") != "/Report/CongNo") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = $($("#myTab li.active")[0]).attr("data-url").replace("/Report/", "#");
+                idtable = idtable + "_div";
+                //alert(idtable);
+                //var idtable = $($("#myTab li.active")[0]).attr("data-url").replace("/Report/", "#");
+                var result = $(idtable).html();
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                result = result.replace('class="table table-striped table-bordered table-condensed"', ' border="1"');
+                if (idtable == "#BCKiemToan_TongHop_div")
+                {
+                    for (var i = 0 ; i <= 100; i++)
+                    {
+                        result = result.replace('<td hidden></td>', '');
+                    }
+                }
+                //result = result.replace('table ', 'table style="border:solid"')//style="text-align:left;width:60% "
+                //result = result.replace('style="text-align:left;width:60% "', 'style="text-align:left;width:60%;border:1px solid black;"');
+                //alert(result);
+                tableToExcel(result, 'Report' + $("#idTab").val().replace("#tab_", "BC") + '_' + postfix + '.xls');
+            }
+            else
+            {
+                window.location = `/Report/CongNo?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+
+        var tableToExcel = (function () {
+            var uri = 'data:application/vnd.ms-excel;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            return function (table, name) {
+                //if (!table.nodeType) table = document.getElementById(table)
+                var ctx = { worksheet: name || 'Worksheet', table: table }
+                var link = document.createElement("A");
+                link.href = uri + base64(format(template, ctx));
+                link.download = name || 'Baocao.xls';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })()
+
+        $("#btnExportExcelAll").click(function () {
+            $.fileDownload("/Report/ReportAll_KiemToan", {
+                httpMethod: "POST",
+                data: {
+                    FromDate: $("#FromDate").val(),
+                    ToDate: $("#ToDate").val()
+                },
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+
+        function MergeRow(table) {
+            debugger;
+            var rows = table.find($("tr")); // Lấy các dòng trong table ra
+            var colsLength = $(rows[0]).find($("td")).length; // kiểm tra số cột
+            var removeLater = new Array();
+            for (var i = 0; i < colsLength; i++) { // Merge giá trị các dòng cho từng cột
+                var startIndex = 0;
+                var lastIndex = 0;
+                var flag = 0;
+                var startText = $($(rows[0]).find("td")[i]).attr("group");
+                if (startText != "" && startText != null) {
+                    for (var j = 1; j < rows.length ; j++) {
+                        var row = $(rows[j]);
+                        var col = $(row.find("td")[i]);
+                        var currentText = col.attr("group");
+                        if (currentText == startText) {
+
+                            col.css("background", "gray");
+                            removeLater.push(col);
+                            lastIndex = j;
+                        } else {
+
+                            var spanLength = lastIndex - startIndex;
+                            if (spanLength >= 1) {
+                                console.log(startIndex + " - " + lastIndex)
+                                $($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                            }
+                            flag = spanLength;
+                            lastIndex = j;
+                            startIndex = j;
+                            startText = currentText;
+                        }
+                    }
+                }
+                var spanLength = lastIndex - startIndex;
+                debugger;
+                if (spanLength >= 1) {
+                    console.log(startIndex + " - " + lastIndex)
+                    //$($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                }
+            }
+
+            for (var i in removeLater) {
+                $(removeLater[i]).remove();
+            }
+        }
+
+        function parseDate(str) {
+            var mdy = str.split('/');
+            return new Date(mdy[2], mdy[1], mdy[0]);
+        }
+        function MergeRow1(table) {
+            debugger;
+            var rows = table.find($("tr")); // Lấy các dòng trong table ra
+            var colsLength = $(rows[0]).find($("td")).length; // kiểm tra số cột
+            var removeLater = new Array();
+            for (var i = 0; i < colsLength; i++) { // Merge giá trị các dòng cho từng cột
+                var startIndex = 0;
+                var lastIndex = 0;
+                var flag = 0;
+                var startText = $($(rows[0]).find("td")[i]).attr("group1");
+                if (startText != "" && startText != null) {
+                    for (var j = 1; j < rows.length ; j++) {
+                        var row = $(rows[j]);
+                        var col = $(row.find("td")[i]);
+                        var currentText = col.attr("group1");
+                        if (currentText == startText) {
+
+                            col.css("background", "gray");
+                            removeLater.push(col);
+                            lastIndex = j;
+                        } else {
+
+                            var spanLength = lastIndex - startIndex;
+                            if (spanLength >= 1) {
+                                console.log(startIndex + " - " + lastIndex)
+                                $($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                            }
+                            flag = spanLength;
+                            lastIndex = j;
+                            startIndex = j;
+                            startText = currentText;
+                        }
+                    }
+                }
+                var spanLength = lastIndex - startIndex;
+                debugger;
+                if (spanLength >= 1) {
+                    console.log(startIndex + " - " + lastIndex)
+                    //$($(rows[startIndex]).find("td")[i]).attr("rowspan", spanLength + 1);
+                }
+            }
+
+            for (var i in removeLater) {
+                $(removeLater[i]).remove();
+            }
+        }
+
+    </script>
+
+}
+
+
+
+

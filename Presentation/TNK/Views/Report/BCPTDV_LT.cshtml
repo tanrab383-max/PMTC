@@ -1,0 +1,1429 @@
+﻿@using System.Data;
+@{
+    double TotalGCN_GiaBan = 0, TotalGCN_GiamGia = 0, TotalGCN_ThucThu = 0, TotalGCN_ChiGCN = 0, TotalSC_GiaBan = 0, TotalSC_GiamGia = 0,
+    TotalSC_ThucThu = 0, TotalCĐ_GiaBan = 0, TotalCĐ_GiamGia = 0, TotalCĐ_ThucThu = 0, TotalDS_GiaBan = 0, TotalDS_GiamGia = 0, TotalDS_ThucThu = 0, TotalPTT_GiaBan = 0, TotalPTT_GiamGia = 0, TotalPTT_ThucThu = 0,
+    TotalPTN_GiaBan = 0, TotalPTN_GiamGia = 0, TotalPTN_ThucThu = 0, TotalPKDV_GiaBan = 0, TotalPKDV_GiamGia = 0, TotalPKDV_ThucThu = 0,
+    TotalVTN_GiaBan = 0, TotalVTN_GiamGia = 0, TotalVTN_ThucThu = 0, TotalVTN_GiaVon = 0, TotalVTN_KMTX = 0,
+    TotalVTGTGT_GiaBan = 0, TotalVTGTGT_GiamGia = 0, TotalVTGTGT_ThucThu = 0, TotalVTGTGT_GiaVon = 0, TotalVTGTGT_KMTX = 0,
+    TotalQuaTang_GiaBan = 0, TotalQuaTang_GiamGia = 0, TotalQuaTang_ThucThu = 0, TotalTongGiaBan = 0, TotalTongGiamGia = 0, TotalTongThucThu = 0, TotalTongGiaVon = 0,
+    TotalDS_GiaVon = 0, TotalPTT_GiaVon = 0, TotalPTN_GiaVon = 0, TotalPKDV_GiaVon = 0, TotalQuaTang_GiaVon = 0,
+    TotalDS_KMTX = 0, TotalPTT_KMTX = 0, TotalPTN_KMTX = 0, TotalPKDV_KMTX = 0, TotalQuaTang_KMTX = 0, TotalTongKMTX = 0;
+
+    double TotalGCN_GiaBan_XC = 0, TotalGCN_GiamGia_XC = 0, TotalGCN_ThucThu_XC = 0, TotalGCN_ChiGCN_XC = 0, TotalSC_GiaBan_XC = 0,
+        TotalSC_GiamGia_XC = 0, TotalSC_ThucThu_XC = 0, TotalCĐ_GiaBan_XC = 0, TotalCĐ_GiamGia_XC = 0, TotalCĐ_ThucThu_XC = 0, TotalDS_GiaBan_XC = 0,
+        TotalDS_GiamGia_XC = 0, TotalDS_ThucThu_XC = 0, TotalPTT_GiaBan_XC = 0, TotalPTT_GiamGia_XC = 0, TotalPTT_ThucThu_XC = 0, TotalPTN_GiaBan_XC = 0, TotalPTN_GiamGia_XC = 0, TotalPTN_ThucThu_XC = 0, TotalPKDV_GiaBan_XC = 0, TotalPKDV_GiamGia_XC = 0, TotalPKDV_ThucThu_XC = 0,
+    TotalVTN_GiaBan_XC = 0, TotalVTN_GiamGia_XC = 0, TotalVTN_ThucThu_XC = 0, TotalVTN_GiaVon_XC = 0, TotalVTN_KMTX_XC = 0,
+    TotalVTGTGT_GiaBan_XC = 0, TotalVTGTGT_GiamGia_XC = 0, TotalVTGTGT_ThucThu_XC = 0, TotalVTGTGT_GiaVon_XC = 0, TotalVTGTGT_KMTX_XC = 0,
+    TotalQuaTang_GiaBan_XC = 0, TotalQuaTang_GiamGia_XC = 0, TotalQuaTang_ThucThu_XC = 0, TotalTongGiaBan_XC = 0, TotalTongGiamGia_XC = 0, TotalTongThucThu_XC = 0, TotalTongGiaVon_XC = 0,
+    TotalDS_GiaVon_XC = 0, TotalPTT_GiaVon_XC = 0, TotalPTN_GiaVon_XC = 0, TotalPKDV_GiaVon_XC = 0, TotalQuaTang_GiaVon_XC = 0,
+    TotalDS_KMTX_XC = 0, TotalPTT_KMTX_XC = 0, TotalPTN_KMTX_XC = 0, TotalPKDV_KMTX_XC = 0, TotalQuaTang_KMTX_XC = 0, TotalTongKMTX_XC = 0;
+
+    double TotalGCN_GiaBanPK = 0, TotalGCN_GiamGiaPK = 0, TotalGCN_ThucThuPK = 0, TotalGCN_ChiGCNPK = 0, TotalSC_GiaBanPK = 0, TotalSC_GiamGiaPK = 0,
+TotalSC_ThucThuPK = 0, TotalCĐ_GiaBanPK = 0, TotalCĐ_GiamGiaPK = 0, TotalCĐ_ThucThuPK = 0, TotalDS_GiaBanPK = 0, TotalDS_GiamGiaPK = 0, TotalDS_ThucThuPK = 0, TotalPTT_GiaBanPK = 0, TotalPTT_GiamGiaPK = 0, TotalPTT_ThucThuPK = 0,
+TotalPTN_GiaBanPK = 0, TotalPTN_GiamGiaPK = 0, TotalPTN_ThucThuPK = 0, TotalPKDV_GiaBanPK = 0, TotalPKDV_GiamGiaPK = 0, TotalPKDV_ThucThuPK = 0,
+TotalQuaTang_GiaBanPK = 0, TotalQuaTang_GiamGiaPK = 0, TotalQuaTang_ThucThuPK = 0, TotalTongGiaBanPK = 0, TotalTongGiamGiaPK = 0, TotalTongThucThuPK = 0, TotalTongGiaVonPK = 0,
+TotalDS_GiaVonPK = 0, TotalPTT_GiaVonPK = 0, TotalPTN_GiaVonPK = 0, TotalPKDV_GiaVonPK = 0, TotalQuaTang_GiaVonPK = 0,
+TotalDS_KMTXPK = 0, TotalPTT_KMTXPK = 0, TotalPTN_KMTXPK = 0, TotalPKDV_KMTXPK = 0, TotalQuaTang_KMTXPK = 0, TotalTongKMTXPK = 0,
+TotalVTN_GiaBanPK = 0, TotalVTN_GiamGiaPK = 0, TotalVTN_ThucThuPK = 0, TotalVTN_GiaVonPK = 0, TotalVTN_KMTXPK = 0,
+TotalVTGTGT_GiaBanPK = 0, TotalVTGTGT_GiamGiaPK = 0, TotalVTGTGT_ThucThuPK = 0, TotalVTGTGT_GiaVonPK = 0, TotalVTGTGT_KMTXPK = 0;
+
+    double TotalGCN_GiaBanPKKM = 0, TotalGCN_GiamGiaPKKM = 0, TotalGCN_ThucThuPKKM = 0, TotalGCN_ChiGCNPKKM = 0, TotalSC_GiaBanPKKM = 0, TotalSC_GiamGiaPKKM = 0,
+    TotalSC_ThucThuPKKM = 0, TotalCĐ_GiaBanPKKM = 0, TotalCĐ_GiamGiaPKKM = 0, TotalCĐ_ThucThuPKKM = 0, TotalDS_GiaBanPKKM = 0, TotalDS_GiamGiaPKKM = 0, TotalDS_ThucThuPKKM = 0, TotalPTT_GiaBanPKKM = 0, TotalPTT_GiamGiaPKKM = 0, TotalPTT_ThucThuPKKM = 0,
+    TotalPTN_GiaBanPKKM = 0, TotalPTN_GiamGiaPKKM = 0, TotalPTN_ThucThuPKKM = 0, TotalPKDV_GiaBanPKKM = 0, TotalPKDV_GiamGiaPKKM = 0, TotalPKDV_ThucThuPKKM = 0,
+    TotalQuaTang_GiaBanPKKM = 0, TotalQuaTang_GiamGiaPKKM = 0, TotalQuaTang_ThucThuPKKM = 0, TotalTongGiaBanPKKM = 0, TotalTongGiamGiaPKKM = 0, TotalTongThucThuPKKM = 0, TotalTongGiaVonPKKM = 0,
+    TotalDS_GiaVonPKKM = 0, TotalPTT_GiaVonPKKM = 0, TotalPTN_GiaVonPKKM = 0, TotalPKDV_GiaVonPKKM = 0, TotalQuaTang_GiaVonPKKM = 0,
+    TotalDS_KMTXPKKM = 0, TotalPTT_KMTXPKKM = 0, TotalPTN_KMTXPKKM = 0, TotalPKDV_KMTXPKKM = 0, TotalQuaTang_KMTXPKKM = 0, TotalTongKMTXPKKM = 0,
+    TotalVTN_GiaBanPKKM = 0, TotalVTN_GiamGiaPKKM = 0, TotalVTN_ThucThuPKKM = 0, TotalVTN_GiaVonPKKM = 0, TotalVTN_KMTXPKKM = 0,
+    TotalVTGTGT_GiaBanPKKM = 0, TotalVTGTGT_GiamGiaPKKM = 0, TotalVTGTGT_ThucThuPKKM = 0, TotalVTGTGT_GiaVonPKKM = 0, TotalVTGTGT_KMTXPKKM = 0, TotalCongLapPKKM = 0;
+
+    double TotalGCN_GiaBanPKKMCX = 0, TotalGCN_GiamGiaPKKMCX = 0, TotalGCN_ThucThuPKKMCX = 0, TotalGCN_ChiGCNPKKMCX = 0, TotalSC_GiaBanPKKMCX = 0, TotalSC_GiamGiaPKKMCX = 0,
+  TotalSC_ThucThuPKKMCX = 0, TotalCĐ_GiaBanPKKMCX = 0, TotalCĐ_GiamGiaPKKMCX = 0, TotalCĐ_ThucThuPKKMCX = 0, TotalDS_GiaBanPKKMCX = 0, TotalDS_GiamGiaPKKMCX = 0, TotalDS_ThucThuPKKMCX = 0, TotalPTT_GiaBanPKKMCX = 0, TotalPTT_GiamGiaPKKMCX = 0, TotalPTT_ThucThuPKKMCX = 0,
+  TotalPTN_GiaBanPKKMCX = 0, TotalPTN_GiamGiaPKKMCX = 0, TotalPTN_ThucThuPKKMCX = 0, TotalPKDV_GiaBanPKKMCX = 0, TotalPKDV_GiamGiaPKKMCX = 0, TotalPKDV_ThucThuPKKMCX = 0,
+  TotalQuaTang_GiaBanPKKMCX = 0, TotalQuaTang_GiamGiaPKKMCX = 0, TotalQuaTang_ThucThuPKKMCX = 0, TotalTongGiaBanPKKMCX = 0, TotalTongGiamGiaPKKMCX = 0, TotalTongThucThuPKKMCX = 0, TotalTongGiaVonPKKMCX = 0,
+  TotalDS_GiaVonPKKMCX = 0, TotalPTT_GiaVonPKKMCX = 0, TotalPTN_GiaVonPKKMCX = 0, TotalPKDV_GiaVonPKKMCX = 0, TotalQuaTang_GiaVonPKKMCX = 0,
+  TotalDS_KMTXPKKMCX = 0, TotalPTT_KMTXPKKMCX = 0, TotalPTN_KMTXPKKMCX = 0, TotalPKDV_KMTXPKKMCX = 0, TotalQuaTang_KMTXPKKMCX = 0, TotalTongKMTXPKKMCX = 0,
+  TotalVTN_GiaBanPKKMCX = 0, TotalVTN_GiamGiaPKKMCX = 0, TotalVTN_ThucThuPKKMCX = 0, TotalVTN_GiaVonPKKMCX = 0, TotalVTN_KMTXPKKMCX = 0,
+  TotalVTGTGT_GiaBanPKKMCX = 0, TotalVTGTGT_GiamGiaPKKMCX = 0, TotalVTGTGT_ThucThuPKKMCX = 0, TotalVTGTGT_GiaVonPKKMCX = 0, TotalVTGTGT_KMTXPKKMCX = 0, TotalCongLapPKKMCX = 0;
+
+    double TotalGCN_GiaBanPKKMDX = 0, TotalGCN_GiamGiaPKKMDX = 0, TotalGCN_ThucThuPKKMDX = 0, TotalGCN_ChiGCNPKKMDX = 0, TotalSC_GiaBanPKKMDX = 0, TotalSC_GiamGiaPKKMDX = 0,
+  TotalSC_ThucThuPKKMDX = 0, TotalCĐ_GiaBanPKKMDX = 0, TotalCĐ_GiamGiaPKKMDX = 0, TotalCĐ_ThucThuPKKMDX = 0, TotalDS_GiaBanPKKMDX = 0, TotalDS_GiamGiaPKKMDX = 0, TotalDS_ThucThuPKKMDX = 0, TotalPTT_GiaBanPKKMDX = 0, TotalPTT_GiamGiaPKKMDX = 0, TotalPTT_ThucThuPKKMDX = 0,
+  TotalPTN_GiaBanPKKMDX = 0, TotalPTN_GiamGiaPKKMDX = 0, TotalPTN_ThucThuPKKMDX = 0, TotalPKDV_GiaBanPKKMDX = 0, TotalPKDV_GiamGiaPKKMDX = 0, TotalPKDV_ThucThuPKKMDX = 0,
+  TotalQuaTang_GiaBanPKKMDX = 0, TotalQuaTang_GiamGiaPKKMDX = 0, TotalQuaTang_ThucThuPKKMDX = 0, TotalTongGiaBanPKKMDX = 0, TotalTongGiamGiaPKKMDX = 0, TotalTongThucThuPKKMDX = 0, TotalTongGiaVonPKKMDX = 0,
+  TotalDS_GiaVonPKKMDX = 0, TotalPTT_GiaVonPKKMDX = 0, TotalPTN_GiaVonPKKMDX = 0, TotalPKDV_GiaVonPKKMDX = 0, TotalQuaTang_GiaVonPKKMDX = 0,
+  TotalDS_KMTXPKKMDX = 0, TotalPTT_KMTXPKKMDX = 0, TotalPTN_KMTXPKKMDX = 0, TotalPKDV_KMTXPKKMDX = 0, TotalQuaTang_KMTXPKKMDX = 0, TotalTongKMTXPKKMDX = 0,
+  TotalVTN_GiaBanPKKMDX = 0, TotalVTN_GiamGiaPKKMDX = 0, TotalVTN_ThucThuPKKMDX = 0, TotalVTN_GiaVonPKKMDX = 0, TotalVTN_KMTXPKKMDX = 0,
+  TotalVTGTGT_GiaBanPKKMDX = 0, TotalVTGTGT_GiamGiaPKKMDX = 0, TotalVTGTGT_ThucThuPKKMDX = 0, TotalVTGTGT_GiaVonPKKMDX = 0, TotalVTGTGT_KMTXPKKMDX = 0, TotalCongLapPKKMDX = 0;
+}
+
+<div class="x_content">
+    <div id="BCPTDV_LT" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='54' class="tile">BÁO CÁO DOANH THU DỊCH VỤ & PHỤ TÙNG TRẠM LONG THÀNH</th>
+                </tr>
+                <tr>
+                    <th colspan='54' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">NGÀY THU</th>
+                    <th class="column-title" rowspan="2">SỐ PHIẾU</th>
+                    <th class="column-title" rowspan="2">BIỂN SỐ</th>
+                    <th class="column-title" style="width:500px;" rowspan="2">KHÁCH HÀNG</th>
+
+                    @*<th class="column-title" colspan="4">GIA CÔNG NGOÀI</th>*@
+                    <th class="column-title" colspan="4">SỬA CHỮA CHUNG</th>
+                    <th class="column-title" colspan="3">CÔNG ĐỒNG</th>
+                    <th class="column-title" colspan="5">DOANH THU SƠN</th>
+                    <th class="column-title" colspan="5">PHỤ TÙNG TRONG</th>
+                    <th class="column-title" colspan="5">PHỤ KIỆN TRONG</th>
+                    <th class="column-title" colspan="5">PHỤ KIỆN NGOÀI</th>
+                    <th class="column-title" colspan="5">VẬT TƯ NGOÀI</th>
+                    <th class="column-title" colspan="5">VẬT TƯ GIÁ TRỊ GIA TĂNG</th>
+                    <th class="column-title" colspan="5">QUÀ TẶNG</th>
+
+                    <th class="column-title" rowspan="2">TỔNG DOANH THU</th>
+                    <th class="column-title" rowspan="2">TỔNG GIÁ VỐN</th>
+                    <th class="column-title" rowspan="2">TỔNG KM THEO XE</th>
+                    <th class="column-title" rowspan="2">TỔNG GIẢM GIÁ</th>
+                    <th class="column-title" rowspan="2">TỔNG DOANH THU SAU GIẢM GIÁ</th>
+                    <th class="column-title" rowspan="2">CHI GCN</th>
+                </tr>
+                <tr>
+                    @*<th class="column-title">GIÁ BÁN</th>
+                        <th class="column-title">GIẢM GIÁ</th>
+                        <th class="column-title">THỰC THU</th>
+                        <th class="column-title">CHI</th>*@
+                    <!--SCC-->
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    <th class="column-title">CÔNG LẮP KM THEO XE</th>
+                    <!--CĐ-->
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*đồng THU sơn*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*PHỤ TÙNG TRONG*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*PHỤ KIỆN TRONG*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*PHỤ KIỆN NGOÀI*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*VTN*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*VTGTGT*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*QUÀ TẶNG*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                </tr>
+            </thead>
+            <tbody>
+                @*--------------------------------------------------A - PHIẾU DỊCH VU------------------------------------------------------------*@
+                <tr style="background-color:lightblue">
+                    <td colspan="54"><b>A - PHIẾU DỊCH VỤ</b></td>
+                </tr>
+                @if (ViewBag.dtbDichVu != null)
+                {
+                    int intCount = 1;
+                    foreach (DataRow row in (ViewBag.dtbDichVu as DataTable).Rows)
+                    {
+                        TotalGCN_GiaBan += row["GCN_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiaBan"]);
+                        TotalGCN_GiamGia += row["GCN_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiamGia"]);
+                        TotalGCN_ThucThu += row["GCN_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ThucThu"]);
+                        TotalGCN_ChiGCN += row["GCN_ChiGCN"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ChiGCN"]);
+                        <!--SC-->
+                        TotalSC_GiaBan += row["SC_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiaBan"]);
+                        //TotalDS_GiaVon += row["SC_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiaVon"]);
+                        TotalSC_GiamGia += row["SC_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiamGia"]);
+                        TotalSC_ThucThu += row["SC_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_ThucThu"]);
+                        <!--CĐ-->
+                        TotalCĐ_GiaBan += row["CongDong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiaBan"]);
+                        TotalCĐ_GiamGia += row["CongDong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiamGia"]);
+                        TotalCĐ_ThucThu += row["CongDong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_ThucThu"]);
+                        <!--DTS-->
+                        TotalDS_GiaBan += row["DS_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaBan"]);
+                        TotalDS_GiaVon += row["DS_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaVon"]);
+                        TotalDS_KMTX += row["DS_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_KhuyenMai"]);
+                        TotalDS_GiamGia += row["DS_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiamGia"]);
+                        TotalDS_ThucThu += row["DS_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_ThucThu"]);
+                        <!--PTT-->
+                        TotalPTT_GiaBan += row["PTT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaBan"]);
+                        TotalPTT_GiaVon += row["PTT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaVon"]);
+                        TotalPTT_KMTX += row["PTT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_KhuyenMai"]);
+                        TotalPTT_GiamGia += row["PTT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiamGia"]);
+                        TotalPTT_ThucThu += row["PTT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_ThucThu"]);
+                        <!--PKT-->
+                        TotalPTN_GiaBan += row["PhuKienTrong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaBan"]);
+                        TotalPTN_GiaVon += row["PhuKienTrong_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaVon"]);
+                        TotalPTN_KMTX += row["PhuKienTrong_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_KhuyenMai"]);
+                        TotalPTN_GiamGia += row["PhuKienTrong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiamGia"]);
+                        TotalPTN_ThucThu += row["PhuKienTrong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_ThucThu"]);
+                        <!--PKN-->
+                        TotalPKDV_GiaBan += row["PhuKienNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaBan"]);
+                        TotalPKDV_GiaVon += row["PhuKienNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaVon"]);
+                        TotalPKDV_KMTX += row["PhuKienNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_KhuyenMai"]);
+                        TotalPKDV_GiamGia += row["PhuKienNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiamGia"]);
+                        TotalPKDV_ThucThu += row["PhuKienNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_ThucThu"]);
+                        <!--VTN-->
+                        TotalVTN_GiaBan += row["VatTuNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaBan"]);
+                        TotalVTN_GiaVon += row["VatTuNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaVon"]);
+                        TotalVTN_KMTX += row["VatTuNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_KhuyenMai"]);
+                        TotalVTN_GiamGia += row["VatTuNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiamGia"]);
+                        TotalVTN_ThucThu += row["VatTuNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_ThucThu"]);
+                        <!--VTGTGT-->
+                        TotalVTGTGT_GiaBan += row["VatTuGTGT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaBan"]);
+                        TotalVTGTGT_GiaVon += row["VatTuGTGT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaVon"]);
+                        TotalVTGTGT_KMTX += row["VatTuGTGT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_KhuyenMai"]);
+                        TotalVTGTGT_GiamGia += row["VatTuGTGT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiamGia"]);
+                        TotalVTGTGT_ThucThu += row["VatTuGTGT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_ThucThu"]);
+
+                        //TotalPKDV_GiaBan += row["PKDV_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiaBan"]);
+                        //TotalPKDV_GiamGia += row["PKDV_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiamGia"]);
+                        //TotalPKDV_ThucThu += row["PKDV_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_ThucThu"]);
+                        <!--QT-->
+                        TotalQuaTang_GiaBan += row["QuaTang_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaBan"]);
+                        TotalQuaTang_GiaVon += row["QuaTang_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaVon"]);
+                        TotalQuaTang_KMTX += row["QUATANG_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["QUATANG_KhuyenMai"]);
+                        TotalQuaTang_GiamGia += row["QuaTang_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiamGia"]);
+                        TotalQuaTang_ThucThu += row["QuaTang_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_ThucThu"]);
+
+                        TotalTongGiaBan += row["TongGiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaBan"]);
+                        TotalTongGiamGia += row["TongGiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiamGia"]);
+                        TotalTongThucThu += row["TongThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["TongThucThu"]);
+                        TotalTongGiaVon += row["TongGiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaVon"]);
+                        TotalTongKMTX += row["TongKhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["TongKhuyenMai"]);
+                        <tr class="even pointer">
+                            <td>@(intCount++)</td>
+                            <td>@row["NgayThu"]</td>
+                            <td>@row["SoHopDong"]</td>
+                            <td>@row["BienSo"]</td>
+                            <td>@row["Hoten"]</td>
+                            <td class="number">@row["SC_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td class="number">@row["CongDong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <!--VTN && VTGTGT-->
+                            <td class="number">@row["VatTuNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["VatTuGTGT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["QuaTang_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["GCN_ChiGCN"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="5"><b>TỔNG CỘNG</b></td>
+                    <td class="number">@TotalSC_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_ThucThu.ToString().Replace(",", ".")</td>
+                    <td></td>
+                    <td class="number">@TotalCĐ_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_ThucThu.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaVon.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_KMTX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_ThucThu.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaVon.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_KMTX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_ThucThu.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaVon.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_KMTX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_ThucThu.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaVon.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_KMTX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_ThucThu.ToString().Replace(",", ".")</td>
+                    <!--VTN-->
+                    <td class="number">@TotalVTN_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiaVon.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_KMTX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_ThucThu.ToString().Replace(",", ".")</td>
+                    <!--VTGTGT-->
+                    <td class="number">@TotalVTGTGT_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiaVon.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_KMTX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_ThucThu.ToString().Replace(",", ".")</td>
+
+                    <td class="number">@TotalQuaTang_GiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiaVon.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_KMTX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_ThucThu.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaVon.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongKMTX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongThucThu.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalGCN_ChiGCN.ToString().Replace(",", ".")</td>
+                </tr>
+                @*--------------------------------------------------B. PHIẾU DỊCH VỤ XE CŨ TÂN TRANG---------------------------------------------*@
+                <tr style="background-color:lightblue">
+                    <td colspan="54"><b>B - PHIẾU DỊCH VỤ XE CŨ TÂN TRANG </b></td>
+                </tr>
+                @if (ViewBag.dtbDichVuTT != null)
+                {
+                    int intCount = 1;
+                    foreach (DataRow row in (ViewBag.dtbDichVuTT as DataTable).Rows)
+                    {
+                        TotalGCN_GiaBan_XC += row["GCN_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiaBan"]);
+                        TotalGCN_GiamGia_XC += row["GCN_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiamGia"]);
+                        TotalGCN_ThucThu_XC += row["GCN_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ThucThu"]);
+                        TotalGCN_ChiGCN_XC += row["GCN_ChiGCN"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ChiGCN"]);
+                        <!--SC-->
+                        TotalSC_GiaBan_XC += row["SC_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiaBan"]);
+                        //TotalDS_GiaVon += row["SC_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiaVon"]);
+                        TotalSC_GiamGia_XC += row["SC_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiamGia"]);
+                        TotalSC_ThucThu_XC += row["SC_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_ThucThu"]);
+                        <!--CĐ-->
+                        TotalCĐ_GiaBan_XC += row["CongDong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiaBan"]);
+                        TotalCĐ_GiamGia_XC += row["CongDong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiamGia"]);
+                        TotalCĐ_ThucThu_XC += row["CongDong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_ThucThu"]);
+                        <!--DTS-->
+                        TotalDS_GiaBan_XC += row["DS_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaBan"]);
+                        TotalDS_GiaVon_XC += row["DS_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaVon"]);
+                        TotalDS_KMTX_XC += row["DS_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_KhuyenMai"]);
+                        TotalDS_GiamGia_XC += row["DS_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiamGia"]);
+                        TotalDS_ThucThu_XC += row["DS_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_ThucThu"]);
+                        <!--PTT-->
+                        TotalPTT_GiaBan_XC += row["PTT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaBan"]);
+                        TotalPTT_GiaVon_XC += row["PTT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaVon"]);
+                        TotalPTT_KMTX_XC += row["PTT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_KhuyenMai"]);
+                        TotalPTT_GiamGia_XC += row["PTT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiamGia"]);
+                        TotalPTT_ThucThu_XC += row["PTT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_ThucThu"]);
+                        <!--PKT-->
+                        TotalPTN_GiaBan_XC += row["PhuKienTrong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaBan"]);
+                        TotalPTN_GiaVon_XC += row["PhuKienTrong_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaVon"]);
+                        TotalPTN_KMTX_XC += row["PhuKienTrong_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_KhuyenMai"]);
+                        TotalPTN_GiamGia_XC += row["PhuKienTrong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiamGia"]);
+                        TotalPTN_ThucThu_XC += row["PhuKienTrong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_ThucThu"]);
+                        <!--PKN-->
+                        TotalPKDV_GiaBan_XC += row["PhuKienNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaBan"]);
+                        TotalPKDV_GiaVon_XC += row["PhuKienNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaVon"]);
+                        TotalPKDV_KMTX_XC += row["PhuKienNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_KhuyenMai"]);
+                        TotalPKDV_GiamGia_XC += row["PhuKienNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiamGia"]);
+                        TotalPKDV_ThucThu_XC += row["PhuKienNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_ThucThu"]);
+                        <!--VTN-->
+                        TotalVTN_GiaBan_XC += row["VatTuNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaBan"]);
+                        TotalVTN_GiaVon_XC += row["VatTuNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaVon"]);
+                        TotalVTN_KMTX_XC += row["VatTuNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_KhuyenMai"]);
+                        TotalVTN_GiamGia_XC += row["VatTuNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiamGia"]);
+                        TotalVTN_ThucThu_XC += row["VatTuNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_ThucThu"]);
+                        <!--VTGTGT-->
+                        TotalVTGTGT_GiaBan_XC += row["VatTuGTGT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaBan"]);
+                        TotalVTGTGT_GiaVon_XC += row["VatTuGTGT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaVon"]);
+                        TotalVTGTGT_KMTX_XC += row["VatTuGTGT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_KhuyenMai"]);
+                        TotalVTGTGT_GiamGia_XC += row["VatTuGTGT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiamGia"]);
+                        TotalVTGTGT_ThucThu_XC += row["VatTuGTGT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_ThucThu"]);
+
+                        //TotalPKDV_GiaBan += row["PKDV_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiaBan"]);
+                        //TotalPKDV_GiamGia += row["PKDV_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiamGia"]);
+                        //TotalPKDV_ThucThu += row["PKDV_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_ThucThu"]);
+                        <!--QT-->
+                        TotalQuaTang_GiaBan_XC += row["QuaTang_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaBan"]);
+                        TotalQuaTang_GiaVon_XC += row["QuaTang_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaVon"]);
+                        TotalQuaTang_KMTX_XC += row["QUATANG_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["QUATANG_KhuyenMai"]);
+                        TotalQuaTang_GiamGia_XC += row["QuaTang_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiamGia"]);
+                        TotalQuaTang_ThucThu_XC += row["QuaTang_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_ThucThu"]);
+
+                        TotalTongGiaBan_XC += row["TongGiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaBan"]);
+                        TotalTongGiamGia_XC += row["TongGiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiamGia"]);
+                        TotalTongThucThu_XC += row["TongThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["TongThucThu"]);
+                        TotalTongGiaVon_XC += row["TongGiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaVon"]);
+                        TotalTongKMTX_XC += row["TongKhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["TongKhuyenMai"]);
+                        <tr class="even pointer">
+                            <td>@(intCount++)</td>
+                            <td>@row["NgayThu"]</td>
+                            <td>@row["SoHopDong"]</td>
+                            <td>@row["BienSo"]</td>
+                            <td>@row["Hoten"]</td>
+                            <td class="number">@row["SC_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td class="number">@row["CongDong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <!--VTN && VTGTGT-->
+                            <td class="number">@row["VatTuNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["VatTuGTGT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["QuaTang_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["GCN_ChiGCN"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="5"><b>TỔNG CỘNG</b></td>
+                    <td class="number">@TotalSC_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_ThucThu_XC.ToString().Replace(",", ".")</td>
+                    <td></td>
+                    <td class="number">@TotalCĐ_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_ThucThu_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaVon_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_KMTX_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_ThucThu_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaVon_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_KMTX_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_ThucThu_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaVon_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_KMTX_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_ThucThu_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaVon_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_KMTX_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_ThucThu_XC.ToString().Replace(",", ".")</td>
+                    <!--VTN-->
+                    <td class="number">@TotalVTN_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiaVon_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_KMTX_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_ThucThu_XC.ToString().Replace(",", ".")</td>
+                    <!--VTGTGT-->
+                    <td class="number">@TotalVTGTGT_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiaVon_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_KMTX_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_ThucThu_XC.ToString().Replace(",", ".")</td>
+
+                    <td class="number">@TotalQuaTang_GiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiaVon_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_KMTX_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_ThucThu_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaBan_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaVon_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongKMTX_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiamGia_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongThucThu_XC.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalGCN_ChiGCN_XC.ToString().Replace(",", ".")</td>
+                </tr>
+                <tr style="background-color:lightblue">
+                    <td colspan="54"><b>C - PHIẾU BÁN LẺ (PT_PK_QT) </b></td>
+                </tr>
+                @if (ViewBag.dtbPhuKien != null)
+                {
+                    int intCount = 1;
+                    foreach (DataRow row in (ViewBag.dtbPhuKien as DataTable).Rows)
+                    {
+                        TotalGCN_GiaBanPK += row["GCN_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiaBan"]);
+                        TotalGCN_GiamGiaPK += row["GCN_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiamGia"]);
+                        TotalGCN_ThucThuPK += row["GCN_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ThucThu"]);
+                        TotalGCN_ChiGCNPK += row["GCN_ChiGCN"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ChiGCN"]);
+
+                        TotalSC_GiaBanPK += row["SC_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiaBan"]);
+                        TotalSC_GiamGiaPK += row["SC_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiamGia"]);
+                        TotalSC_ThucThuPK += row["SC_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_ThucThu"]);
+
+                        TotalCĐ_GiaBanPK += row["CongDong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiaBan"]);
+                        TotalCĐ_GiamGiaPK += row["CongDong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiamGia"]);
+                        TotalCĐ_ThucThuPK += row["CongDong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_ThucThu"]);
+
+                        TotalDS_GiaBanPK += row["DS_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaBan"]);
+                        TotalDS_GiaVonPK += row["DS_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaVon"]);
+                        TotalDS_KMTXPK += row["DS_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_KhuyenMai"]);
+                        TotalDS_GiamGiaPK += row["DS_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiamGia"]);
+                        TotalDS_ThucThuPK += row["DS_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_ThucThu"]);
+
+                        TotalPTT_GiaBanPK += row["PTT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaBan"]);
+                        TotalPTT_GiaVonPK += row["PTT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaVon"]);
+                        TotalPTT_KMTXPK += row["PTT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_KhuyenMai"]);
+                        TotalPTT_GiamGiaPK += row["PTT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiamGia"]);
+                        TotalPTT_ThucThuPK += row["PTT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_ThucThu"]);
+
+                        TotalPTN_GiaBanPK += row["PhuKienTrong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaBan"]);
+                        TotalPTN_GiaVonPK += row["PhuKienTrong_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaVon"]);
+                        TotalPTN_KMTXPK += row["PhuKienTrong_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_KhuyenMai"]);
+                        TotalPTN_GiamGiaPK += row["PhuKienTrong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiamGia"]);
+                        TotalPTN_ThucThuPK += row["PhuKienTrong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_ThucThu"]);
+
+                        TotalPKDV_GiaBanPK += row["PhuKienNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaBan"]);
+                        TotalPKDV_GiaVonPK += row["PhuKienNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaVon"]);
+                        TotalPKDV_KMTXPK += row["PhuKienNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_KhuyenMai"]);
+                        TotalPKDV_GiamGiaPK += row["PhuKienNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiamGia"]);
+                        TotalPKDV_ThucThuPK += row["PhuKienNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_ThucThu"]);
+
+                        <!--VTN-->
+                        TotalVTN_GiaBanPK += row["VatTuNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaBan"]);
+                        TotalVTN_GiaVonPK += row["VatTuNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaVon"]);
+                        TotalVTN_KMTXPK += row["VatTuNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_KhuyenMai"]);
+                        TotalVTN_GiamGiaPK += row["VatTuNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiamGia"]);
+                        TotalVTN_ThucThuPK += row["VatTuNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_ThucThu"]);
+                        <!--VTGTGT-->
+                        TotalVTGTGT_GiaBanPK += row["VatTuGTGT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaBan"]);
+                        TotalVTGTGT_GiaVonPK += row["VatTuGTGT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaVon"]);
+                        TotalVTGTGT_KMTXPK += row["VatTuGTGT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_KhuyenMai"]);
+                        TotalVTGTGT_GiamGiaPK += row["VatTuGTGT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiamGia"]);
+                        TotalVTGTGT_ThucThuPK += row["VatTuGTGT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_ThucThu"]);
+
+                        //TotalPKDV_GiaBanPK += row["PKDV_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiaBan"]);
+                        //TotalPKDV_GiamGiaPK += row["PKDV_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiamGia"]);
+                        //TotalPKDV_ThucThuPK += row["PKDV_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_ThucThu"]);
+
+                        TotalQuaTang_GiaBanPK += row["QuaTang_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaBan"]);
+                        TotalQuaTang_GiaVonPK += row["QuaTang_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaVon"]);
+                        TotalQuaTang_KMTXPK += row["QUATANG_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["QUATANG_KhuyenMai"]);
+                        TotalQuaTang_GiamGiaPK += row["QuaTang_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiamGia"]);
+                        TotalQuaTang_ThucThuPK += row["QuaTang_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_ThucThu"]);
+
+                        TotalTongGiaBanPK += row["TongGiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaBan"]);
+                        TotalTongGiaVonPK += row["TongGiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaVon"]);
+                        TotalTongKMTXPK += row["TongKhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["TongKhuyenMai"]);
+                        TotalTongGiamGiaPK += row["TongGiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiamGia"]);
+                        TotalTongThucThuPK += row["TongThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["TongThucThu"]);
+                        <tr class="even pointer">
+                            <td>@(intCount++)</td>
+                            <td>@row["NgayThu"]</td>
+                            <td>@row["SoHopDong"]</td>
+                            <td>@row["BienSo"]</td>
+                            <td>@row["Hoten"]</td>
+                            <td class="number">@row["SC_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td class="number">@row["CongDong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+                            <!--vtn && vtgtgt-->
+
+                            <td class="number">@row["VatTuNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["VatTuGTGT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["QuaTang_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["TongGiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["GCN_ChiGCN"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="5"><b>TỔNG CỘNG</b></td>
+                    <td class="number">@TotalSC_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <td></td>
+                    <td class="number">@TotalCĐ_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaVonPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_KMTXPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaVonPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_KMTXPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaVonPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_KMTXPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaVonPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_KMTXPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <!--vtn-->
+                    <td class="number">@TotalVTN_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiaVonPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_KMTXPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <!--vtgtgt-->
+                    <td class="number">@TotalVTGTGT_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiaVonPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_KMTXPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_ThucThuPK.ToString().Replace(",", ".")</td>
+
+                    <td class="number">@TotalQuaTang_GiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiaVonPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_KMTXPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaBanPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaVonPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongKMTXPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiamGiaPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongThucThuPK.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalGCN_ChiGCNPK.ToString().Replace(",", ".")</td>
+                </tr>
+                <tr style="background-color:lightblue">
+                    <td colspan="54"><b>D - PHIẾU KHUYẾN MÃI (ĐS_PT_PK_QT) </b></td>
+                </tr>
+                @if (ViewBag.dtbPhuKienKM != null)
+                {
+                    int intCount = 1;
+                    foreach (DataRow row in (ViewBag.dtbPhuKienKM as DataTable).Rows)
+                    {
+                        TotalGCN_GiaBanPKKM += row["GCN_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiaBan"]);
+                        TotalGCN_GiamGiaPKKM += row["GCN_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiamGia"]);
+                        TotalGCN_ThucThuPKKM += row["GCN_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ThucThu"]);
+                        TotalGCN_ChiGCNPKKM += row["GCN_ChiGCN"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ChiGCN"]);
+
+                        TotalSC_GiaBanPKKM += row["SC_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiaBan"]);
+                        TotalSC_GiamGiaPKKM += row["SC_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiamGia"]);
+                        TotalSC_ThucThuPKKM += row["SC_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_ThucThu"]);
+                        TotalCongLapPKKM += row["CongLapPK"].ToString() == "" ? 0 : Convert.ToDouble(row["CongLapPK"]);
+
+                        TotalCĐ_GiaBanPKKM += row["CongDong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiaBan"]);
+                        TotalCĐ_GiamGiaPKKM += row["CongDong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiamGia"]);
+                        TotalCĐ_ThucThuPKKM += row["CongDong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_ThucThu"]);
+
+                        TotalDS_GiaBanPKKM += row["DS_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaBan"]);
+                        TotalDS_GiaVonPKKM += row["DS_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaVon"]);
+                        TotalDS_KMTXPKKM += row["DS_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_KhuyenMai"]);
+                        TotalDS_GiamGiaPKKM += row["DS_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiamGia"]);
+                        TotalDS_ThucThuPKKM += row["DS_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_ThucThu"]);
+
+                        TotalPTT_GiaBanPKKM += row["PTT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaBan"]);
+                        TotalPTT_GiaVonPKKM += row["PTT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaVon"]);
+                        TotalPTT_KMTXPKKM += row["PTT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_KhuyenMai"]);
+                        TotalPTT_GiamGiaPKKM += row["PTT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiamGia"]);
+                        TotalPTT_ThucThuPKKM += row["PTT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_ThucThu"]);
+
+                        TotalPTN_GiaBanPKKM += row["PhuKienTrong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaBan"]);
+                        TotalPTN_GiaVonPKKM += row["PhuKienTrong_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaVon"]);
+                        TotalPTN_KMTXPKKM += row["PhuKienTrong_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_KhuyenMai"]);
+                        TotalPTN_GiamGiaPKKM += row["PhuKienTrong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiamGia"]);
+                        TotalPTN_ThucThuPKKM += row["PhuKienTrong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_ThucThu"]);
+
+                        TotalPKDV_GiaBanPKKM += row["PhuKienNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaBan"]);
+                        TotalPKDV_GiaVonPKKM += row["PhuKienNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaVon"]);
+                        TotalPKDV_KMTXPKKM += row["PhuKienNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_KhuyenMai"]);
+                        TotalPKDV_GiamGiaPKKM += row["PhuKienNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiamGia"]);
+                        TotalPKDV_ThucThuPKKM += row["PhuKienNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_ThucThu"]);
+
+                        <!--VTN-->
+                        TotalVTN_GiaBanPKKM += row["VatTuNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaBan"]);
+                        TotalVTN_GiaVonPKKM += row["VatTuNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaVon"]);
+                        TotalVTN_KMTXPKKM += row["VatTuNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_KhuyenMai"]);
+                        TotalVTN_GiamGiaPKKM += row["VatTuNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiamGia"]);
+                        TotalVTN_ThucThuPKKM += row["VatTuNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_ThucThu"]);
+                        <!--VTGTGT-->
+                        TotalVTGTGT_GiaBanPKKM += row["VatTuGTGT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaBan"]);
+                        TotalVTGTGT_GiaVonPKKM += row["VatTuGTGT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaVon"]);
+                        TotalVTGTGT_KMTXPKKM += row["VatTuGTGT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_KhuyenMai"]);
+                        TotalVTGTGT_GiamGiaPKKM += row["VatTuGTGT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiamGia"]);
+                        TotalVTGTGT_ThucThuPKKM += row["VatTuGTGT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_ThucThu"]);
+
+                        //TotalPKDV_GiaBanPK += row["PKDV_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiaBan"]);
+                        //TotalPKDV_GiamGiaPK += row["PKDV_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiamGia"]);
+                        //TotalPKDV_ThucThuPK += row["PKDV_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_ThucThu"]);
+
+                        TotalQuaTang_GiaBanPKKM += row["QuaTang_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaBan"]);
+                        TotalQuaTang_GiaVonPKKM += row["QuaTang_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaVon"]);
+                        TotalQuaTang_KMTXPKKM += row["QUATANG_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["QUATANG_KhuyenMai"]);
+                        TotalQuaTang_GiamGiaPKKM += row["QuaTang_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiamGia"]);
+                        TotalQuaTang_ThucThuPKKM += row["QuaTang_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_ThucThu"]);
+
+                        TotalTongGiaBanPKKM += row["TongGiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaBan"]);
+                        TotalTongGiaVonPKKM += row["TongGiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaVon"]);
+                        TotalTongKMTXPKKM += row["TongKhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["TongKhuyenMai"]);
+                        TotalTongGiamGiaPKKM += row["TongGiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiamGia"]);
+                        TotalTongThucThuPKKM += row["TongThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["TongThucThu"]);
+                        <tr class="even pointer">
+                            <td>@(intCount++)</td>
+                            <td>@row["NgayThu"]</td>
+                            <td>@row["SoHopDong"]</td>
+                            <td>@row["BienSo"]</td>
+                            <td>@row["Hoten"]</td>
+                            <td class="number">@row["SC_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongLapPK"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+                            <!--vtn && vtgtgt-->
+
+                            <td class="number">@row["VatTuNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["VatTuGTGT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["QuaTang_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["TongGiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["GCN_ChiGCN"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="5"><b>TỔNG CỘNG</b></td>
+                    <td class="number">@TotalSC_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_ThucThuPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCongLapPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_ThucThuPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaVonPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_KMTXPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_ThucThuPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaVonPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_KMTXPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_ThucThuPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaVonPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_KMTXPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_ThucThuPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaVonPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_KMTXPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_ThucThuPKKM.ToString().Replace(",", ".")</td>
+                    <!--vtn-->
+                    <td class="number">@TotalVTN_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiaVonPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_KMTXPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_ThucThuPK.ToString().Replace(",", ".")</td>
+                    <!--vtgtgt-->
+                    <td class="number">@TotalVTGTGT_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiaVonPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_KMTXPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_ThucThuPKKM.ToString().Replace(",", ".")</td>
+
+                    <td class="number">@TotalQuaTang_GiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiaVonPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_KMTXPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_ThucThuPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaBanPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaVonPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongKMTXPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiamGiaPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongThucThuPKKM.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalGCN_ChiGCNPKKM.ToString().Replace(",", ".")</td>
+                </tr>
+                <tr style="background-color:lightblue">
+                    <td colspan="54"><b>E- PHIẾU KHUYẾN MÃI (XE CHƯA XUẤT ĐS_PT_PK_QT) </b></td>
+                </tr>
+                @if (ViewBag.dtbResultKMChuaXuat != null)
+                {
+                    int intCount = 1;
+                    foreach (DataRow row in (ViewBag.dtbResultKMChuaXuat as DataTable).Rows)
+                    {
+                        TotalGCN_GiaBanPKKMCX += row["GCN_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiaBan"]);
+                        TotalGCN_GiamGiaPKKMCX += row["GCN_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiamGia"]);
+                        TotalGCN_ThucThuPKKMCX += row["GCN_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ThucThu"]);
+                        TotalGCN_ChiGCNPKKMCX += row["GCN_ChiGCN"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ChiGCN"]);
+
+                        TotalSC_GiaBanPKKMCX += row["SC_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiaBan"]);
+                        TotalSC_GiamGiaPKKMCX += row["SC_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiamGia"]);
+                        TotalSC_ThucThuPKKMCX += row["SC_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_ThucThu"]);
+                        TotalCongLapPKKMCX += row["CongLapPK"].ToString() == "" ? 0 : Convert.ToDouble(row["CongLapPK"]);
+
+                        TotalCĐ_GiaBanPKKMCX += row["CongDong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiaBan"]);
+                        TotalCĐ_GiamGiaPKKMCX += row["CongDong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiamGia"]);
+                        TotalCĐ_ThucThuPKKMCX += row["CongDong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_ThucThu"]);
+
+                        TotalDS_GiaBanPKKMCX += row["DS_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaBan"]);
+                        TotalDS_GiaVonPKKMCX += row["DS_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaVon"]);
+                        TotalDS_KMTXPKKMCX += row["DS_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_KhuyenMai"]);
+                        TotalDS_GiamGiaPKKMCX += row["DS_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiamGia"]);
+                        TotalDS_ThucThuPKKMCX += row["DS_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_ThucThu"]);
+
+                        TotalPTT_GiaBanPKKMCX += row["PTT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaBan"]);
+                        TotalPTT_GiaVonPKKMCX += row["PTT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaVon"]);
+                        TotalPTT_KMTXPKKMCX += row["PTT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_KhuyenMai"]);
+                        TotalPTT_GiamGiaPKKMCX += row["PTT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiamGia"]);
+                        TotalPTT_ThucThuPKKMCX += row["PTT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_ThucThu"]);
+
+                        TotalPTN_GiaBanPKKMCX += row["PhuKienTrong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaBan"]);
+                        TotalPTN_GiaVonPKKMCX += row["PhuKienTrong_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaVon"]);
+                        TotalPTN_KMTXPKKMCX += row["PhuKienTrong_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_KhuyenMai"]);
+                        TotalPTN_GiamGiaPKKMCX += row["PhuKienTrong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiamGia"]);
+                        TotalPTN_ThucThuPKKMCX += row["PhuKienTrong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_ThucThu"]);
+
+                        TotalPKDV_GiaBanPKKMCX += row["PhuKienNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaBan"]);
+                        TotalPKDV_GiaVonPKKMCX += row["PhuKienNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaVon"]);
+                        TotalPKDV_KMTXPKKMCX += row["PhuKienNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_KhuyenMai"]);
+                        TotalPKDV_GiamGiaPKKMCX += row["PhuKienNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiamGia"]);
+                        TotalPKDV_ThucThuPKKMCX += row["PhuKienNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_ThucThu"]);
+
+                        <!--VTN-->
+                        TotalVTN_GiaBanPKKMCX += row["VatTuNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaBan"]);
+                        TotalVTN_GiaVonPKKMCX += row["VatTuNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaVon"]);
+                        TotalVTN_KMTXPKKMCX += row["VatTuNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_KhuyenMai"]);
+                        TotalVTN_GiamGiaPKKMCX += row["VatTuNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiamGia"]);
+                        TotalVTN_ThucThuPKKMCX += row["VatTuNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_ThucThu"]);
+                        <!--VTGTGT-->
+                        TotalVTGTGT_GiaBanPKKMCX += row["VatTuGTGT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaBan"]);
+                        TotalVTGTGT_GiaVonPKKMCX += row["VatTuGTGT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaVon"]);
+                        TotalVTGTGT_KMTXPKKMCX += row["VatTuGTGT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_KhuyenMai"]);
+                        TotalVTGTGT_GiamGiaPKKMCX += row["VatTuGTGT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiamGia"]);
+                        TotalVTGTGT_ThucThuPKKMCX += row["VatTuGTGT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_ThucThu"]);
+
+                        //TotalPKDV_GiaBanPK += row["PKDV_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiaBan"]);
+                        //TotalPKDV_GiamGiaPK += row["PKDV_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiamGia"]);
+                        //TotalPKDV_ThucThuPK += row["PKDV_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_ThucThu"]);
+
+                        TotalQuaTang_GiaBanPKKMCX += row["QuaTang_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaBan"]);
+                        TotalQuaTang_GiaVonPKKMCX += row["QuaTang_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaVon"]);
+                        TotalQuaTang_KMTXPKKMCX += row["QUATANG_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["QUATANG_KhuyenMai"]);
+                        TotalQuaTang_GiamGiaPKKMCX += row["QuaTang_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiamGia"]);
+                        TotalQuaTang_ThucThuPKKMCX += row["QuaTang_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_ThucThu"]);
+
+                        TotalTongGiaBanPKKMCX += row["TongGiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaBan"]);
+                        TotalTongGiaVonPKKMCX += row["TongGiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaVon"]);
+                        TotalTongKMTXPKKMCX += row["TongKhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["TongKhuyenMai"]);
+                        TotalTongGiamGiaPKKMCX += row["TongGiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiamGia"]);
+                        TotalTongThucThuPKKMCX += row["TongThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["TongThucThu"]);
+                        <tr class="even pointer">
+                            <td>@(intCount++)</td>
+                            <td>@row["NgayThu"]</td>
+                            <td>@row["SoHopDong"]</td>
+                            <td>@row["BienSo"]</td>
+                            <td>@row["Hoten"]</td>
+                            <td class="number">@row["SC_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongLapPK"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+                            <!--vtn && vtgtgt-->
+
+                            <td class="number">@row["VatTuNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["VatTuGTGT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["QuaTang_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["TongGiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["GCN_ChiGCN"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="5"><b>TỔNG CỘNG</b></td>
+                    <td class="number">@TotalSC_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCongLapPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaVonPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_KMTXPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaVonPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_KMTXPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaVonPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_KMTXPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaVonPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_KMTXPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <!--vtn-->
+                    <td class="number">@TotalVTN_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiaVonPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_KMTXPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <!--vtgtgt-->
+                    <td class="number">@TotalVTGTGT_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiaVonPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_KMTXPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+
+                    <td class="number">@TotalQuaTang_GiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiaVonPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_KMTXPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_ThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaBanPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaVonPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongKMTXPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiamGiaPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongThucThuPKKMCX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalGCN_ChiGCNPKKMCX.ToString().Replace(",", ".")</td>
+                </tr>
+                <tr style="background-color:lightblue">
+                    <td colspan="54"><b>F - PHIẾU KHUYẾN MÃI (XE ĐÃ XUẤT ĐS_PT_PK_QT) (QUÁ KHỨ) </b></td>
+                </tr>
+                @if (ViewBag.dtbResultKMDaXuat != null)
+                {
+                    int intCount = 1;
+                    foreach (DataRow row in (ViewBag.dtbResultKMDaXuat as DataTable).Rows)
+                    {
+                        TotalGCN_GiaBanPKKMDX += row["GCN_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiaBan"]);
+                        TotalGCN_GiamGiaPKKMDX += row["GCN_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_GiamGia"]);
+                        TotalGCN_ThucThuPKKMDX += row["GCN_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ThucThu"]);
+                        TotalGCN_ChiGCNPKKMDX += row["GCN_ChiGCN"].ToString() == "" ? 0 : Convert.ToDouble(row["GCN_ChiGCN"]);
+
+                        TotalSC_GiaBanPKKMDX += row["SC_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiaBan"]);
+                        TotalSC_GiamGiaPKKMDX += row["SC_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_GiamGia"]);
+                        TotalSC_ThucThuPKKMDX += row["SC_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["SC_ThucThu"]);
+                        TotalCongLapPKKMDX += row["CongLapPK"].ToString() == "" ? 0 : Convert.ToDouble(row["CongLapPK"]);
+
+                        TotalCĐ_GiaBanPKKMDX += row["CongDong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiaBan"]);
+                        TotalCĐ_GiamGiaPKKMDX += row["CongDong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_GiamGia"]);
+                        TotalCĐ_ThucThuPKKMDX += row["CongDong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["CongDong_ThucThu"]);
+
+                        TotalDS_GiaBanPKKMDX += row["DS_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaBan"]);
+                        TotalDS_GiaVonPKKMDX += row["DS_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiaVon"]);
+                        TotalDS_KMTXPKKMDX += row["DS_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_KhuyenMai"]);
+                        TotalDS_GiamGiaPKKMDX += row["DS_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_GiamGia"]);
+                        TotalDS_ThucThuPKKMDX += row["DS_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["DS_ThucThu"]);
+
+                        TotalPTT_GiaBanPKKMDX += row["PTT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaBan"]);
+                        TotalPTT_GiaVonPKKMDX += row["PTT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiaVon"]);
+                        TotalPTT_KMTXPKKMDX += row["PTT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_KhuyenMai"]);
+                        TotalPTT_GiamGiaPKKMDX += row["PTT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_GiamGia"]);
+                        TotalPTT_ThucThuPKKMDX += row["PTT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PTT_ThucThu"]);
+
+                        TotalPTN_GiaBanPKKMDX += row["PhuKienTrong_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaBan"]);
+                        TotalPTN_GiaVonPKKMDX += row["PhuKienTrong_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiaVon"]);
+                        TotalPTN_KMTXPKKMDX += row["PhuKienTrong_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_KhuyenMai"]);
+                        TotalPTN_GiamGiaPKKMDX += row["PhuKienTrong_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_GiamGia"]);
+                        TotalPTN_ThucThuPKKMDX += row["PhuKienTrong_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienTrong_ThucThu"]);
+
+                        TotalPKDV_GiaBanPKKMDX += row["PhuKienNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaBan"]);
+                        TotalPKDV_GiaVonPKKMDX += row["PhuKienNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiaVon"]);
+                        TotalPKDV_KMTXPKKMDX += row["PhuKienNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_KhuyenMai"]);
+                        TotalPKDV_GiamGiaPKKMDX += row["PhuKienNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_GiamGia"]);
+                        TotalPKDV_ThucThuPKKM += row["PhuKienNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PhuKienNgoai_ThucThu"]);
+
+                        <!--VTN-->
+                        TotalVTN_GiaBanPKKMDX += row["VatTuNgoai_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaBan"]);
+                        TotalVTN_GiaVonPKKMDX += row["VatTuNgoai_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiaVon"]);
+                        TotalVTN_KMTXPKKMDX += row["VatTuNgoai_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_KhuyenMai"]);
+                        TotalVTN_GiamGiaPKKMDX += row["VatTuNgoai_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_GiamGia"]);
+                        TotalVTN_ThucThuPKKMDX += row["VatTuNgoai_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuNgoai_ThucThu"]);
+                        <!--VTGTGT-->
+                        TotalVTGTGT_GiaBanPKKMDX += row["VatTuGTGT_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaBan"]);
+                        TotalVTGTGT_GiaVonPKKMDX += row["VatTuGTGT_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiaVon"]);
+                        TotalVTGTGT_KMTXPKKMDX += row["VatTuGTGT_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_KhuyenMai"]);
+                        TotalVTGTGT_GiamGiaPKKMDX += row["VatTuGTGT_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_GiamGia"]);
+                        TotalVTGTGT_ThucThuPKKMDX += row["VatTuGTGT_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["VatTuGTGT_ThucThu"]);
+
+                        //TotalPKDV_GiaBanPK += row["PKDV_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiaBan"]);
+                        //TotalPKDV_GiamGiaPK += row["PKDV_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_GiamGia"]);
+                        //TotalPKDV_ThucThuPK += row["PKDV_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["PKDV_ThucThu"]);
+
+                        TotalQuaTang_GiaBanPKKMDX += row["QuaTang_GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaBan"]);
+                        TotalQuaTang_GiaVonPKKMDX += row["QuaTang_GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiaVon"]);
+                        TotalQuaTang_KMTXPKKMDX += row["QUATANG_KhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["QUATANG_KhuyenMai"]);
+                        TotalQuaTang_GiamGiaPKKMDX += row["QuaTang_GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_GiamGia"]);
+                        TotalQuaTang_ThucThuPKKMDX += row["QuaTang_ThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["QuaTang_ThucThu"]);
+
+                        TotalTongGiaBanPKKMDX += row["TongGiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaBan"]);
+                        TotalTongGiaVonPKKMDX += row["TongGiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiaVon"]);
+                        TotalTongKMTXPKKMDX += row["TongKhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["TongKhuyenMai"]);
+                        TotalTongGiamGiaPKKMDX += row["TongGiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiamGia"]);
+                        TotalTongThucThuPKKMDX += row["TongThucThu"].ToString() == "" ? 0 : Convert.ToDouble(row["TongThucThu"]);
+                        <tr class="even pointer">
+                            <td>@(intCount++)</td>
+                            <td>@row["NgayThu"]</td>
+                            <td>@row["SoHopDong"]</td>
+                            <td>@row["BienSo"]</td>
+                            <td>@row["Hoten"]</td>
+                            <td class="number">@row["SC_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["SC_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongLapPK"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["CongDong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["DS_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PTT_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienTrong_ThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["PhuKienNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+                            <!--vtn && vtgtgt-->
+
+                            <td class="number">@row["VatTuNgoai_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuNgoai_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["VatTuGTGT_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["VatTuGTGT_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["QuaTang_GiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_KhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_GiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["QuaTang_ThucThu"].ToString().Replace(",", ".")</td>
+
+                            <td class="number">@row["TongGiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongGiamGia"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["TongThucThu"].ToString().Replace(",", ".")</td>
+                            <td class="number">@row["GCN_ChiGCN"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="5"><b>TỔNG CỘNG</b></td>
+                    <td class="number">@TotalSC_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalSC_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCongLapPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCĐ_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiaVonPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_KMTXPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalDS_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiaVonPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_KMTXPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTT_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiaVonPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_KMTXPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPTN_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiaVonPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_KMTXPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalPKDV_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <!--vtn-->
+                    <td class="number">@TotalVTN_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiaVonPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_KMTXPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTN_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <!--vtgtgt-->
+                    <td class="number">@TotalVTGTGT_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiaVonPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_KMTXPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalVTGTGT_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+
+                    <td class="number">@TotalQuaTang_GiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiaVonPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_KMTXPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_GiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalQuaTang_ThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaBanPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiaVonPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongKMTXPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongGiamGiaPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTongThucThuPKKMDX.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalGCN_ChiGCNPKKMDX.ToString().Replace(",", ".")</td>
+                </tr>
+
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="5"><b>TỔNG :</b></td>
+                    <td class="number">@(TotalSC_GiaBanPKKMCX + TotalSC_GiaBanPKKMDX + TotalSC_GiaBanPKKM + TotalSC_GiaBanPK + TotalSC_GiaBan + TotalSC_GiaBan_XC ).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalSC_GiamGiaPKKMCX + TotalSC_GiamGiaPKKMDX + TotalSC_GiamGiaPKKM + TotalSC_GiamGiaPK + TotalSC_GiamGia + TotalSC_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalSC_ThucThuPKKMCX + TotalSC_ThucThuPKKMDX + TotalSC_ThucThuPKKM + TotalSC_ThucThuPK + TotalSC_ThucThu + TotalSC_ThucThu_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalCongLapPKKMCX + TotalCongLapPKKMDX + TotalCongLapPKKM).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalCĐ_GiaBanPKKMCX + TotalCĐ_GiaBanPKKMDX + TotalCĐ_GiaBanPKKM + TotalCĐ_GiaBanPK + TotalCĐ_GiaBan + TotalCĐ_GiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalCĐ_GiamGiaPKKMCX + TotalCĐ_GiamGiaPKKMDX + TotalCĐ_GiamGiaPKKM + TotalCĐ_GiamGiaPK + TotalCĐ_GiamGia + TotalCĐ_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalCĐ_ThucThuPKKMCX + TotalCĐ_ThucThuPKKMDX + TotalCĐ_ThucThuPKKM + TotalCĐ_ThucThuPK + TotalCĐ_ThucThu + TotalCĐ_ThucThu_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalDS_GiaBanPKKMCX + TotalDS_GiaBanPKKMDX +TotalDS_GiaBanPKKM + TotalDS_GiaBanPK + TotalDS_GiaBan + TotalDS_GiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalDS_GiaVonPKKMCX + TotalDS_GiaVonPKKMDX + TotalDS_GiaVonPKKM + TotalDS_GiaVonPK + TotalDS_GiaVon+ TotalDS_GiaVon_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalDS_KMTXPKKMCX + TotalDS_KMTXPKKMDX +TotalDS_KMTXPKKM + TotalDS_KMTXPK + TotalDS_KMTX + TotalDS_KMTX_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalDS_GiamGiaPKKMCX + TotalDS_GiamGiaPKKMDX + TotalDS_GiamGiaPKKM + TotalDS_GiamGiaPK + TotalDS_GiamGia + TotalDS_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalDS_ThucThuPKKMCX + TotalDS_ThucThuPKKMDX +TotalDS_ThucThuPKKM + TotalDS_ThucThuPK + TotalDS_ThucThu + TotalDS_ThucThu_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTT_GiaBanPKKMCX + TotalPTT_GiaBanPKKMDX + TotalPTT_GiaBanPKKM + TotalPTT_GiaBanPK + TotalPTT_GiaBan+ TotalPTT_GiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTT_GiaVonPKKMCX + TotalPTT_GiaVonPKKMDX + TotalPTT_GiaVonPKKM + TotalPTT_GiaVonPK + TotalPTT_GiaVon + TotalPTT_GiaVon_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTT_KMTXPKKMCX+ TotalPTT_KMTXPKKMDX + TotalPTT_KMTXPKKM + TotalPTT_KMTXPK + TotalPTT_KMTX + TotalPTT_KMTX_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTT_GiamGiaPKKMCX + TotalPTT_GiamGiaPKKMDX + TotalPTT_GiamGiaPKKM + TotalPTT_GiamGiaPK + TotalPTT_GiamGia + TotalPTT_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTT_ThucThuPKKMCX + TotalPTT_ThucThuPKKMDX + TotalPTT_ThucThuPKKM + TotalPTT_ThucThuPK + TotalPTT_ThucThu + TotalPTT_ThucThu_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTN_GiaBanPKKMCX + TotalPTN_GiaBanPKKMDX+TotalPTN_GiaBanPKKM + TotalPTN_GiaBanPK + TotalPTN_GiaBan + TotalPTN_GiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTN_GiaVonPKKMCX + TotalPTN_GiaVonPKKMDX + TotalPTN_GiaVonPKKM + TotalPTN_GiaVonPK + TotalPTN_GiaVon + TotalPTN_GiaVon_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTN_KMTXPKKMCX + TotalPTN_KMTXPKKMDX + TotalPTN_KMTXPKKM + TotalPTN_KMTXPK + TotalPTN_KMTX + TotalPTN_KMTX_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTN_GiamGiaPKKMCX + TotalPTN_GiamGiaPKKMDX + TotalPTN_GiamGiaPKKM + TotalPTN_GiamGiaPK + TotalPTN_GiamGia + TotalPTN_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPTN_ThucThuPKKMCX + TotalPTN_ThucThuPKKMDX + TotalPTN_ThucThuPKKM + TotalPTN_ThucThuPK + TotalPTN_ThucThu + TotalPTN_ThucThu_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPKDV_GiaBanPKKMCX + TotalPKDV_GiaBanPKKMDX + TotalPKDV_GiaBanPKKM + TotalPKDV_GiaBanPK + TotalPKDV_GiaBan + TotalPKDV_GiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPKDV_GiaVonPKKMCX + TotalPKDV_GiaVonPKKMDX + TotalPKDV_GiaVonPKKM + TotalPKDV_GiaVonPK + TotalPKDV_GiaVon + TotalPKDV_GiaVon_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPKDV_KMTXPKKMCX + TotalPKDV_KMTXPKKMDX + TotalPKDV_KMTXPKKM + TotalPKDV_KMTXPK + TotalPKDV_KMTX + TotalPKDV_KMTX_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPKDV_GiamGiaPKKMCX + TotalPKDV_GiamGiaPKKMDX+TotalPKDV_GiamGiaPKKM + TotalPKDV_GiamGiaPK + TotalPKDV_GiamGia + TotalPKDV_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalPKDV_ThucThuPKKMCX + TotalPKDV_ThucThuPKKMDX+TotalPKDV_ThucThuPKKM + TotalPKDV_ThucThuPK + TotalPKDV_ThucThu + TotalPKDV_ThucThu_XC).ToString().Replace(",", ".")</td>
+
+                    <td class="number">@(TotalVTN_GiaBanPKKMCX + TotalVTN_GiaBanPKKMDX + TotalVTN_GiaBanPKKM + TotalVTN_GiaBanPK + TotalVTN_GiaBan + TotalVTN_GiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalVTN_GiaVonPKKMCX + TotalVTN_GiaVonPKKMDX +TotalVTN_GiaVonPKKM + TotalVTN_GiaVonPK + TotalVTN_GiaVon + TotalVTN_GiaVon_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalVTN_KMTXPKKMCX + TotalVTN_KMTXPKKMDX + TotalVTN_KMTXPKKM + TotalVTN_KMTXPK + TotalVTN_KMTX + TotalVTN_KMTX_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalVTN_GiamGiaPKKMCX + TotalVTN_GiamGiaPKKMDX +TotalVTN_GiamGiaPKKM + TotalVTN_GiamGiaPK + TotalVTN_GiamGia + TotalVTN_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalVTN_ThucThuPKKMCX + TotalVTN_ThucThuPKKMDX + TotalVTN_ThucThuPKKM + TotalVTN_ThucThuPK + TotalVTN_ThucThu + TotalVTN_ThucThu_XC).ToString().Replace(",", ".")</td>
+
+                    <td class="number">@(TotalVTGTGT_GiaBanPKKMCX + TotalVTGTGT_GiaBanPKKMDX + TotalVTGTGT_GiaBanPKKM + TotalVTGTGT_GiaBanPK + TotalVTGTGT_GiaBan + TotalVTGTGT_GiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalVTGTGT_GiaVonPKKMCX + TotalVTGTGT_GiaVonPKKMDX + TotalVTGTGT_GiaVonPKKM + TotalVTGTGT_GiaVonPK + TotalVTGTGT_GiaVon + TotalVTGTGT_GiaVon_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalVTGTGT_KMTXPKKMCX + TotalVTGTGT_KMTXPKKMDX + TotalVTGTGT_KMTXPKKM + TotalVTGTGT_KMTXPK + TotalVTGTGT_KMTX + TotalVTGTGT_KMTX_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalVTGTGT_GiamGiaPKKMCX + TotalVTGTGT_GiamGiaPKKMDX +TotalVTGTGT_GiamGiaPKKM + TotalVTGTGT_GiamGiaPK + TotalVTGTGT_GiamGia + TotalVTGTGT_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalVTGTGT_ThucThuPKKMCX + TotalVTGTGT_ThucThuPKKMDX + TotalVTGTGT_ThucThuPK + TotalVTGTGT_ThucThuPK + TotalVTGTGT_ThucThu + TotalVTGTGT_ThucThu_XC).ToString().Replace(",", ".")</td>
+
+                    <td class="number">@(TotalQuaTang_GiaBanPKKMCX + TotalQuaTang_GiaBanPKKMDX + TotalQuaTang_GiaBanPKKM + TotalQuaTang_GiaBanPK + TotalQuaTang_GiaBan + TotalQuaTang_GiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalQuaTang_GiaVonPKKMCX  + TotalQuaTang_GiaVonPKKMDX +TotalQuaTang_GiaVonPKKM + TotalQuaTang_GiaVonPK + TotalQuaTang_GiaVon + TotalQuaTang_GiaVon_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalQuaTang_KMTXPKKMCX + TotalQuaTang_KMTXPKKMDX + TotalQuaTang_KMTXPKKM + TotalQuaTang_KMTXPK + TotalQuaTang_KMTX + TotalQuaTang_KMTX_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalQuaTang_GiamGiaPKKMCX+ TotalQuaTang_GiamGiaPKKMDX + TotalQuaTang_GiamGiaPKKM + TotalQuaTang_GiamGiaPK + TotalQuaTang_GiamGia + TotalQuaTang_GiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalQuaTang_ThucThuPKKMCX + TotalQuaTang_ThucThuPKKMDX + TotalQuaTang_ThucThuPKKM + TotalQuaTang_ThucThuPK + TotalQuaTang_ThucThu + TotalQuaTang_ThucThu_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalTongGiaBanPKKMCX + TotalTongGiaBanPKKMDX +TotalTongGiaBanPKKM + TotalTongGiaBanPK + TotalTongGiaBan + TotalTongGiaBan_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalTongGiaVonPKKMCX +TotalTongGiaVonPKKMDX + TotalTongGiaVonPKKM + TotalTongGiaVonPK + TotalTongGiaVon + TotalTongGiaVon_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalTongKMTXPKKMCX + TotalTongKMTXPKKMDX + TotalTongKMTXPKKM + TotalTongKMTXPK + TotalTongKMTX + TotalTongKMTX_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalTongGiamGiaPKKMCX + TotalTongGiamGiaPKKMDX + TotalTongGiamGiaPKKM + TotalTongGiamGiaPK + TotalTongGiamGia + TotalTongGiamGia_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalTongThucThuPKKMCX + TotalTongThucThuPKKMDX + TotalTongThucThuPKKM + TotalTongThucThuPK + TotalTongThucThu + TotalTongThucThu_XC).ToString().Replace(",", ".")</td>
+                    <td class="number">@(TotalGCN_ChiGCNPKKMCX + TotalGCN_ChiGCNPKKMDX + TotalGCN_ChiGCNPKKM + TotalGCN_ChiGCNPK + TotalGCN_ChiGCN + TotalGCN_ChiGCN_XC).ToString().Replace(",", ".")</td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <div class="x_content">
+            <div class="table-responsive">
+                <div class="col-md-8">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <tbody>
+                            <tr>
+                                <td><b>Nợ cọc ĐK</b></td>
+                                <td class="number">@ViewBag.NoCocDK.ToString().Replace(",", ".")</td>
+                                <td><b>Nợ lẻ ĐK</b></td>
+                                <td class="number">@ViewBag.NoLeDK.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Thu TM</b></td>
+                                <td class="number">@ViewBag.ThuTM.ToString().Replace(",", ".")</td>
+                                <td><b>P/s nợ lẻ</b></td>
+                                <td class="number">@ViewBag.PSNoLe.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Thu NH</b></td>
+                                <td class="number">@ViewBag.ThuNH.ToString().Replace(",", ".")</td>
+                                <td><b>Thu TM</b></td>
+                                <td class="number">@ViewBag.ThuTMat.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Chi cọc</b></td>
+                                <td class="number">@ViewBag.ChiCoc.ToString().Replace(",", ".")</td>
+                                <td><b>Thu N.Hàng</b></td>
+                                <td class="number">@ViewBag.ThuNganHang.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Hoàn cọc</b></td>
+                                <td class="number">@ViewBag.SoTienHoanCoc.ToString().Replace(",", ".") </td>
+                                <td><b>Nợ lẻ CK</b></td>
+                                <td class="number"> @ViewBag.NoLeCK.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc PT-PK</b></td>
+                                <td class="number">@ViewBag.ChuyenCocTPHKI.ToString().Replace(",", ".") </td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc BHTH</b></td>
+                                <td class="number">@ViewBag.ChuyenCocBHTH.ToString().Replace(",", ".") </td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc GHBH</b></td>
+                                <td class="number">@ViewBag.ChuyenCocGHBH.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc GTX</b></td>
+                                <td class="number">@ViewBag.ChuyenCocGTX.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc BDTK</b></td>
+                                <td class="number">@ViewBag.ChuyenCocTBDTK.ToString().Replace(",", ".") </td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc thu hộ khác</b></td>
+                                <td class="number">@ViewBag.ChuyenCocTHK.ToString().Replace(",", ".") </td>
+                            </tr>
+                            <tr>
+                                <td><b>Nợ cọc CK</b></td>
+                                <td class="number">@ViewBag.NoCocCK.ToString().Replace(",", ".") </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+            $("td.number").map(function (key, val) {
+                var val = $(this).html();
+                //val = val.replace(",", ".");
+                val = val.split(",").join("");
+                val = parseFloat(val);
+                $(this).html(val.toLocaleString('en-us'));
+            })
+</script>
+

@@ -1,0 +1,114 @@
+﻿@model List<TNK.Core.Domain.View.ViewTDIVU>
+@{
+    Layout = null;
+}
+
+    <table class="table">
+        <thead>
+            <tr class="success">
+                <th>STT</th>
+                <th>Ngày thu</th>
+                <th>Id</th>
+                <th>Số phiếu</th>
+                <th>Biển số</th>
+                <th>Khách hàng</th>
+                <th>Số điện thoại</th>
+                <th>SK/SM</th>
+                <th>Loại xe</th>
+                <th>Số tham chiếu</th>
+                <th>Số tiền</th>
+                <th>Đã thanh toán</th>
+                <th>Còn lại</th>
+                <th></th>
+                <th></th>
+                @*<th><input type="checkbox" id="CHKALL" /></th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                int i = 1;
+
+                foreach (var item in Model)
+                {
+                    if (!String.IsNullOrEmpty(item.SoThamChieu) && item.SoThamChieu != "")
+                    {
+                        if (item.SoThamChieu.Contains(",,") == true)
+                        {
+                            item.SoThamChieu = item.SoThamChieu.Replace(",,", ",");
+                        }
+                        else if (item.SoThamChieu.Contains(","))
+                        {
+                            if (item.SoThamChieu[item.SoThamChieu.Length - 1].ToString() == ",")
+                            {
+                                item.SoThamChieu = item.SoThamChieu.Substring(0, item.SoThamChieu.Length - 1).ToString();
+                            }
+                            if (item.SoThamChieu != "" && item.SoThamChieu[0].ToString() == ",")
+                            {
+                                item.SoThamChieu = item.SoThamChieu.Substring(1, item.SoThamChieu.Length - 1);
+                            }
+                        }
+                    }
+                    <tr>
+                        <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                        <td>@item.NgayThu.ToString(ViewBag.DateFormat)</td>
+                        <td>@item.MaPhieuThu</td>
+                        <td>@item.SoHopDong</td>
+                        <td>@item.BienSo</td>
+                        <td>@item.HoTen</td>
+                        <td>@item.DienThoai</td>
+                        <td>@item.SoKhung</td>
+                        <td>@item.MaXe</td>
+                        <td>@item.SoThamChieu</td>
+                        <td class="number">@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>
+                        <td class="number">@TNK.Core.Common.ToCurrencyString(item.SoTienThu)</td>
+                        <td class="number">@TNK.Core.Common.ToCurrencyString(item.ConLai)</td>
+                        @*@if (item.Flag == true)
+                    {*@
+                        <td style="width:5%" class="center">
+                            @if (item.Ext1 != null && item.Ext1.Trim().ToUpper() == "V2")
+                            {
+                                <a href="/SoThu/DVEdit_New_V2/@item.MaPhieuThu"><i title="Edit" class="fa fa-edit"></i></a>
+                            }
+                            else
+                            { 
+                                <a href="/SoThu/DVEdit_New_V1/@item.MaPhieuThu"><i title="Edit" class="fa fa-edit"></i></a>                            
+                            }
+                        </td>
+                        @*}
+                    else
+                    {
+                        <td style="width:5%" class="center">
+                            <a href="/SoThu/DVEdit/@item.MaPhieuThu"><i title="Edit" class="fa fa-edit"></i></a>
+                        </td>
+                    }*@
+                        <td style="width:5%" class="center">
+                            <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                        </td>
+                        @*<td><input type="checkbox" value="@item.MaPhieuThu" /></td>*@
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <div class="right">
+        @Html.Partial("~/Views/Shared/_Paging.cshtml")
+    </div>
+@*<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>*@
+<script type="text/javascript">
+    $("#CHKALL").change(function () {
+        debugger;
+        $("input:checkbox").prop('checked', $(this).prop("checked"));
+    });
+</script>
+
+
+
+

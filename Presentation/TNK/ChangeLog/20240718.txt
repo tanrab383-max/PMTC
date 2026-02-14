@@ -1,0 +1,13 @@
+﻿1. Dong bo Phieu Dich Vu tu Cyber:
+- sp_getDetailsPhieuTamDVCyberSoft
+- sp_getListPhieuTamDVCyberSoft
+
+
+2. Dong bo phieu ban xe:
+- PhieuThu them cot NhanVienTuVan
+- [ViewTBAXE]
+- [sp_LoadDanhSachCocLenPhieuThu]
+
+sp_getListDetailPhieuTamDVCyberSoft
+
+PhieuThu.CyberId

@@ -1,0 +1,371 @@
+﻿@model List<TNK.Core.Domain.LichSuTheChapXe>
+@{
+    ViewBag.Title = "Thế Chấp";
+    int i = 1;
+    var NgayHienTai = DateTime.Now.ToString("dd/MM/yyyy");
+    var NHTCCuoiCung = ViewBag.NHTC;
+    var flag = 0;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Thế chấp xe</h3>
+    </div>
+</div>
+<div class="row">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form method="post" class="form-horizontal form-label-left" id="Form">
+                                <input hidden id="Now" value="@DateTime.Now" />
+                                <div class="col-md-12">
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Số khung</label>
+                                            <input type="text" name="id" class="form-control input-sm" value="@ViewBag.SoKhung" id="SK" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Ngày thế chấp</label>
+                                            <input type="text" name="From" class="form-control input-sm date" value="@DateTime.Now.ToString("dd/MM/yyyy")" id="NTC" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Ngân hàng thế chấp</label>
+                                            <select class="select2 fullwidth" id="NHTC">
+                                                @foreach (var temp in ViewBag.NganHang)
+                                                {
+                                                    <option value="@temp.MaDoiTac">@temp.MaVietTat</option>
+                                                }
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Ngày hết thế chấp</label>
+                                            <input type="text" name="To" class="form-control input-sm date" value=""  id="NgayHTC" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="col-md-2 col-sm-3 col-xs-12">
+                                    </div>
+                                    <div class="col-md-2 col-sm-3 col-xs-12">
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <input type="button"  onclick="Luu()" value="Lưu" class="btn btn-success" />
+                                        <input type="submit" id="DanhSach_Submit"  value="Danh Sách" class="btn btn-info" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive" style="overflow:auto">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Số khung</th>
+                                            <th>Ngày thế chấp</th>
+                                            <th>Ngày hết thế chấp</th>
+                                            <th>Ngân hàng thế chấp</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DanhSach">
+                                        @if (Model != null)
+                                        {
+                                            foreach (var item in Model)
+                                            {
+                                                
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>@item.SoKhung</td>
+                                                    <td><input value="@item.NgayTheChap.ToString("dd/MM/yyyy")" class="form-control input-sm date" id="NTC_@item.SoKhung.Trim()" disabled /></td>
+                                                    @if (item.NgayHetTheChap == null)
+                                                    {
+                                                        <td><input value="" class="form-control input-sm date NHTC" id="NHTC_@item.Id" /></td>
+                                                        flag = 1;
+                                                    }
+                                                    else
+                                                    {
+                                                        <td><input value="@item.NgayHetTheChap.Value.ToString("dd/MM/yyyy")" class="form-control input-sm date" id="NHTC_@item.Id" /></td>
+                                                    }
+                                                    <td>
+                                                        <select class="select2 fullwidth" id="NH_@item.SoKhung.Trim()">
+                                                            @foreach (var temp in ViewBag.NganHang)
+                                                            {
+                                                                <option value="@temp.MaDoiTac" @Html.Raw(temp.MaDoiTac == item.NganHangTheChap ? "selected" : "")>@temp.MaVietTat</option>
+                                                            }
+                                                        </select>
+                                                    </td>
+                                                    @if (item.NgayHetTheChap == null)
+                                                    {
+                                                        <td>
+                                                            <a href="" onclick="Edit('@item.Id','@item.SoKhung.Trim()')"><i title="Edit" class="fa fa-save"></i></a>
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>
+                                                             <i title="Edit" class="fa fa-save" disable></i>
+                                                        </td>
+                                                    }
+                                                    @*@if (item.NgayHetTheChap != null)
+                                                    {
+                                                        <td>
+                                                            @*<a href="" onclick="Delete('@item.Id')"><i title="Delete" class="fa fa-close"></i></a>
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {*@
+                                                        <td>
+                                                            <a href="" onclick="Delete('@item.Id')"><i title="Delete" class="fa fa-close"></i></a>
+                                                        </td>
+                                                    @*}*@
+                                                    
+                                                </tr>
+                                                i++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                @*<div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <a href="/KhoXe/Index">Quay lại</a>
+</div>
+
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        $(".select2").select2();
+        function Luu()
+        {
+            debugger;
+            @*var NHTCCC = '@NHTCCuoiCung';
+            var HienTai = '@NgayHienTai';
+            if(NHTCCC != '')
+            {
+                var N3 = NHTCCC.split("/");
+                var NHTCCC1 = new Date(N3[2], N3[1] - 1, N3[0]);
+                var N4 = HienTai.split("/");
+                var NgayHT1 = new Date(N4[2], N4[1] - 1, N4[0]);
+                if (NgayHT1 < NHTCCC1)
+                {
+                    toastWarning("Xe chưa hết thế chấp.");
+                    return false;
+                }
+            }*@
+            var SK = $("#SK").val();
+            var NTC = $("#NTC").val();
+            var NHTC = $("#NHTC").val();
+            var NgayHTC = $("#NgayHTC").val();
+            var N1 = NTC.split("/");
+            var NgayTheChap = new Date(N1[2], N1[1] - 1, N1[0]);
+            var N2 = NgayHTC.split("/");
+            var NgayHetTheChap = new Date(N2[2], N2[1] - 1, N2[0]);
+            
+            if (SK == null || SK == "")
+            {
+                toastWarning("Số khung không được trống");
+                return false;
+            }
+            if(NHTC == null)
+            {
+                toastWarning("Vui lòng chọn ngân hàng thế chấp");
+                return false;
+            }
+            else
+            {
+                if(NTC == "")
+                {
+                    toastWarning("Vui lòng chọn ngày thế chấp.");
+                    return false;
+                }
+                else
+                {
+                    if(NgayHTC != "")
+                    {
+                        if (NgayHetTheChap < NgayTheChap)
+                        {
+                            toastWarning("Vui lòng chọn ngày hết thế chấp lớn hơn ngày thế chấp.");
+                            return false;
+                        }
+                    }
+                }
+            }
+            var Flag = '@flag';
+            if (Flag == "1")
+            {
+                toastWarning("Vui lòng chọn ngày hết thế chấp rồi mới thêm mới.");
+                return false;
+            }
+            $.ajax({
+                url: "/KhoXe/TheChapXeCreate",
+                type: "POST",
+                data: { "SoKhung" : SK, "NgayTheChap" : NTC, "NganHangTheChap": NHTC, "NgayHetTheChap" : NgayHTC },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                        $('form').submit();
+                        //location.reload("/KhoXe/TheChap/" + SK);
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi: Thêm thế chấp.");
+                }
+            });
+        }
+        function Edit(Id,SoKhung)
+        {
+            debugger;
+            var NgayTheChap = $("#NTC_" + SoKhung).val();
+            var NgayHetTheChap = $("#NHTC_" + Id).val();
+            var NganHang = $("#NH_" + SoKhung).val();
+            var N1 = NgayTheChap.split("/");
+            var NgayTheChap_New = new Date(N1[2], N1[1] - 1, N1[0]);
+            var N2 = NgayHetTheChap.split("/");
+            var NgayHetTheChap_New = new Date(N2[2], N2[1] - 1, N2[0]);
+            if (NganHang == null)
+            {
+                toastWarning("Vui lòng chọn ngân hàng thế chấp");
+                return false;
+            }
+            else
+            {
+                if (NgayTheChap_New == null)
+                {
+                    toastWarning("Vui lòng chọn ngày thế chấp");
+                    return false;
+                }
+                else
+                {
+                    if (NgayHetTheChap_New != "")
+                    {
+                        if (NgayHetTheChap_New < NgayTheChap_New)
+                        {
+                            toastWarning("Vui lòng chọn ngày hết thế chấp lớn hơn ngày thế chấp");
+                            return false;
+                        }
+                        @*else if(NgayTheChap <= '@NgayHienTai' && '@NgayHienTai' <= NgayHetTheChap)
+                        {
+                            toastWarning("Ngày hiện tại không được nằm trong ngày thế chấp và hết thế chấp.");
+                            return false;
+                        }*@
+                    }
+                    else if (NgayTheChap_New <= '@NgayHienTai')
+                    {
+                        toastWarning("Ngày thế chấp phải lớn hơn ngày hôm nay");
+                        return false;
+                    }
+                }
+            }
+            $.ajax({
+                url: "/KhoXe/EditTheChap",
+                type: 'POST',
+                data: { "Id": Id, "NgayTheChap": NgayTheChap, "NganHangTheChap": NganHang, "NgayHetTheChap": NgayHetTheChap },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                        $('form').submit();
+                        //location.reload("/KhoXe/TheChap/" + SoKhung);
+                        //window.location.reload();
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi: Cập nhật thế chấp.");
+                }
+            });
+            //window.location.reload();
+        }
+        function Delete(Id) {
+            debugger;
+            var cnm = confirm("Bạn có chắc chắn xóa ?");
+            if (cnm == true)
+            {
+                $.ajax({
+                    url: "/KhoXe/DeleteTheChap",
+                    type: 'POST',
+                    data: { "Id": Id },
+                    success: function (result) {
+                        if (!result.IsError) {
+                            toastSuccess(result.Message);
+                            window.location.reload();
+                            location.reload("/KhoXe/TheChap/" + SoKhung);
+                        }
+                        else {
+                            toastWarning(result.Message);
+                        }
+                    },
+                    error: function (result) {
+                        toastWarning("Lỗi: Xóa thế chấp.");
+                    }
+                });
+            }
+        }
+        @*function DanhSach()
+        {
+            debugger;
+            $.ajax({
+                url: "/KhoXe/DanhSachTheChap",
+                type: "POST",
+                dataType: "json",
+                success: function (result) {
+                    if (result != "") {
+                        var html = "";
+                        for (var i = 0; i < result.length; i++) {
+                            $("#DanhSach").empty();
+                            html += "<tr>";
+                            html += "<td>" + (i + 1) + "</td>";
+                            html += "<td>" + result[i].SoKhung + "</td>";
+                            html += "<td>";
+                            html += "<input value="+ result[i].NgayTheChap +" class='form-control input-sm date' id='NTC_"+ result[i].SoKhung.Trim() +" />";
+                            html += "</td>";
+                            html += "<td><input value=" + result[i].NgayHetTheChap +" class='form-control input-sm date' id='NHTC_"+ result[i].SoKhung.Trim() +" /></td>";
+                            html += "<td><select class='select2 fullwidth' id='NHTC_"+ result[i].SoKhung.Trim() + ">";
+                            html += "@foreach (var temp in ViewBag.TheChap)
+                                    {
+                                        <option value="+ temp.MaDoiTac + ""+if(temp.MaDoiTac == result[i].NganHangTheChap ? "selected" : "")+">"+temp.MaVietTat+"</option>
+                                    }
+                            html += "</select></td>";
+                            html += "<td><a href='#' onclick='Edit('"+result[i].Id +"','" +result[i].SoKhung.Trim()+"')'><i title='Edit' class='fa fa-save'></i></a></td>";
+                            html += "<td><a href='#' onclick='Edit('"+result[i].Id +"','"+result[i].SoKhung.Trim() +"')'><i title='Edit' class='fa fa-save'></i></a></td>";
+                            html += "</tr>";
+                        }
+                        $("#DanhSach").append(html);
+                        alert(html);
+                    }
+                }
+            });
+        }*@
+    </script>
+}
+
+
+

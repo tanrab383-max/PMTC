@@ -1,0 +1,94 @@
+﻿@using System.Data;
+
+@{
+    DateTime FromDate = ViewBag.FromDate;
+    DateTime ToDate = ViewBag.ToDate;
+
+    double TotalTrongKy_ThuCoc = 0, TotalTrongKy_ChiCoc = 0, TotalTonDauKy = 0, TotalTrongKy_Ton = 0,
+ TotalCuoiKy_ThuCoc = 0, TotalCuoiKy_ChiCoc = 0, TotalCuoiKy_Ton = 0;
+}
+
+<div class="x_content">
+    <div id="BCThuChiCocPT" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='16' class="tile">BẢNG KÊ THU - CHI CỌC DỊCH VỤ @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan='14'>Đến 15h ngày @ToDate.ToString("dd/MM/yyyy")</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">NGÀY</th>
+                    <th class="column-title" rowspan="2">SỐ XE</th>
+                    <th class="column-title" rowspan="2">TÊN ĐƠN VỊ</th>
+                    <th class="column-title" rowspan="2">ĐẦU KỲ <br />(@ToDate.ToString("1/1/yyyy"))</th>
+                    <th class="column-title" rowspan="2">THU CỌC</th>
+                    <th class="column-title" rowspan="2">NGÀY CHI CỌC</th>
+                    <th class="column-title" rowspan="2">CHI CỌC</th>
+                    <th class="column-title" rowspan="2">CUỐI @ToDate.AddDays(-1).ToString("dd/MM/yyyy")</th>
+                    <th class="column-title" colspan="3">@ToDate.ToString("dd/MM/yyyy")</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">THU</th>
+                    <th class="column-title">CHI</th>
+                    <th class="column-title">CỌC CK</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    int intCount = 1;
+                    foreach (DataRow row in (Model as DataTable).Rows)
+                    {
+                        TotalTonDauKy += row["TonDauKy"].ToString() == "" ? 0 : Convert.ToDouble(row["TonDauKy"]);
+                        TotalTrongKy_ThuCoc += row["TrongKy_ThuCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["TrongKy_ThuCoc"]);
+                        TotalTrongKy_ChiCoc += row["TrongKy_ChiCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["TrongKy_ChiCoc"]);
+                        TotalTrongKy_Ton += row["TrongKy_Ton"].ToString() == "" ? 0 : Convert.ToDouble(row["TrongKy_Ton"]);
+                        TotalCuoiKy_ThuCoc += row["CuoiKy_ThuCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["CuoiKy_ThuCoc"]);
+                        TotalCuoiKy_ChiCoc += row["CuoiKy_ChiCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["CuoiKy_ChiCoc"]);
+                        TotalCuoiKy_Ton += row["CuoiKy_Ton"].ToString() == "" ? 0 : Convert.ToDouble(row["CuoiKy_Ton"]);
+
+                    <tr class="even pointer">
+                        <td>@(intCount ++)</td>
+                        <td>@row["NgayThu"]</td>
+                        <td>@row["BienSo"]</td>
+                        <td>@row["KhachHang"]</td>
+                        <td class="number">@row["TonDauKy"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["TrongKy_ThuCoc"].ToString().Replace(",", ".")</td>
+                        <td>@row["NgayChiCoc"]</td>
+                        <td class="number">@row["TrongKy_ChiCoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["TrongKy_Ton"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["CuoiKy_ThuCoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["CuoiKy_ChiCoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["CuoiKy_Ton"].ToString().Replace(",", ".")</td>
+                    </tr>
+                    }
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="4">TỔNG CỌC PHỤ TÙNG</td>
+                    <td class="number">@TotalTonDauKy.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTrongKy_ThuCoc.ToString().Replace(",", ".")</td>
+                    <td></td>
+                    <td class="number">@TotalTrongKy_ChiCoc.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalTrongKy_Ton.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCuoiKy_ThuCoc.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCuoiKy_ChiCoc.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalCuoiKy_Ton.ToString().Replace(",", ".")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+@*<script src="~/Scripts/ReportCommon.js"></script>*@
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

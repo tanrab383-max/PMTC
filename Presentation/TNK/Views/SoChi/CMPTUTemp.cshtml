@@ -1,0 +1,32 @@
+﻿
+@model List<TNK.Model.ViewChiMuaPTTemp>
+@{
+    Layout = null;
+}
+
+                @{
+                    int i = 1;
+                    foreach (var item in Model)
+                    {
+                                <tr>
+                                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                    <td>
+                                        <input type="checkbox" id="chk_@item.So_ct" value="@(item.CyberId)" class="checkbox" />
+                                    </td>
+                                    <td>@item.So_ct</td>
+                                    <td>@item.MaKho</td>
+
+                                    <td>@item.Ngay_ct.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.Dien_giai</td>
+                                    <td>@item.NhaCungCap</td>
+
+                                    <td class="number2">@TNK.Core.Common.ToCurrencyString(item.ThanhTien)</td>
+                                    <td style="width:5%" class="center">
+                                        <a href="/SoChi/CMPTUCreate/@TNK.Core.Common.EncodeHtmlUrl(item.CyberId)"><i title="Edit" class="fa fa-edit"></i></a>
+                                    </td>
+                                </tr>
+                    }
+                }
+           
+
+        

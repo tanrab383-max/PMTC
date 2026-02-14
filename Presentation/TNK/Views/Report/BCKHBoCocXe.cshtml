@@ -1,0 +1,96 @@
+﻿@using System.Data;
+@{
+    double TotalThuCoc = 0, TotalChiCoc = 0, TotalConLai = 0;
+
+}
+<div class="x_content">
+    <div id="BCKHBoCocXe" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='11' class="tile">DANH SÁCH KHÁCH HÀNG CÓ KHẢ NĂNG BỎ CỌC @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan='11' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">STT</th>
+                    <th class="column-title">LOẠI XE</th>
+                    <th class="column-title">MÀU</th>
+                    <th class="column-title">HỢP ĐỒNG/BSX</th>
+                    <th class="column-title">TÊN ĐƠN VỊ</th>
+                    <th class="column-title">NGÀY THU CỌC</th>
+                    <th class="column-title">THU CỌC</th>
+                    <th class="column-title">NGÀY CHI CỌC</th>
+                    <th class="column-title">CHI CỌC</th>
+                    <th class="column-title">CÒN LẠI</th>
+                    <th class="column-title">GHI CHÚ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    int intCount = 0;
+                    foreach (DataRow row in (Model as DataTable).Rows)
+                    {
+                        string ngayChiCoc = row["NgayChiCoc"].ToString();
+                        if (!string.IsNullOrEmpty(ngayChiCoc))
+                        {
+                            if (ngayChiCoc.Substring(0, 1) == ",")
+                            {
+                                ngayChiCoc = ngayChiCoc.Substring(1, ngayChiCoc.Length - 1);
+                            }
+                            if (!string.IsNullOrEmpty(ngayChiCoc))
+                            {
+                                if (ngayChiCoc.Substring(ngayChiCoc.Length - 1, 1) == ",")
+                                {
+                                    ngayChiCoc = ngayChiCoc.Substring(0, ngayChiCoc.Length - 1);
+                                }
+                            }
+                        }
+                        TotalThuCoc += row["ThuCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["ThuCoc"]);
+                        TotalChiCoc += row["ChiCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["ChiCoc"]);
+                        TotalConLai += row["ConLai"].ToString() == "" ? 0 : Convert.ToDouble(row["ConLai"]);
+                        
+
+                <tr class="even pointer">
+                    <td>@(++intCount)</td>
+                    <td>@row["LoaiXe"]</td>
+                    <td>@row["MauXe"]</td>
+                    <td>@row["SoHopDong"]</td>
+                    <td>@row["Hoten"]</td>
+                    <td>@row["NgayThuCoc"]</td>
+                    <td class="number">@row["ThuCoc"].ToString().Replace(",", ".")</td>
+                    <td>@ngayChiCoc</td>
+                    <td class="number">@row["ChiCoc"].ToString().Replace(",", ".")</td>
+                    <td class="number">@row["ConLai"].ToString().Replace(",", ".")</td>
+                    <td>@row["GhiChu"]</td>
+                </tr>
+                    }
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td class="" colspan="5">@ViewBag.ToDate.ToString("dd/MM/yyyy")</td>
+                    <td class=""></td>
+                    <td class="number">@TotalThuCoc.ToString().Replace(",", ".")</td>
+                    <td class=""></td>
+                    <td class="number">@TotalChiCoc.ToString().Replace(",", ".")</td>
+                    <td class="number">@TotalConLai.ToString().Replace(",", ".")</td>
+                    <td class=""></td>
+                </tr>
+                <tr style="font-style:italic">
+                    <td colspan='11'>(Bao gồm bỏ cọc xe và cọc phụ tùng dịch vụ)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

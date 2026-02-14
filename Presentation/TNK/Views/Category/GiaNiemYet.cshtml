@@ -1,0 +1,364 @@
+﻿@model TNK.Model.LoaiXeModel
+@{
+    ViewBag.Title = "Giá niêm yết";
+    var item = Model.Item;
+}
+
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 24px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #04B45F;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #04B45F;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(16px);
+        -ms-transform: translateX(16px);
+        transform: translateX(16px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 24px;
+    }
+
+    .slider.round:before {
+        border-radius: 40%;
+    }
+</style>
+<div class="page-title">
+    <div class="title_left">
+        <h3>Giá niêm yết</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a href="/LoaiXe/Create"><i class="fa fa-plus addNew"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post" class="form-horizontal form-label-left" action="/LoaiXe/GiaNiemYet">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Mã loại</label>
+                                @Html.EditorFor(x => item.MaLoaiXe, new { htmlAttributes = new { @class = "form-control number input-sm" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Model</label>
+                                @Html.DropDownListFor(x => item.MaModel, Model.ListModelXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Grad</label>
+                                @Html.DropDownListFor(x => item.Grad, Model.ListGrad.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Đời</label>
+                                @Html.DropDownListFor(x => item.DoiXe, Model.ListDoiXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Màu</label>
+                                @Html.DropDownListFor(x => item.MaMau, Model.ListMauXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2" })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Xuất xứ</label>
+                                <select name="item.XuatXu" class="select2 fullwidth">
+                                    <option value="">Chọn</option>
+                                    <option value="CKD" @(item.XuatXu == "CKD" ? "selected" : "")>CKD</option>
+                                    <option value="CBU" @(item.XuatXu == "CBU" ? "selected" : "")>CBU</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="row">
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                        <label>Hãng</label>
+                        @Html.DropDownListFor(x => item.Hang, Model.ListHang.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                        <label>Giá niêm yết</label>
+                        @Html.EditorFor(x => item.GiaNiemYet, new { htmlAttributes = new { @class = "form-control number input-sm" } })
+                    </div>
+                </div>
+            </div>*@
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success" id="btnSearch" />
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>Id</th>
+                            <th>Mã loại xe</th>
+                            <th>Model</th>
+                            <th>Grad</th>
+                            <th>Đời xe</th>
+                            <th>Màu xe</th>
+                            <th>Xuất xứ</th>
+                            <th>Giá niêm yết</th>
+                            <th>Hoạt động</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var obj in (List<TNK.Core.Domain.View.ViewLoaiXe>)ViewBag.ListLoaiXe)
+                        {
+                            <tr>
+                                <td>@obj.Id</td>
+                                <td>@obj.MaLoaiXe</td>
+                                <td>@obj.TenModel</td>
+                                <td>@obj.TenGrad</td>
+                                @*<td>@obj.TenDoiXe</td>*@
+                                <td>
+                                    <select class="select2 fullwidth" id="DoiXe_@obj.Id" disabled>
+                                        @foreach (var doiXe in Model.ListDoiXe)
+                                        {
+                                            <option value="@doiXe.Id" @Html.Raw(obj.TenDoiXe == doiXe.Code ? "selected" : "")>
+                                                @doiXe.Name
+                                            </option>
+                                        }
+                                    </select>
+                                </td>
+                                <td>@obj.CodeMau - @obj.TenMau</td>
+                                <td>
+                                    <select name="item.XuatXu" class="select2 fullwidth" id="XuatXu_@obj.Id" disabled>
+                                        <option value="CKD" @Html.Raw(obj.XuatXu == "CKD" ? "selected" : "")>CKD</option>
+                                        <option value="CBU" @Html.Raw(obj.XuatXu == "CBU" ? "selected" : "")>CBU</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    @Html.EditorFor(x => obj.GiaNiemYet, new { htmlAttributes = new { @class = "form-control number input-sm", @type = "number", @value = "", @id = "GNY_" + obj.Id } })
+                                </td>
+                                <td>
+                                    @*<label class="checkbox-inline bootstrap-switch-noPad" for="payMethod">
+                                <input type="checkbox" id="payMethod" name="payMethod" data-size="small" value="Credit" data-on-text="Credit" data-on-color="success" data-off-text="Cash" data-off-color="warning" tabindex="13">
+                            </label>*@
+                                    <label class="switch">
+                                        <input type="checkbox" id="ACT_@obj.MaLoaiXe" onclick="EditActive('@obj.MaLoaiXe')" @(obj.IsActive == true ? "checked" : "")><span class="slider round"></span>
+                                    </label>
+                                </td>
+                                <td style="width:5%" class="center">
+                                    <a href="#" onclick="Edit('@obj.Id','@obj.MaLoaiXe')"><i title="Lưu" class="fa fa-save"></i></a>
+                                </td>
+                                <td style="width:5%" class="center">
+                                    @*<a href="/LoaiXe/Delete/@obj.MaLoaiXe"><i title="Delete" class="fa fa-close"></i></a>*@
+                                    <a href="#"><i title="Delete" class="fa fa-close" onclick="Delete('@obj.MaLoaiXe')"></i></a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="right">
+                    @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts{
+    <script type="text/javascript">
+        $(".select2").select2();
+
+        function Edit(Id, maloaixe) {
+            debugger;
+            var xuatxu = $("#XuatXu_" + Id).val();
+            var DoiXe = $("#DoiXe_" + Id).val();
+            var GiaNiemYet = $("#GNY_" + Id).val();
+            $.ajax({
+                url: "/LoaiXe/EditLoaiXe",
+                type: "POST",
+                data: { "Id": Id, "strMaLoaiXe": maloaixe, "dblGiaNiemYet": GiaNiemYet, "XuatXu": xuatxu, "DoiXe": DoiXe },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi: Cập nhật giá niêm yết.");
+                }
+            });
+        }
+        function Delete(MaLoaiXe) {
+            $.ajax({
+                url: "/LoaiXe/Delete",
+                type: "POST",
+                data: { "id": MaLoaiXe },
+                success: function (result) {
+                    if (result.isError=='') {
+                        toastSuccess('Xóa thành công');
+                        setTimeout(function () {
+                            $('#btnSearch').click()
+                        },1000);
+                    }
+                    else {
+                        toastWarning(result.isError);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi: Xóa giá niêm yết.");
+                }
+            });
+        }
+        function EditActive(MaLoaiXe) {
+            debugger;
+            //var str = "";
+            //if ($("ACT_" + obj.MaLoaiXe).is(":checked"))
+            //    str = " bật ";
+            //else
+            //    str = " tắt ";
+            //var cofm = confirm("Bạn có muốn" + str + "mã loại xe " + MaLoaiXe + " này không?");
+            //if (cofm == true) {
+                $.ajax({
+                    url: "/LoaiXe/EditIsActive",
+                    type: "POST",
+                    data: { "MaLoaiXe": MaLoaiXe },
+                    success: function (result) {
+                        if (!result.IsError) {
+                            toastSuccess(result.Message);
+                        }
+                        else {
+                            toastWarning(result.Message);
+                        }
+                    },
+                    error: function (result) {
+                        toastWarning("Lỗi: Cập nhật active cho loại xe " + MaLoaiXe + ".");
+                    }
+                });
+            //}
+            //else {
+
+            //}
+        }
+        //function EditActive(MaLoaiXe) {
+        //    debugger;
+            //var str = "";
+            //var IsActive = "";
+            //var checked = $("#ACT" + MaLoaiXe).is(":checked");
+            //if (checked == true) {
+            //    str = "mở";
+            //    IsActive = true;
+            //}
+            //else {
+            //    str = "tắt";
+            //    IsActive = false;
+            //}
+            //var cnf = confirm("Bạn có muốn " + str + " loại xe này không?");
+            //if (cnf == true) {
+                //$.ajax({
+                //    url: "/LoaiXe/EditIsActive",
+                //    type: "POST",
+                //    data: { "MaLoaiXe": MaLoaiXe},
+                //    success: function (result) {
+                //        if (!result.IsError) {
+                //            toastSuccess(result.Message);
+                //        }
+                //        else {
+                //            toastWarning(result.Message);
+                //        }
+                //    },
+                //    error: function (result) {
+                //        toastWarning("Lỗi: Cập nhật active cho loại xe " + MaLoaiXe + ".");
+                //    }
+                //});
+            //}
+            //else {
+            //    if (checked == true) {
+            //        $("#ACT" + MaLoaiXe).removeAttr("checked");
+            //    }
+            //    else {
+            //        $("#ACT" + MaLoaiXe).attr("checked");
+            //    }
+            //}
+            
+        //}
+        //$('#payMethod').on('change', function () {
+        //    alert('slid');
+        //}); // does not work
+
+        //$("#payMethod").click(function () {
+        //    alert($('#payMethod').val());
+        //}); // does not work
+
+        //$('#payMethod').change(function () {
+        //    alert('Toggle: ' + $(this).prop('checked'));
+        //}); // does not work
+
+        //$('input[type=checkbox][name=payMethod]').change(function () {
+        //    alert('help'); // does not work
+        //});
+    </script>
+}

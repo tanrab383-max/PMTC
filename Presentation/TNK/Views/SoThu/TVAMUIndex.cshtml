@@ -1,0 +1,171 @@
+﻿@model List<TNK.Core.Domain.View.ViewTVAMU>
+@{
+    int i = 1;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b></b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a href="/SoThu/PhieuThu?type=TVAMU"><i class="fa fa-plus addNew"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày thu</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày thu</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Mã phiếu thu, Số chứng từ, Đơn vị cho vay" placeholder="Mã phiếu thu, Số chứng từ, Đơn vị cho vay" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                            <input type="button" name="export" id="btnExportExcel" value="Excel" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table" id="tbl">
+                        <thead>
+                            <tr class="success">
+                                <th>STT</th>
+                                <th>Ngày thu</th>
+                                <th>Mã phiếu thu</th>
+                                <th>Chứng từ thu</th>
+                                <th>Đơn vị cho vay</th>
+                                @*<th>Điện thoại</th>*@
+                                <th>Nội Dung</th>
+                                <th>Số tiền</th>
+                                @*<th>Số tiền thanh toán</th>*@
+                                <th>Còn lại</th>
+                                @*<th>Tình trạng</th>*@
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                        <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.MaPhieuThu</td>
+                                        <td>@item.SoChungTu</td>
+                                        <td>@item.DVCV</td>
+                                        @*<td>@item.DienThoai</td>*@
+                                        <td>@item.NoiDung</td>
+                                        <td>@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>
+                                        <td>@TNK.Core.Common.ToCurrencyString(item.ConLai)</td>
+                                        @*<td>@TNK.Core.Common.ToCurrencyString(item.SoTienThu)</td>*@
+                                        @*<td>@item.TinhTrangPhieu</td>*@
+                                        <td style="width:5%" class="center">
+                                            <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TVAMU&actiontype=Update"><i title="Edit" class="fa fa-edit"></i></a>
+                                        </td>
+                                        <td style="width:5%" class="center">
+                                            <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    <div class="right">
+                        @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                    </div>
+                    @*<div class="center">
+                        Tìm thấy : @ViewBag.Total data
+                    </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'TVAMU' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        $("#btnExportExcel").click(function () {
+            debugger;
+            if ($($("#tab_data li.unactive")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = "#tbl";
+                var result = $(idtable).html();
+                result = result.replace('class="table"', 'class="table" border="1"');
+                //alert(result)
+                tableToExcel(result, 'ThuVayMuon' + '_@ViewBag.Type' + '_' + postfix + '.xls');
+            }
+            else {
+                //window.location = `/SoThu/ThuNo/NHHGP?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+        var tableToExcel = (function () {
+            var uri = 'data:application/vnd.ms-excel;base64,'
+                , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+                , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+                , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            return function (table, name) {
+                //if (!table.nodeType) table = document.getElementById(table)
+                var ctx = { worksheet: name || 'Worksheet', table: table }
+                var link = document.createElement("A");
+                link.href = uri + base64(format(template, ctx));
+                link.download = name || 'Baocao.xls';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })()
+    </script>
+}

@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "DMS";
+}
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>BÁO CÁO DMS</h3>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_content">
+                    <br />
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Cửa hàng </label>
+                            <div class="col-sm-3">
+                                <select id="Store" multiple="true" class="multiselect form-control">
+                                    <option value="PT1">PT 1</option>
+                                    <option value="PT2">PT 2</option>
+                                    <option value="PT3">PT 3</option>
+                                    <option value="PT4">PT 4</option>
+                                    <option value="PT5">PT 5</option>
+                                    <option value="PT6">PT 6</option>
+                                    <option value="Wing1">Wing 1</option>
+                                    <option value="Wing2">Wing 2</option>
+                                    <option value="Wing3">Wing 3</option>
+                                    <option value="Wing4">Wing 4</option>
+                                    <option value="Wing5">Wing 5</option>
+                                </select>
+                            </div>
+                            <label class="control-label col-sm-1">Kho </label>
+                            <div class="col-sm-3">
+                                <select id="Store" multiple="true" class="multiselect form-control">
+                                    <option value="385">Hang_Ngan_385</option>
+                                    <option value="386">Hang_Ngan_386</option>
+                                    <option value="387">Hang_Ngan_387</option>
+                                    <option value="388">Hang_Ngan_388</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Danh sách PT </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input id="tags_1" type="text" class="tags form-control" value="PT1, PT2, PT3" />
+                                <div id="suggestions-container" style="position: relative; float: left; width: 250px; margin: 10px;"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Danh sách PT </label>
+                            <div class="col-sm-3">
+                                <select id="Store" class="form-control">
+                                    <option value="1">Gần đúng</option>
+                                    <option value="2">Chính xác</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Tìm kiếm</button>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-file-excel-o"></i> Xuất excel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="x_content">
+                    <div class="table-responsive">
+                        <table class="table table-striped jambo_table bulk_action">
+                            <thead>
+                                <tr class="headings">
+                                    <th class="column-title">Stt</th>
+                                    <th class="column-title">Chi nhánh </th>
+                                    <th class="column-title">Kho </th>
+                                    <th class="column-title">Mã phụ tùng </th>
+                                    <th class="column-title">Tồn kho </th>
+                                    <th class="column-title">Có thể bán </th>
+                                    <th class="column-title">Giá trung bình </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="even pointer">
+                                    <td class=" ">1</td>
+                                    <td class=" ">PT1</td>
+                                    <td class=" ">PT1</td>
+                                    <td class=" ">06381KFL850</td>
+                                    <td class=" ">0</td>
+                                    <td class=" ">0</td>
+                                    <td class=" ">520.300,00 đ</td>
+                                </tr>
+                                <tr class="even pointer">
+                                    <td class=" ">2</td>
+                                    <td class=" ">PT1</td>
+                                    <td class=" ">WING</td>
+                                    <td class=" ">06381KFL860</td>
+                                    <td class=" ">2</td>
+                                    <td class=" ">2</td>
+                                    <td class=" ">425.500,00 đ</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row"><div class="col-sm-5"><div class="dataTables_info" id="datatable-keytable_info" role="status" aria-live="polite">Hiển thị 1 - 2 / 40 dòng dữ liệu</div></div><div class="col-sm-7"><div class="dataTables_paginate paging_simple_numbers" id="datatable-keytable_paginate"><ul class="pagination" style="margin:0; "><li class="paginate_button previous disabled" id="datatable-keytable_previous"><a href="#" aria-controls="datatable-keytable" data-dt-idx="0" tabindex="0">Trở về</a></li><li class="paginate_button active"><a href="#" aria-controls="datatable-keytable" data-dt-idx="1" tabindex="0">1</a></li><li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="2" tabindex="0">2</a></li><li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="3" tabindex="0">3</a></li><li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="4" tabindex="0">4</a></li><li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="5" tabindex="0">5</a></li><li class="paginate_button "><a href="#" aria-controls="datatable-keytable" data-dt-idx="6" tabindex="0">6</a></li><li class="paginate_button next" id="datatable-keytable_next"><a href="#" aria-controls="datatable-keytable" data-dt-idx="7" tabindex="0">Tiếp theo</a></li></ul></div></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('.date').daterangepicker({
+                singleDatePicker: true,
+                calender_style: "picker_2"
+            }, function (start, end, label) {
+                console.log(start.toISOString(), end.toISOString(), label);
+            });
+
+            $("select.multiselect").multiselect({
+                noneSelectedText: '-- Tất cả --',
+                multiple: true,
+            }).multiselectfilter();
+
+            $('#tags_1').tagsInput({
+                width: 'auto'
+            });
+        });
+    </script>
+
+}

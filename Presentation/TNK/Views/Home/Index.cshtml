@@ -1,0 +1,1680 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+    var Date = DateTime.Now;
+    var soDong = ViewBag.Data.Rows.Count;
+    var soDong_new = ViewBag.Data_new.Rows.Count;
+    var a = ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuDichVu"].ToString().Replace(",", ".");
+}
+    <div class="dashboard_graph">
+    <div class="row x_title">
+        <div class="col-md-9">
+            <h4 style="color:#808080">Báo cáo ngày <span id="bcNgay" style="color:#808080">@ViewBag.Data_new.Rows[0]["Ngay"]</span>/@DateTime.Now.Year</h4>
+        </div>
+        <div class="col-md-3">
+            <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                <input type="text" class="form-control has-feedback-left" onchange="LoadData('@DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")');" id="reportrange1" aria-describedby="inputSuccess2Status2" value="@DateTime.Now.AddDays(-1).ToString("dd/MM/yyyy")">
+                <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                <span id="inputSuccess2Status2" class="sr-only">(success)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="x_content">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="center_col" role="main">
+                <div class="row tile_count">
+                    <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
+                        <span class="count_top"><i style="margin-left:2%" class="fa fa-gears"></i> Số lượt dịch vụ</span>
+                        <div class="count" id="LuotDichVu" style="margin-left:2%">@ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"] </div>
+                        @if (soDong_new > 1)
+                            {
+                                if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) != 0)
+                                {
+                                    double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) * 100;
+                            <span class="count_bottom" id="LuotDichVu_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                                else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) == 0)
+                                {
+                            <span class="count_bottom" id="LuotDichVu_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                                else
+                                {
+                                    double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotDichVu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotDichVu"])) * 100;
+                            <span class="count_bottom" id="LuotDichVu_Percent"><i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                            }
+                    </div>
+                    <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
+                        <span class="count_top"><i style="margin-left:2%" class="fa fa-car"></i> Xe bán</span>
+                        <div class="count" id="LuotBAXE" style="margin-left:2%">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]))</div>
+                        @if (soDong_new > 1)
+                            {
+                                if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) != 0)
+                                {
+                                    double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) * 100;
+                            <span class="count_bottom" id="LuotBAXE_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                                else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) == 0)
+                                {
+                            <span class="count_bottom" id="LuotBAXE_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                                else
+                                {
+                                    double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["LuotBAXE"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["LuotBAXE"])) * 100;
+                            <span class="count_bottom" id="LuotBAXE_Percent"><i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                            }
+                    </div>
+                    <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
+                        <span class="count_top"><i style="margin-left:2%" class="fa fa-money"></i> Tổng thu(triệu)</span>
+                        <div class="count" id="TongThu" style="margin-left:2%">@ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]</div>
+                        @if (soDong_new > 1)
+                            {
+                                if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) != 0)
+                                {
+                                    double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) * 100;
+                            <span class="count_bottom" id="TongThu_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                                else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) == 0)
+                                {
+                            <span class="count_bottom" id="TongThu_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                                else
+                                {
+                                    double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongThu"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongThu"])) * 100;
+                            <span class="count_bottom" id="TongThu_Percent"><i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                            }
+
+                    </div>
+                    <div class="col-md-3 col-sm-4 col-xs-6 tile_stats_count">
+                        <span class="count_top"><i style="margin-left:2%" class="fa fa-money"></i> Tổng chi(triệu)</span>
+                        <div class="count" id="TongChi" style="margin-left:2%">@ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]</div>
+                        @if (soDong_new > 1)
+                            {
+                                if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"]) > Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) && Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) != 0)
+                                {
+                                    double tile = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) * 100;
+                            <span class="count_bottom" id="TongChi_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>@Math.Round(tile, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                                else if (Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) == 0)
+                                {
+                            <span class="count_bottom" id="TongChi_Percent"><i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i>@ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                                else
+                                {
+                                    double tile1 = ((Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"]) - Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 1]["TongChi"])) / Convert.ToDouble(ViewBag.Data_new.Rows[soDong_new - 2]["TongChi"])) * 100;
+                            <span class="count_bottom" id="TongChi_Percent"><i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>@Math.Round(tile1, 2) %</i> @ViewBag.Data_new.Rows[soDong_new - 2]["Ngay"]/@DateTime.Now.Year</span>
+                                }
+                            }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col-md-12 col-sm-12 col-xs-12" style="text-align:center"><b style="color:#808080; font-size:20px;">Báo cáo doanh thu</b></div>
+    <div class="col-md-12 col-sm-12 col-xs-12" id="charts" style="height: 300px; width: 100%"></div>
+    <div class="clearfix"></div>
+</div>
+    
+<br />
+
+<br />
+<div class="dashboard_graph">
+
+    <div class="row x_title">
+        <div class="col-md-6">
+            <h4>Báo cáo tuần</h4>
+        </div>
+        <div class="col-md-6">
+            <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                <span id="dateChange"></span> <b class="caret"></b>
+            </div>
+        </div>
+    </div>
+</div>
+    <br />
+    <div class="col-md-12 col-sm-12 col-xs-12" id="charts1" style="height: 300px; width: 100%"></div>
+    <br />
+    <div class="col-md-12 col-sm-12 col-xs-12" id="charts3" style="height: 300px; width: 100%;"></div>
+    <div class="clearfix"></div>
+
+
+
+
+<script>
+    //$(document).ready(function () {
+    //    $("#dateChange").change(function () {
+    //        alert("The text has been changed.");
+    //    });
+    //});
+    //phần datetimepicker
+    function init_daterangepicker() {
+        debugger;
+        if (typeof ($.fn.daterangepicker) === 'undefined') { return; }
+        console.log('init_daterangepicker');
+
+        var cb = function (start, end, label) {
+            console.log(start.toISOString(), end.toISOString(), label);
+            //$('#reportrange span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+            $('#dateChange').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+        };
+
+        var optionSet1 = {
+            startDate: moment().subtract(6, 'days'),
+            endDate: moment(),
+            minDate: '01/01/2012',
+            maxDate: '31/12/2100',
+            dateLimit: {
+                days: 60
+            },
+            showDropdowns: true,
+            showWeekNumbers: true,
+            timePicker: false,
+            timePickerIncrement: 1,
+            timePicker12Hour: true,
+            ranges: {
+                //'Hôm nay': [moment(), moment()],
+                //'Hôm qua': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                '7 ngày trước': [moment().subtract(6, 'days'), moment()],
+                '30 ngày trước': [moment().subtract(29, 'days'), moment()],
+                'Tháng này': [moment().startOf('month'), moment().endOf('month')],
+                'Tháng trước': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            },
+            opens: 'left',
+            buttonClasses: ['btn btn-default'],
+            applyClass: 'btn-small btn-primary',
+            cancelClass: 'btn-small',
+            format: 'dd/MM/yyyy',
+            separator: ' to ',
+            locale: {
+                applyLabel: 'Tìm kiếm',
+                cancelLabel: 'Đóng',
+                fromLabel: 'From',
+                toLabel: 'To',
+                customRangeLabel: 'Tùy chọn',
+                daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+                monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                firstDay: 1
+            }
+        };
+
+        //$('#reportrange span').html(moment().subtract(0, 'days').format('DD/MM/YYYY') + ' - ' + moment().format('DD/MM/YYYY'));
+
+        $('#dateChange').html(moment().subtract(6, 'days').format('DD/MM/YYYY') + ' - ' + moment().format('DD/MM/YYYY'));
+        $('#reportrange').daterangepicker(optionSet1, cb);
+        $('#reportrange').on('show.daterangepicker', function () {
+            console.log("show event fired");
+        });
+        $('#reportrange').on('hide.daterangepicker', function (ev, picker) {
+            console.log("hide event fired");
+        });
+        $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
+            //alert(picker.startDate.format('DD/MM/YYYY'));
+            //alert(picker.endDate.format('DD/MM/YYYY'));
+            var fromDate = picker.startDate.format('DD/MM/YYYY');
+            var todate = picker.endDate.format('DD/MM/YYYY');
+            LoadDataWeek(fromDate, todate);
+            console.log("apply event fired, start/end dates are " + picker.startDate.format('DD/MM/YYYY') + " to " + picker.endDate.format('DD/MM/YYYY'));
+        });
+        $('#reportrange').on('cancel.daterangepicker', function (ev, picker) {
+            console.log("cancel event fired");
+        });
+        $('#options1').click(function () {
+            $('#reportrange').data('daterangepicker').setOptions(optionSet1, cb);
+        });
+        $('#options2').click(function () {
+            $('#reportrange').data('daterangepicker').setOptions(optionSet2, cb);
+        });
+        $('#destroy').click(function () {
+            $('#reportrange').data('daterangepicker').remove();
+        });
+
+    }
+
+    function init_daterangepicker_single_call() {
+        debugger;
+        if (typeof ($.fn.daterangepicker) === 'undefined') { return; }
+        console.log('init_daterangepicker_single_call');
+
+        $('#reportrange1').daterangepicker({
+            singleDatePicker: true,
+            singleClasses: "picker_2"
+        }, function (start, end, label) {
+            console.log(start.toISOString(), end.toISOString(), label);
+        });
+    }
+    var test = false;
+    function LoadData(dayFrom) {
+        debugger;
+        var fromdate = $("#reportrange1").val();
+        if (fromdate != dayFrom && fromdate != "Invalid date")
+        {
+            test = true;
+            $.ajax({
+                url: "/Home/Index_New",
+                type: "POST",
+                data: { FromDate: fromdate},
+                success: function (JSONString) {
+                    if (JSONString != null)
+                    {
+                        var theme = {
+                            color: [
+                                '#26B99A', '#34495E', '#BDC3C7', '#3498DB',
+                                '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
+                            ],
+
+                            title: {
+                                itemGap: 8,
+                                textStyle: {
+                                    fontWeight: 'normal',
+                                    color: '#408829'
+                                }
+                            },
+
+                            dataRange: {
+                                color: ['#1f610a', '#97b58d']
+                            },
+
+                            toolbox: {
+                                color: ['#408829', '#408829', '#408829', '#408829']
+                            },
+
+                            tooltip: {
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                axisPointer: {
+                                    type: 'line',
+                                    lineStyle: {
+                                        color: '#408829',
+                                        type: 'dashed'
+                                    },
+                                    crossStyle: {
+                                        color: '#408829'
+                                    },
+                                    shadowStyle: {
+                                        color: 'rgba(200,200,200,0.3)'
+                                    }
+                                }
+                            },
+
+                            dataZoom: {
+                                dataBackgroundColor: '#eee',
+                                fillerColor: 'rgba(64,136,41,0.2)',
+                                handleColor: '#408829'
+                            },
+                            grid: {
+                                borderWidth: 0
+                            },
+
+                            categoryAxis: {
+                                axisLine: {
+                                    lineStyle: {
+                                        color: '#408829'
+                                    }
+                                },
+                                splitLine: {
+                                    lineStyle: {
+                                        color: ['#eee']
+                                    }
+                                }
+                            },
+
+                            valueAxis: {
+                                axisLine: {
+                                    lineStyle: {
+                                        color: '#408829'
+                                    }
+                                },
+                                splitArea: {
+                                    show: true,
+                                    areaStyle: {
+                                        color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
+                                    }
+                                },
+                                splitLine: {
+                                    lineStyle: {
+                                        color: ['#eee']
+                                    }
+                                }
+                            },
+                            timeline: {
+                                lineStyle: {
+                                    color: '#408829'
+                                },
+                                controlStyle: {
+                                    normal: { color: '#408829' },
+                                    emphasis: { color: '#408829' }
+                                }
+                            },
+
+                            k: {
+                                itemStyle: {
+                                    normal: {
+                                        color: '#68a54a',
+                                        color0: '#a9cba2',
+                                        lineStyle: {
+                                            width: 1,
+                                            color: '#408829',
+                                            color0: '#86b379'
+                                        }
+                                    }
+                                }
+                            },
+                            map: {
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            color: '#ddd'
+                                        },
+                                        label: {
+                                            textStyle: {
+                                                color: '#c12e34'
+                                            }
+                                        }
+                                    },
+                                    emphasis: {
+                                        areaStyle: {
+                                            color: '#99d2dd'
+                                        },
+                                        label: {
+                                            textStyle: {
+                                                color: '#c12e34'
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            force: {
+                                itemStyle: {
+                                    normal: {
+                                        linkStyle: {
+                                            strokeColor: '#408829'
+                                        }
+                                    }
+                                }
+                            },
+                            chord: {
+                                padding: 4,
+                                itemStyle: {
+                                    normal: {
+                                        lineStyle: {
+                                            width: 1,
+                                            color: 'rgba(128, 128, 128, 0.5)'
+                                        },
+                                        chordStyle: {
+                                            lineStyle: {
+                                                width: 1,
+                                                color: 'rgba(128, 128, 128, 0.5)'
+                                            }
+                                        }
+                                    },
+                                    emphasis: {
+                                        lineStyle: {
+                                            width: 1,
+                                            color: 'rgba(128, 128, 128, 0.5)'
+                                        },
+                                        chordStyle: {
+                                            lineStyle: {
+                                                width: 1,
+                                                color: 'rgba(128, 128, 128, 0.5)'
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            gauge: {
+                                startAngle: 225,
+                                endAngle: -45,
+                                axisLine: {
+                                    show: true,
+                                    lineStyle: {
+                                        color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
+                                        width: 8
+                                    }
+                                },
+                                axisTick: {
+                                    splitNumber: 10,
+                                    length: 12,
+                                    lineStyle: {
+                                        color: 'auto'
+                                    }
+                                },
+                                axisLabel: {
+                                    textStyle: {
+                                        color: 'auto'
+                                    }
+                                },
+                                splitLine: {
+                                    length: 18,
+                                    lineStyle: {
+                                        color: 'auto'
+                                    }
+                                },
+                                pointer: {
+                                    length: '90%',
+                                    color: 'auto'
+                                },
+                                title: {
+                                    textStyle: {
+                                        color: '#333'
+                                    }
+                                },
+                                detail: {
+                                    textStyle: {
+                                        color: 'auto'
+                                    }
+                                }
+                            },
+                            textStyle: {
+                                fontFamily: 'Arial, Verdana, sans-serif'
+                            }
+                        };
+                        debugger;
+                        var result = JSON.parse(JSONString);
+                        if (result != undefined)
+                        {
+                            $("#bcNgay").html(result[0].Ngay);
+                            $("#LuotDichVu").html(result[0].LuotDichVu);
+                            $("#LuotBAXE").html(result[0].LuotBAXE);
+                            $("#TongThu").html(Math.round(result[0].TongThu).toLocaleString('en-us'));
+                            $("#TongChi").html(Math.round(result[0].TongChi).toLocaleString('en-us'));
+                            //phan tram
+                            if (result[1].LuotDichVu == 0 && result[1].LuotBAXE == 0 && result[1].TongThu == 0 && result[1].TongChi == 0)
+                            {
+                                var dv = '<i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>100%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                var bx = '<i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>100%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                var tt = '<i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>100%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                var tc = '<i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>100%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                $("#LuotDichVu_Percent").html(dv);
+                                $("#LuotBAXE_Percent").html(bx);
+                                $("#TongThu_Percent").html(tt);
+                                $("#TongChi_Percent").html(tc);
+                            }
+                            else
+                            {
+                                if(result[0].LuotDichVu == 0)
+                                {
+                                    var dv = '<i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#LuotDichVu_Percent").html(dv);
+                                }
+                                else if (result[1].LuotDichVu > result[0].LuotDichVu)
+                                {
+                                    var dv_per = ((result[1].LuotDichVu - result[0].LuotDichVu) / result[0].LuotDichVu) * 100;
+                                    var dv = '<i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>' + Math.round(dv_per, 2) + '%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#LuotDichVu_Percent").html(dv);
+                                }
+                                else
+                                {
+                                    var dv_per = ((result[0].LuotDichVu - result[1].LuotDichVu) / result[1].LuotDichVu) * 100;
+                                    var dv = '<i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>' + Math.round(dv_per, 2) + '%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#LuotDichVu_Percent").html(dv);
+                                }
+                                if(result[0].LuotBAXE == 0)
+                                {
+                                    var bx = '<i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#LuotBAXE_Percent").html(bx);
+                                }
+                                else if(result[1].LuotBAXE > result[0].LuotBAXE)
+                                {
+                                    var bx_per = ((result[1].LuotBAXE - result[0].LuotBAXE) / result[0].LuotBAXE) * 100;
+                                    var bx = '<i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>' + Math.round(bx_per, 2) + '%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#LuotBAXE_Percent").html(bx);
+                                }
+                                else
+                                {
+                                    var bx_per = ((result[0].LuotBAXE - result[1].LuotBAXE) / result[1].LuotBAXE) * 100;
+                                    var bx = '<i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>' + Math.round(bx_per, 2) + '%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#LuotBAXE_Percent").html(bx);
+                                }
+                                if(result[0].TongThu == 0)
+                                {
+                                    var tt = '<i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#TongThu_Percent").html(tt);
+                                }
+                                else if(result[1].TongThu > result[0].TongThu)
+                                {
+                                    var tt_per = ((result[1].TongThu - result[0].TongThu) / result[0].TongThu) * 100;
+                                    var tt = '<i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>' + Math.round(tt_per, 2) + '%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#TongThu_Percent").html(tt);
+                                }
+                                else
+                                {
+                                    var tt_per = ((result[0].TongThu - result[1].TongThu) / result[1].TongThu) * 100;
+                                    var tt = '<i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>' + Math.round(tt_per, 2) + '%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#TongThu_Percent").html(tt);
+                                }
+                                if(result[0].TongChi == 0)
+                                {
+                                    var tc = '<i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>100%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#TongChi_Percent").html(tc);
+                                }
+                                else if(result[1].TongChi > result[0].TongChi)
+                                {
+                                    var tc_per = ((result[1].TongChi - result[0].TongChi) / result[0].TongChi) * 100;
+                                    var tc = '<i class="green"><i style="margin-left:2%" class="fa fa-sort-asc"></i>' + Math.round(tc_per, 2) + '%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#TongChi_Percent").html(tc);
+                                }
+                                else
+                                {
+                                    var tc_per = ((result[0].TongChi - result[1].TongChi) / result[1].TongChi) * 100;
+                                    var tc = '<i class="red"><i style="margin-left:2%" class="fa fa-sort-desc"></i>' + Math.round(tc_per, 2) + '%</i> ' + result[0].Ngay + '/'+@DateTime.Now.Year;
+                                    $("#TongChi_Percent").html(tc);
+                                }
+                            }
+                        }
+                        if ($('#charts').length) {
+
+                            var echartPie = echarts.init(document.getElementById('charts'), theme);
+
+                            echartPie.setOption({
+                                tooltip: {
+                                    trigger: 'item',
+                                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                },
+                                legend: {
+                                    x: 'center',
+                                    y: 'bottom',
+                                    data: ['Dịch vụ', 'Bảo hiểm','Cọc dịch vụ','Nợ BH cọc dịch vụ', 'Phụ kiện','Cọc bán xe','Giải ngân bán xe', 'Xe','Còn lại']
+                                },
+                                calculable: true,
+                                series: [{
+                                    name : '',
+                                    type: 'pie',
+                                    radius: '55%',
+                                    center: ['50%', '48%'],
+                                    data: [{
+                                        value: parseFloat(result[0].DoanhThuDichVu),
+                                        name: 'Dịch vụ'
+                                    },{
+                                        value: parseFloat(result[0].DoanhThuBaoHiem),
+                                        name: 'Bảo hiểm'
+                                    },{
+                                        value: parseFloat(result[0].DoanhThuCocDV),
+                                        name: 'Cọc dịch vụ'
+                                    },{
+                                        value: parseFloat(result[0].DoanhThuNBHDV),
+                                        name: 'Nợ BH cọc dịch vụ'
+                                    }, {
+                                        value: parseFloat(result[0].DoanhThuPhuKien),
+                                        name: 'Phụ kiện'
+                                    },{
+                                        value: parseFloat(result[0].DoanhThuCocBX),
+                                        name: 'Cọc bán xe'
+                                    },{
+                                        value: parseFloat(result[0].DoanhThuNNHBX),
+                                        name: 'Giải ngân bán xe'
+                                    },  {
+                                        value: parseFloat(result[0].DoanhThuBAXE),
+                                        name: 'Xe'
+                                    },{
+                                        value: parseFloat(result[0].DoanhThuCacLoaiConLai),
+                                        name: 'Còn lại'
+                                    }]
+                                }]
+                            });
+
+                            var dataStyle = {
+                                normal: {
+                                    label: {
+                                        show: false
+                                    },
+                                    labelLine: {
+                                        show: false
+                                    }
+                                }
+                            };
+
+                            var placeHolderStyle = {
+                                normal: {
+                                    color: 'rgba(0,0,0,0)',
+                                    label: {
+                                        show: false
+                                    },
+                                    labelLine: {
+                                        show: false
+                                    }
+                                },
+                                emphasis: {
+                                    color: 'rgba(0,0,0,0)'
+                                }
+                            };
+
+
+                        }
+                    }
+                }
+            });
+            //phần biểu đồ
+            
+            }
+        else
+        {
+            if (test == true)
+            {
+                window.location.href = "/Home/Index";
+            }
+
+        }
+    }
+
+    function LoadDataWeek(fromDate, todate)
+    {
+        $.ajax({
+            url: "/Home/Index_NewOfWeek",
+            type: "POST",
+            data: { FromDate: fromDate, ToDate: todate },
+            success: function (JSONString) {
+                if (JSONString != null) {
+
+                    var theme = {
+                        color: [
+                            '#26B99A', '#34495E', '#BDC3C7', '#3498DB',
+                            '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
+                        ],
+
+                        title: {
+                            itemGap: 8,
+                            textStyle: {
+                                fontWeight: 'normal',
+                                color: '#408829'
+                            }
+                        },
+
+                        dataRange: {
+                            color: ['#1f610a', '#97b58d']
+                        },
+
+                        toolbox: {
+                            color: ['#408829', '#408829', '#408829', '#408829']
+                        },
+
+                        tooltip: {
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            axisPointer: {
+                                type: 'line',
+                                lineStyle: {
+                                    color: '#408829',
+                                    type: 'dashed'
+                                },
+                                crossStyle: {
+                                    color: '#408829'
+                                },
+                                shadowStyle: {
+                                    color: 'rgba(200,200,200,0.3)'
+                                }
+                            }
+                        },
+
+                        dataZoom: {
+                            dataBackgroundColor: '#eee',
+                            fillerColor: 'rgba(64,136,41,0.2)',
+                            handleColor: '#408829'
+                        },
+                        grid: {
+                            borderWidth: 0
+                        },
+
+                        categoryAxis: {
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#408829'
+                                }
+                            },
+                            splitLine: {
+                                lineStyle: {
+                                    color: ['#eee']
+                                }
+                            }
+                        },
+
+                        valueAxis: {
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#408829'
+                                }
+                            },
+                            splitArea: {
+                                show: true,
+                                areaStyle: {
+                                    color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
+                                }
+                            },
+                            splitLine: {
+                                lineStyle: {
+                                    color: ['#eee']
+                                }
+                            }
+                        },
+                        timeline: {
+                            lineStyle: {
+                                color: '#408829'
+                            },
+                            controlStyle: {
+                                normal: { color: '#408829' },
+                                emphasis: { color: '#408829' }
+                            }
+                        },
+
+                        k: {
+                            itemStyle: {
+                                normal: {
+                                    color: '#68a54a',
+                                    color0: '#a9cba2',
+                                    lineStyle: {
+                                        width: 1,
+                                        color: '#408829',
+                                        color0: '#86b379'
+                                    }
+                                }
+                            }
+                        },
+                        map: {
+                            itemStyle: {
+                                normal: {
+                                    areaStyle: {
+                                        color: '#ddd'
+                                    },
+                                    label: {
+                                        textStyle: {
+                                            color: '#c12e34'
+                                        }
+                                    }
+                                },
+                                emphasis: {
+                                    areaStyle: {
+                                        color: '#99d2dd'
+                                    },
+                                    label: {
+                                        textStyle: {
+                                            color: '#c12e34'
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        force: {
+                            itemStyle: {
+                                normal: {
+                                    linkStyle: {
+                                        strokeColor: '#408829'
+                                    }
+                                }
+                            }
+                        },
+                        chord: {
+                            padding: 4,
+                            itemStyle: {
+                                normal: {
+                                    lineStyle: {
+                                        width: 1,
+                                        color: 'rgba(128, 128, 128, 0.5)'
+                                    },
+                                    chordStyle: {
+                                        lineStyle: {
+                                            width: 1,
+                                            color: 'rgba(128, 128, 128, 0.5)'
+                                        }
+                                    }
+                                },
+                                emphasis: {
+                                    lineStyle: {
+                                        width: 1,
+                                        color: 'rgba(128, 128, 128, 0.5)'
+                                    },
+                                    chordStyle: {
+                                        lineStyle: {
+                                            width: 1,
+                                            color: 'rgba(128, 128, 128, 0.5)'
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        gauge: {
+                            startAngle: 225,
+                            endAngle: -45,
+                            axisLine: {
+                                show: true,
+                                lineStyle: {
+                                    color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
+                                    width: 8
+                                }
+                            },
+                            axisTick: {
+                                splitNumber: 10,
+                                length: 12,
+                                lineStyle: {
+                                    color: 'auto'
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: 'auto'
+                                }
+                            },
+                            splitLine: {
+                                length: 18,
+                                lineStyle: {
+                                    color: 'auto'
+                                }
+                            },
+                            pointer: {
+                                length: '90%',
+                                color: 'auto'
+                            },
+                            title: {
+                                textStyle: {
+                                    color: '#333'
+                                }
+                            },
+                            detail: {
+                                textStyle: {
+                                    color: 'auto'
+                                }
+                            }
+                        },
+                        textStyle: {
+                            fontFamily: 'Arial, Verdana, sans-serif'
+                        }
+                    };
+                    var result = JSON.parse(JSONString);
+                    //phần biểu đồ
+                    //phần ngày
+                    debugger;
+                    var ArrNgay = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrNgay.push(result[i].Ngay);
+                    }
+                    //phần dịch vụ
+                    var ArrDoanhThuDichVu = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuDichVu.push(result[i].DoanhThuDichVu);
+                    }
+                    //phần bảo hiểm
+                    var ArrDoanhThuBaoHiem = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuBaoHiem.push(result[i].DoanhThuBaoHiem);
+                    }
+                    //phần bảo hiểm dịch vụ
+                    var ArrDoanhThuNBHDV = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuNBHDV.push(result[i].DoanhThuNBHDV);
+                    }
+                    //phần cọc dịch vụ
+                    var ArrDoanhThuCocDV = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuCocDV.push(result[i].DoanhThuCocDV);
+                    }
+                    //phần phụ kiện
+                    var ArrDoanhThuPhuKien = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuPhuKien.push(result[i].DoanhThuPhuKien);
+                    }
+                    //phần còn lại
+                    var ArrDoanhThuCacLoaiConLai = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuCacLoaiConLai.push(result[i].DoanhThuCacLoaiConLai);
+                    }
+                    //phần bán xe
+                    var ArrDoanhThuBAXE = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuBAXE.push(result[i].DoanhThuBAXE);
+                    }
+                    //phần cọc bán xe
+                    var ArrDoanhThuCocBX = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuCocBX.push(result[i].DoanhThuCocBX);
+                    }
+                    //phần hoa hồng bán xe
+                    var ArrDoanhThuNNHBX = new Array();
+                    for (var i = 0; i < result.length; i++) {
+                        ArrDoanhThuNNHBX.push(result[i].DoanhThuNNHBX);
+                    }
+                    //hai biểu đồ
+                    if ($('#charts1').length) {
+
+                        var echartLine = echarts.init(document.getElementById('charts1'), theme);
+
+                        echartLine.setOption({
+                            title: {
+                                text: 'Doanh thu (Triệu)'
+                            },
+                            theme: "light2",
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                x: 220,
+                                y: -5,
+                                data: ['Dịch vụ', 'Bảo hiểm', 'Cọc dịch vụ', 'Nợ bảo hiểm DV', 'Phụ kiện', 'Còn lại']
+                            },
+                            calculable: true,
+                            xAxis: [{
+                                type: 'category',
+                                boundaryGap: false,
+                                data: ArrNgay
+                            }],
+                            yAxis: [{
+                                type: 'value'
+                            }],
+                            series: [{
+                                name: 'Dịch vụ',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuDichVu
+                            }, {
+                                name: 'Bảo hiểm',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuBaoHiem
+                            }, {
+                                name: 'Nợ bảo hiểm DV',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuNBHDV
+                            }, {
+                                name: 'Cọc dịch vụ',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuCocDV
+                            }, {
+                                name: 'Phụ kiện',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuPhuKien
+                            }, {
+                                name: 'Còn lại',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuCacLoaiConLai
+                            }]
+                        });
+
+                    }
+                    if ($('#charts3').length) {
+
+                        var echartLine = echarts.init(document.getElementById('charts3'), theme);
+
+                        echartLine.setOption({
+                            title: {
+                                text: 'Bán xe (Triệu)'
+                            },
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            legend: {
+                                x: 220,
+                                y: 0,
+                                data: ['Bán xe', 'Cọc bán xe', 'Giải ngân bán xe']
+                            },
+                            calculable: true,
+                            xAxis: [{
+                                type: 'category',
+                                boundaryGap: false,
+                                data: ArrNgay
+                            }],
+                            yAxis: [{
+                                type: 'value'
+                            }],
+                            series: [{
+                                name: 'Bán xe',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuBAXE
+                            }, {
+                                name: 'Cọc bán xe',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuCocBX
+                            }, {
+                                name: 'Giải ngân bán xe',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        areaStyle: {
+                                            type: 'default'
+                                        }
+                                    }
+                                },
+                                data: ArrDoanhThuNNHBX
+                            }]
+                        });
+
+                    }
+
+                }
+                else {
+                    alert("error");
+                }
+            }
+        });
+    }
+
+    window.onload = function () {
+        init_daterangepicker();
+        init_daterangepicker_single_call();
+        var ngay7 = '@ViewBag.Data.Rows[soDong - 7]["Ngay"]';
+        var ngay6 = '@ViewBag.Data.Rows[soDong - 6]["Ngay"]';
+        var ngay5 = '@ViewBag.Data.Rows[soDong - 5]["Ngay"]';
+        var ngay4 = '@ViewBag.Data.Rows[soDong - 4]["Ngay"]';
+        var ngay3 = '@ViewBag.Data.Rows[soDong - 3]["Ngay"]';
+        var ngay2 = '@ViewBag.Data.Rows[soDong - 2]["Ngay"]';
+        var ngay1 = '@ViewBag.Data.Rows[soDong - 1]["Ngay"]';
+        // data phần Dịch vụ
+        var dv7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuDichVu"].ToString().Replace(",", "."));
+        var dv6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuDichVu"].ToString().Replace(",", "."));
+        var dv5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuDichVu"].ToString().Replace(",", "."));
+        var dv4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuDichVu"].ToString().Replace(",", "."));
+        var dv3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuDichVu"].ToString().Replace(",", "."));
+        var dv2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuDichVu"].ToString().Replace(",", "."));
+        var dv1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuDichVu"].ToString().Replace(",", "."));
+        //Data phần bảo hiểm
+        var bh7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuBaoHiem"].ToString().Replace(",", "."));
+        var bh6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuBaoHiem"].ToString().Replace(",", "."));
+        var bh5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuBaoHiem"].ToString().Replace(",", "."));
+        var bh4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuBaoHiem"].ToString().Replace(",", "."));
+        var bh3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuBaoHiem"].ToString().Replace(",", "."));
+        var bh2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuBaoHiem"].ToString().Replace(",", "."));
+        var bh1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuBaoHiem"].ToString().Replace(",", "."));
+        //phần nợ bản hiểm dịch vụ
+        var   bhdv7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuNBHDV"].ToString().Replace(",", "."));
+        var bhdv6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuNBHDV"].ToString().Replace(",", "."));
+        var bhdv5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuNBHDV"].ToString().Replace(",", "."));
+        var bhdv4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuNBHDV"].ToString().Replace(",", "."));
+        var bhdv3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuNBHDV"].ToString().Replace(",", "."));
+        var bhdv2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuNBHDV"].ToString().Replace(",", "."));
+        var bhdv1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuNBHDV"].ToString().Replace(",", "."));
+        //phần cọc dịch vụ
+        var    cdv7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuCocDV"].ToString().Replace(",", "."));
+        var cdv6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuCocDV"].ToString().Replace(",", "."));
+        var cdv5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuCocDV"].ToString().Replace(",", "."));
+        var cdv4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuCocDV"].ToString().Replace(",", "."));
+        var cdv3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuCocDV"].ToString().Replace(",", "."));
+        var cdv2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuCocDV"].ToString().Replace(",", "."));
+        var cdv1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuCocDV"].ToString().Replace(",", "."));
+        //data phần phụ kiện
+        var pk7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuPhuKien"].ToString().Replace(",", "."));
+        var pk6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuPhuKien"].ToString().Replace(",", "."));
+        var pk5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuPhuKien"].ToString().Replace(",", "."));
+        var pk4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuPhuKien"].ToString().Replace(",", "."));
+        var pk3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuPhuKien"].ToString().Replace(",", "."));
+        var pk2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuPhuKien"].ToString().Replace(",", "."));
+        var pk1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuPhuKien"].ToString().Replace(",", "."));
+
+        //còn lại
+        var   cl7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuCacLoaiConLai"].ToString().Replace(",", "."));
+
+        var cl6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuCacLoaiConLai"].ToString().Replace(",", "."));
+        var cl5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuCacLoaiConLai"].ToString().Replace(",", "."));
+        var cl4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuCacLoaiConLai"].ToString().Replace(",", "."));
+        var cl3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuCacLoaiConLai"].ToString().Replace(",", "."));
+        var cl2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuCacLoaiConLai"].ToString().Replace(",", "."));
+        var cl1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuCacLoaiConLai"].ToString().Replace(",", "."));
+        //data phần bán xe
+        var   bx7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuBAXE"].ToString().Replace(",", "."));
+
+        var bx6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuBAXE"].ToString().Replace(",", "."));
+        var bx5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuBAXE"].ToString().Replace(",", "."));
+        var bx4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuBAXE"].ToString().Replace(",", "."));
+        var bx3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuBAXE"].ToString().Replace(",", "."));
+        var bx2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuBAXE"].ToString().Replace(",", "."));
+        var bx1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuBAXE"].ToString().Replace(",", "."));
+        //phần cọc bán xe
+        var    cbx7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuCocBX"].ToString().Replace(",", "."));
+        var cbx6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuCocBX"].ToString().Replace(",", "."));
+        var cbx5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuCocBX"].ToString().Replace(",", "."));
+        var cbx4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuCocBX"].ToString().Replace(",", "."));
+        var cbx3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuCocBX"].ToString().Replace(",", "."));
+        var cbx2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuCocBX"].ToString().Replace(",", "."));
+        var cbx1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuCocBX"].ToString().Replace(",", "."));
+        //data phần NHH bán xe
+         var   nhhbx7 = parseFloat(@ViewBag.Data.Rows[soDong - 7]["DoanhThuNNHBX"].ToString().Replace(",", "."));
+        var nhhbx6 = parseFloat(@ViewBag.Data.Rows[soDong - 6]["DoanhThuNNHBX"].ToString().Replace(",", "."));
+        var nhhbx5 = parseFloat(@ViewBag.Data.Rows[soDong - 5]["DoanhThuNNHBX"].ToString().Replace(",", "."));
+        var nhhbx4 = parseFloat(@ViewBag.Data.Rows[soDong - 4]["DoanhThuNNHBX"].ToString().Replace(",", "."));
+        var nhhbx3 = parseFloat(@ViewBag.Data.Rows[soDong - 3]["DoanhThuNNHBX"].ToString().Replace(",", "."));
+        var nhhbx2 = parseFloat(@ViewBag.Data.Rows[soDong - 2]["DoanhThuNNHBX"].ToString().Replace(",", "."));
+        var nhhbx1 = parseFloat(@ViewBag.Data.Rows[soDong - 1]["DoanhThuNNHBX"].ToString().Replace(",", "."));
+        function gd(year, month, day) {
+            debugger;
+            return new Date(year, month - 1, day).getTime();
+        }
+
+
+
+        var theme = {
+            color: [
+                '#26B99A', '#34495E', '#BDC3C7', '#3498DB',
+                '#9B59B6', '#8abb6f', '#759c6a', '#bfd3b7'
+            ],
+
+            title: {
+                itemGap: 8,
+                textStyle: {
+                    fontWeight: 'normal',
+                    color: '#408829'
+                }
+            },
+
+            dataRange: {
+                color: ['#1f610a', '#97b58d']
+            },
+
+            toolbox: {
+                color: ['#408829', '#408829', '#408829', '#408829']
+            },
+
+            tooltip: {
+                backgroundColor: 'rgba(0,0,0,0.5)',
+                axisPointer: {
+                    type: 'line',
+                    lineStyle: {
+                        color: '#408829',
+                        type: 'dashed'
+                    },
+                    crossStyle: {
+                        color: '#408829'
+                    },
+                    shadowStyle: {
+                        color: 'rgba(200,200,200,0.3)'
+                    }
+                }
+            },
+
+            dataZoom: {
+                dataBackgroundColor: '#eee',
+                fillerColor: 'rgba(64,136,41,0.2)',
+                handleColor: '#408829'
+            },
+            grid: {
+                borderWidth: 0
+            },
+
+            categoryAxis: {
+                axisLine: {
+                    lineStyle: {
+                        color: '#408829'
+                    }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: ['#eee']
+                    }
+                }
+            },
+
+            valueAxis: {
+                axisLine: {
+                    lineStyle: {
+                        color: '#408829'
+                    }
+                },
+                splitArea: {
+                    show: true,
+                    areaStyle: {
+                        color: ['rgba(250,250,250,0.1)', 'rgba(200,200,200,0.1)']
+                    }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: ['#eee']
+                    }
+                }
+            },
+            timeline: {
+                lineStyle: {
+                    color: '#408829'
+                },
+                controlStyle: {
+                    normal: { color: '#408829' },
+                    emphasis: { color: '#408829' }
+                }
+            },
+
+            k: {
+                itemStyle: {
+                    normal: {
+                        color: '#68a54a',
+                        color0: '#a9cba2',
+                        lineStyle: {
+                            width: 1,
+                            color: '#408829',
+                            color0: '#86b379'
+                        }
+                    }
+                }
+            },
+            map: {
+                itemStyle: {
+                    normal: {
+                        areaStyle: {
+                            color: '#ddd'
+                        },
+                        label: {
+                            textStyle: {
+                                color: '#c12e34'
+                            }
+                        }
+                    },
+                    emphasis: {
+                        areaStyle: {
+                            color: '#99d2dd'
+                        },
+                        label: {
+                            textStyle: {
+                                color: '#c12e34'
+                            }
+                        }
+                    }
+                }
+            },
+            force: {
+                itemStyle: {
+                    normal: {
+                        linkStyle: {
+                            strokeColor: '#408829'
+                        }
+                    }
+                }
+            },
+            chord: {
+                padding: 4,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            width: 1,
+                            color: 'rgba(128, 128, 128, 0.5)'
+                        },
+                        chordStyle: {
+                            lineStyle: {
+                                width: 1,
+                                color: 'rgba(128, 128, 128, 0.5)'
+                            }
+                        }
+                    },
+                    emphasis: {
+                        lineStyle: {
+                            width: 1,
+                            color: 'rgba(128, 128, 128, 0.5)'
+                        },
+                        chordStyle: {
+                            lineStyle: {
+                                width: 1,
+                                color: 'rgba(128, 128, 128, 0.5)'
+                            }
+                        }
+                    }
+                }
+            },
+            gauge: {
+                startAngle: 225,
+                endAngle: -45,
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: [[0.2, '#86b379'], [0.8, '#68a54a'], [1, '#408829']],
+                        width: 8
+                    }
+                },
+                axisTick: {
+                    splitNumber: 10,
+                    length: 12,
+                    lineStyle: {
+                        color: 'auto'
+                    }
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: 'auto'
+                    }
+                },
+                splitLine: {
+                    length: 18,
+                    lineStyle: {
+                        color: 'auto'
+                    }
+                },
+                pointer: {
+                    length: '90%',
+                    color: 'auto'
+                },
+                title: {
+                    textStyle: {
+                        color: '#333'
+                    }
+                },
+                detail: {
+                    textStyle: {
+                        color: 'auto'
+                    }
+                }
+            },
+            textStyle: {
+                fontFamily: 'Arial, Verdana, sans-serif'
+            }
+        };
+        if ($('#charts1').length) {
+
+            var echartLine = echarts.init(document.getElementById('charts1'), theme);
+
+			  echartLine.setOption({
+				title: {
+				  text: 'Doanh thu (Triệu)'
+				},
+				theme: "light2",
+				tooltip: {
+				  trigger: 'axis'
+				},
+				legend: {
+				  x: 220,
+				  y: -5,
+				  data: ['Dịch vụ', 'Bảo hiểm', 'Cọc dịch vụ', 'Nợ bảo hiểm DV', 'Phụ kiện', 'Còn lại']
+				},
+				calculable: true,
+				xAxis: [{
+				  type: 'category',
+				  boundaryGap: false,
+				  data: [ngay7, ngay6, ngay5, ngay4, ngay3, ngay2, ngay1]
+				}],
+				yAxis: [{
+				    type: 'value'
+				}],
+				series: [{
+				  name: 'Dịch vụ',
+				  type: 'line',
+				  smooth: true,
+				  itemStyle: {
+					normal: {
+					  areaStyle: {
+						type: 'default'
+					  }
+					}
+				  },
+				  data: [dv7, dv6, dv5, dv4, dv3, dv2, dv1]
+				}, {
+				  name: 'Bảo hiểm',
+				  type: 'line',
+				  smooth: true,
+				  itemStyle: {
+					normal: {
+					  areaStyle: {
+						type: 'default'
+					  }
+					}
+				  },
+				  data: [bh7, bh6, bh5, bh4, bh3, bh2, bh1]
+				}, {
+				    name: 'Nợ bảo hiểm DV',
+				    type: 'line',
+				    smooth: true,
+				    itemStyle: {
+				        normal: {
+				            areaStyle: {
+				                type: 'default'
+				            }
+				        }
+				    },
+				    data: [bhdv7, bhdv6, bhdv5, bhdv4, bhdv3, bhdv2, bhdv1]
+				}, {
+				    name: 'Cọc dịch vụ',
+				    type: 'line',
+				    smooth: true,
+				    itemStyle: {
+				        normal: {
+				            areaStyle: {
+				                type: 'default'
+				            }
+				        }
+				    },
+				    data: [cdv7, cdv6, cdv5, cdv4, cdv3, cdv2, cdv1]
+				}, {
+				  name: 'Phụ kiện',
+				  type: 'line',
+				  smooth: true,
+				  itemStyle: {
+					normal: {
+					  areaStyle: {
+						type: 'default'
+					  }
+					}
+				  },
+				  data: [pk7, pk6, pk5, pk4, pk3, pk2, pk1]
+				}, {
+				    name: 'Còn lại',
+				    type: 'line',
+				    smooth: true,
+				    itemStyle: {
+				        normal: {
+				            areaStyle: {
+				                type: 'default'
+				            }
+				        }
+				    },
+				    data: [cl7, cl6, cl5, cl4, cl3, cl2, cl1]
+				}]
+			  });
+
+		}
+        $("div.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+        //phần biểu đồ bán xe
+        if ($('#charts3').length) {
+
+            var echartLine = echarts.init(document.getElementById('charts3'), theme);
+
+            echartLine.setOption({
+                title: {
+                    text: 'Bán xe (Triệu)'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    x: 220,
+                    y: 0,
+                    data: ['Bán xe','Cọc bán xe','Giải ngân bán xe']
+                },
+                calculable: true,
+                xAxis: [{
+                    type: 'category',
+                    boundaryGap: false,
+                    data: [ngay7, ngay6, ngay5, ngay4, ngay3, ngay2, ngay1]
+                }],
+                yAxis: [{
+                    type: 'value'
+                }],
+                series: [{
+                    name: 'Bán xe',
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default'
+                            }
+                        }
+                    },
+                    data: [bx7, bx6, bx5, bx4, bx3, bx2, bx1]
+                }, {
+                    name: 'Cọc bán xe',
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default'
+                            }
+                        }
+                    },
+                    data: [cbx7, cbx6, cbx5, cbx4, cbx3, cbx2, cbx1]
+                },{
+                    name: 'Giải ngân bán xe',
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: {
+                        normal: {
+                            areaStyle: {
+                                type: 'default'
+                            }
+                        }
+                    },
+                    data: [nhhbx7, nhhbx6, nhhbx5, nhhbx4, nhhbx3, nhhbx2, nhhbx1]
+                }]
+            });
+
+        }
+        //phần charts tròn
+
+        if ($('#charts').length) {
+
+            var echartPie = echarts.init(document.getElementById('charts'), theme);
+
+            echartPie.setOption({
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    x: 'center',
+                    y: 'bottom',
+                    data: ['Dịch vụ', 'Bảo hiểm','Cọc dịch vụ','Nợ BH cọc dịch vụ', 'Phụ kiện','Cọc bán xe','Giải ngân bán xe', 'Xe','Còn lại']
+                },
+                calculable: true,
+                series: [{
+                    name : '',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '48%'],
+                    data: [{
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuDichVu"].ToString().Replace(",", ".")),
+                        name: 'Dịch vụ'
+                    },{
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuBaoHiem"].ToString().Replace(",", ".")),
+                        name: 'Bảo hiểm'
+                    },{
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuCocDV"].ToString().Replace(",", ".")),
+                        name: 'Cọc dịch vụ'
+                    },{
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuNBHDV"].ToString().Replace(",", ".")),
+                        name: 'Nợ BH cọc dịch vụ'
+                    }, {
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuPhuKien"].ToString().Replace(",", ".")),
+                        name: 'Phụ kiện'
+                    },{
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuCocBX"].ToString().Replace(",", ".")),
+                        name: 'Cọc bán xe'
+                    },{
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuNNHBX"].ToString().Replace(",", ".")),
+                        name: 'Giải ngân bán xe'
+                    },  {
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuBAXE"].ToString().Replace(",", ".")),
+                        name: 'Xe'
+                    },{
+                        value: parseFloat(@ViewBag.Data_new.Rows[soDong_new - 1]["DoanhThuCacLoaiConLai"].ToString().Replace(",", ".")),
+                        name: 'Còn lại'
+                    }]
+                }]
+            });
+
+            var dataStyle = {
+                normal: {
+                    label: {
+                        show: false
+                    },
+                    labelLine: {
+                        show: false
+                    }
+                }
+            };
+
+            var placeHolderStyle = {
+                normal: {
+                    color: 'rgba(0,0,0,0)',
+                    label: {
+                        show: false
+                    },
+                    labelLine: {
+                        show: false
+                    }
+                },
+                emphasis: {
+                    color: 'rgba(0,0,0,0)'
+                }
+            };
+
+
+        }
+
+    }
+
+
+</script>
+@section scripts{
+    <script src="~/Scripts/echarts.min.js"></script>
+    <script src="~/Scripts/date.js"></script>
+    <script src="~/Scripts/daterangepicker.js"></script>
+    @*<script src="~/Scripts/moment.min.js"></script>*@
+}

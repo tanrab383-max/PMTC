@@ -1,0 +1,44 @@
+﻿@model TNK.Model.SoChiModel
+@{
+    var Users = (List<TNK.Core.Domain.User>)ViewData["User"];
+
+    if (ViewData["Item"] is TNK.Core.Domain.View.ViewNoDaTra)
+    {
+        var item = (TNK.Core.Domain.View.ViewNoDaTra)ViewData["Item"];
+    }
+    else
+    {
+        var item = (TNK.Core.Domain.PhieuChi)ViewData["Item"];
+    }
+}
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="form-group">
+        <label>Người duyệt</label>@*"item.KeToanTruong"*@
+        @Html.Editor("item.NguoiDuyet",new { htmlAttributes = new { @class = "form-control input-sm", @id = "auto_complete" } })
+    </div>
+</div>
+<div class="col-md-3 col-sm-3 col-xs-12">
+    <div class="form-group">
+        <label>Kế toán trưởng</label>@*"item.KeToanTruong"*@
+        @Html.DropDownList("item.KeToanTruong", Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth"})
+    </div>
+</div>
+<div class="col-md-3 col-sm-3 col-xs-12">
+    <div class="form-group">
+        <label>Người lập phiếu</label>
+        @Html.DropDownList("item.NguoiLapPhieu", Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth"})
+    </div>
+</div>
+<div class="col-md-3 col-sm-3 col-xs-12">
+    <div class="form-group">
+        <label>Người chi tiền</label>
+        @Html.DropDownList("item.NguoiNopTien", Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth"})
+    </div>
+</div>
+<div class="col-md-3 col-sm-3 col-xs-12">
+    <div class="form-group">
+        <label>Người nhận tiền (*)</label>
+        @Html.DropDownList("item.NguoiThuTien", Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth"})
+    </div>
+</div>
+

@@ -1,0 +1,120 @@
+﻿@{
+    var Users = ViewBag.Users;
+    var List = ViewBag.List;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Người tác động</label>
+                            <select class="select2" name="userid" style="height:29px">
+                                <option value="00000000-0000-0000-0000-000000000000">Chọn</option>
+                                @foreach (var user in Users)
+                                {
+                                    <option value="@user.UserId">@user.UserName</option>
+                                    if (user.UserId == ViewBag.UserId)
+                                    {
+                                        <option value="@user.UserId" selected="selected">@user.UserName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Mã phiếu,SessionId,TableName" placeholder="Mã phiếu,SessionId,TableName" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                        </div>
+                    </div>
+                </form>
+                <div class="x_content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>STT</th>
+                                    <th>SessionId</th>
+                                    <th>Người tác động</th>
+                                    <th>Ngày tác động</th>
+                                    <th>Table</th>
+                                    <th>Mã phiếu</th>
+                                    <th>Hành động</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    int i = 1;
+                                    if (List.Rows.Count > 0)
+                                    {
+                                        for (var j = 0; j < List.Rows.Count; j++)
+                                        {
+                                            <tr>
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                <td>@List.Rows[j]["SessionId"]</td>
+                                                <td>@List.Rows[j]["UserName"]</td>
+                                                <td>@List.Rows[j]["ChangedDate"]</td>
+                                                <td>@List.Rows[j]["TableName"]</td>
+                                                <td>@List.Rows[j]["MaPhieu"]</td>
+                                                <td>@List.Rows[j]["Action"]</td>
+                                                <td>
+                                                    <img src="~/assests/images/database.png" style="width:15px;height:15px;" onclick="window.open('/Log/ChiTietLichSuDuLieu?Id=@List.Rows[j]["Id"]&SessionId=@List.Rows[j]["SessionId"]&Table=@List.Rows[j]["TableName"]','newwindow','width=1000, height=900, left=200');return false;" target="_blank" title="Lịch sử dữ liệu" />
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <div class="right">
+                            @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        $(".date").datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+    </script>
+}
+
+

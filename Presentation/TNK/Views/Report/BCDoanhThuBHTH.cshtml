@@ -1,0 +1,207 @@
+﻿@using System.Data;
+<div class="x_content">
+    <div id="BCDoanhThuBHTH" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='18' class="tile">DOANH THU BẢO HIỂM THU HỘ</th>
+                </tr>
+                <tr>
+                    <th colspan='18' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">Ngày Thu</th>
+                    <th class="column-title" rowspan="2">Mã Phiếu Thu</th>
+                    <th class="column-title" rowspan="2">Tên Khách Hàng</th>
+                    <th class="column-title" rowspan="2">Số Hợp Đồng</th>
+                    <th class="column-title" rowspan="2">Biển Số</th>
+                    <th class="column-title" rowspan="2">Chứng Từ Thu</th>
+                    <th class="column-title" rowspan="2">Công Ty Bảo Hiểm</th>
+                    <th class="column-title" colspan="3">Giá Bán</th>
+                    <th class="column-title" rowspan="2">Cộng</th>
+                    <th class="column-title" rowspan="2">Giảm Giá</th>
+                    <th class="column-title" colspan="3">Thực Thu</th>
+                    <th class="column-title" rowspan="2">Tiền trả BH</th>
+                    <th class="column-title" rowspan="2">Hoa hồng</th>
+                </tr>
+                <tr>
+                    <th>Chưa xác định</th>
+                    <th>Tái tục</th>
+                    <th>Ký mới</th>
+                    <th>CHUYỂN CỌC (XE/DV)</th>
+                    <th>TM/NH</th>
+                    <th>Tổng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background-color:lightblue">
+                    <td colspan="18"><b>A - KHÁCH LẺ</b></td>
+                </tr>
+                @{
+                    double TongGiaBan = 0, TongThucThu = 0, TongGiamGia = 0, TongGiaBan_ChuaXacDinh = 0, TongGiaBan_TaiTuc = 0 ,
+                        TongGiaBan_KyMoi = 0, TongTienTraBH = 0, TongHoaHong = 0, TongChuyenCoc = 0,
+                        TongTM_NH = 0;
+                }
+                @if (ViewBag.dtbKL != null)
+                {
+
+                    int intCount = 0;
+                    foreach (DataRow row in (ViewBag.dtbKL as DataTable).Rows)
+                    {
+                        TongGiaBan += row["GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan"]);
+                        TongGiamGia += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                        TongThucThu += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                        TongGiaBan_ChuaXacDinh += row["GiaBan_ChuaXacDinh"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan_ChuaXacDinh"]);
+                        TongGiaBan_TaiTuc += row["GiaBan_TaiTuc"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan_TaiTuc"]);
+                        TongGiaBan_KyMoi += row["GiaBan_KyMoi"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan_KyMoi"]);
+                        TongTienTraBH += row["TienTraBH"].ToString() == "" ? 0 : Convert.ToDouble(row["TienTraBH"]);
+                        TongHoaHong += row["HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["HoaHong"]);
+                        TongChuyenCoc += row["ChuyenCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["ChuyenCoc"]);
+                        TongTM_NH += row["TM_NH"].ToString() == "" ? 0 : Convert.ToDouble(row["TM_NH"]);
+                    <tr class="even pointer">
+                        <td>@(++intCount)</td>
+                        <td>@row["NgayThu"]</td>
+                        <td>@row["MaPhieuThu"].ToString()</td>
+                        <td>@row["Hoten"].ToString()</td>
+                        <td style="text-align:left">@row["SoHopDong"].ToString()</td>
+                        <td>@row["BienSo"].ToString()</td>
+                        <td style="text-align:left">@row["SoChungTu"]</td>
+                        <td>@row["TenDoiTac"].ToString()</td>
+                        <td class="number">@row["GiaBan_ChuaXacDinh"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["GiaBan_TaiTuc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["GiaBan_KyMoi"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["GiaBan"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["GiamGia"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["ChuyenCoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["TM_NH"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["TongCong"].ToString()</td>
+                        <td class="number">@row["TienTraBH"].ToString()</td>
+                        <td class="number">@row["HoaHong"].ToString()</td>
+                    </tr>
+                    }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="8"><b>TỔNG :</b></td>
+                    <td class="number">@TongGiaBan_ChuaXacDinh.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongGiaBan_TaiTuc.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongGiaBan_KyMoi.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongGiaBan.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongGiamGia.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongChuyenCoc.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongTM_NH.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongThucThu.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongTienTraBH.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongHoaHong.ToString().Replace(",", ".")</td>
+                </tr>
+                }
+
+                <tr style="background-color:lightblue">
+                    <td colspan="18"><b>B - KHUYẾN MÃI</b></td>
+                </tr>
+                @{
+                    double TongGiaBanKM = 0, TongThucThuKM = 0, TongGiamGiaKM = 0, TongGiaBan_ChuaXacDinhKM = 0,
+                        TongGiaBan_TaiTucKM = 0, TongGiaBan_KyMoiKM = 0, TongTienTraBHKM = 0, TongHoaHongKM = 0, TongChuyenCocKM = 0, TongTM_NHKM = 0;
+                }
+                @if (ViewBag.dtbKM != null)
+                {
+                    int intCount = 0;
+                    foreach (DataRow row in (ViewBag.dtbKM as DataTable).Rows)
+                    {
+                        TongGiaBanKM += row["GiaBan"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan"]);
+                        TongGiamGiaKM += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                        TongThucThuKM += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                        TongGiaBan_ChuaXacDinhKM += row["GiaBan_ChuaXacDinh"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan_ChuaXacDinh"]);
+                        TongGiaBan_TaiTucKM += row["GiaBan_TaiTuc"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan_TaiTuc"]);
+                        TongGiaBan_KyMoiKM += row["GiaBan_KyMoi"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBan_KyMoi"]);
+                        TongTienTraBHKM += row["TienTraBH"].ToString() == "" ? 0 : Convert.ToDouble(row["TienTraBH"]);
+                        TongHoaHongKM += row["HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["HoaHong"]);
+                        TongChuyenCocKM += row["ChuyenCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["ChuyenCoc"]);
+                        TongTM_NHKM += row["TM_NH"].ToString() == "" ? 0 : Convert.ToDouble(row["TM_NH"]);
+                    <tr class="even pointer">
+                        <td>@(++intCount)</td>
+                        <td>@row["NgayThu"]</td>
+                        <td>@row["MaPhieuThu"].ToString()</td>
+                        <td>@row["Hoten"].ToString()</td>
+                        <td style="text-align:left">@row["SoHopDong"].ToString()</td>
+                        <td>@row["BienSo"].ToString()</td>
+                        <td style="text-align:left">@row["SoChungTu"]</td>
+                        <td>@row["TenDoiTac"].ToString()</td>
+                        <td class="number">@row["GiaBan_ChuaXacDinh"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["GiaBan_TaiTuc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["GiaBan_KyMoi"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["GiaBan"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["GiamGia"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["ChuyenCoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["TM_NH"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["TongCong"].ToString()</td>
+                        <td class="number">@row["TienTraBH"].ToString()</td>
+                        <td class="number">@row["HoaHong"].ToString()</td>
+                    </tr>
+                    }
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="8"><b>TỔNG :</b></td>
+                        <td class="number">@TongGiaBan_ChuaXacDinhKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongGiaBan_TaiTucKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongGiaBan_KyMoiKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongGiaBanKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongGiamGiaKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongChuyenCocKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongTM_NHKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongThucThuKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongTienTraBHKM.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongHoaHongKM.ToString().Replace(",", ".")</td>
+                    </tr>
+                }
+                @{
+                    double TongGiaBanTT = 0, TongThucThuTT = 0, TongGiamGiaTT = 0,
+                        TongGiaBan_ChuaXacDinhTT = 0, TongGiaBan_TaiTucTT = 0, TongGiaBan_KyMoiTT = 0,
+                        TongTienTraBHTT = 0, TongHoaHongTT = 0, TongChuyenCocTT = 0,
+                        TongTM_NHTT = 0;
+
+                    TongGiaBanTT = TongGiaBan + TongGiaBanKM;
+                    TongThucThuTT = TongThucThu + TongThucThuKM;
+                    TongGiamGiaTT = TongGiamGia + TongGiamGiaKM;
+                    TongGiaBan_ChuaXacDinhTT = TongGiaBan_ChuaXacDinh + TongGiaBan_ChuaXacDinhKM;
+                    TongGiaBan_TaiTucTT = TongGiaBan_TaiTuc + TongGiaBan_TaiTucKM;
+                    TongGiaBan_KyMoiTT = TongGiaBan_KyMoi + TongGiaBan_KyMoiKM;
+                    TongTienTraBHTT = TongTienTraBH + TongTienTraBHKM;
+                    TongHoaHongTT = TongHoaHong + TongHoaHongKM;
+                    TongChuyenCocTT = TongChuyenCoc + TongChuyenCocKM;
+                    TongTM_NHTT = TongTM_NH + TongTM_NHKM;
+                }
+                <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                    <td colspan="8"><b>TỔNG CỘNG:</b></td>
+                    <td class="number">@TongGiaBan_ChuaXacDinhTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongGiaBan_TaiTucTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongGiaBan_KyMoiTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongGiaBanTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongGiamGiaTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongChuyenCocTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongTM_NHTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongThucThuTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongTienTraBHTT.ToString().Replace(",", ".")</td>
+                    <td class="number">@TongHoaHongTT.ToString().Replace(",", ".")</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

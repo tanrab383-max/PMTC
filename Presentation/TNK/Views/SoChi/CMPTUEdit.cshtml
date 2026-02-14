@@ -1,0 +1,425 @@
+﻿@model TNK.Model.SoChiModel
+@{
+    var item = Model.Item;
+    ViewBag.Title = "Mua phụ tùng";
+    double totalinput = 0;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b>Thông tin</b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="form-data" method="post" class="form-horizontal form-label-left FormPhieuChi">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(x => Model.Item.MaPhieuChi)
+                    @Html.HiddenFor(x => Model.Item.CyberId)
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số chứng từ (*)</label>
+                                @Html.HiddenFor(x => item.MaLoaiPhieu, new { htmlAttributes = new { @class = "form-control input-sm maPhieuNo" }, @id = "maLoaiPhieu" })
+                                @Html.EditorFor(x => Model.Item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "10", @id = "SoChungTu" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày chi</label>
+                                @Html.EditorFor(x => Model.Item.NgayChi, new { htmlAttributes = new { @class = "form-control input-sm date1", @Value = item.NgayChi.ToString("dd/MM/yyyy") } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày hạch toán</label>
+                                @Html.EditorFor(x => Model.Item.NgayHachToan, new { htmlAttributes = new { @class = "form-control input-sm date1", @Value = item.NgayHachToan.Value.ToString("dd/MM/yyyy") } })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Nhà cung cấp (*)</label>
+                                @Html.DropDownListFor(x => item.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth", @id = "NCC", @onchange = "DanhSachCoc(this)" })
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Tổng tiền (*)</label>
+                                @Html.EditorFor(x => Model.Item.TongCong, new { htmlAttributes = new { @class = "form-control input-sm number", @onchange = "TinhConLai()" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày nhập kho</label>
+                                @Html.EditorFor(x => Model.Item.NgayNhapKho, new { htmlAttributes = new { @class = "form-control input-sm date1", @Value = item.NgayNhapKho.Value.ToString("dd/MM/yyyy") } })
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Nội dung</label>
+                                @Html.TextAreaFor(x => Model.Item.NoiDung, new { @class = "form-control input-sm" })
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group table-responsive">
+                                <label>Cọc: </label>
+                                <table class="table table-striped jambo_table bulk_action" id="Coc">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã Phiếu Cọc</th>
+                                            <th>Tổng cọc</th>
+                                            <th>Số tiền sử dụng</th>
+                                            <th>Còn lại</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="DS_ChiCoc">
+                                        @*phan append*@
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>Tổng cộng: </td>
+                                            <td class="number TotalCoc" id="TongCongThanhToanCoc"></td>
+                                            <td class="number TotalCoc" name="CTPC.SoTienThanhToan" id="TongSoTienChi"></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group table-responsive">
+                                <label>Nhập kho:</label>
+                                <table class="table table-striped jambo_table bulk_action">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:50%">Tên kho</th>
+                                            <th style="width:30%">Số tiền</th>
+                                            <th style="width:20%">Số lượng</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="KM">
+                                        @for (int i = 0; i < Model.ListCTNKPT.Count; i++)
+                                        {
+                                            var itemCTNKPT = Model.ListCTNKPT[i];
+                                            totalinput += itemCTNKPT.SoTien;
+                                            <tr id="trKM">
+                                                <td>
+                                                    <input type="hidden" value="@itemCTNKPT.Id" name="ListCTNKPT[@i].Id" />
+                                                    <select class="form-control input-sm" name="ListCTNKPT[@i].MaKho" required>
+                                                        <option value="">Chọn</option>
+                                                        @foreach (var j in Model.KhoPhuTung)
+                                                        {
+                                                            <option value="@j.NguonKhuyenMai" @(itemCTNKPT.MaKho == j.NguonKhuyenMai ? "selected" : "")>@j.NguonKhuyenMai</option>
+                                                        }
+                                                    </select>
+                                                </td>
+
+                                                <td>
+                                                    <input type="text" name="ListCTNKPT[@i].SoTien" value="@itemCTNKPT.SoTien" onchange="CalNhapKho()" class="form-control input-sm number" readonly id="TienNhapKho" />
+                                                    <input type="hidden" class="IsDeleted" name="Model.ListCTNKPT[i].IsDeleted" value="false" />
+                                                </td>
+                                                <td>
+                                                    <input class="form-control input-sm" type="text" name="ListCTNKPT[@i].SoLuong" value="@itemCTNKPT.SoLuong" id="SoLuong" />
+                                                </td>
+                                                @*<td>
+                                        <i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i>
+                                    </td>*@
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td>Tổng cộng: </td>
+                                            <td class="TotalInput">@totalinput</td>
+                                            @*<td colspan="3" class="right"><i class="fa fa-plus addKM" style="cursor:pointer"></i></td>*@
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            @Html.Partial("~/Views/Shared/_ThanhToanChi.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT }, { "HTTT", Model.HTTT } })
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Còn lại</label>
+                                @Html.EditorFor(x => Model.Item.ConLai, new { htmlAttributes = new { @class = "number input-100 form-control input-sm", @readonly = "" } })
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                            </div>
+                        </div>
+                        @Html.Partial("~/Views/Common/UserComfirm.cshtml", null, new ViewDataDictionary { { "User", Model.Users }, { "Item", item } })
+                    </div>
+                    <div class="ln_solid"></div>
+                    @if (ViewBag.a != "View")
+                    {
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <input type="submit" value="Save" onclick="CalNhapKho()" class="btn btn-success" />
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <a href="/SoChi/Index" class="Back">Quay lại</a>
+                    }
+                    <div class="ln_solid"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@*<a href="@ViewBag.LinkIndex" class="Back">Quay lại</a>*@
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/CMPTUCommon.js"></script>
+    <script>
+        $(document).ready(function () {
+            DanhSachCoc($("#NCC").val());
+            var Mang = new Array();
+            $(function () {
+                $.ajax({
+                    url: "/SoChi/AutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            Mang.push(data[i]);
+                        }
+                        return Mang;
+                    }
+                });
+                $("#auto_complete").autocomplete({
+                    source: Mang
+                });
+            });
+        });
+        $(document).on("change", ".number", function () {
+            var val = $(this).val();
+            
+            if (val != "") {
+                val = val.split(",").join("");
+                val = parseFloat(val);
+                $(this).val(val.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+        });
+        var trKM = $("#trKM").html();
+
+
+        function TinhConLai() {
+            debugger;
+            var total = parseInt($(".Total").text().split(",").join(""));
+            var price = $("#Item_TongCong").val() == "" ? 0 : parseInt($("#Item_TongCong").val().split(",").join(""));
+            //TongSoTienChi
+            var TongSoTienChi = $("#TongSoTienChi").val() == "" ? 0 : parseInt($("#TongSoTienChi").val().split(",").join(""));
+            var rest = price - TongSoTienChi;
+            rest = rest - total;
+            $("#Item_TongCong").val(price.toLocaleString('en-us'));
+            $("#Item_ConLai").val(rest.toLocaleString('en-us'));
+            //tiền nhập kho
+            $("#TienNhapKho").val(price.toLocaleString('en-us'));
+            $("#TienNhapKho").html(price.toLocaleString('en-us'));
+            //tính tổng tiền nhập kho
+            CalNhapKho();
+        }
+
+        $(".TotalInput").html(parseInt($(".TotalInput").html()).toLocaleString('en-us'));
+        i = '@Model.CTPT.Count';
+
+        function CalNhapKho() {
+            setTimeout(function () {
+                let b = $("#KM");
+                let total = 0;
+                $(b).closest("table").find("input.number").map(function (key, val) {
+                    total += parseInt($(val).val().split(",").join(""));
+                    $(b).closest("table").find(".TotalInput").html(total.toLocaleString('en-us'));
+                });
+                 
+            }, 100);
+        }
+
+        
+
+        $(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if(Model.CTPT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+        iCtptnk = '@Model.ListCTNKPT.Count';
+        $(".addKM").click(function () {
+
+            var html = trKM.split("ListCTNKPT[0]").join("ListCTNKPT[" + iCtptnk + "]");
+
+            @if(Model.ListCTNKPT.Count>0)
+           {
+            @Html.Raw("html=html.replace('" + Model.ListCTNKPT[0].Id+"','');")
+            @Html.Raw("html=html.replace('" + Model.ListCTNKPT[0].MaKho+"','');")
+            @Html.Raw("html=html.replace('selected','');")
+            @Html.Raw("html=html.replace('" + Model.ListCTNKPT[0].SoTien + "','');")
+
+            }
+            // alert(3);
+           // alert(html);
+            $("#KM").append("<tr>" + html + "</tr>");
+            iCtptnk++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+        function Remove(a) {
+            debugger;
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.hide();
+            var total = 0;
+
+            $("#tbody").find("tr").map(function (key, val) {
+                if ($(val).is(":visible")) {
+                    var isDeleted = $(val).find(".IsDeleted").val();
+                    if (isDeleted != "true") {
+                        var sotien = parseInt($(val).find(".number").val().split(",").join(""));
+                        if (isNaN(sotien))
+                            sotien = 0;
+                        total += sotien;
+                    }
+                }
+            });
+            if (isNaN(total))
+                total = 0;
+            $("#TongCongThanhToan").html(total.toLocaleString("en-us"));
+            $("#TongCongThanhToan").val(total.toLocaleString("en-us"));
+            TinhConLai();
+        }
+        var a;
+        $(document).on("click", ".chkTinhTrang", function () {
+            a = this;
+            $(this).closest("td").children(".TinhTrang").val($(this).is(":checked"));
+        })
+
+        function CalThanhToan1(a) {
+            debugger;
+            setTimeout(function () {
+                var total = 0;
+                $("#DS_ChiCoc").find("tr").map(function (key, val) {
+                    let i = parseInt($(val).find(".number1").val().split(",").join(""));
+                    if (!isNaN(i))
+                        total += i;
+                });
+
+                $("#Coc").find("#TongSoTienChi").html(total.toLocaleString('en-us'));
+                //Cal();
+            }, 100);
+        }
+        var dem = 0;
+        var maPhieuChi = '@item.MaPhieuChi';
+        function DanhSachCoc(ID_NCC) {
+            debugger;
+            ID_NCC = $("#NCC").val();
+            $.ajax({
+                data: { maPhieuChi : maPhieuChi, Id: ID_NCC },
+                url: "/SoChi/DanhSachCocMUPT",
+                type: "POST",
+                dataType: "json",
+                success: function (result) {
+                    if (result != null) {
+                        dem = result.length;
+                        var tongcong = 0, sotienchi = 0;
+                        $("#DS_ChiCoc").empty();
+                        var html = "";
+                        for (var i = 0; i < result.length; i++) {
+                            //var ConLai = result[i].ConLai + result[i].SoTienChi;
+                            html += "<tr>";
+                            html += "<td><input type='text'  class='form-control input-sm number' name='CTPC[" + i + "].SoThamChieu'  value='" + result[i].MaPhieuChi + "' readonly /></td>";
+                            html += "<td><input type='text'  class='form-control input-sm SoTienCoTheSuDung number' value='" + result[i].TongCong.toLocaleString('en-us') + "' readonly /></td>";
+                            html += "<td><input type='text' class='form-control input-sm number' name='CTPC[" + i + "].SoTienThanhToan' id='CTPC[" + i + "]' value='" + result[i].SoTienChi.toLocaleString('en-us') + "' maxlength='15' onchange='change(this)'  /></td>";
+                            html += "<td><input type='text' class='form-control input-sm SoTienConLai number' value='" + result[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                            html += "</tr>";
+                            tongcong += result[i].TongCong;
+                            sotienchi += result[i].SoTienChi;
+                        }
+                        $("#DS_ChiCoc").append(html);
+                        $("#TongCongThanhToanCoc").html(tongcong.toLocaleString("en-us"));
+                        $("#TongSoTienChi").html(sotienchi.toLocaleString("en-us"));
+                        $("#TongSoTienChi").val(sotienchi.toLocaleString("en-us"));
+                    }
+                    TinhConLai();
+                }
+            });
+        }
+        function change(a) {
+            debugger;
+            var num = $(a).val().split(",").join("");
+            var tot = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+            var soTienConLai = tot - num;
+            if (soTienConLai < 0) {
+                toastWarning("Vui lòng không nhập quá số tiền có thể sử dụng");
+                $(a).html(tot.toLocaleString("en-us"));
+                $(a).val(tot.toLocaleString("en-us"));
+            }
+                // $(a).closest("tr").find(".SoTienConLai").val((tot - num*1000).toLocaleString('en-us'));
+            else {
+                $(a).closest("tr").find(".SoTienConLai").val((tot - num).toLocaleString('en-us'));
+            }
+            var TongTienSuDung = 0;
+            if (dem > 0) {
+                for (var i = 0 ; i < dem; i++) {
+                    var tong = $("#CTPC\\[" + i + "\\]").val().split(",").join("");
+                    if (tong == "")
+                        tong = 0;
+                    TongTienSuDung += parseInt(tong);
+                }
+            }
+            $("#TongSoTienChi").html(TongTienSuDung.toLocaleString("en-us"));
+            $("#TongSoTienChi").val(TongTienSuDung.toLocaleString("en-us"));
+            TinhConLai();
+        }
+    </script>
+}
+
+

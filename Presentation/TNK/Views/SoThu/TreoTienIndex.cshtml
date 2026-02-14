@@ -1,0 +1,220 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuTreo>
+
+@{
+    int i = 1;
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b></b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up addNew"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="formSearch" method="post" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày thu</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày thu</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày tiền vào</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.ToHang" name="toHang" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Mã phiếu thu, Khách hàng, Mã ngân hàng, Tên ngân hàng" placeholder="Mã phiếu thu, Khách hàng, Mã ngân hàng, Tên ngân hàng" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="button" name="export_Excel" id="exportExcel" value="Xuất Excel" class="btn btn-info" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            @Html.RadioButton("tinhtrang", "H", false, new { id = "H" }) Hết treo
+                            @Html.RadioButton("tinhtrang", "C", true, new { id = "C" }) Còn treo
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive" id="@ViewBag.Type">
+                    <table class="table">
+                        <thead>
+                            <tr class="success">
+                                <th>STT</th>
+                                <th>Treo</th>
+                                <th>Ngày thu</th>
+                                <th>Ngày tiền vào</th>
+                                <th>Mã phiếu thu</th>
+                                <th>Khách hàng</th>
+                                <th>Mã ngân hàng</th>
+                                <th>Tên ngân hàng</th>
+                                <th>Hình thức thanh toán</th>
+                                <th>Số tiền thanh toán</th>
+                                <th>Số tham chiếu</th>
+                                <th>Số chứng từ</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                    <td><input type="checkbox" id="@item.Id" value="@item.Id" name="@item.MaPhieuThu" @(item.TinhTrang?"checked":"") disabled @*onchange="Check(this)"*@ /></td>
+                                    <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                    @if (item.NgayTienVao != null)
+                                    {
+                                        <td><input type="text" class="form-control input-sm date" value="@item.NgayTienVao.Value.ToString("dd/MM/yyyy")" id="date_@item.Id" /></td>
+                                    }
+                                    else
+                                    {
+                                        <td><input type="text" class="form-control input-sm date" value="" id="date_@item.Id" /></td>
+                                    }
+                                    <td>@item.MaPhieuThu</td>
+                                    @if (item.MaLoaiPhieu == "TVAMU" || item.MaLoaiPhieu == "THHHB")
+                                    {
+                                        <td>@item.DoiTac</td>
+                                    }
+                                    else if (item.MaLoaiPhieu == "TLADT" ||item.MaLoaiPhieu == "TKHAC")
+                                    {
+                                        <td>@item.TenDoiTac</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.HoTen</td>
+                                    }
+                                    <td>@item.MaNganHang</td>
+                                    <td>@item.TenNganHang</td>
+                                    <td>@item.HinhThucThanhToan</td>
+                                    <td class="number2">@item.SoTienThanhToan</td>
+                                    <td>@item.SoThamChieu</td>
+                                    <td>@item.SoChungTu</td>
+                                    <td style="width:5%" class="center">
+                                        <a href="#" onclick="Save('@item.Id','@item.MaPhieuThu')"><i title="Lưu" class="fa fa-save"></i></a>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                    <div class="right">
+                        @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        function Check(a) {
+            debugger;
+            let obj = { id: $(a).val(), check: $(a).is(":checked") };
+            $.post("/SoThu/ChangeTreoTien", obj).success(function (response) {
+                if(response=="success")
+                {
+                    toastSuccess("Thay đổi thành công");
+                }
+                else
+                {
+                    toastError("Thay đổi thất bại");
+                }
+            });
+        }
+        function Save(Id,MaPhieuThu)
+        {
+            debugger;
+            //var ngayTraTien;
+            //if ($(Id).is(":checked") == true)
+            //    ngayTraTien = null;
+            //else if ($(Id).is(":checked") == false)
+            ngayTraTien = $("#date_" + Id).val();
+            let obj = { id: Id, check: $("#"+Id).is(":checked"),ngaytratien : ngayTraTien,maPhieuThu:MaPhieuThu};
+            $.post("/SoThu/SaveTienTra", obj).success(function (response) {
+                if (response == "success") {
+                    toastSuccess("Cập nhật thành công");
+                }
+                else {
+                    toastError("Cập nhật thất bại");
+                }
+            });
+        }
+        $("#exportExcel").click(function () {
+            debugger;
+            if ($($("#tab_data li.unactive")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = "#@ViewBag.Type";
+                var result = $(idtable).html();
+                result = result.replace('class="table"', 'class="table" border="1"');
+                //alert(result)
+                tableToExcel(result, 'TreoTien' + '_@ViewBag.Type' + '_' + postfix + '.xls');
+            }
+            else {
+            }
+            return false;
+        })
+        var tableToExcel = (function () {
+            debugger;
+            var uri = 'data:application/vnd.ms-excel;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            return function (table, name) {
+                //if (!table.nodeType) table = document.getElementById(table)
+                var ctx = { worksheet: name || 'Worksheet', table: table }
+                var link = document.createElement("A");
+                link.href = uri + base64(format(template, ctx));
+                link.download = name || 'Baocao.xls';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })()
+    </script>
+}

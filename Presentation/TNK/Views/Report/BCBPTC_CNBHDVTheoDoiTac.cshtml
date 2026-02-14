@@ -1,0 +1,117 @@
+﻿@using System.Data;
+
+@{
+    DateTime ToDate = ViewBag.ToDate;
+    Double totalDuNoTichLuy = 0,
+        totalPhatSinhTuDauThang = 0,
+        totalDaThanhToanTuDauThang = 0,
+        totalCongNoConLai = 0,
+        totalCHT_TH = 0,
+        totalCHT_QH = 0,
+        totalXNCN_TH = 0,
+        totalXNCN_QH = 0,
+        totalCN_TH = 0,
+        totalCN_QH = 0;
+}
+<div id="BCBPTC_CNBHDVTheoDoiTac">
+    <div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='20' class="tile">BÁO CÁO CÔNG NỢ BẢO HIỂM DỊCH VỤ THEO ĐỐI TÁC</th>
+                    </tr>
+                    <tr class="headings">
+                        <th colspan='20' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="2">STT</th>
+                        <th class="column-title" rowspan="2">THÔNG TIN ĐỐI TÁC</th>
+                        <th class="column-title" rowspan="2">DỰ NỢ TÍCH LŨY ĐẾN "THÁNG BC"</th>
+                        <th class="column-title" rowspan="2">PHÁT SINH TỪ ĐẦU THÁNG ĐẾN "NGÀY BC"</th>
+                        <th class="column-title" rowspan="2">ĐÃ THANH TOÁN </th>
+                        <th class="column-title" rowspan="2">CÔNG NỢ CÒN LẠI</th>
+                        <th class="column-title" colspan="2">CHƯA HOÀN TẤT HỒ SƠ (XHĐ)</th>
+                        <th class="column-title" colspan="2">XÁC NHẬN CÔNG NỢ</th>
+                        <th class="column-title" colspan="2">CÔNG NỢ</th>
+                        <th class="column-title" rowspan="2">GHI CHÚ</th>
+
+                    </tr>
+                    <tr>
+                        <th class="column-title">TRONG HẠN</th>
+                        <th class="column-title">QUÁ HẠN</th>
+                        <th class="column-title">TRONG HẠN</th>
+                        <th class="column-title">QUÁ HẠN</th>
+                        <th class="column-title">TRONG HẠN</th>
+                        <th class="column-title">QUÁ HẠN</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @if (ViewBag.dtbCNBHTheoDoiTac != null)
+                    {
+                        int intCount = 0;
+                        foreach (DataRow row in ViewBag.dtbCNBHTheoDoiTac.Rows)
+                        {
+                            totalDuNoTichLuy += row["DuNoTichLuy"].ToString() == "" ? 0 : Convert.ToDouble(row["DuNoTichLuy"].ToString());
+                            totalPhatSinhTuDauThang += row["PhatSinhTuDauThang"].ToString() == "" ? 0 : Convert.ToDouble(row["PhatSinhTuDauThang"].ToString());
+                            totalDaThanhToanTuDauThang += row["DaThanhToanTuDauThang"].ToString() == "" ? 0 : Convert.ToDouble(row["DaThanhToanTuDauThang"].ToString());
+                            totalCongNoConLai += row["CongNoConLai"].ToString() == "" ? 0 : Convert.ToDouble(row["CongNoConLai"].ToString());
+                            totalCHT_TH += row["CHT_TH"].ToString() == "" ? 0 : Convert.ToDouble(row["CHT_TH"].ToString());
+                            totalCHT_QH += row["CHT_QH"].ToString() == "" ? 0 : Convert.ToDouble(row["CHT_QH"].ToString());
+                            totalXNCN_TH += row["XNCN_TH"].ToString() == "" ? 0 : Convert.ToDouble(row["XNCN_TH"].ToString());
+                            totalXNCN_QH += row["XNCN_QH"].ToString() == "" ? 0 : Convert.ToDouble(row["XNCN_QH"].ToString());
+                            totalCN_TH += row["CN_TH"].ToString() == "" ? 0 : Convert.ToDouble(row["CN_TH"].ToString());
+                            totalCN_QH += row["CN_QH"].ToString() == "" ? 0 : Convert.ToDouble(row["CN_QH"].ToString());
+
+
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["TenDoiTac"].ToString()</td>
+                                <td class='number'>@row["DuNoTichLuy"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["PhatSinhTuDauThang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["DaThanhToanTuDauThang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["CongNoConLai"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["CHT_TH"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["CHT_QH"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["XNCN_TH"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["XNCN_QH"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["CN_TH"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["CN_QH"].ToString().Replace(",", ".")</td>
+                                <td></td>
+
+                            </tr>
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="2"><b>TỔNG</b></td>
+                            <td class='number'>@totalDuNoTichLuy.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalPhatSinhTuDauThang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalDaThanhToanTuDauThang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalCongNoConLai.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalCHT_TH.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalCHT_QH.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalXNCN_TH.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalXNCN_QH.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalCN_TH.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalCN_QH.ToString().Replace(",", ".")</td>
+                            <td></td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

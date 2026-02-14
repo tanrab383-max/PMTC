@@ -1,0 +1,196 @@
+﻿@model TNK.Model.SoChiModel
+@{
+    var item = Model.Item;
+
+}
+
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b>Thông tin phiếu</b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form id="form-data" method="post" class="form-horizontal form-label-left FormPhieuChi">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số chứng từ (*)</label>
+                                    @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "10" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày chi</label>
+                                    @Html.EditorFor(x => item.NgayChi, new { htmlAttributes = new { @class = "form-control input-sm date1", @Value = ViewBag.Date } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày hạch toán</label>
+                                    @Html.EditorFor(x => item.NgayHachToan, new { htmlAttributes = new { @class = "form-control input-sm date1", @Value = ViewBag.Date } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đơn vị (*)</label>
+                                    @*@Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm" } })*@
+                                    @Html.DropDownListFor(x => item.HoTen, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth", @id = "item_HoTen" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Điện thoại</label>
+                                    @Html.EditorFor(x => item.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Địa chỉ</label>
+                                    @Html.EditorFor(x => item.DiaChi, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Phân loại (*)</label>
+                                    @*@Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm" } })*@
+                                    @Html.DropDownListFor(x => item.PhanLoai, Model.PhanLoai.Select(x => new SelectListItem { Text = x.Name, Value = x.Code }), "Chọn", new { @class = "select2 fullwidth", @id = "item_PhanLoai" })
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Nội dung(*)</label>
+                                    @Html.TextAreaFor(x => item.NoiDung, new { @class = "form-control input-sm" })
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                @Html.Partial("~/Views/Shared/_ThanhToanChi.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT }, { "HTTT", Model.HTTT } })
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ghi chú</label>
+                                    @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                                </div>
+                            </div>
+                            @Html.Partial("~/Views/Common/UserComfirm.cshtml", null, new ViewDataDictionary { { "User", Model.Users } })
+                        </div>
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <input type="submit" value="Save" class="btn btn-success" />
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="@ViewBag.LinkIndex" class="Back">Quay lại</a>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/SoChiPhuTungCommon.js"></script>
+    <script>
+        $(document).ready(function () {
+            var Mang = new Array();
+            $(function () {
+                $.ajax({
+                    url: "/SoChi/AutoComplete",
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                        for (var i = 0; i < data.length; i++) {
+                            Mang.push(data[i]);
+                        }
+                        return Mang;
+                    }
+                });
+                $("#auto_complete").autocomplete({
+                    source: Mang
+                });
+            });
+        });
+
+
+        i = '@Model.CTPT.Count';
+        $(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if(Model.CTPT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+        function Remove(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.hide();
+        }
+        var a;
+        $(document).on("click", ".chkTinhTrang", function () {
+            a = this;
+            $(this).closest("td").children(".TinhTrang").val($(this).is(":checked"));
+        })
+
+        $(document).on("change", ".number", function () {
+            var val = $(this).val();
+            if (val != "") {
+                val = val.split(",").join("");
+                val = parseInt(val);
+               // val = val * 1000;
+                $(this).val(val.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+        });
+        function Remove(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.hide();
+            CalThanhToan(a);
+        }
+    </script>
+}
+
+
+
+
+
+
+
+

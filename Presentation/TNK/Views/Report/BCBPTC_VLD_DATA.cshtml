@@ -1,0 +1,223 @@
+﻿@using System.Data;
+
+@{
+    DataTable dtbThu = ViewBag.dtbThu;
+    DataTable dtbChi = ViewBag.dtbChi;
+
+}
+
+<div id="BCBPTC_THCTBX" class="x_content">
+    <div class="row col-sm-12" style="float:left">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead class="headings">
+                    <tr>
+                        <th class="column-title" rowspan="4">TÊN ĐẠI LÝ</th>
+                        <th class="column-title" colspan="34">TÀI SẢN (TIỀN, HÀNG VÀ CÔNG NỢ PHẢI THU</th>
+                        <th class="column-title" rowspan="4">TÀI SẢN NGẮN HẠN</th>
+                        <th class="column-title" rowspan="4">TÀI SẢN DÀI HẠN</th>
+                    </tr>
+                    <tr>
+                        <th class="column-title" colspan="2">TIỀN VÀ CÁC KHOẢN TƯƠNG ĐƯƠNG TIỀN</th>
+                        <th class="column-title" colspan="11">TỒN XE VÀ CÁC KHOẢN PHẢI THU LIÊN QUAN ĐẾN KINH DOANH XE</th>
+                        <th class="column-title" colspan="7">TỒN KHO PHỤ TÙNG, PHỤ KIỆN VÀ CÁC KHOẢN PHẢI THU LIÊN QUAN ĐẾN KINH DOANH DỊCH VỤ</th>
+                        <th class="column-title" colspan="10">CÁC KHOẢN PHẢI THU KHÁC</th>
+                        <th class="column-title" colspan="2">TÀI SẢN CỐ ĐỊNH</th>
+                        <th class="column-title" rowspan="3">ĐẦU TƯ</th>
+                        <th class="column-title" rowspan="3">TỔNG TÀI SẢN</th>
+                    </tr>
+                    <tr>
+
+                        <th class="column-title" rowspan="2">TỒN QUỸ TM</th>
+                        <th class="column-title" rowspan="2">SỐ DƯ NH</th>
+                        <th class="column-title" colspan="2">TỒN XE MỚI</th>
+
+                        <th class="column-title" colspan="2">XE MỚI ĐI ĐƯỜNG</th>
+                        <th class="column-title" colspan="2">TỒN XE CŨ</th>
+
+                        <th class="column-title" rowspan="2">ĐẶT CỌC XE MUA NGOÀI</th>
+                        <th class="column-title" rowspan="2">PHẢI THU XE NỘI BỘ</th>
+                        <th class="column-title" rowspan="2">KHÁCH LẺ/ ĐỐI TÁC NỢ TIỀN XE</th>
+                        <th class="column-title" rowspan="2">NGÂN HÀNG NỢ GIẢI NGÂN</th>
+                        <th class="column-title" rowspan="2">HOA HỒNG NGÂN HÀNG GIỚI THIỆU MUA XE</th>
+                        <th class="column-title" rowspan="2">TỒN KHO PHỤ TÙNG, PHỤ KIỆN, HÀNG KM</th>
+                        <th class="column-title" colspan="3">PHẢI THU DỊCH VỤ, BÁN PT-PK</th>
+                        <th class="column-title" rowspan="2">HOA HỒNG GHBH</th>
+                        <th class="column-title" rowspan="2">CHIẾT KHẤU NHÀ CUNG CẤP</th>
+                        <th class="column-title" rowspan="2">HOA HỒNG PHẢI THU BH THU HỘ</th>
+                        <th class="column-title" colspan="5"> HVN/TMV/MMV</th>
+                        <th class="column-title" colspan="3">NỘI BỘ</th>
+                        <th class="column-title" colspan="2">ĐỐI TÁC</th>
+
+                        <th class="column-title" rowspan="2">NHÀ CỬA, VẬT KIẾN TRÚC</th>
+                        <th class="column-title" rowspan="2">MÁY MÓC THIẾT BỊ, XE, KHÁC…</th>
+
+
+
+                    </tr>
+                    <TR>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">THÀNH TIỀN</th>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">THÀNH TIỀN</th>
+                        <th class="column-title">SL</th>
+                        <th class="column-title">THÀNH TIỀN</th>
+                        <th class="column-title">PHẢI THU ĐVỊ BẢO HIỂM</th>
+                        <th class="column-title">PHẢI THU NỘI BỘ</th>
+                        <th class="column-title">PHẢI THU KHÁCH LẺ</th>
+
+                        <th class="column-title">BẢO HÀNH</th>
+                        <th class="column-title">CHIẾT KHẤU THƯƠNG MẠI</th>
+                        <th class="column-title">HỖ TRỢ ĐẠI LÝ</th>
+                        <th class="column-title">HỖ TRỢ CHO KHÁCH HÀNG</th>
+                        <th class="column-title">ĐẶT CỌC HÃNG</th>
+                        <th class="column-title">TẠM ỨNG</th>
+                        <th class="column-title">PHẢI THU VAY MƯỢN</th>
+                        <th class="column-title">PHẢI THU NỘI BỘ KHÁC - NGOÀI XE VÀ PHỤ TÙNG</th>
+
+                        <th class="column-title">ĐẶT CỌC CHO ĐỐI TÁC/MẶT BẰNG + CHỜ PHÂN BỔ</th>
+                        <th class="column-title">PHẢI THU KHÁC</th>
+                    </TR>
+                </thead>
+                <tbody>
+                    @{
+                        for (int i = 0; i < dtbThu.Rows.Count; i++)
+                        {
+
+                            <tr class="even pointer">
+                                @for (int j = 0; j < dtbThu.Columns.Count; j++)
+                                {
+                                    if (dtbThu.Columns[j].ColumnName != "TT" && dtbThu.Columns[j].ColumnName != "DaiLy")
+                                    {
+                                        <td class="number">@dtbThu.Rows[i][j].ToString()</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@dtbThu.Rows[i][j]</td>
+                                    }
+                                }
+
+                            </tr>
+                        }
+                    }
+                    
+                </tbody>
+            </table>
+        </div>
+        <div class="row col-sm-12" style="float:left">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead
+                         <tr class="headings">
+                            <th class="column-title" colspan="24">BÁO CÁO CHI</th>
+                         </tr>
+                        <tr>
+                            <th rowspan="2">TT</th>
+                            <th rowspan="2">DANH MỤC ĐẠI LÝ</th>
+                            <th colspan="10">HOẠT ĐỘNG KINH DOANH</th>
+                            <th rowspan="2">CHI TRẢ VAY NGÂN HÀNG</th>
+                            <th colspan="9">KHÁC</th>
+                            <th rowspan="2">TỔNG CỘNG CHI</th>
+                        </tr>
+                        <tr>
+                            <th class="column-title">CHI LƯƠNG THƯỞNG/BHXH</th>
+                            <th class="column-title">CHI NỘP THUẾ/PHẠT THUẾ</th>
+                            <th class="column-title">CHI LÃI VAY</th>
+                            <th class="column-title">CHI PHÍ</th>
+                            <th class="column-title">CHI THANH TOÁN NHÀ CUNG CẤP</th>
+                            <th class="column-title">CHI THANH TOÁN XE TMV/HVN</th>
+                            <th class="column-title">CHI MUA/TRẢ TIỀN XE NGOÀI</th>
+                            <th class="column-title">CHI THANH TOÁN PHỤ TÙNG HVN/TMV</th>
+                            <th class="column-title">CHI TRẢ CỌC/ TIỀN THỪA</th>
+                            <th class="column-title">CHI ĐẶT CỌC</th>
+                            <th class="column-title">CHI KHÁC CHO HĐKD</th>
+                            <th class="column-title">TỔNG CHI CHO HĐKD</th>
+                            <th class="column-title">CHI TRẢ BH/GHBH THU HỘ</th>
+                            <th class="column-title">CHI GTX</th>
+                            <th class="column-title">CHI TẠM ỨNG</th>
+                            <th class="column-title">CHI TRẢ VAY MƯỢN NỘI BỘ (VAY TRUNG GIAN QUA PT)</th>
+                            <th class="column-title">CHI GÓP VỐN, ĐẦU TƯ, TRẢ VAY MƯỢN NỘI BỘ KHÁC</th>
+                            <th class="column-title">CHI MUA TÀI SẢN</th>
+                            <th class="column-title">CHI KHÁC</th>
+                            <th class="column-title">TỔNG CHI KHÁC</th>
+                        </tr>
+                    </thead>
+                    @{
+                        for (int i = 0; i < dtbChi.Rows.Count; i++)
+                        {
+                            <tr class="even pointer">
+                                @for (int j = 0; j < dtbChi.Columns.Count; j++)
+                                {
+                                    if (dtbChi.Columns[j].ColumnName != "TT" && dtbChi.Columns[j].ColumnName != "DaiLy")
+                                    {
+                                        <td class="number">@dtbChi.Rows[i][j].ToString()</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@dtbChi.Rows[i][j]</td>
+                                    }
+                                }
+
+                            </tr>
+                        }
+                    }
+                    <tr>
+                        <td>TỔNG CỘNG</td>
+                        <td></td>
+                        @if (dtbChi.Rows.Count > 0)
+                        {
+                            for (int j = 2; j < dtbChi.Columns.Count; j++)
+                            {
+                                if (dtbChi.Columns[j].ColumnName != "TT" && dtbChi.Columns[j].ColumnName != "DaiLy")
+                                {
+                                    <td class="number">@dtbChi.Rows[0][j].ToString()</td>
+                                }
+                                else
+                                {
+                                    <td>@dtbChi.Rows[0][j]</td>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>0</td>
+                        }
+                    </tr>
+                </table>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+        <script type="text/javascript">
+            $("td.number").map(function (key, val) {
+                var val = $(this).html();
+                //val = val.replace(",", ".");
+                val = val.split(",").join("");
+                val = parseFloat(val);
+                $(this).html(val.toLocaleString('en-us'));
+            })
+        </script>
+

@@ -1,0 +1,41 @@
+﻿@model List<TNK.Core.Domain.View.ViewDoiTac>
+@{
+    Layout = null;
+}
+
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>Mã đối tác</th>
+            <th>Mã viết tắt</th>
+            <th>Tên đối tác</th>
+            <th>Tỷ lệ hoa hồng</th>
+            <th>Ghi chú</th>
+            <th>Loại đối tác</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>@item.madoitac</th>
+                <th>@item.maviettat</th>
+                <th>@item.TenDoiTac</th>
+                <th>@item.TyLeHoaHong</th>
+                <th>@item.GhiChu</th>
+                <th>@item.TenLoaiDoiTac</th>
+                <td style="width:5%" class="center">
+                    <a href="/DoiTac/Edit/@item.madoitac"><i title="Edit" class="fa fa-edit"></i></a>
+                </td>
+                <td style="width:5%" class="center">
+                    <a href="/DoiTac/Delete/@item.madoitac"><i title="Delete" class="fa fa-close"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+

@@ -1,0 +1,157 @@
+﻿@{
+
+    var CTBDTK = (List<TNK.Model.ViewChiTietBDTK>)ViewData["CTBDTK"];
+    var GoiBDTK = (List<TNK.Core.Domain.View.ViewGoiBDTK>)ViewData["BDTK"];
+    var item = (TNK.Core.Domain.PhieuThu)ViewData["model"];
+    var type = (string)ViewData["type"];
+    double tongcong = 0;
+    var countData = CTBDTK.Where(s=>s.Id_Cyber == null).ToList().Count;
+}
+<div class="form-group  table-responsive">
+    <label>Bảo dưỡng tiết kiệm (*)</label>
+    <table id="GoiBDTK" class="table table-striped jambo_table bulk_action">
+        <thead>
+            <tr>
+                <th style="width:30%">Gói BDTK</th>
+                <th style="width:20%">Giá niêm yết</th>
+                <th style="width:0%" hidden></th>
+                <th style="width:20%">Giá bán</th>
+                <th style="width:20%">Ngày hết hạn</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="tbody_bdtk">
+            @if (countData > 0)
+            {
+                for (int j = 0; j < CTBDTK.Count; j++)
+                {
+                    tongcong += CTBDTK[j].ThucBan;
+                    <tr id="trbdtk" class="animated fadeIn">
+                        <td>
+                            @*<input type="hidden" name="CTBDTK[@j].Ma" class="CTPTId" value="CTBDTK[@j].Ma"  />*@
+                            <select class="select2 select3 fullwidth Temp magoibdtk" id="bdtk_@j" name="CTBDTK[@j].MaBDTK" onchange="TinhThucBan(this)">
+                                <option value="">Chọn</option>
+                                @foreach (var i in GoiBDTK)
+                                {
+                                    if (CTBDTK[j].MaBDTK != null)
+                                    {
+                                        <option value="@i.Ma" @(CTBDTK[j].MaBDTK.ToUpper() == i.Ma.ToUpper() ? "selected" : "")>@i.TenChuongTrinh</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@i.Ma" @(CTBDTK[j].MaBDTK == i.Ma ? "selected" : "")>@i.TenChuongTrinh</option>
+                                    }
+
+                                }
+                            </select>
+                        </td>
+                        <td><input type="text" name="CTBDTK[@j].GiaNiemYet" id="gianiemyet_@j" readonly value="@CTBDTK[j].GiaNiemYet" class="form-control input-sm number gianiemyet" maxlength="15" /></td>
+                        <td hidden>
+                            <input name="CTBDTK[@j].GiamGia" id="giamgia_@j" onchange="TinhThucBan(this)" value="@CTBDTK[j].GiamGia" class="form-control input-sm number giamgia" />
+                        </td>
+                        <td class="tdgiaban">
+                            <input name="CTBDTK[@j].GiaBan" value="@CTBDTK[j].GiaBan" id="giaban_@j" readonly class="form-control input-sm number giaban" />
+                            @*<input type="hidden" name="CTBDTK[@j].GiaBan" class="CTPTId" value="@CTBDTK[@j].ThucBan" />*@
+                        </td>
+                        @if (@CTBDTK[j].HanSuDung != null)
+                        {
+                            <td><input type="text" class="form-control input-sm date hansudung" id="hansudung_@j" name="CTBDTK[@j].HanSuDung" value="@CTBDTK[j].HanSuDung.Value.ToString("dd/MM/yyyy")" /></td>
+                        }
+                        else
+                        {
+                            <td><input type="text" class="form-control input-sm date hansudung" id="hansudung_@j" name="CTBDTK[@j].HanSuDung" /></td>
+                        }
+                        <td><i class="fa fa-remove" onclick="RemoveBDTK(this)" style="cursor:pointer"></i></td>
+
+                    </tr>
+                }
+            }
+            else
+            {
+
+                for (int j = 0; j < CTBDTK.Count; j++)
+                {
+                    tongcong += CTBDTK[j].ThucBan;
+                    <tr id="trbdtk" class="animated fadeIn">
+                        <td>
+                            <input type="hidden" name="CTBDTK[@j].Ma" class="CTPTId" value="CTBDTK[@j].Ma" />
+                            <input type="hidden" name="CTBDTK[@j].Id_Cyber" class="CTPTId" value="@CTBDTK[@j].Id_Cyber" />
+                            <input type="hidden" name="CTBDTK[@j].MaBDTK" class="CTPTId" value="@CTBDTK[@j].MaBDTK" />
+                            <input type="hidden" name="CTBDTK[@j].GiaBan" class="CTPTId" value="@CTBDTK[@j].GiaBan" />
+                            <input name="CTBDTK[@j].Ten" readonly class="form-control input-sm tengoibdtk" value="@CTBDTK[j].TenBDTK" />
+                        </td>
+                        <td><input type="text" name="CTBDTK[@j].GiaNiemYet" id="gianiemyet_@j" readonly value="@CTBDTK[j].GiaNiemYet" class="form-control input-sm number gianiemyet" maxlength="15" /></td>
+                        <td hidden>
+                            <input name="CTBDTK[@j].GiamGia" id="giamgia_@j" onchange="TinhThucBan(this)" value="@CTBDTK[j].GiamGia" class="form-control input-sm number giamgia" />
+                        </td>
+                        <td class="tdgiaban">
+                            <input name="CTBDTK[@j].GiaBan" value="@CTBDTK[j].GiaBan" id="giaban_@j" readonly class="form-control input-sm number giaban" />
+                        </td>
+                        @if (@CTBDTK[j].HanSuDung != null)
+                        {
+                            <td><input type="text" class="form-control input-sm date hansudung" id="hansudung_@j" name="CTBDTK[@j].HanSuDung" value="@CTBDTK[j].HanSuDung.Value.ToString("dd/MM/yyyy")" /></td>
+                        }
+                        else
+                        {
+                            <td><input type="text" class="form-control input-sm date hansudung" id="hansudung_@j" name="CTBDTK[@j].HanSuDung" /></td>
+                        }
+                        <td><i class="fa fa-remove" onclick="RemoveBDTK(this)" style="cursor:pointer"></i></td>
+
+                    </tr>
+                }
+            }
+        </tbody>
+            <tfoot>
+                <tr>
+                    <td>Tổng cộng: </td>
+                    <td><input class="form-control input-sm number" readonly name="item.GiaNiemYet" id="TongCongGiaNietYet" value="0" /></td>
+                    @*<td><input class="form-control input-sm number" readonly name="item.GiamGia" id="TongCongGiamGia" value="0" /></td>*@
+                    @if (type == "TBDTK")
+                    {
+                        <td><input class="form-control input-sm number" readonly name="item.GiaBan" id="TongCongGiaBan" value="0" /></td>
+                    }
+                    else
+                    {
+                        <td><input class="form-control input-sm number" readonly id="TongCongGiaBan" value="0" /></td>
+                    }
+                    <td class="right"></td>
+                </tr>
+                @if (type == "TBDTK")
+                {
+                    <tr>
+                        <td colspan="3">
+                            <div class="col-md-3">
+                                <label>Giảm giá</label>
+                                <input class="form-control input-sm number col-md-3" name="item.GiamGia" id="TongCongGiamGia" onchange="TinhGiamGia()" value="@item.GiamGia" />
+                            </div>
+                        </td>
+
+                        <td class="right"><i class="fa fa-plus addBDTK" style="cursor:pointer"></i></td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3">
+                            <div class="col-md-3">
+                                <label>Giảm giá</label>
+                                <input class="form-control input-sm number col-md-3" readonly name="item.GiamGia" id="TongCongGiamGia" onchange="TinhGiamGia()" value="@item.GiamGia" />
+                            </div>
+                        </td>
+
+                        <td class="right"><i class="fa fa-plus addBDTK" style="cursor:pointer"></i></td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="3">
+                        <div class="col-md-3">
+                            <label>Thực thu</label>
+                            <input class="form-control input-sm number col-md-3" name="item.TongCong" readonly id="TongCongThucThu" value="@item.TongCong" />
+                        </div>
+                    </td>
+                    <td class="right"></td>
+                </tr>
+
+            </tfoot>
+        </table>
+</div>

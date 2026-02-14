@@ -1,0 +1,1321 @@
+﻿@model TNK.Model.DichVuEditModel
+@{
+    ViewBag.Title = "Phiếu dịch vụ";
+    double TongGiaBan = 0;
+    double TongGiamGia = 0;
+    double TongThucThu = 0;
+
+    double TongGiaBanVAT = 0;
+    double TongGiamGiaVAT = 0;
+    double TongThucThuVAT = 0;
+
+    double TongGiaBanSauVAT = 0;
+    double TongGiamGiaSauVAT = 0;
+    double TongThucThuSauVAT = 0;
+    if (Model.CTPDV != null)
+    {
+        foreach (TNK.Core.Domain.ChiTietPhieuDichVu i in Model.CTPDV)
+        {
+            i.COST = Math.Round(i.COST, 0);
+            i.DISCOUNT = Math.Round(i.DISCOUNT, 0);
+
+            TongGiaBan += i.COST;
+            TongGiamGia += i.DISCOUNT;
+            TongThucThu += i.COST - i.DISCOUNT;
+        }
+    }
+    TongGiaBanVAT = Math.Round(0.1 *TongGiaBan);
+    TongGiamGiaVAT = Math.Round(0.1 * TongGiamGia);
+    TongThucThuVAT = Math.Round(0.1 * TongThucThu);
+
+    TongGiaBanSauVAT = Math.Round( 1.1* TongGiaBan);
+    TongGiamGiaSauVAT = Math.Round(1.1 *TongGiamGia);
+    TongThucThuVAT = Math.Round(1.1 *TongThucThu);
+
+    var suachuachung = Model.CTPDV.Where(x => x.PhanLoai.ToUpper() == "SUACHUA").ToList();
+    var dongsonsonxe = Model.CTPDV.Where(x => x.PhanLoai.ToUpper() == "KHO_DS").ToList();
+    var phutungtrong = Model.CTPDV.Where(x => x.PhanLoai.ToUpper() == "KHO_PTT").ToList();
+    var phutungngoai = Model.CTPDV.Where(x => x.PhanLoai.ToUpper() == "KHO_PTN").ToList();
+    var phukiendichvu = Model.CTPDV.Where(x => x.PhanLoai.ToUpper() == "KHO_PKDV" ).ToList();
+    var coc = Model.CTPT.Where(x => x.HinhThucThanhToan == "DC").ToList();
+    var bh = Model.CTPT.FirstOrDefault(x => x.HinhThucThanhToan == "BH");
+    var maCtyBH = (bh != null ? bh.Id : Guid.Empty);
+    var soTienCtyBH = (bh != null ? bh.SoTienThanhToan : 0);
+    var khtt = Model.CTPT.Where(x => x.HinhThucThanhToan != "DC" && x.HinhThucThanhToan != "BH").ToList();
+    if (khtt == null || khtt.Count == 0)
+    {
+        khtt = new List<TNK.Core.Domain.ChiTietPhieuThu>();
+        khtt.Add(new TNK.Core.Domain.ChiTietPhieuThu());
+    }
+    var z = 0;
+    //no ban xe khach le
+    var nophaithu = Model.noPhaiThu.FirstOrDefault(x => x.LoaiPhieuNo == "NDIVU");
+    if (nophaithu == null)
+    {
+        nophaithu = new TNK.Core.Domain.NoPhaiThu();
+    }
+    //no gia cong ngoai
+    var suaGCN = Model.noGCN.Count == 0 || Model.noGCN[0].SoTienDaTra == 0;
+    //no phai tra hoa hong tai xe
+    var suaHHTX = Model.noPhaiTra.Count == 0 || Model.noPhaiTra[0].SoTienDaTra == 0;
+    //no phai thu bao hiem dich vu
+
+    var suaBHTT = nophaithu != null &&  nophaithu.SoTienDaTra == 0 && (Model.noBaoHiem.Count == 0 || Model.noBaoHiem[0].SoTienDaTra == 0);
+
+
+    var maPhieuNoGCN = Model.noGCN.Count == 0 ? "" : Model.noGCN[0].MaPhieuNo;
+    var soTienDaTraNoGCN = Model.noGCN.Count == 0 ? 0 : Model.noGCN[0].SoTienDaTra;
+
+    var maPhieuNoHHTX = Model.noPhaiTra.Count == 0 ? "" : Model.noPhaiTra[0].MaPhieuNo;
+    var soTienDaTraNoHHTX = Model.noPhaiTra.Count == 0 ? 0 : Model.noPhaiTra[0].SoTienDaTra;
+
+    var maPhieuNoBHTT = Model.noBaoHiem.Count == 0 ? "" : Model.noBaoHiem[0].MaPhieuNo;
+    var soTienDaTraNoBHTT = Model.noBaoHiem.Count == 0 ? 0 : Model.noBaoHiem[0].SoTienDaTra;
+
+    var readOnly = nophaithu.SoTienDaTra > 0 ? "readonly":"";
+    var changeTypeClass = nophaithu.SoTienDaTra > 0 ? "" : "changeType";
+
+}
+<form id="form-data" method="post">
+    @Html.HiddenFor(x => Model.obj.MaPhieuThu)
+    @Html.HiddenFor(x => Model.obj.UpdatedDate)
+
+
+    <input type="hidden" name="obj.SoTienThu" value="@Model.obj.SoTienThu" />
+    <input type="hidden" name="obj.TongCong" value="@ViewBag.TongThucThuSauVAT" />
+
+    <input type="hidden" name="NoGCN.MaPhieuNo" value="@maPhieuNoGCN" />
+    <input type="hidden" name="NoGCN.SoTienDaTra" value="@soTienDaTraNoGCN" />
+
+    <input type="hidden" name="NoHHTX.MaPhieuNo" value="@maPhieuNoHHTX" />
+    <input type="hidden" name="NoHHTX.SoTienDaTra" value="@soTienDaTraNoHHTX" />
+
+    <input type="hidden" name="NoBHTT.MaPhieuNo" value="@maPhieuNoBHTT" />
+    <input type="hidden" name="NoBHTT.SoTienDaTra" value="@soTienDaTraNoBHTT" />
+    <input type="hidden" id="type" value="TDIVU" />
+
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Cập nhật @ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    @*<h2><b>Thông tin phiếu</b></h2>*@
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="form-horizontal form-label-left">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số phiếu</label>
+                                        @Html.EditorFor(x => Model.obj.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Ngày quyết toán</label>
+                                        <input type="text" class="form-control input-sm" name="obj.NgayQuyetToan" value="@Model.obj.NgayQuyetToan.ToString("dd/MM/yyyy")" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Ngày thu tiền</label>
+                                        <input type="text" class="form-control input-sm date" name="obj.NgayHachToan" value="@Model.obj.NgayHachToan.ToString("dd/MM/yyyy")" />@*readonly*@
+                                        @*@Html.EditorFor(x => Model.obj.NgayHachToan, new { htmlAttributes = new { @class = "form-control input-sm date ", @value = "@Model.obj.NgayHachToan.ToString("dd/MM/yyyy")", @readonly = "" } })*@
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Biển số</label>
+                                        @Html.EditorFor(x => Model.obj.BienSo, new
+                                   {
+                                       htmlAttributes = new { @class = "form-control input-sm", @readonly = "" }
+                                   })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số khung / Số máy</label>
+                                        @Html.EditorFor(x => Model.obj.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Tên khách hàng</label>
+                                        @Html.EditorFor(x => Model.obj.HoTen, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Loại xe</label>
+                                        @Html.EditorFor(x => Model.obj.MaXe, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Tên xe</label>
+                                        @Html.EditorFor(x => Model.obj.TenXe, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Điện thoại</label>
+                                        @Html.EditorFor(x => Model.obj.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số hóa đơn</label>
+                                        @Html.EditorFor(x => Model.obj.SoHoaDon, new { htmlAttributes = new { @class = "form-control input-sm " } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Chứng từ liên quan</label>
+                                        @Html.EditorFor(x => Model.obj.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-sm-1 col-xs-12">
+                                    <div class="form-group">
+                                        <label></label>
+                                        <label></label>
+                                        @if (Model.obj.LoaiBaoHiem == "XKG")
+                                        {
+                                            <input type="checkbox" class="form-control" checked="checked" id="LoaiBH" onclick="OnChecked()" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" class="form-control" id="LoaiBH" onclick="OnChecked()" />
+                                        }
+                                        @Html.EditorFor(x => Model.obj.LoaiBaoHiem, new { htmlAttributes = new { @class = "form-control input-sm hidden ", @id = "LoaiBaoHiem", @hidden = "" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label style="margin-top:30px">Xe ký gửi</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đối tác</label>
+                                    @Html.DropDownListFor(x => Model.obj.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth", @id = "DoiTac" })
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="form-group">
+                                    <label>Địa chỉ</label>
+                                    <input type="text" readonly value="@Model.obj.DiaChi" class="form-control input-sm" name="obj.DiaChi" />
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Yêu cầu KH</label>
+                                    <input type="text" readonly value="@Model.obj.YeuCauKH" class="form-control input-sm" name="obj.YeuCauKH" />
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-md-12">
+                                @if (suachuachung.Count >= 0)
+                                {
+                                    double a = 0;
+                                    int b = 0;
+                                    int count = 0;
+                                    double gcn = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group table-responsive">
+                                            <label>Sửa chữa chung:</label>
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tên công việc</th>
+                                                        <th>Giá bán</th>
+                                                        <th>Giảm giá</th>
+                                                        <th>Thực thu</th>
+                                                        <th>Chi GCN</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="SuaChua">
+                                                    @foreach (var i in suachuachung)
+                                                    {
+                                                        a += i.COST;
+                                                        b += (int)i.DISCOUNT;
+                                                        if (suaGCN == false)
+                                                        {
+                                                            <tr class="aaaa">
+                                                                <td>
+                                                                    @i.JOBSNAME
+                                                                    <input type="hidden" name="ptdv[@z].Id" value="@i.Id" />
+                                                                    <input type="hidden" name="ptdv[@z].MaKho" class="MaKho" value="@i.MaKho" />
+                                                                    <input type="hidden" name="ptdv[@z].PhanLoai" class="PhanLoai" value="@i.PhanLoai" />
+                                                                    <input type="hidden" name="ptdv[@z].VAT" value="@i.VAT" />
+                                                                </td>
+                                                                <td class="number">@i.COST</td>
+                                                                <td class="number">@i.DISCOUNT</td>
+                                                                <td class="number">@(i.COST - i.DISCOUNT)</td>
+                                                                <td>
+                                                                    @*@if (suaGCN == true)
+                                                                        {
+                                                                            <input type="text" name="ptdv[@z].GCN" value="@i.GCN" class="number form-control input-sm numberGCN" onchange="CalThanhToanGCN()" required="" />
+                                                                        }
+                                                                        else
+                                                                        {*@
+                                                                    <input type="text" name="ptdv[@z].GCN" value="@i.GCN" class="number form-control input-sm numberGCN" onchange="CalThanhToanGCN()" required="" readonly title="Không được sửa do đã có phiếu chi gia công ngoài" />
+                                                                    @*}*@
+                                                                    @{count++;}
+                                                                </td>
+                                                            </tr>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <tr class="@changeTypeClass">
+                                                                                <td>
+                                                                                    @i.JOBSNAME
+                                                                                    <input type="hidden" name="ptdv[@z].Id" value="@i.Id" />
+                                                                                    <input type="hidden" name="ptdv[@z].MaKho" class="MaKho" value="@i.MaKho" />
+                                                                                    <input type="hidden" name="ptdv[@z].PhanLoai" class="PhanLoai" value="@i.PhanLoai" />
+                                                                                </td>
+                                                                                <td class="number">@i.COST</td>
+                                                                                <td class="number">@i.DISCOUNT</td>
+                                                                                <td class="number">@(i.COST - i.DISCOUNT)</td>
+                                                                                <td>
+                                                                                    @*@if (suaGCN == true)
+                                                                                        {*@
+                                                                                    <input type="text" name="ptdv[@z].GCN" value="@i.GCN" class="number form-control input-sm numberGCN" onchange="CalThanhToanGCN()" required="" />
+                                                                                    @*}
+                                                                                        else
+                                                                                        {
+                                                                                            <input type="text" name="ptdv[@z].GCN" value="@i.GCN" class="number form-control input-sm numberGCN" onchange="CalThanhToanGCN()" required="" readonly title="Không được sửa do đã có phiếu chi gia công ngoài" />
+                                                                                        }*@
+                                                                                    @{count++;}
+                                                                                </td>
+                                                                            </tr>
+                                                                                            }
+
+                                                                                            gcn += i.GCN;
+                                                                                            z++;
+                                                                                        }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number">@a</td>
+                                                        <td class="number">@b</td>
+                                                        <td class="number">@(a - b)</td>
+                                                        <td class="TotalGCN">@TNK.Core.Common.ToCurrencyString(gcn)</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                                                                        }
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Hoa hồng tài xế: </label>
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Số tiền</th>
+                                                    <th>Ký duyệt</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <!--neu co phat sinh chi no hoa hong tai xe roi thi khong cho phep sua o day-->
+                                                    @if (Model.noPhaiTra.Count == 0 || Model.noPhaiTra[0].SoTienDaTra == 0)
+                                                    {
+                                                        <td> @Html.EditorFor(x => Model.obj.HoaHongTaiXe, new { htmlAttributes = new { @class = "form-control input-sm number" } }) </td>
+                                                        <td> @Html.EditorFor(x => Model.obj.NguoiDuyetHHTX, new { htmlAttributes = new { @class = "form-control input-sm" } }) </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@Html.EditorFor(x => Model.obj.HoaHongTaiXe, new { htmlAttributes = new { @class = "form-control input-sm number", @readonly = "", @title = "Không được sửa do đã có phiếu chi nợ hoa hồng tài xế" } })</td>
+                                                        <td>@Html.EditorFor(x => Model.obj.NguoiDuyetHHTX, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "", @title = "Không được sửa do đã có phiếu chi nợ hoa hồng tài xế" } })</td>
+                                                    }
+                                                </tr>
+                                                @*@foreach (var noPhaiTra in Model.noPhaiTra)
+                                                    {a
+                                                        <tr>
+                                                            <td>
+                                                                @Html.HiddenFor(x => noPhaiTra.MaPhieuNo)
+                                                                @Html.EditorFor(x => noPhaiTra.SoTienNo, new { htmlAttributes = new { @class = "form-control input-sm number" } })
+
+                                                            </td>
+
+                                                            <td>@Html.EditorFor(x => noPhaiTra.NguoiPheDuyet, new { htmlAttributes = new { @class = "form-control input-sm" } })</td>
+                                                        </tr>
+                                                    }*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                @if (dongsonsonxe.Count >= 0)
+                                {
+                                    double a = 0;
+                                    int b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group table-responsive">
+                                            <label>Đồng sơn - sơn xe:</label>
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="KHO_DS">
+                                                    @foreach (var i in dongsonsonxe)
+                                                    {
+                                                        a += i.COST;
+                                                        b += (int)i.DISCOUNT;
+                                                        <tr class="@changeTypeClass">
+                                                            <td>
+                                                                @i.JOBSNAME
+                                                                <input type="hidden" name="ptdv[@z].Id" value="@i.Id" />
+                                                                <input type="hidden" name="ptdv[@z].MaKho" class="MaKho" value="@i.MaKho" />
+                                                                <input type="hidden" name="ptdv[@z].PhanLoai" class="PhanLoai" value="@i.PhanLoai" />
+                                                                <input type="hidden" name="ptdv[@z].VAT"  value="@i.VAT" />
+                                                            </td>
+                                                            <td class="number">@i.COST</td>
+                                                            <td class="number">@i.DISCOUNT</td>
+                                                            <td class="number">@(i.COST - i.DISCOUNT)</td>
+                                                            <td>
+                                                                @if (suaGCN == true)
+                                                                {
+                                                                    <input type="text" name="ptdv[@z].GCN" style="display:none" value="@i.GCN" onchange="CalThanhToanGCN()" class="number form-control input-sm numberGCN" required="" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="text" name="ptdv[@z].GCN" style="display:none" value="@i.GCN" onchange="CalThanhToanGCN()" class="number form-control input-sm numberGCN" required="" readonly title="Không được sửa do đã có phiếu chi gia công ngoài" />
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number">@a</td>
+                                                        <td class="number">@b</td>
+                                                        <td class="number">@(a - b)</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Cọc: </label>
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Phiếu cọc</th>
+                                                    <th>Số tiền có thể sử dụng</th>
+                                                    <th>Số tiền sử dụng</th>
+                                                    <th>Còn lại</th>
+                                                </tr>
+                                            </thead>
+                                            @if (Model.Coc.Count > 0)
+                                            {
+                                                <tbody id="DanhSachCoc">
+                                                    @for (int j = 0; j < Model.Coc.Count; j++)
+                                                    {
+                                                        var i = Model.Coc[j];
+                                                        double SoTienThanhToan = 0;
+                                                        var ii = coc.FirstOrDefault(x => x.SoThamChieu == i.MaPhieuThu.ToString());
+                                                        var totali = i.TongCong;
+                                                        if (ii != null)
+                                                        {
+                                                            totali = totali - ii.SoTienThanhToan;
+                                                            SoTienThanhToan = ii.SoTienThanhToan;
+                                                        }
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" value="@i.MaPhieuThu" name="coc[@j].SoThamChieu" />
+                                                                @if (ii != null)
+                                                                {
+                                                                    <input type="hidden" name="coc[@j].Id" value="@ii.Id" />
+                                                                }
+                                                                <label class="control-label">@i.HoTen+@i.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                            </td>
+                                                            <td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="@(i.ConLai + SoTienThanhToan)" readonly /></td>
+                                                            @if (nophaithu.SoTienDaTra == 0)
+                                                            {
+                                                                <td><input type="text" name="coc[@j].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number" onchange="calCoc(this)" value="@SoTienThanhToan" /></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td><input type="text" name="coc[@j].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number" onchange="calCoc(this)" value="@SoTienThanhToan" readonly title="Không được sửa do đã có phiếu thu nợ dịch vụ" /></td>
+                                                            }
+                                                            <td><input type="text" class="form-control input-sm SoTienConLai number" value="@i.ConLai" readonly /></td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                @if (phutungtrong.Count >= 0)
+                                {
+                                    double a = 0;
+                                    int b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group table-responsive">
+                                            <label>Phụ tùng trong:</label>
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="KHO_PTT">
+                                                    @foreach (var i in phutungtrong)
+                                                    {
+                                                        a += i.COST;
+                                                        b += (int)i.DISCOUNT;
+                                                        <tr class="@changeTypeClass">
+                                                            <td>
+                                                                @i.JOBSNAME
+                                                                <input type="hidden" name="ptdv[@z].Id" value="@i.Id" />
+                                                                <input type="hidden" name="ptdv[@z].MaKho" class="MaKho" value="@i.MaKho" />
+                                                                <input type="hidden" name="ptdv[@z].PhanLoai" class="PhanLoai" value="@i.PhanLoai" />
+                                                                <input type="hidden" name="ptdv[@z].VAT" value="@i.VAT" />
+                                                            </td>
+                                                            <td class="number">@i.COST</td>
+                                                            <td class="number">@i.DISCOUNT</td>
+                                                            <td class="number">@(i.COST - i.DISCOUNT)</td>
+                                                            <td>
+                                                                @if (suaGCN == true)
+                                                                {
+                                                                    <input type="text" name="ptdv[@z].GCN" style="display:none" value="@i.GCN" onchange="CalThanhToanGCN()" class="number form-control input-sm numberGCN" required="" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="text" name="ptdv[@z].GCN" style="display:none" value="@i.GCN" onchange="CalThanhToanGCN()" class="number form-control input-sm numberGCN" required="" readonly title="Không được sửa do đã có phiếu chi gia công ngoài" />
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number">@a</td>
+                                                        <td class="number">@b</td>
+                                                        <td class="number">@(a - b)</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Bảo hiểm thanh toán:</label>
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Công ty bảo hiểm</th>
+                                                    <th>Số tiền</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="LuoiBaoHiem">
+                                                <tr>
+                                                    @if (suaBHTT)
+                                                    {
+                                                        <td>
+                                                            <input name="ctbh.Id" type="hidden" value="@(bh != null ? bh.Id.ToString() : "")" />
+                                                            <select class="select2 fullwidth MaNganHang ctybh" name="ctbh.MaNganHang">
+                                                                <option value="">Chọn</option>
+                                                                @foreach (var i in Model.CTBH)
+                                                                {
+                                                                    <option value="@i.MaDoiTac.ToUpper()" @(i.MaDoiTac.ToUpper() == (bh != null ? bh.MaNganHang.ToUpper() : "") ? "selected" : "" )>@i.TenDoiTac</option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td><input name="ctbh.SoTienThanhToan" onchange="Cal()" type="text" class="form-control input-sm BHTT SoTienThanhToan number" value="@(bh != null ? bh.SoTienThanhToan : 0)" /></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>
+                                                            <input name="ctbh.Id" type="hidden" value="@(bh != null ? bh.Id.ToString() : "")" />
+                                                            <input name="ctbh.MaNganHang" type="hidden" value="@bh.MaNganHang" />
+                                                            <select class="select2 fullwidth  MaNganHang ctybh" name="ctbh.MaNganHang" disabled title="Không được sửa do đã có phiếu thu nợ dịch vụ hoặc đã giải ngân bảo hiểm">
+                                                                <option value="">Chọn</option>
+                                                                @foreach (var i in Model.CTBH)
+                                                                {
+                                                                    <option value="@i.MaDoiTac" @(i.MaDoiTac.ToUpper() == (bh != null ? bh.MaNganHang : "") ? "selected" : "" )>@i.TenDoiTac</option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td><input name="ctbh.SoTienThanhToan" onchange="Cal()" type="text" class="form-control input-sm BHTT SoTienThanhToan number" value="@(bh != null ? bh.SoTienThanhToan : 0)" readonly title="Không được sửa do đã có phiếu thu nợ dịch vụ hoặc đã giải ngân bảo hiểm" /></td>
+
+                                                    }
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                @if (phutungngoai.Count >= 0)
+                                {
+                                    double a = 0;
+                                    int b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group table-responsive">
+                                            <label>Phụ tùng ngoài:</label>
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="KHO_PTN">
+                                                    @foreach (var i in phutungngoai)
+                                                    {
+                                                        a += i.COST;
+                                                        b += (int)i.DISCOUNT;
+                                                        
+                                                        <tr class="@changeTypeClass">
+                                                            <td>
+                                                                @i.JOBSNAME
+                                                                <input type="hidden" name="ptdv[@z].Id" value="@i.Id" />
+                                                                <input type="hidden" name="ptdv[@z].MaKho" class="MaKho" value="@i.MaKho" />
+                                                                <input type="hidden" name="ptdv[@z].PhanLoai" class="PhanLoai" value="@i.PhanLoai" />
+                                                                <input type="hidden" name="ptdv[@z].VAT" value="@i.VAT" />
+                                                            </td>
+                                                            <td class="number">@i.COST</td>
+                                                            <td class="number">@i.DISCOUNT</td>
+                                                            <td class="number">@(i.COST - i.DISCOUNT)</td>
+                                                            <td>
+                                                                @if (suaGCN == true)
+                                                                {
+                                                                    <input type="text" name="ptdv[@z].GCN" style="display:none" value="@i.GCN" onchange="CalThanhToanGCN()" class="number form-control input-sm numberGCN" required="" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="text" name="ptdv[@z].GCN" style="display:none" value="@i.GCN" onchange="CalThanhToanGCN()" class="number form-control input-sm numberGCN" required="" readonly title="Không được sửa do đã có phiếu chi gia công ngoài" />
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number">@a</td>
+                                                        <td class="number">@b</td>
+                                                        <td class="number">@(a - b)</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Khách hàng thanh toán</label>
+                                        <table class="table table-striped jambo_table bulk_action" id="ThanhToan">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:40%">Túi tiền</th>
+                                                    <th style="width:30%">Số tiền</th>
+                                                    <th style="width:30%">Số tham chiếu</th>
+                                                    <th>Treo</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody">
+                                                @{double totalKHTT = 0; }
+                                                @for (int j = 0; j < khtt.Count; j++)
+                                                {
+                                                    totalKHTT += khtt[j].SoTienThanhToan;
+                                                    <tr id="tr" class="animated fadeIn">
+                                                        @if (nophaithu.SoTienDaTra == 0)
+                                                        {
+                                                            <td>
+                                                                <input type="hidden" name="httt[@j].Id" value="@khtt[j].Id" />
+                                                                <select class="select2 fullwidth Temp" name="httt[@j].Temp">
+                                                                    <option value="">Chọn</option>
+                                                                    @if (khtt[j].Temp != null)
+                                                                    {
+                                                                        foreach (var i in Model.HTTT)
+                                                                        {
+                                                                            <option value="@i.GiaTri" @(khtt[j].Temp.ToUpper() == i.GiaTri.ToUpper() ? "selected" : "" )>@i.HienThi</option>
+                                                                        }
+                                                                    }
+                                                                    
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="text" name="httt[@j].SoTienThanhToan" value="@khtt[j].SoTienThanhToan.ToString().Replace(",", ".")" class="number form-control input-sm SoTienThanhToan numberSTTT" onchange="Cal()" /></td>
+                                                            <td><input name="httt[@j].SoThamChieu" value="@khtt[j].SoThamChieu" class="form-control input-sm" /></td>
+                                                            <td>
+                                                                <input type="checkbox" class="chkTinhTrang" @(khtt[j].TinhTrang ? "checked" : "" ) />
+                                                                <input type="hidden" class="TinhTrang" name="httt[@j].TinhTrang" value="@(khtt[j].TinhTrang.ToString())" />
+                                                                <input type="hidden" class="IsDeleted" name="httt[@j].IsDeleted" value="false" />
+                                                            </td>
+                                                            <td><i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>
+                                                                <input type="hidden" name="httt[@j].Id" value="@khtt[j].Id" />
+                                                                <input name="httt[@j].Temp" type="hidden" value="@khtt[j].Temp" />
+                                                                <select class="select2 fullwidth Temp" name="httt[@j].Temp" disabled title="Không được sửa do đã có phiếu thu nợ dịch vụ">
+                                                                    <option value="">Chọn</option>
+                                                                    @if (khtt[j].Temp != null)
+                                                                    {
+                                                                        foreach (var i in Model.HTTT)
+                                                                        {
+                                                                            <option value="@i.GiaTri" @(khtt[j].Temp.ToUpper() == i.GiaTri.ToUpper() ? "selected" : "" )>@i.HienThi</option>
+                                                                        }
+                                                                    }
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="text" name="httt[@j].SoTienThanhToan" value="@khtt[j].SoTienThanhToan.ToString().Replace(",", ".")" class="number form-control input-sm SoTienThanhToan numberSTTT" onchange="Cal()" readonly title="Không được sửa do đã có phiếu thu nợ dịch vụ" /></td>
+                                                            <td><input name="httt[@j].SoThamChieu" value="@khtt[j].SoThamChieu" class="form-control input-sm" readonly title="Không được sửa do đã có phiếu thu nợ dịch vụ" /></td>
+                                                            <td>
+                                                                <input type="checkbox" class="chkTinhTrang" @(khtt[j].TinhTrang ? "checked" : "" ) readonly disabled title="Không được sửa do đã có phiếu thu nợ dịch vụ" />
+                                                                <input type="hidden" class="TinhTrang" name="httt[@j].TinhTrang" value="@(khtt[j].TinhTrang.ToString())" readonly title="Không được sửa do đã có phiếu thu nợ dịch vụ" />
+                                                                <input type="hidden" class="IsDeleted" name="httt[@j].IsDeleted" value="false" />
+                                                            </td>
+                                                            <td></td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td>Tổng cộng :</td>
+                                                    <td class="Total">@totalKHTT.ToString().Replace(",", ".")</td>
+                                                    <td></td>
+                                                    <td></td>
+
+                                                    <td class="right">
+                                                        @if (nophaithu.SoTienDaTra == 0)
+                                                        {
+                                                            <i class="fa fa-plus addHTTT" style="cursor:pointer"></i>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                @if (phukiendichvu.Count >= 0)
+                                {
+                                    double a = 0;
+                                    int b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group table-responsive">
+                                            <label>Phụ kiện dịch vụ:</label>
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="KHO_PKDV">
+                                                    @foreach (var i in phukiendichvu)
+                                                    {
+                                                        a += i.COST;
+                                                        b += (int)i.DISCOUNT;
+                                                        <tr class="@changeTypeClass">
+                                                            <td>
+                                                                @i.JOBSNAME
+                                                                <input type="hidden" name="ptdv[@z].Id" value="@i.Id" />
+                                                                <input type="hidden" name="ptdv[@z].MaKho" class="MaKho" value="@i.MaKho" />
+                                                                <input type="hidden" name="ptdv[@z].PhanLoai" class="PhanLoai" value="@i.PhanLoai" />
+                                                                <input type="hidden" name="ptdv[@z].VAT" value="@i.VAT" />
+                                                            </td>
+                                                            <td class="number">@i.COST</td>
+                                                            <td class="number">@i.DISCOUNT</td>
+                                                            <td class="number">@(i.COST - i.DISCOUNT)</td>
+                                                            <td>
+                                                                @if (suaGCN == true)
+                                                                {
+                                                                    <input type="text" name="ptdv[@z].GCN" style="display:none" value="@i.GCN" onchange="CalThanhToanGCN()" class="number form-control input-sm numberGCN" required="" />
+                                                                }
+                                                                else
+                                                                {
+                                                                    <input type="text" name="ptdv[@z].GCN" style="display:none" value="@i.GCN" onchange="CalThanhToanGCN()" class="number form-control input-sm numberGCN" required="" readonly title="Không được sửa do đã có phiếu chi gia công ngoài" />
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number">@a</td>
+                                                        <td class="number">@b</td>
+                                                        <td class="number">@(a - b)</td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                        <div class="form-group">
+                                            <table class="table table-striped jambo_table bulk_action" style="width:100%;font-weight:bold">
+                                                <tfoot>
+                                                    <tr>
+                                                        <td style="width:40%">Tổng cộng:</td>
+                                                        <td style="width:20%" class="number">@ViewBag.TongGiaBan</td>
+                                                        <td style="width:20%" class="number">@ViewBag.TongGiamGia</td>
+                                                        <td style="width:20%" class="number">@ViewBag.TongThucThu</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:40%">VAT:</td>
+                                                        <td style="width:20%" class="number">@ViewBag.TongGiaBanVAT</td>
+                                                        <td style="width:20%" class="number">@ViewBag.TongGiamGiaVAT</td>
+                                                        <td style="width:20%" class="number">@ViewBag.TongThucThuVAT</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:40%">Tổng cộng(VAT):</td>
+
+                                                        <td style="width:20%" class="number">@ViewBag.TongGiaBanSauVAT</td>
+                                                        <td style="width:20%" class="number">@ViewBag.TongGiamGiaSauVAT</td>
+                                                        <td style="width:20%" class="number">@ViewBag.TongThucThuSauVAT.ToString().Replace(",", ".")</td>
+                                                    </tr>
+
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Nợ:</label>
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Còn nợ</th>
+                                                    <th>Người bảo lãnh</th>
+                                                    <th>Số tiền đã trả</th>
+                                                    <th>Còn lại</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (nophaithu != null)
+                                                {
+                                                    <tr>
+                                                        <td id="Total" class="number">@nophaithu.SoTienNo.ToString().Replace(",", ".")</td>
+                                                        <td>
+                                                            <input type="hidden" name="NPT.MaPhieuNo" id="NPT_MaPhieuNo" value="@nophaithu.MaPhieuNo" />
+                                                            <input type="hidden" name="NPT.SoTienNo" id="NPT_SoTienNo" value="@nophaithu.SoTienNo" />
+                                                            <input type="hidden" name="NPT.SoTienDaTra" id="NPT_SoTienDaTra" value="@nophaithu.SoTienDaTra" />
+                                                            @if (nophaithu.SoTienDaTra == 0)
+                                                            {
+                                                                <input id="NguoiBaoLanh" name="NPT.NguoiBaoLanh" type="text" class="form-control input-sm" value="@nophaithu.NguoiBaoLanh" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input id="NguoiBaoLanh" name="NPT.NguoiBaoLanh" type="text" class="form-control input-sm" value="@nophaithu.NguoiBaoLanh" readonly />
+                                                            }
+                                                        </td>
+                                                        <td class="number" name="SoTienDaTra" id="SoTienDaTra">@nophaithu.SoTienDaTra</td>
+                                                        <td class="number" name="SoTienConLai" id="SoTienConLai">@nophaithu.SoTienConLai</td>
+                                                    </tr>
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td id="Total" class="number">@nophaithu.SoTienNo.ToString().Replace(",", ".")</td>
+                                                        <td>
+                                                            <input type="hidden" name="NPT.MaPhieuNo" id="NPT_MaPhieuNo" value="0" />
+                                                            <input type="hidden" name="NPT.SoTienNo" id="NPT_SoTienNo" value="0" />
+                                                            <input type="hidden" name="NPT.SoTienDaTra" id="NPT_SoTienDaTra" value="0" />
+                                                            <input id="NguoiBaoLanh" name="NPT.NguoiBaoLanh" type="text" class="form-control input-sm" value="" />
+                                                        </td>
+                                                        <td class="number" name="SoTienDaTra" id="SoTienDaTra">0</td>
+                                                        <td class="number" name="SoTienConLai" id="SoTienConLai">0</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Ghi chú</label>
+                                        @Html.TextAreaFor(x => Model.obj.GhiChu, new { @class = "form-control input-sm" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Kế toán trưởng</label>
+                                        @Html.DropDownListFor(x => Model.obj.KeToanTruong, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Người lập phiếu</label>
+                                        @Html.DropDownListFor(x => Model.obj.NguoiLapPhieu, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Người nộp tiền</label>
+                                        @Html.DropDownListFor(x => Model.obj.NguoiNopTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Người thu tiền(*)</label>
+                                        @Html.DropDownListFor(x => Model.obj.NguoiThuTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (ViewBag.action != "View")
+    {
+        <div class="row" style="position:fixed;bottom:0;left:50%">
+            <input type="hidden" name="submitType" id="submitType" value="New" />
+            <input type="submit" value="Lưu" onClick="SetSubmitType('Save');" class="btn btn-success Save" />
+            @*<input type="submit" onclick="return false;" value="In" class="btn btn-success" />*@
+            <input type="submit" name="submit" id="New" value="Lưu và thêm mới" onClick="SetSubmitType('New');" class="btn btn-success New" />
+        </div>
+    }
+    else
+    {
+        <a href="/SoThu/Index" class="Back">Quay lại</a>
+    }
+</form>
+<div class="modal fade" id="Modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Chuyển loại</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <select class="form-control input-sm" id="selectType">
+                            <option value="">Chọn</option>
+                            <option value="SuaChua">Sửa chữa chung</option>
+                            <option value="KHO_DS">Đồng sơn - sơn xe</option>
+                            <option value="KHO_PTT">Phụ tùng trong</option>
+                            <option value="KHO_PTN">Phụ tùng ngoài</option>
+                            <option value="KHO_PKDV">Phụ kiện dịch vụ</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-success" id="ChangeType" data-dismiss="modal">Thay đổi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="context-menu2" >
+    @if (readOnly == "")
+    {
+    <ul class="dropdown-menu pull-left" role="menu" >
+        <li>
+            <a onclick="ChangeType('SuaChua')" href="javascript:;">
+                Sửa chữa chung
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_DS')" href="javascript:;">
+                Đồng sơn - sơn xe
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_PTT')" href="javascript:;">
+                Phụ tùng trong
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_PTN')" href="javascript:;">
+                Phụ tùng ngoài
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_PKDV')" href="javascript:;">
+                Phụ kiện dịch vụ
+            </a>
+        </li>
+    </ul>
+    }
+    else
+    {
+        <ul>
+            <li>Phiếu đã trả nợ không thể thay đổi kho</li>
+        </ul>
+    }
+</div>
+@*<a href="/SoThu/DVIndex?tab=2" class="Back">Quay lại</a>*@
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/SoThuCommon.js"></script>
+    <style>
+        .changeType {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        //calCoc();
+        Cal();
+
+        function SetSubmitType(value) {
+            debugger;
+            Cal();
+            $("#submitType").val(value);
+        }
+        function OnChecked() {
+            var LBH = $("#LoaiBH").prop('checked') == true ? "XKG" : "";
+            $("#LoaiBaoHiem").val(LBH);
+        }
+        //so tien tong cong da co VAT tu database nen khong can nhan 1.1 nua
+        var tongTienPhaiThuDaCoVAT = '@ViewBag.TongThucThuSauVAT';
+        var totalresult = 0;
+        $("#form-data").submit(function () {
+            debugger;
+            Cal();
+            let flag = true;
+            $("#tbody").find("tr").map(function (key, val) {
+                var isDeleted = $(val).find(".IsDeleted").val();
+                if (isDeleted != "true") {
+                    var tuitien = $(val).find(".Temp").select2('val');
+                    var sotien = $(val).find(".number").val().split(",").join("");
+                    tuitien = tuitien == "Chọn" ? "" : tuitien;
+                    sotien = sotien == "" ? 0 : parseInt(sotien);
+
+                    if (tuitien != "" && sotien === 0) {
+                        toastWarning("Vui lòng nhập số tiền");
+                        $(val).find(".number").focus();
+                        flag = false;
+                        return;
+                    }
+                    if (tuitien == "" && sotien != 0) {
+                        toastWarning("Vui lòng nhập túi tiền");
+                        $(val).find(".Temp").focus();
+                        flag = false;
+                        return;
+                    }
+                }
+            })
+            if (!flag) {
+                return false;
+            }
+            /*
+            var STTT = parseInt($(".BHTT").val().split(",").join(""));
+            var MNH = $(".MaNganHang").val();
+            if (MNH != "" && STTT == 0) {
+                toastWarning("Vui lòng nhập số tiền bảo hiểm ");
+
+                return false;
+            }
+            if (MNH == "" && STTT != 0) {
+                toastWarning("Vui lòng nhập công ty bảo hiểm ");
+                return false;
+            }
+            */
+            if (CheckValidatePhieuDichVu() == false)
+                return false;
+
+            //if (totalresult > 0 && $("#NguoiBaoLanh").val() == "") {
+            //    toastWarning("Vui lòng nhập thông tin Người bảo lãnh.");
+            //    $("#NguoiBaoLanh").focus();
+            //    return false;
+            //}
+
+            if (CheckValidateThongTinNguoiThanhToan_PhieuThu() == false)
+                return false;
+            var lst = $(".number");
+            lst.map(function (key, val) {
+                $(val).val($(val).val().split(",").join(""));
+            });
+
+        })
+        i = '@khtt.Count';
+        $(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if(Model.CTPT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + khtt[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + khtt[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + khtt[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+        function Remove(a) {
+            debugger;
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            Cal();
+        }
+        function Cal() {
+            setTimeout(function () {
+                debugger;
+                if (isNaN(tongTienPhaiThuDaCoVAT))
+                    tongTienPhaiThuDaCoVAT = 0;
+                var soTienNo = tongTienPhaiThuDaCoVAT;
+                //phan moi chinh sua
+                //tinh tien thanh toan tren luoi thanh toan
+                var tienThanhToan = 0;
+                $("#tbody").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien = parseInt($(val).find(".number").val().split(",").join(""));
+                            if (isNaN(sotien))
+                                sotien = 0;
+                            tienThanhToan += sotien;
+                        }
+                    }
+                });
+                //set gia tri tong tien thanh toan tren luoi thanh toan
+                $("#ThanhToan").find(".Total").html(tienThanhToan.toLocaleString('en-us'));
+                //tionh tong tien thanh toa coc, bao hiem, ngan hang
+                $(".SoTienThanhToan").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        let number = $(this).val();
+                        if (number != "") {
+                            var num = $(val).val().split(",").join("");
+                            if (num != "") {
+                                num = parseInt(num);
+                                if (isNaN(num))
+                                    num = 0;
+                                soTienNo = soTienNo - num;
+                            }
+                        }
+                    }
+                });
+
+                //if (isDeleted != "true") {
+                //    let number = $(this).val();
+                //    alert(number);
+                //    if (number != "") {
+                //        number = number.split(",").join("");
+                //        number = parseInt(number);
+                //        total += number;
+                //        $(".Total").html(total.toLocaleString('en-us'));
+                //        alert(total);
+                //    }
+                //}
+                //});
+
+                //gia tri hien thi con no
+
+                $("#Total").html(soTienNo.toLocaleString('en-us'));
+
+
+                //hidden con no
+                $("#NPT_SoTienNo").val(soTienNo);
+                //var tiennganhang = 0;
+                var soTienDaTraNo = parseFloat($("#SoTienDaTra").html().split(",").join(""));
+                var soTienConLai = Math.round(soTienNo - soTienDaTraNo);
+                $("#SoTienConLai").html(soTienConLai.toLocaleString('en-us'));
+                totalresult = soTienNo;
+                //var k = 0;
+                //$("#ThanhToan").find(".number").map(function (key, val) {
+
+                //    let i = parseInt($(val).val().split(",").join(""));
+                //    if (!isNaN(i))
+                //        k += i;
+                //});
+
+            }, 100);
+
+        }
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+        $(document).on("change", ".number", function () {
+            var val = $(this).val();
+            if (val != "") {
+                val = val.split(",").join("");
+                val = parseInt(val);
+                $(this).val(val.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+            //let total = 0;
+            Cal();
+        });
+        function calCoc(a) {
+            //var num = $(a).val().split(",").join("");
+            //var tot = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+            //$(a).closest("tr").find(".SoTienConLai").val((tot - num).toLocaleString('en-us'));
+            //Cal();
+
+
+            setTimeout(function () {
+                var stsd = $(a).val();
+                stsd = stsd.split(",").join("");
+                var stctsd = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+                if (stctsd - stsd < 0) {
+                    toastError("Số tiền sử dụng cọc không được lớn hơn số tiền có thể sử dụng.Vui lòng nhập lại.");
+                    $(a).focus();
+                    $(a).val(0);
+                    $(a).closest("tr").find(".SoTienConLai").val(stctsd);
+                }
+                else
+                    $(a).closest("tr").find(".SoTienConLai").val((stctsd - stsd).toLocaleString('en-us'));
+            }, 100);
+            Cal();
+        }
+        var selected = {};
+
+        var selected = {};
+        var a;
+        $.contextMenu({
+            selector: '.changeType',
+            callback: function (key, options) {
+                debugger;
+                selected = $(this);
+                //$(selected).find(".numberGCN").val(0);
+
+                if (key != "SuaChua") {
+                    $(selected).find(".numberGCN").hide();
+                }
+                else {
+                    $(selected).find(".numberGCN").show();
+                }
+                $(selected).find(".PhanLoai").val(key);
+                var html = "<tr class='changeType'>" + $(selected).html() + "</tr>";
+                $("." + key).append(html);
+                $(selected).remove();
+                CalChange();
+            },
+            items: {
+                "SuaChua": { name: "Sửa chữa chung" },
+                "KHO_DS": { name: "Đồng sơn - sơn xe" },
+                "KHO_PTT": { name: "Phụ tùng trong" },
+                "KHO_PTN": { name: "Phụ tùng ngoài" },
+                "KHO_PKDV": { name: "Phụ kiện dịch vụ" },
+            }
+        });
+
+        //$(document).on("dblclick", ".changeType", function () {
+        //    selected = $(this);
+        //    $("#Modal").modal();
+        //});
+        $(document).on("click", "#ChangeType", function () {
+            debugger;
+            var result = $("#selectType").val();
+            if (result != "SuaChua") {
+                selected.find(".numberGCN").hide();
+            }
+            else {
+                selected.find(".numberGCN").show();
+            }
+            selected.find(".PhanLoai").val(result);
+
+            var html = "<tr class='changeType'>" + selected.html() + "</tr>";
+            $("." + result).append(html);
+            selected.remove();
+            CalChange();
+        })
+
+        function CalThanhToanGCN() {
+            debugger;
+            setTimeout(function () {
+                var table = $(".SuaChua").closest("table");
+                result = 0;
+                $(table).find(".numberGCN").map(function (key, val) {
+                    result += parseInt($(val).val().split(",").join(""));
+                })
+                $(table).find(".TotalGCN").html(result.toLocaleString('en-us'));
+            }, 300);
+        }
+        var arr = "SuaChua,KHO_DS,KHO_PTT,KHO_PTN,KHO_PKDV".split(",");
+        function CalChange() {
+            arr.map(function (val, key) {
+                debugger;
+                giaban = 0;
+                giamgia = 0;
+                thucthu = 0;
+                $("." + val).find("tr").map(function (key, val) {
+                    var number = $(val).find("td.number");
+                    giaban += parseInt($(number[0]).html().split(",").join(""));
+                    giamgia += parseInt($(number[1]).html().split(",").join(""));
+                    thucthu += parseInt($(number[2]).html().split(",").join(""));
+                })
+                var result = $("." + val).closest("table").find("tfoot").find("td.number");
+                $(result[0]).html(giaban.toLocaleString('en-us'))
+                $(result[1]).html(giamgia.toLocaleString('en-us'))
+                $(result[2]).html(thucthu.toLocaleString('en-us'))
+            })
+            CalThanhToanGCN();
+        }
+    </script>
+}

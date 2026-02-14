@@ -1,0 +1,141 @@
+﻿@using System.Data
+<div id="tab_XDSC">
+    <div class="x_content">
+        <div id="BCKiemToan_XDSC_div" class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='8' class="tile">DANH SÁCH CHI TEST DRIVER</th>
+                    </tr>
+                    <tr>
+                        <th colspan='8' class="tile">@ViewBag.TuNgayDenNgay</th>
+                    </tr>
+                    <tr class="headings">
+                        <th rowspan="2" class="column-title">STT</th>
+                        <th rowspan="2" class="column-title">Ngày</th>
+                        <th rowspan="2" class="column-title">Diễn giải</th>
+                        <th colspan="4" class="column-title">TEST DRIVER</th>
+                        <th rowspan="2" class="column-title">Tiền Giang</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">An Giang</th>
+                        <th class="column-title">Cà Mau</th>
+                        <th class="column-title">Bạc Liêu</th>
+                        <th class="column-title">Kiên Giang</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     @if (Model != null)
+                     {
+                         int intCount = 0;
+                         double TongAG = 0, TongCM = 0, TongBL = 0, TongKG = 0, TongTG = 0, TC = 0;
+                         foreach (DataRow row in (Model as DataTable).Rows)
+                         {
+
+                             TongAG += row["AnGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["AnGiang"]);
+                             TongCM += row["CaMau"].ToString() == "" ? 0 : Convert.ToDouble(row["CaMau"]);
+                             TongBL += row["BacLieu"].ToString() == "" ? 0 : Convert.ToDouble(row["BacLieu"]);
+                             TongKG += row["KienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["KienGiang"]);
+                             TongTG += row["TienGiang"].ToString() == "" ? 0 : Convert.ToDouble(row["TienGiang"]);
+                             <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                 <td>@row["NgayChi"]</td>
+                                 <td width="500PX">@row["DienGiai"]</td>
+                                 <td class="number">@row["AnGiang"]</td>
+                                 <td class="number">@row["CaMau"]</td>
+                                 <td class="number">@row["BacLieu"]</td>
+                                 <td class="number">@row["KienGiang"]</td>
+                                 <td class="number">@row["TienGiang"]</td>
+                             </tr>
+                         }
+                         TC = TongAG + TongCM + TongBL + TongKG + TongTG;
+                         <tr class="even pointer" style="background-color: orange; font-weight:bold">
+                             <td colspan="3"></td>
+                             <td class="number">@TongAG.ToString()</td>
+                             <td class="number">@TongCM.ToString()</td>
+                             <td class="number">@TongBL.ToString()</td>
+                             <td class="number">@TongKG.ToString()</td>
+                             <td class="number">@TongTG.ToString()</td>
+                         </tr>
+                         <tr class="even pointer" style="background-color:lightblue; font-weight:bold">
+                             <td colspan="3">TỔNG CỘNG</td>
+                             <td colspan="5" class="number" style="text-align:center">@TC.ToString()</td>
+                         </tr>
+                     }
+
+                </tbody>
+            </table>
+            <br/><br/>
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='7' class="tile">DANH SÁCH CHI XÂY DỰNG SỬA CHỮA</th>
+                    </tr>
+                    <tr>
+                        <th colspan='7' class="tile">@ViewBag.TuNgayDenNgay</th>
+                    </tr>
+                    <tr class="headings">
+                        <th  class="column-title">STT</th>
+                        <th  class="column-title">Ngày phát sinh</th>
+                        <th  class="column-title">Danh mục xây dựng sửa chữa</th>
+                        <th  class="column-title">Thành tiền</th>
+                        <th  class="column-title">Thời gian khấu hao</th>
+                        <th class="column-title">Giá trị khấu hao</th>
+                        <th class="column-title">Giá trị còn lại</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewBag.XDSC != null)
+                    {
+                        int intCount = 0;
+                        double TongTien = 0, TongTienCL = 0;
+                        foreach (DataRow row in ViewBag.XDSC.Rows)
+                        {
+                            TongTien += row["GiaMua"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaMua"]);
+                            TongTienCL += row["Giatriconlai"].ToString() == "" ? 0 : Convert.ToDouble(row["Giatriconlai"]);
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["NgayChi"]</td>
+                                <td width="500px">@row["TenTaiSan"]</td>
+                                <td class="number">@row["GiaMua"].ToString()</td>
+                                <td></td>
+                                <td></td>
+                                <td class="number">@row["Giatriconlai"].ToString()</td>
+                            </tr>
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="3">TỔNG CỘNG</td>
+                            <td class="number">@TongTien</td>
+                            <td colspan="2"></td>
+                            <td class="number">@TongTienCL</td>
+                        </tr>
+                    }
+                    
+
+                    </tbody>
+        
+                    </table>
+        
+                </div>
+        
+            </div>
+        </div>
+        <script type="text/javascript">
+    $("td.number").map(function (key, val) {
+                            var val = $(this).html();
+                            //val = val.replace(",", ".");
+                            val = val.split(",").join("");
+                            val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+                        })
+    $("td.numberRE").map(function (key, val) {
+                            var val = $(this).html();
+                            val = val.replace(",", ".");
+                            val = val.split(",").join("");
+                            val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+                        })
+</script>
+
+
+

@@ -1,0 +1,111 @@
+﻿@using System.Data;
+@{
+    DateTime ToDate = ViewBag.ToDate;
+    ToDate = new DateTime(ToDate.Year, ToDate.Month, DateTime.DaysInMonth(ToDate.Year, ToDate.Month));
+    DataTable dtbTotalDeposit = (Model as DataTable);
+    double TotalBoCoc = 0, TotalNamTruoc = 0, TotalSauThangTruoc = 0, TotalTruoc6Thang = 0,
+        TotalTruoc5Thang = 0, TotalTruoc4Thang = 0, TotalTruoc3Thang = 0, TotalTruoc2Thang = 0,
+        TotalTruoc1Thang = 0, TotalTruoc0Thang = 0, TotalTongCong = 0;
+    DateTime Year2 = DateTime.Now;
+    DateTime Year1 = DateTime.Now;
+    if (ToDate.AddMonths(-6).Month != 1)
+    {
+        Year2 = ToDate.AddMonths(-6).AddYears(-2);
+    }
+    else
+    {
+        Year2 = ToDate.AddMonths(-6).AddYears(-3);
+    }
+    Year1 = Year2.AddYears(1);
+}
+<div class="x_content">
+    <div id="BCTongCocXe" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='14' class="tile">TỔNG CỌC XE @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan='14' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title">NGÀY THEO DÕI</th>
+                    <th class="column-title">BỎ CỌC</th>
+                    <th class="column-title">NĂM @Year2.Year</th>
+                    <th class="column-title">NĂM @Year1.Year</th>
+                    <th class="column-title">Đến @ToDate.AddMonths(-7).ToString("dd/MM/yyyy")</th>
+                    <th class="column-title">@("T" + ToDate.AddMonths(-6).ToString("MM/yyyy"))</th>
+                    <th class="column-title">@("T" + ToDate.AddMonths(-5).ToString("MM/yyyy"))</th>
+                    <th class="column-title">@("T" + ToDate.AddMonths(-4).ToString("MM/yyyy"))</th>
+                    <th class="column-title">@("T" + ToDate.AddMonths(-3).ToString("MM/yyyy"))</th>
+                    <th class="column-title">@("T" + ToDate.AddMonths(-2).ToString("MM/yyyy"))</th>
+                    <th class="column-title">@("T" + ToDate.AddMonths(-1).ToString("MM/yyyy"))</th>
+                    <th class="column-title">@("T" + ToDate.AddMonths(-0).ToString("MM/yyyy"))</th>
+                    <th class="column-title">TỔNG CỘNG</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                @foreach (DataRow row in dtbTotalDeposit.Rows)
+                {
+
+                    TotalBoCoc += row["BoCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["BoCoc"]);
+                    TotalBoCoc += row["HaiNamTruoc"].ToString() == "" ? 0 : Convert.ToDouble(row["BoCoc"]);
+                    //TotalHaiNamTruoc += row["HaiNamTruoc"].ToString() == "" ? 0 : Convert.ToDouble(row["HaiNamTruoc"]);
+                    TotalNamTruoc += row["NamTruoc"].ToString() == "" ? 0 : Convert.ToDouble(row["NamTruoc"]);
+                    TotalSauThangTruoc += row["SauThangTruoc"].ToString() == "" ? 0 : Convert.ToDouble(row["SauThangTruoc"]);
+                    TotalTruoc6Thang += row["Truoc6Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["Truoc6Thang"]);
+                    TotalTruoc5Thang += row["Truoc5Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["Truoc5Thang"]);
+                    TotalTruoc4Thang += row["Truoc4Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["Truoc4Thang"]);
+                    TotalTruoc3Thang += row["Truoc3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["Truoc3Thang"]);
+                    TotalTruoc2Thang += row["Truoc2Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["Truoc2Thang"]);
+                    TotalTruoc1Thang += row["Truoc1Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["Truoc1Thang"]);
+                    TotalTruoc0Thang += row["Truoc0Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["Truoc0Thang"]);
+                    TotalTongCong += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                    <tr class="even pointer">
+                        <td>@DateTime.Now.ToString("dd/MM/yyyy")</td>
+                        <td class="number">@row["BoCoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["HaiNamTruoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["NamTruoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["SauThangTruoc"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["Truoc6Thang"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["Truoc5Thang"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["Truoc4Thang"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["Truoc3Thang"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["Truoc2Thang"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["Truoc1Thang"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["Truoc0Thang"].ToString().Replace(",", ".")</td>
+                        <td class="number">@row["TongCong"].ToString().Replace(",", ".")</td>
+                    </tr>
+                }
+                @*<tr class="even pointer">
+                    <td>TỔNG CỌC</td>
+                    <td class="number">@TotalBoCoc</td>
+                    <td class="number">@TotalHaiNamTruoc</td>
+                    <td class="number">@TotalNamTruoc</td>
+                    <td class="number">@TotalSauThangTruoc</td>
+                    <td class="number">@TotalTruoc6Thang</td>
+                    <td class="number">@TotalTruoc5Thang</td>
+                    <td class="number">@TotalTruoc4Thang</td>
+                    <td class="number">@TotalTruoc3Thang</td>
+                    <td class="number">@TotalTruoc2Thang</td>
+                    <td class="number">@TotalTruoc1Thang</td>
+                    <td class="number">@TotalTruoc0Thang</td>
+                    <td class="number">@TotalTongCong</td>
+                </tr>*@
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

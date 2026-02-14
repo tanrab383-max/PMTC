@@ -1,0 +1,456 @@
+﻿@model TNK.Model.SoThuModel
+
+@{
+    var item = Model.NPT;
+    var hoahong = Model.ViewPhieuThu != null ? Model.ViewPhieuThu.HoaHong : 0;
+    string ids = ViewBag.Id;
+    var flag = (ViewBag.Type == "NBHDV" || ViewBag.Type == "NHHBH" || ViewBag.Type == "NHHHB" || ViewBag.Type == "NHHGP") && ids.Contains(";");
+    double totalCoc = 0;
+    int dem = 0;
+    if(Model.CocCongNo != null)
+    {
+        dem = Model.CocCongNo.Count;
+    }
+
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>   
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b>Thông tin</b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="form-data" method="post" class="form-horizontal form-label-left">
+                    <input type="hidden" name="item.HoTen" value="@item.KhachHang" />
+                    <input type="hidden" name="item.MaLoaiPhieu" value="@item.LoaiPhieuNo" />
+                    <input type="hidden" name="item.MaPhieuLienQuan" value="@item.MaPhieuNo" />
+                    <input type="hidden" id="Type" value="@ViewBag.Type" />
+                    <input type="hidden" name="ChuoiUpdatedDate" value="@ViewBag.ChuoiUpdatedDate" />
+                    @Html.HiddenFor(x => item.DiaChi)
+                    @Html.HiddenFor(x => item.SoHopDong)
+                    @Html.HiddenFor(x => item.BienSo)
+                    @Html.HiddenFor(x => item.MaPhieuNo)
+                    @Html.Hidden("item.DoiTac",item.DonViNo)
+                    @Html.Hidden("Ids", ids)
+                    
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số chứng từ (*)</label>
+                                @Html.Editor("item.SoChungTu", new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "10", @value = item.ChungTuThu } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày thu</label>
+                                <input type="text" class="form-control input-sm date " name="item.NgayThu" value="@DateTime.Now.ToString("dd/MM/yyyy")" required />
+                            </div>
+                        </div>
+                        @*@if (ViewBag.Type == "NTAUN")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Lý do chi (*)</label>
+                                    <input type="hidden" class="CTPTId" value="" />
+                                    <select class="select2 fullwidth" name="item.LyDoChi" id="LDC">
+                                        <option value="">Chọn</option>
+                                        <option value="CP">Chi Phí</option>
+                                        <option value="GCN">Gia Công Ngoài</option>
+                                        <option value="VTX">Vật Tư Xưởng</option>
+                                        <option value="KHAC">Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+                        }*@
+                        @*@if (ViewBag.Type == "NBHDV")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đối tác (*)</label>
+                                    @Html.DropDownList("item.DoiTac", Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaVietTat }), "Chọn", new { @class = "select2 fullwidth",@id="DoiTac", @onchange = "DanhSachCoc(this)" })
+                                </div>
+                            </div>
+                        }*@
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Thông tin @ViewBag.KhachHangNoTitle </label>
+                                <textarea class="form-control input-sm" rows="3" readonly>@Html.Raw(item.KhachHang)</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Nội dung</label>
+                                @Html.TextArea("item.NoiDung", new { @class = "form-control input-sm" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số tiền nợ</label>
+                                <input type="text" class="form-control input-sm number" readonly value="@(Math.Round(item.SoTienNo))" />
+                            </div>
+                        </div>
+                        @if (ViewBag.Type == "NNHBX")
+                       {
+                            if (ViewBag.NoPhieuThu.Count <= 0)
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Hoa hồng ngân hàng</label>
+                                        <input type="text" class="form-control input-sm number"  name="item.HoaHong" value="@Model.ViewPhieuThu.HoaHong" />
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Hoa hồng ngân hàng</label>
+                                        <input type="text" class="form-control input-sm number" readonly name="item.ConNo" value="@hoahong" />
+                                    </div>
+
+                                </div>
+
+                            }
+                        }
+                    </div>
+                    @if (ViewBag.Type == "NNHBX" || ViewBag.Type == "NBHDV"
+                        || ViewBag.Type == "NHHBH" || ViewBag.Type == "NDIVU"
+                        || ViewBag.Type == "NBAXE" || ViewBag.Type == "NPTPK"
+                        || ViewBag.Type == "NVAMU" || ViewBag.Type == "NTAUN"
+                        || ViewBag.Type == "NoTMV" || ViewBag.Type == "NBATS"
+                        || ViewBag.Type == "NTKHA" || ViewBag.Type == "NHHHB"
+                        || ViewBag.Type == "NHHGP" || ViewBag.Type =="CHIHO")
+                    {
+                        <div class="row" >@*style="display:@(!flag?"block":"none")">*@
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Còn nợ</label>
+                                    <input type="text" class="form-control input-sm number ConNo" readonly name="item.ConNo" id="ConNo" value="@(Math.Round(item.SoTienConLai,1))" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row" >@*style="display:@(!flag?"block":"none")">*@
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Còn nợ</label>
+                                    <input type="text" class="form-control input-sm number" readonly name="item.ConNo" value="@(Math.Round(item.SoTienConLai,1))" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @if (ViewBag.Type == "NBHDV")
+                    {
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group table-responsive">
+                                    <label>Phân bổ công nợ</label>
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                            <tr>
+                                                <th>Phiếu thu</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Số tiền sử dụng</th>
+                                                <th>Còn lại</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DanhSachCoc">
+                                            @if (Model.CocCongNo != null)
+                                            {
+                                                for (int j = 0; j < Model.CocCongNo.Count; j++)
+                                                {
+                                                    var i = Model.CocCongNo[j];
+                                                    <tr>
+                                                        <td>
+                                                            <input type="hidden" name="Coc[@j].SoThamChieu" value="@i.MaPhieuThu" />
+                                                            <label class="control-label">@i.DoiTac+@i.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                        </td>
+                                                        <td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="@i.ConLai" readonly /></td>
+                                                        <td><input type="text" id="CongNo[@j]TT" name="Coc[@j].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number dungCoc" onchange="change(this)" value="0" /></td>
+                                                        <td><input type="text" class="form-control input-sm SoTienConLai number" value="@i.ConLai" readonly /></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>Tổng cộng:</td>
+                                                <td></td>
+                                                <td class="number TotalCoc" id="TongCongThanhToanCoc">0</td>
+                                                <td></td>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            @Html.Partial("~/Views/Shared/_ThanhToan_1.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT }, { "HTTT", Model.HTTT } })
+                        </div>
+                    </div>
+                    <div class="row" style="display:@(!flag?"block":"none")">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Còn lại</label>
+                                <input type="text" class="form-control input-sm number" readonly name="item.ConLai" value="@(Math.Round(item.SoTienConLai))" id="ConLai" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Kế toán trưởng</label>
+                                @Html.DropDownList("item.KeToanTruong", Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người lập phiếu</label>
+                                @Html.DropDownList("item.NguoiLapPhieu", Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người nộp tiền</label>
+                                @Html.DropDownList("item.NguoiNopTien", Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người thu tiền (*)</label>
+                                @Html.DropDownList("item.NguoiThuTien", Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group center">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <input type="submit" name="submit" id="Create" value="Lưu" class="btn btn-success" />
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="/SoThu/ThuNo/@item.LoaiPhieuNo" class="Back">Quay lại</a>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    @if (ViewBag.Type == "NoTMV")
+    {
+        <script src="~/Scripts/KMTMVCommon.js"></script>
+    }
+    else
+    {
+        <script src="~/Scripts/SoThuCommon.js"></script>
+    }
+    @*<script src="~/Scripts/SoThuCommon.js"></script>*@
+    <script>
+        i = '@Model.CTPT.Count';
+        $(".addHTTT").click(function () {
+                    var html = tr.split("httt[0]").join("httt[" + i + "]");
+                    @if(Model.CTPT.Count>0)
+            {
+                        @Html.Raw("html=html.replace('" + Model.CTPT[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+                    i++;
+                    setTimeout(function () {
+                $('.select2').select2({
+                        placeholder: "Select an option",
+                    allowClear: true
+                });
+            removeSelect();
+        }, 200);
+        })
+        $(document).on("change", ".number", function () {
+        var val = $(this).val();
+        if (val != "") {
+            val = val.split(",").join("");
+            val = parseInt(val);
+                $(this).val(val.toLocaleString('en-us'));
+        }
+        else {
+                $(this).val(0);
+        }
+    });
+        function Cal() {
+            debugger;
+        var result = conno;
+            $("table").find(".number").map(function (key, val) {
+            var isDeleted = $(val).find(".IsDeleted").val();
+            if (isDeleted != "true") {
+                var num = $(val).val().split(",").join("");
+                result = result - num;
+
+            }
+        });
+        $("#ConLai").val(result.toLocaleString('en-us'));
+    }
+    var conno = '@Math.Round(item.SoTienConLai)';
+        $(document).on("change", ".number .TongCongThanhToanText", function () {
+        setTimeout(function () {
+            Cal();
+        }, 100);
+    });
+        $("#form-data").submit(function () {
+            debugger;
+        let flag = true;
+        if ($("#item_SoChungTu").val() == "") {
+            toastWarning("Vui lòng nhập số chứng từ");
+                $("#item_SoChungTu").focus();
+            return false;
+        }
+            $("#tbody").find("tr").map(function (key, val) {
+            if ($(val).is(":visible")) {
+
+                var tuitien = $(val).find(".Temp").select2('val');
+                var sotien = $(val).find(".number").val().split(",").join("");
+                tuitien = tuitien == "Chọn" ? "" : tuitien;
+                sotien = sotien == "" ? 0 : parseInt(sotien);
+                if (tuitien != "" && sotien === 0) {
+                    toastWarning("Vui lòng nhập số tiền");
+                        $(val).find(".number").focus();
+                    flag = false;
+                    return;
+                }
+                if (tuitien == "" && sotien != 0) {
+                    toastWarning("Vui lòng nhập túi tiền");
+                        $(val).find(".Temp").focus();
+                    flag = false;
+                    return;
+                }
+            }
+            })
+        if($("#Type").val() != "NBHDV")
+        {
+            Cal();
+        }
+        else
+        {
+            var a = $("#ConLai").val();
+            if(parseInt($("#ConLai").val().split(",").join("")) < 0)
+            {
+                toastWarning("Số tiền thanh toán không được lớn hơn số tiền còn nợ");
+                return false;
+            }
+        }
+        if (!flag) {
+            return false;
+        }
+        let number = parseInt($("#ConLai").val().split(",").join(""));
+        var check = $("#ConLai").val();
+        if (number < 0) {
+            if($("#Type").val() != "NoTMV")
+            {
+                toastWarning("Số tiền thanh toán không được lớn hơn số tiền còn nợ");
+                return false;
+            }
+        }
+        debugger;
+        // alert($("#Type").val());
+        //if ($("#Ids").val().split(";").length > 1) {
+        if (
+            ($("#Type").val() == 'NHHBH' || $("#Type").val() == 'NBHDV' || $("#Type").val() == 'NHHHB' || $("#Type").val() == 'NHHGP' || $("#Type").val() == 'NTKHA')//trả hết thanh toán == tiền nợ
+                    && $("#Ids").val().split(";").length > 1
+                )
+            {
+            if (check != "NaN" && check != "0") {
+                toastWarning("Vui lòng nhập số tiền thanh toán bằng đúng số tiền còn nợ");
+                return false;
+            }
+        }
+        if (CheckValidateThongTinNguoiThanhToan_PhieuThu() == false)
+            return false;
+        var lst = $(".number");
+        lst.map(function (key, val) {
+                $(val).val($(val).val().split(",").join(""));
+        });
+    })
+        function change(a) {
+            debugger;
+            var num = $(a).val().split(",").join("");
+            var tot = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+            if (parseInt(num) > parseInt(tot)) {
+                var conlai = 0;
+                $(a).val(tot.toLocaleString('en-us'));
+                $(a).html(tot.toLocaleString('en-us'));
+                $(a).closest("tr").find(".SoTienConLai").val(conlai.toLocaleString('en-us'));
+            }
+            else {
+                $(a).closest("tr").find(".SoTienConLai").val((tot - num).toLocaleString('en-us'));
+            }
+            var TongCongTT = 0 ;
+            for(var i =0; i< @dem;i++)
+            {
+                if($("#CongNo\\[" + i + "\\]TT").val() != "")
+                {
+                    var sotien = parseInt($("#CongNo\\[" + i + "\\]TT").val().split(",").join(""));
+                    if(sotien == "NaN" || sotien == undefined)
+                        sotien = 0;
+                    TongCongTT += sotien;//CongNo[j]TT
+                }
+            }
+            //TongCongThanhToanCoc
+            $("#TongCongThanhToanCoc").html(TongCongTT.toLocaleString('en-us'));
+            $("#TongCongThanhToanCoc").val(TongCongTT.toLocaleString('en-us'));
+            CalThanhToan(a);
+        }
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

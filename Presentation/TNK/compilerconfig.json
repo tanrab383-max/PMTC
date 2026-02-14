@@ -1,0 +1,18 @@
+﻿[
+  {
+    "outputFile": "assests/plugins/jquery.contextMenu.css",
+    "inputFile": "assests/plugins/jquery.contextMenu.scss"
+  },
+  {
+    "outputFile": "assests/plugins/_icons.css",
+    "inputFile": "assests/plugins/_icons.scss"
+  },
+  {
+    "outputFile": "assests/plugins/_variables.css",
+    "inputFile": "assests/plugins/_variables.scss"
+  },
+  {
+    "outputFile": "assests/plugins/jQuery-contextMenu/sass/jquery.contextMenu.css",
+    "inputFile": "assests/plugins/jQuery-contextMenu/sass/jquery.contextMenu.scss"
+  }
+]

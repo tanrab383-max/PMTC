@@ -1,0 +1,87 @@
+﻿@model List<TNK.Core.Domain.View.ViewNoPhaiTra>
+@{
+    ViewBag.Title = "Danh sách phiếu nợ phải trả";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title </h3>
+      
+    </div>
+</div>
+
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+        
+            <div class="x_content">
+                <form method="get" class="row">
+                    <input type="hidden" value="@ViewBag.Type" name="type" />
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Túi tiền" placeholder="Mã phiếu chi, Khách hàng, Số chứng từ, Số HĐ, Số khung, Số máy" class="form-control input-sm " value="@ViewBag.MaTui" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="success">
+                                <th>Mã phiếu nợ</th>                             
+                                <th>Mã phiếu phát sinh</th>
+                                <th>Số tiền nợ</th>
+                                <th>Số tiền còn lại</th>
+                                <th>Loại phiếu</th>                                                 
+                                <th>Ngày phát sinh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.MaPhieuNo</td>                                   
+                                    <td>@item.MaPhieuPhatSinh</td>
+                                    <td>@item.SoTienNo.ToString("0,0")</td>
+                                    <td>@item.SoTienConLai.ToString("0,0")</td>                                   
+                                    <td>@item.LoaiPhieuNo</td>
+                                    <td>@item.CreatedDate.ToString("yyyy/MM/dd HH:mm:ss")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section scripts
+{
+    <script>
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+    </script>
+}

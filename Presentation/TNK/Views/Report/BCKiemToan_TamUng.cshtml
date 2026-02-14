@@ -1,0 +1,138 @@
+﻿@using System.Data;
+<div id="tab_TAUN">
+    <div class="x_content">
+    <div id="BCKiemToan_TamUng_div" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='11' class="tile">DANH SÁCH CHI TIẾT CÁC KHOẢN TẠM ỨNG</th>
+                </tr>
+                <tr>
+                    <th colspan='11' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">STT</th>
+                    <th class="column-title">Mã phiếu chi</th>
+                    <th class="column-title">Ngày Chi</th>
+                    <th class="column-title">Nội Dung</th>
+                    <th class="column-title">Lý do chi</th>
+                    <th class="column-title">Số chứng từ</th>
+                    <th class="column-title">Người ứng</th>
+                    <th class="column-title">Điện thoại</th>
+                    <th class="column-title">Số tiền</th>
+                    <th class="column-title">Thanh toán</th>
+                    <th class="column-title">Còn lại</th>
+                    <th class="column-title">Ngày hoàn ứng</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null)
+                {
+                    double TongSoTien = 0, TongThanhToan = 0, TongConLai = 0, TongSoTien_Thang = 0,
+                            TongThanhToan_Thang = 0, TongConLai_Thang = 0 ;
+                    int intCount = 0;
+
+                    DateTime datevalue = (Convert.ToDateTime(Model.Rows[0]["NgayChi"].ToString()));
+                    String MM = datevalue.Month.ToString();
+                    int k = int.Parse(MM);
+                    foreach (DataRow row in (Model as DataTable).Rows)
+                    {
+                        DateTime datevalue1 = (Convert.ToDateTime(row["NgayChi"].ToString()));
+                        MM = datevalue1.Month.ToString();
+                        int kt = int.Parse(MM);
+                        if (kt == k)
+                        {
+                            TongSoTien_Thang += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                            TongThanhToan_Thang += row["SoTienDaTra"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienDaTra"]);
+                            TongConLai_Thang += row["SoTienConLai"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienConLai"]);
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["MaPhieuChi"]</td>
+                                <td>@row["NgayChi"].ToString()</td>
+                                <td>@row["NoiDung"].ToString()</td>
+                                <td>@row["LyDoChi"].ToString()</td>
+                                <td style="text-align:left">@row["SoChungTu"].ToString()</td>
+                                <td>@row["Hoten"].ToString()</td>
+                                <td>@row["DienThoai"]</td>
+                                <td class="number">@row["TongCong"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SoTienDaTra"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SoTienConLai"].ToString().Replace(",", ".")</td>
+                                <td>@row["NgayHoanUng"].ToString()</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                <td colspan="8"><b>@datevalue.ToString("MM/yyyy")</b></td>
+                                <td class="number">@TongSoTien_Thang.ToString().Replace(",", ".")</td>
+                                <td class="number">@TongThanhToan_Thang.ToString().Replace(",", ".")</td>
+                                <td class="number">@TongConLai_Thang.ToString().Replace(",", ".")</td>
+                                <td></td>
+                            </tr>
+                            TongSoTien += TongSoTien_Thang;
+                            TongThanhToan += TongThanhToan_Thang;
+                            TongConLai += TongConLai_Thang;
+                            TongSoTien_Thang = 0; TongThanhToan_Thang = 0; TongConLai_Thang = 0;
+                            TongSoTien_Thang += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                            TongThanhToan_Thang += row["SoTienDaTra"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienDaTra"]);
+                            TongConLai_Thang += row["SoTienConLai"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienConLai"]);
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["MaPhieuChi"]</td>
+                                <td>@row["NgayChi"].ToString()</td>
+                                <td>@row["NoiDung"].ToString()</td>
+                                <td>@row["LyDoChi"].ToString()</td>
+                                <td style="text-align:left">@row["SoChungTu"].ToString()</td>
+                                <td>@row["Hoten"].ToString()</td>
+                                <td>@row["DienThoai"]</td>
+                                <td class="number">@row["TongCong"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SoTienDaTra"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SoTienConLai"].ToString().Replace(",", ".")</td>
+                                <td>@row["NgayHoanUng"].ToString()</td>
+                            </tr>
+                            k = kt;
+                            datevalue = datevalue1;
+                        }
+                    }
+                    TongSoTien += TongSoTien_Thang;
+                    TongThanhToan += TongThanhToan_Thang;
+                    TongConLai += TongConLai_Thang;
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="8"><b>@datevalue.ToString("MM/yyyy") </b></td>
+                        <td class="number">@TongSoTien_Thang.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongThanhToan_Thang.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongConLai_Thang.ToString().Replace(",", ".")</td>
+                        <td></td>
+                    </tr>
+                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                        <td colspan="8"><b>TỔNG CỘNG :</b></td>
+                        <td class="number">@TongSoTien.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongThanhToan.ToString().Replace(",", ".")</td>
+                        <td class="number">@TongConLai.ToString().Replace(",", ".")</td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+
+

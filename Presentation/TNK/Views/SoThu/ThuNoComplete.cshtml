@@ -1,0 +1,186 @@
+﻿@model List<TNK.Core.Domain.View.ViewNoDaThu>
+@{
+    Layout = null;
+    ViewBag.Type = ViewBag.Type.ToUpper();
+    int i = 1;
+}
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Mã phiếu nợ</th>
+            <th>Ngày thu</th>
+            <th>Chứng từ thu</th>
+            @if (ViewBag.Type == "NNHBX")
+            {
+                <th>Nội dung</th>
+            }
+            @if (ViewBag.Type == "NHHHB")
+            {
+                <th>Số khung</th>
+            }
+            @if (ViewBag.Type == "NTAUN")
+            {
+                <th>Lý do chi</th>
+            }
+            @if (ViewBag.Type == "NNHBX")
+            {
+                <th>Khách hàng</th>
+            }
+            @if (ViewBag.Type == "NHHGP")
+            {
+                <th>Khách hàng</th>
+            }
+            else if (ViewBag.Type == "H1GHB")
+            {
+                <th>Đối tác</th>
+            }
+            else if (ViewBag.Type == "NBHDV")
+            { 
+                <th>@ViewBag.KhachHangNoTitle</th>
+                <th>Số quyết toán</th>
+                <th>Biển số</th>                
+            }
+            else
+            {
+                <th>@ViewBag.KhachHangNoTitle</th>
+            }
+            @if (ViewBag.Type == "NHHGP")
+            {
+                <th>Ngân hàng</th>
+            }
+            @if (ViewBag.Type != "NOTMV")
+            {
+                <th>Tổng nợ</th>
+            }
+            @if (ViewBag.Type != "NBHDV" && ViewBag.Type != "NOTMV" && ViewBag.Type != "NHHGP")
+            {
+                <th>Còn nợ</th>
+            }
+            <th>Thanh toán</th>
+            @if (ViewBag.Type != "NNHBX" && ViewBag.Type != "NBATS"
+                && ViewBag.Type != "NVAMU" && ViewBag.Type != "NPTPK"
+                && ViewBag.Type != "NTAUN")
+            {
+                if (ViewBag.Type != "NBHDV" && ViewBag.Type != "NHHBH" && ViewBag.Type != "NOTMV")
+                {
+                    <th>Còn lại</th>
+                }
+            }
+            @if (ViewBag.Type == "NNHBX")
+            {
+                <th>Hoa hồng</th>
+            }
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+            <td>@Html.Raw(HttpUtility.HtmlDecode(item.MaPhieuNo))</td>
+            <td>@item.NgayThu.Value.ToString("dd/MM/yyyy")</td>
+            <td>@item.ChungTuThu</td>
+            @if (ViewBag.Type == "NNHBX")
+            {
+                <td>@item.NoiDung</td>
+            }
+            @if (ViewBag.Type == "NNHBX")
+            {
+                <td>@item.HoTenKH</td>
+            }
+            @if (ViewBag.Type == "NHHHB")
+            {
+                <td>@item.SoKhung</td>
+            }
+            @if (ViewBag.Type == "NTAUN")
+            {
+                switch (item.LyDoChi)
+                {
+                    case "CP":
+                        <td>Chi Phí</td>
+                        break;
+                    case "GCN":
+                        <td>Gia Công Ngoài</td>
+                        break;
+                    case "VTX":
+                        <td>Vật Tư Xưởng</td>
+                        break;
+                    case "KHAC":
+                        <td>Khác</td>
+                        break;
+                    default:
+                        <td></td>
+                        break;
+                }
+            }
+            <td>
+                @Html.Raw(item.KhachHang)
+            </td>
+            @if (ViewBag.Type == "NBHDV")
+            {
+                <td>@item.SoHopDong</td>
+                <td>@item.BienSo</td>
+            }
+            @if (ViewBag.Type == "NHHGP")
+            {
+                <td>@item.TenDoiTac</td>
+            }
+            @if (ViewBag.Type != "NOTMV")
+            {
+
+                <td class="number">@TNK.Core.Common.ToCurrencyString(item.SoTienNo)</td>
+            }
+            @if (ViewBag.Type != "NBHDV" && ViewBag.Type != "NOTMV" && ViewBag.Type != "NHHGP")
+            {
+                <td class="number">@TNK.Core.Common.ToCurrencyString(item.SoTienNo - item.SoTienThanhToan)</td>
+            }
+            <td class="number">@TNK.Core.Common.ToCurrencyString(item.SoTienThanhToan)</td>
+            @if (ViewBag.Type != "NNHBX" && ViewBag.Type != "NBATS"
+                && ViewBag.Type != "NVAMU" && ViewBag.Type != "NPTPK"
+                && ViewBag.Type != "NTAUN")
+            {
+                if (ViewBag.Type != "NBHDV" && ViewBag.Type != "NHHBH" && ViewBag.Type != "NOTMV")
+                {
+                    <td class="number">@TNK.Core.Common.ToCurrencyString(item.SoTienConLai)</td>
+                }
+            }
+            @if (ViewBag.Type == "NNHBX")
+            {
+                if (item.HoaHong != null)
+                {
+                    <td>@TNK.Core.Common.ToCurrencyString(item.HoaHong.Value)</td>
+                }
+                else
+                {
+                    <td>0</td>
+                }
+            }
+            @if (item.LoaiPhieuNo.Contains("H1") == true)
+            {
+                <td style="width:5%" class="center">
+                    <a href="/SoThu/ThuNoHoEdit/@item.SoPhieuQuyetToan?type=@ViewBag.Type"><i title="View" class="fa fa-eye"></i></a>
+                </td>
+            }
+            else
+            {
+                <td style="width:5%" class="center">
+                    <a href="/SoThu/ThuNoEdit/@item.SoPhieuQuyetToan?type=@ViewBag.Type"><i title="View" class="fa fa-eye"></i></a>
+                </td>
+            }
+            <td style="width:5%" class="center">
+                <a href="javascript:;" onclick="Delete(this,'@item.SoPhieuQuyetToan')"><i title="Delete" class="fa fa-close"></i></a>
+            </td>
+        </tr>
+            //i++;
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+</div>
+
+
+

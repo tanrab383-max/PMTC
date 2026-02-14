@@ -1,0 +1,40 @@
+﻿@model List<TNK.Core.Domain.PhieuThu>
+@{
+    Layout = null;
+    int i = 1;
+}
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Mã phiếu thu</th>
+            <th>Ngày thu</th>
+            <th>Chứng từ thu</th>
+            <th>Số tiền thu</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                <td>@item.MaPhieuThu</td>
+                <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                <td>@item.SoChungTu</td>
+                <td>@TNK.Core.Common.ToCurrencyString(item.SoTienThu)</td>
+                <td style="width:5%" class="center">
+                    <a href="/SoChi/THDCEdit/@item.MaPhieuThu?type=@ViewBag.Type"><i title="View" class="fa fa-eye"></i></a>
+                </td>
+                <td style="width:5%" class="center">
+                    <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+</div>

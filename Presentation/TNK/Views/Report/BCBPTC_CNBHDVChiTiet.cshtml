@@ -1,0 +1,205 @@
+﻿@using System.Data;
+
+@{
+    DateTime ToDate = ViewBag.ToDate;
+    Double tongGiaTriCongNo = 0, tongSoTienThanhToan = 0, tongSoTienNo = 0, tongHoTenKH = 0, tongMaDoiTac = 0, tongTenDoiTac = 0, tongSoHoaDon = 0, tongNgayXuatHoaDon = 0, tongNgayXacNhanCongNo = 0, tongSoNgayCongNo = 0, tongNgayThanhToan = 0, tongTongThoiGian = 0, tongTrangThai = 0, tongSoNgayTrangThai = 0;
+}
+<div id="BCBPTC_CNBHDVChiTiet">
+    <div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='22' class="tile">BÁO CÁO CÔNG NỢ BẢO HIỂM DỊCH VỤ CHI TIẾT</th>
+                    </tr>
+                    <tr class="headings">
+                        <th colspan='22' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title">STT</th>
+                        <th class="column-title">NGÀY PHÁT SINH</th>
+                        <th class="column-title">SỐ QUYẾT TOÁN</th>
+                        <th class="column-title">BIỂN SỐ XE</th>
+                        <th class="column-title">GIÁ TRỊ CÔNG NỢ</th>
+                        <th class="column-title">SỐ TIỀN THANH TOÁN</th>
+                        <th class="column-title">SỐ TIỀN NỢ</th>
+                        <th class="column-title">THÔNG TIN KHÁCH HÀNG</th>
+                        <th class="column-title">MÃ ĐỐI TÁC</th>
+                        <th class="column-title">ĐỐI TÁC BẢO HIỂM</th>
+                        <th class="column-title">SỐ HÓA ĐƠN</th>
+                        <th class="column-title">NGÀY XUẤT HÓA ĐƠN</th>
+                        <th class="column-title">NGÀY XÁC NHẬN CÔNG NỢ</th>
+                        <th class="column-title">SỐ NGÀY CÔNG NỢ</th>
+                        <th class="column-title">NGÀY THANH TOÁN</th>
+                        <th class="column-title">TỔNG THỜI GIAN</th>
+                        <th class="column-title">TRẠNG THÁI</th>
+                        <th class="column-title">SỐ NGÀY</th>
+                        <th class="column-title">LÝ DO QUÁ HẠN</th>
+                        <th class="column-title">DIỄN GIẢI</th>
+                        <th class="column-title">NGÀY NHẬP 'NGÀY XUẤT HÓA ĐƠN'</th>
+                        <th class="column-title">NGÀY NHẬP 'NGÀY XN CÔNG NỢ'</th>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @if (ViewBag.dtbCNBHChiTiet != null)
+                    {
+                        int intCount = 0;
+                        foreach (DataRow row in ViewBag.dtbCNBHChiTiet.Rows)
+                        {
+
+                            tongGiaTriCongNo += row["GiaTriCongNo"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaTriCongNo"]);
+                            tongSoTienThanhToan += row["SoTienThanhToan"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienThanhToan"]);
+                            tongSoTienNo += row["SoTienNo"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienNo"]);
+                            tongSoNgayCongNo += row["SoNgayCongNo"].ToString() == "" ? 0 : Convert.ToDouble(row["SoNgayCongNo"]);
+                            tongTongThoiGian += row["TongThoiGian"].ToString() == "" ? 0 : Convert.ToDouble(row["TongThoiGian"]);
+                            tongSoNgayTrangThai += row["SoNgayTrangThai"].ToString() == "" ? 0 : Convert.ToDouble(row["SoNgayTrangThai"]);
+
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["NgayNo"]</td>
+                                <td>@row["SoPhieuQuyetToan"]</td>
+                                <td>@row["BienSo"]</td>
+                                <td class='number'>@row["GiaTriCongNo"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTienThanhToan"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTienNo"].ToString().Replace(",", ".")</td>
+                                <td>@row["HoTenKH"]</td>
+                                <td>@row["MaDoiTac"]</td>
+                                <td>@row["TenDoiTac"]</td>
+                                <td>@row["SoHoaDon"]</td>
+                                <td>@row["NgayXuatHoaDon"]</td>
+                                <td>@row["NgayXacNhanCongNo"]</td>
+                                <td class='number'>@row["SoNgayCongNo"].ToString().Replace(",", ".")</td>
+                                <td>@row["NgayThanhToan"]</td>
+                                <td class='number'>@row["TongThoiGian"].ToString().Replace(",", ".")</td>
+                                <td>@row["TrangThai"]</td>
+                                <td class='number'>@row["SoNgayTrangThai"].ToString().Replace(",", ".")</td>
+                                <td>@row["LyDoQuaHan"]</td>
+                                <td>@row["GiaiTrinh"]</td>
+
+                                <td>@row["NgayTaoSoHoaDonLenHeThong"]</td>
+                                <td>@row["NgayTaoXacNhanCongNoLenHeThong"]</td>
+
+
+                            </tr>
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="4"><b>TỔNG NỢ BẢO HIỂM</b></td>
+                            <td class="number">@tongGiaTriCongNo.ToString().Replace(',', '.')</td>
+                            <td class="number">@tongSoTienThanhToan.ToString().Replace(',', '.')</td>
+                            <td class="number">@tongSoTienNo.ToString().Replace(',', '.')</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="number">@tongSoNgayCongNo.ToString().Replace(',', '.')</td>
+                            <td></td>
+                            <td class="number">@tongTongThoiGian.ToString().Replace(',', '.')</td>
+                            <td></td>
+                            <td class="number">@tongSoNgayTrangThai.ToString().Replace(',', '.')</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                    }
+                    @if (ViewBag.dtbCNBHChiTietKhachLe != null)
+                    {
+                        int intCount = 0;
+                        tongGiaTriCongNo = 0;
+                        tongSoTienThanhToan = 0;
+                        tongSoTienNo = 0;
+                        tongHoTenKH = 0;
+                        tongMaDoiTac = 0;
+                        tongTenDoiTac = 0;
+                        tongSoHoaDon = 0;
+                        tongNgayXuatHoaDon = 0;
+                        tongNgayXacNhanCongNo = 0;
+                        tongSoNgayCongNo = 0;
+                        tongNgayThanhToan = 0;
+                        tongTongThoiGian = 0;
+                        tongTrangThai = 0;
+                        tongSoNgayTrangThai = 0;
+                        foreach (DataRow row in ViewBag.dtbCNBHChiTietKhachLe.Rows)
+                        {
+
+                            tongGiaTriCongNo += row["GiaTriCongNo"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaTriCongNo"]);
+                            tongSoTienThanhToan += row["SoTienThanhToan"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienThanhToan"]);
+                            tongSoTienNo += row["SoTienNo"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienNo"]);
+                            tongSoNgayCongNo += row["SoNgayCongNo"].ToString() == "" ? 0 : Convert.ToDouble(row["SoNgayCongNo"]);
+                            tongTongThoiGian += row["TongThoiGian"].ToString() == "" ? 0 : Convert.ToDouble(row["TongThoiGian"]);
+                            tongSoNgayTrangThai += row["SoNgayTrangThai"].ToString() == "" ? 0 : Convert.ToDouble(row["SoNgayTrangThai"]);
+
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["NgayNo"]</td>
+                                <td>@row["SoPhieuQuyetToan"]</td>
+                                <td>@row["BienSo"]</td>
+                                <td class='number'>@row["GiaTriCongNo"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTienThanhToan"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTienNo"].ToString().Replace(",", ".")</td>
+                                <td>@row["HoTenKH"]</td>
+                                <td>@row["MaDoiTac"]</td>
+                                <td>@row["TenDoiTac"]</td>
+                                <td>@row["SoHoaDon"]</td>
+                                <td>@row["NgayXuatHoaDon"]</td>
+                                <td>@row["NgayXacNhanCongNo"]</td>
+                                <td class='number'>@row["SoNgayCongNo"].ToString().Replace(",", ".")</td>
+                                <td>@row["NgayThanhToan"]</td>
+                                <td class='number'>@row["TongThoiGian"].ToString().Replace(",", ".")</td>
+                                <td>@row["TrangThai"]</td>
+                                <td class='number'>@row["SoNgayTrangThai"].ToString().Replace(",", ".")</td>
+                                <td>@row["LyDoQuaHan"]</td>
+                                <td>@row["GiaiTrinh"]</td>
+
+                                <td>@row["NgayTaoSoHoaDonLenHeThong"]</td>
+                                <td>@row["NgayTaoXacNhanCongNoLenHeThong"]</td>
+
+
+                            </tr>
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="4"><b>TỔNG NỢ KHÁCH LẺ</b></td>
+                            <td class="number">@tongGiaTriCongNo.ToString().Replace(',', '.')</td>
+                            <td class="number">@tongSoTienThanhToan.ToString().Replace(',', '.')</td>
+                            <td class="number">@tongSoTienNo.ToString().Replace(',', '.')</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="number">@tongSoNgayCongNo.ToString().Replace(',', '.')</td>
+                            <td></td>
+                            <td class="number">@tongTongThoiGian.ToString().Replace(',', '.')</td>
+                            <td></td>
+                            <td class="number">@tongSoNgayTrangThai.ToString().Replace(',', '.')</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

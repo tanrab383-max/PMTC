@@ -1,0 +1,828 @@
+﻿<!DOCTYPE html>
+@model List<TNK.Core.Domain.View.ViewNoPhaiTra>
+@{
+    int i = 1;
+
+}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Hứa Tặng</title>
+    <style>
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+
+            .tab.active {
+                background-color: #4CAF50;
+                color: white;
+                border-color: #4CAF50;
+            }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            background-color: white;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+
+        .filter-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            background-color: white;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+            .filter-group label {
+                font-weight: bold;
+                min-width: 80px;
+            }
+
+        input, select.select_ {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            min-width: 250px;
+        }
+
+        .action-buttons {
+            margin: 20px 0;
+            text-align: right;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+            button:disabled {
+                background-color: #cccccc;
+                cursor: not-allowed;
+            }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 8%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: black;
+            }
+
+        .paid {
+            color: green;
+        }
+
+        .unpaid {
+            color: red;
+        }
+
+        .refund {
+            color: blue;
+        }
+
+        .no-settlement {
+            color: #888;
+        }
+    </style>
+</head>
+<div class="container mt-4">
+    <h1>QUẢN LÝ HỨA TẶNG</h1>
+
+    <div class="tabs">
+        <div class="tab active" onclick="openTab(event, 'tab1')">Quản lý hứa tặng</div>
+        <div class="tab" onclick="openTab(event, 'tab2')">Phiếu thu khác</div>
+        <div class="tab" onclick="openTab(event, 'tab3')">Phiếu chi phí khác</div>
+        <div class="tab" onclick="openTab(event, 'tab4')">Quyết toán không chênh lệch</div>
+    </div>
+
+    <!-- Tab 1: Quản lý hứa tặng -->
+    <div id="tab1" class="tab-content active">
+        <form method="get" id="formSearch">
+            <div class="filter-section">
+
+                <div class="filter-group">
+                    <label>Từ ngày:</label>
+                    <input type="text" id="fromDate1" class="date" name="from" value="@ViewBag.From">
+                </div>
+                <div class="filter-group">
+                    <label>Đến ngày:</label>
+                    <input type="text" id="toDate1" class="date" name="to" value="@ViewBag.To">
+                </div>
+                <div class="filter-group">
+                    <label>Tình trạng:</label>
+                    <select class="select_" id="statusFilter" name="status">
+                        <option value="" @(ViewBag.Status == null || ViewBag.Status == "" ? "selected" : "")>Tất cả</option>
+                        <option value="CQT" @(ViewBag.Status == "CQT" ? "selected" : "")>Chưa quyết toán</option>
+                        <option value="DQT" @(ViewBag.Status == "DQT" ? "selected" : "")>Đã quyết toán</option>
+                    </select>
+                </div>
+                <div class="filter-group search-box">
+                    <label>Tìm kiếm:</label>
+                    <input type="text" id="searchInput1" name="query" placeholder="Mã phiếu, Khách hàng, Số HĐ, Biển số, Số khung..." value="@ViewBag.Query">
+                </div>
+                <button type="submit" id="filterTab1">Lọc</button>
+                <input type="button" value="Xuất excel" class="btn btn-info" id="exportExcel" />
+
+            </div>
+        </form>
+        <div class="action-buttons">
+            <button id="settleBtn" onclick="openSettlementModal()" disabled>Quyết toán</button>
+        </div>
+
+        <table id="promiseTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width="30px"><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                    <th>STT</th>
+                    <th>Ngày nợ</th>
+                    <th>Mã phiếu</th>
+                    <th>Khách hàng</th>
+                    <th>Số hợp đồng</th>
+                    <th>Biển số</th>
+                    <th>Số khung</th>
+                    <th>Số tiền nợ</th>
+                    <th>Đã thanh toán</th>
+                    <th>Số tiền còn lại</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody id="promiseTableBody">
+                @if (Model != null)
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (item.TinhTrangQT == "CQT")
+                                {<input type="checkbox" class="select-row" data-id="${item.id}" onclick="updateSettleButton()" />}
+                            </td>
+                            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                            <td>@item.NgayNo.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <a href="" style="color:blue" onclick="window.open('/SoThu/ChiTietCocMuaXe?MaPhieuThu=@item.MaPhieuNo', 'newwindow', 'width=900, height=900,left=200'); return false;" target="_blank" title="LỊCH SỬ DÙNG CỌC">@item.MaPhieuNo</a>
+                            </td>
+                            <td>@Html.Raw(item.KhachHang)</td>
+                            <td>@item.SoHopDong</td>
+                            <td>@item.BienSo</td>
+                            <td>@item.SoKhung</td>
+                            <td>@TNK.Core.Common.ToCurrencyString(item.SoTienNo)</td>
+                            <td>@TNK.Core.Common.ToCurrencyString(item.SoTienDaTra)</td>
+                            <td>@TNK.Core.Common.ToCurrencyString(item.SoTienConLai)</td>
+                            <td>
+                                @if (item.TinhTrangQT == "CQT")
+                                {
+                                    <span>
+                                        Chưa quyết toán
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>
+                                        Đã quyết toán
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+        <div class="right">
+            @Html.Partial("~/Views/Shared/_Paging_v3.cshtml")
+        </div>
+    </div>
+
+    <!-- Tab 2: Phiếu chi phí khác -->
+    <div id="tab2" class="tab-content">
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Từ ngày:</label>
+                <input type="text" id="fromDate2" class="date" name="from" value="@ViewBag.From" autocomplete="off">
+            </div>
+            <div class="filter-group">
+                <label>Đến ngày:</label>
+                <input type="text" id="toDate2" class="date" name="to" value="@ViewBag.To" autocomplete="off">
+            </div>
+            <div class="filter-group search-box">
+                <label>Tìm kiếm:</label>
+                <input type="text" id="searchInput2" placeholder="Mã phiếu, Khách hàng, Số HĐ, Biển số, Số khung...">
+            </div>
+            <button onclick="searchThu()">Lọc</button>
+        </div>
+
+        <div class="table-responsive" id="tbodyThu">
+
+        </div>
+    </div>
+
+    <!-- Tab 3: Phiếu thu khác -->
+    <div id="tab3" class="tab-content">
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Từ ngày:</label>
+                <input type="text" id="fromDate3" class="date" name="from" autocomplete="off" value="@ViewBag.From">
+            </div>
+            <div class="filter-group">
+                <label>Đến ngày:</label>
+                <input type="text" id="toDate3" class="date" name="to" autocomplete="off" value="@ViewBag.To">
+            </div>
+            <div class="filter-group search-box">
+                <label>Tìm kiếm:</label>
+                <input type="text" id="searchInput3" placeholder="Mã phiếu, Khách hàng, Số HĐ, Biển số, Số khung...">
+            </div>
+            <button onclick="searchChi()">Lọc</button>
+        </div>
+
+
+        <div class="table-responsive" id="tbodyChi">
+
+        </div>
+    </div>
+    <!-- Tab 4: Quyết toán không chênh lệch -->
+    <div id="tab4" class="tab-content">
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Từ ngày:</label>
+                <input type="text" id="fromDate4" class="date" name="from" autocomplete="off" value="@ViewBag.From">
+            </div>
+            <div class="filter-group">
+                <label>Đến ngày:</label>
+                <input type="text" id="toDate4" class="date" name="to" autocomplete="off" value="@ViewBag.To">
+            </div>
+            <div class="filter-group search-box">
+                <label>Tìm kiếm:</label>
+                <input type="text" id="searchInput4" placeholder="Mã phiếu, Khách hàng, Số HĐ, Biển số, Số khung...">
+            </div>
+            <button onclick="searchQTKCL()">Lọc</button>
+        </div>
+
+
+        <div class="table-responsive" id="tbodyQTKCL">
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal quyết toán -->
+<div id="settlementModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>PHIẾU QUYẾT TOÁN</h2>
+        <table id="settlementTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Ngày nợ</th>
+                    <th>Mã phiếu</th>
+                    <th>Khách hàng</th>
+                    <th>Số hợp đồng</th>
+                    <th>Biển số</th>
+                    <th>Số khung</th>
+                    <th>Số tiền còn lại</th>
+                </tr>
+            </thead>
+            <tbody id="settlementTableBody">
+                <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+            </tbody>
+        </table>
+        <div class="action-buttons">
+            <button onclick="closeModal()">Đóng phiếu</button>
+            <button onclick="completeSettlement()">Hoàn thành</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dữ liệu mẫu
+    let promiseData = [
+        { id: 1, date: '2023-05-15', code: 'PT001', customer: 'Nguyễn Văn A', contract: 'HD001', plate: '29A-12345', frame: 'ABC123456789', debt: 5000000, paid: 5000000, remaining: 0, status: 'Không quyết toán' },
+        { id: 2, date: '2023-05-18', code: 'PT002', customer: 'Trần Thị B', contract: 'HD002', plate: '29B-54321', frame: 'DEF987654321', debt: 3000000, paid: 1000000, remaining: 2000000, status: 'Chưa quyết toán' },
+        { id: 3, date: '2023-05-20', code: 'PT003', customer: 'Lê Văn C', contract: 'HD003', plate: '29C-67890', frame: 'GHI456789123', debt: 7000000, paid: 4000000, remaining: 3000000, status: 'Chưa quyết toán' },
+        { id: 4, date: '2023-05-22', code: 'PT004', customer: 'Phạm Thị D', contract: 'HD004', plate: '29D-09876', frame: 'JKL321654987', debt: 2000000, paid: 2000000, remaining: 0, status: 'Không quyết toán' },
+        { id: 5, date: '2023-05-25', code: 'PT005', customer: 'Hoàng Văn E', contract: 'HD005', plate: '29E-56789', frame: 'MNO789456123', debt: 4000000, paid: 1000000, remaining: 3000000, status: 'Chưa quyết toán' },
+        { id: 6, date: '2023-05-28', code: 'PT006', customer: 'Vũ Thị F', contract: 'HD006', plate: '29F-13579', frame: 'PQR987321654', debt: 1500000, paid: 3000000, remaining: -1500000, status: 'Chưa quyết toán' },
+        { id: 7, date: '2023-05-30', code: 'PT007', customer: 'Đặng Văn G', contract: 'HD007', plate: '29G-24680', frame: 'STU654987321', debt: 2500000, paid: 5000000, remaining: -2500000, status: 'Chưa quyết toán' }
+    ];
+
+    // Khởi tạo dữ liệu cho các tab
+    document.addEventListener('DOMContentLoaded', function () {
+        // Đặt ngày mặc định
+        const today = new Date().toISOString().split('T')[0];
+        //document.querySelectorAll('input[type="date"]').forEach(input => {
+        //    input.value = today;
+        //});
+
+        //renderPromiseTable();
+        //renderExpenseTable();
+        //renderIncomeTable();
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true,
+            format: 'dd/mm/yyyy'  // <- Cấu hình định dạng ngày rõ ràng
+        });
+
+    });
+
+    // Hàm chuyển tab
+    function openTab(evt, tabName) {
+        const tabContents = document.getElementsByClassName('tab-content');
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove('active');
+        }
+
+        const tabs = document.getElementsByClassName('tab');
+        for (let i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('active');
+        }
+
+        document.getElementById(tabName).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    // Hàm hiển thị bảng quản lý hứa tặng
+    function renderPromiseTable(data = promiseData) {
+        const tbody = document.querySelector('#promiseTableBody');
+        tbody.innerHTML = '';
+
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+
+            // Thêm checkbox nếu có thể quyết toán
+            const checkboxCell = document.createElement('td');
+            if (item.remaining !== 0) {
+                checkboxCell.innerHTML = `<input type="checkbox" class="select-row" data-id="${item.id}" onclick="updateSettleButton()">`;
+            } else {
+                checkboxCell.innerHTML = '';
+            }
+            row.appendChild(checkboxCell);
+
+            // Xác định class cho số tiền còn lại
+            let amountClass = '';
+            if (item.SoTienConLai > 0) {
+                amountClass = 'unpaid';
+            } else if (item.SoTienConLai < 0) {
+                amountClass = 'refund';
+            } else {
+                amountClass = 'no-settlement';
+            }
+
+            // Format ngày hiển thị
+            const displayDate = formatDisplayDate(item.NgayNo);
+            debugger
+            // Thêm các cột khác
+            row.innerHTML += `
+                            <td>${index + 1}</td>
+                            <td>${displayDate}</td>
+                            <td>${item.MaPhieuNo}</td>
+                            <td>${item.KhachHang}</td>
+                            <td>${item.SoHopDong}</td>
+                            <td>${item.BienSo}</td>
+                            <td>${item.SoKhung}</td>
+                            <td>${formatCurrency(item.SoTienNo)}</td>
+                            <td>${formatCurrency(item.SoTienDaTra)}</td>
+                            <td class="${amountClass}">${formatCurrency(item.SoTienConLai)}</td>
+                            <td>${item.status}</td>
+                        `;
+
+            tbody.appendChild(row);
+        });
+    }
+
+    // Hàm hiển thị bảng phiếu chi phí khác (số tiền còn lại > 0)
+    function renderExpenseTable(data = promiseData.filter(item => item.remaining > 0)) {
+        const tbody = document.querySelector('#expenseTableBody');
+        tbody.innerHTML = '';
+
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+            const displayDate = formatDisplayDate(item.date);
+            row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${displayDate}</td>
+                            <td>${item.code}</td>
+                            <td>${item.customer}</td>
+                            <td>${item.contract}</td>
+                            <td>${item.plate}</td>
+                            <td>${item.frame}</td>
+                            <td class="unpaid">${formatCurrency(item.remaining)}</td>
+                            <td>${formatCurrency(item.remaining)}</td>
+                        `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Hàm hiển thị bảng phiếu thu khác (số tiền còn lại < 0)
+    function renderIncomeTable(data = promiseData.filter(item => item.remaining < 0)) {
+        const tbody = document.querySelector('#incomeTableBody');
+        tbody.innerHTML = '';
+
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+            const displayDate = formatDisplayDate(item.date);
+            row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${displayDate}</td>
+                            <td>${item.code}</td>
+                            <td>${item.customer}</td>
+                            <td>${item.contract}</td>
+                            <td>${item.plate}</td>
+                            <td>${item.frame}</td>
+                            <td class="refund">${formatCurrency(item.remaining)}</td>
+                            <td>${formatCurrency(Math.abs(item.remaining))}</td>
+                        `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Hàm áp dụng bộ lọc
+    function applyFilters(tabNumber) {
+        const fromDate = document.getElementById(`fromDate${tabNumber}`).value;
+        const toDate = document.getElementById(`toDate${tabNumber}`).value;
+        const searchText = document.getElementById(`searchInput${tabNumber}`).value.toLowerCase();
+
+        let filteredData = [...promiseData];
+
+        // Lọc theo ngày
+        if (fromDate) {
+            filteredData = filteredData.filter(item => item.date >= fromDate);
+        }
+        if (toDate) {
+            filteredData = filteredData.filter(item => item.date <= toDate);
+        }
+
+        // Lọc theo search text (chỉ áp dụng cho tab 1)
+        if (tabNumber === 1) {
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            if (statusFilter !== 'all') {
+                filteredData = filteredData.filter(item => {
+                    if (statusFilter === 'unpaid') return item.remaining !== 0;
+                    if (statusFilter === 'paid') return item.status === 'Đã quyết toán';
+                    if (statusFilter === 'no-settlement') return item.status === 'Không quyết toán';
+                    return true;
+                });
+            }
+
+            if (searchText) {
+                filteredData = filteredData.filter(item =>
+                    item.code.toLowerCase().includes(searchText) ||
+                    item.customer.toLowerCase().includes(searchText) ||
+                    item.contract.toLowerCase().includes(searchText) ||
+                    item.plate.toLowerCase().includes(searchText) ||
+                    item.frame.toLowerCase().includes(searchText)
+                );
+            }
+
+            renderPromiseTable(filteredData);
+        }
+        else if (tabNumber === 2) {
+            filteredData = filteredData.filter(item => item.remaining > 0);
+            if (searchText) {
+                filteredData = filteredData.filter(item =>
+                    item.code.toLowerCase().includes(searchText) ||
+                    item.customer.toLowerCase().includes(searchText) ||
+                    item.contract.toLowerCase().includes(searchText) ||
+                    item.plate.toLowerCase().includes(searchText) ||
+                    item.frame.toLowerCase().includes(searchText)
+                );
+            }
+            renderExpenseTable(filteredData);
+        }
+        else if (tabNumber === 3) {
+            filteredData = filteredData.filter(item => item.remaining < 0);
+            if (searchText) {
+                filteredData = filteredData.filter(item =>
+                    item.code.toLowerCase().includes(searchText) ||
+                    item.customer.toLowerCase().includes(searchText) ||
+                    item.contract.toLowerCase().includes(searchText) ||
+                    item.plate.toLowerCase().includes(searchText) ||
+                    item.frame.toLowerCase().includes(searchText)
+                );
+            }
+            renderIncomeTable(filteredData);
+        }
+    }
+
+    // Hàm chọn tất cả
+    function toggleSelectAll() {
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.select-row');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAll.checked;
+        });
+
+        updateSettleButton();
+    }
+
+    // Hàm cập nhật trạng thái nút quyết toán
+    function updateSettleButton() {
+        const checkboxes = document.querySelectorAll('.select-row:checked');
+        const settleBtn = document.getElementById('settleBtn');
+
+        settleBtn.disabled = checkboxes.length === 0;
+    }
+
+    // Hàm mở modal quyết toán
+    function openSettlementModal() {
+        const modal = document.getElementById('settlementModal');
+        const tbody = document.querySelector('#settlementTableBody');
+        tbody.innerHTML = '';
+
+        const checkboxes = document.querySelectorAll('.select-row:checked');
+
+        if (checkboxes.length === 0) {
+            alert("Vui lòng chọn ít nhất một dòng.");
+            return;
+        }
+
+        checkboxes.forEach((checkbox, index) => {
+            const row = checkbox.closest('tr');
+            const cells = row.querySelectorAll('td');
+
+            const ngayNo = cells[2]?.innerText.trim();
+            const maPhieuNo = cells[3]?.innerText.trim();
+            const khachHang = cells[4]?.innerText.trim();
+            const soHopDong = cells[5]?.innerText.trim();
+            const soKhung = cells[7]?.innerText.trim();
+            const bienSo = cells[6]?.innerText.trim();
+            const soTienConLai = cells[10]?.innerText.trim();
+
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${ngayNo}</td>
+            <td>${maPhieuNo}</td>
+            <td>${khachHang}</td>
+            <td>${soHopDong}</td>
+            <td>${bienSo}</td>
+            <td>${soKhung}</td>
+            <td class="unpaid">${soTienConLai}</td>
+        `;
+            tbody.appendChild(newRow);
+        });
+
+        modal.style.display = 'block';
+    }
+
+
+    // Hàm đóng modal
+    function closeModal() {
+        document.getElementById('settlementModal').style.display = 'none';
+    }
+
+    // Hàm hoàn thành quyết toán
+    function completeSettlement() {
+        //alert('Quyết toán thành công!');
+        //closeModal();
+        let lstMaPhieuNo = [];
+        // Cập nhật trạng thái (trong thực tế sẽ gọi API)
+        const checkboxes = document.querySelectorAll('.select-row:checked');
+        checkboxes.forEach((checkbox, index) => {
+            const row = checkbox.closest('tr');
+            const cells = row.querySelectorAll('td');
+
+            const maPhieuNo = cells[3]?.innerText.trim();
+            lstMaPhieuNo.push(maPhieuNo);
+        });
+        debugger
+        //$.post('/HuaTang/CreatePhieuQuyetToan', JSON.stringify({ maPhieuNos: lstMaPhieuNo }), function (response) {
+        //    //alert('Server trả về: ' + response.message);
+        //});
+        $.ajax({
+            type: 'POST',
+            url: '/HuaTang/CreatePhieuQuyetToan', // Đúng tên Controller
+            data: JSON.stringify({ maPhieuNos: lstMaPhieuNo }), // Gửi dạng JSON
+            contentType: 'application/json; charset=utf-8',   // Quan trọng!
+            dataType: 'json', // Kỳ vọng phản hồi dạng JSON
+            success: function (response) {
+                toastSuccess("Tạo phiếu quyết toán thành công");
+                $("#filterTab1").click();
+            },
+            error: function (xhr) {
+                alert('Lỗi khi gửi dữ liệu: ' + xhr.responseText);
+            }
+        });
+        closeModal();
+        // Reset chọn tất cả
+        document.getElementById('selectAll').checked = false;
+    }
+
+    // Hàm định dạng tiền tệ
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    function formatDisplayDate(jsonDateStr) {
+        if (!jsonDateStr) return '';
+        const match = /\/Date\((\d+)\)\//.exec(jsonDateStr);
+        if (!match) return '';
+
+        const timestamp = parseInt(match[1]);
+        const date = new Date(timestamp);
+
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // tháng bắt đầu từ 0
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
+    }
+
+    var p = 1;
+    function change() {
+        p = 1;
+    }
+    function searchThu() {
+        debugger
+        var from = $("#fromDate2").val();
+        var to = $("#toDate2").val();
+        var query = $("#searchInput2").val();
+        $("#SearchTab").prop("disabled", true);
+        var typeTicketTemp = $("#TypeTicketTemp option:selected").val();
+        var pageSizes = document.getElementById("pageSizePhieuQTIndex");
+        var size = pageSizes != undefined ? pageSizes.value : '';
+        $.get("/HuaTang/PhieuQTIndex?&&from=" + from + "&to=" + to + "&query=" + query + "&tinhtrang=" + status + "&p=" + p + "&pageSize=" + size + "&loai=THUKHAC").success(function (response) {
+            $("#tbodyThu").html(response);
+            $("#tbodyThu").find(".number2").map(function (key, val) {
+                var val = $(this).html();
+                if (val != "") {
+                    val = val.split(",").join("");
+                    val = parseInt(val);
+                    $(this).html(val.toLocaleString());
+                }
+            })
+        })
+    }
+    function searchChi() {
+        debugger
+        var from = $("#fromDate3").val();
+        var to = $("#toDate3").val();
+        var query = $("#searchInput3").val();
+        $("#SearchTab").prop("disabled", true);
+        var typeTicketTemp = $("#TypeTicketTemp option:selected").val();
+        var pageSizes = document.getElementById("pageSizePhieuQTIndex");
+        var size = pageSizes != undefined ? pageSizes.value : '';
+        $.get("/HuaTang/PhieuQTIndex?&&from=" + from + "&to=" + to + "&query=" + query + "&tinhtrang=" + status + "&p=" + p + "&pageSize=" + size + "&loai=CHIKHAC").success(function (response) {
+            $("#tbodyChi").html(response);
+            $("#tbodyChi").find(".number2").map(function (key, val) {
+                var val = $(this).html();
+                if (val != "") {
+                    val = val.split(",").join("");
+                    val = parseInt(val);
+                    $(this).html(val.toLocaleString());
+                }
+            })
+        })
+    }
+    function searchQTKCL() {
+        debugger
+        var from = $("#fromDate4").val();
+        var to = $("#toDate4").val();
+        var query = $("#searchInput4").val();
+        $("#SearchTab").prop("disabled", true);
+        var typeTicketTemp = $("#TypeTicketTemp option:selected").val();
+        var pageSizes = document.getElementById("pageSizePhieuQTIndex");
+        var size = pageSizes != undefined ? pageSizes.value : '';
+        $.get("/HuaTang/PhieuQTIndex?&&from=" + from + "&to=" + to + "&query=" + query + "&tinhtrang=" + status + "&p=" + p + "&pageSize=" + size + "&loai=QTKCL").success(function (response) {
+            $("#tbodyQTKCL").html(response);
+            $("#tbodyQTKCL").find(".number2").map(function (key, val) {
+                var val = $(this).html();
+                if (val != "") {
+                    val = val.split(",").join("");
+                    val = parseInt(val);
+                    $(this).html(val.toLocaleString());
+                }
+            })
+        })
+    }
+    function Delete(a, id) {
+        if (confirm('Xác nhận')) {
+            data = { id: id };
+            $.post("/HuaTang/Delete", data).success(function (response) {
+                if (response == "success") {
+                   /* $(a).closest("tr").remove();*/
+                    toastSuccess("Đã xóa thành công");
+                    searchThu();
+                    searchChi();
+                    searchQTKCL();
+                }
+                else
+                    toastError(response);
+            });
+        }
+    }
+    $("#exportExcel").click(function () {
+            if ($($("#tab_data li.unactive")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                //var idtable = $($("#tab_data li.unactive")).attr("data-url").replace("/SoChi/PhieuChi/", "#");
+                //alert(idtable);
+                var idtable = "#promiseTable";
+                var result = $(idtable).html();
+                result = result.replace('class="table"', 'class="table" border="1"');
+                //alert(result)
+                tableToExcel(result, 'QuanLyHuaTang' + '_@ViewBag.Type' + '_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/HuaTang/Index?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+    })
+    var tableToExcel = (function () {
+        debugger;
+        var uri = 'data:application/vnd.ms-excel;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+        return function (table, name) {
+            //if (!table.nodeType) table = document.getElementById(table)
+            var ctx = { worksheet: name || 'Worksheet', table: table }
+            var link = document.createElement("A");
+            link.href = uri + base64(format(template, ctx));
+            link.download = name || 'Baocao.xls';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    })()
+</script>

@@ -1,0 +1,65 @@
+﻿@model List<TNK.Core.Domain.View.ViewTDIVU>
+@{
+    Layout = null;
+}
+
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Ngày thu</th>
+            <th>Id</th>
+            <th>Số HĐ</th>
+            <th>Khách hàng</th>
+            <th>Số điện thoại</th>
+            <th>SK/SM</th>
+            <th>Số tiền</th>
+            <th>Đã thanh toán</th>
+            <th>Còn nợ</th>
+            <th>Loại xe</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ 
+            int i = 1;
+            foreach (var item in Model)
+            {
+            <tr>
+                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                <td>@item.MaPhieuThu</td>
+                <td>@item.SoHopDong</td>
+                <td>@item.HoTen</td>
+                <td>@item.DienThoai</td>
+                <td>@item.SoKhung</td>
+                <td>@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>
+                <td>@TNK.Core.Common.ToCurrencyString(item.SoTienThu)</td>
+                <td>@TNK.Core.Common.ToCurrencyString(item.ConLai)</td>
+                <td>@item.MaXe</td>
+                @*@if (item.Flag == true)
+                {*@
+                    <td style="width:5%" class="center">
+                        <a href="/SoThu/TBAXEEdit_New/@item.MaPhieuThu"><i title="Edit" class="fa fa-edit"></i></a>
+                    </td>
+                @*}
+                else
+                {
+                    <td style="width:5%" class="center">
+                        <a href="/SoThu/TBAXEEdit/@item.MaPhieuThu"><i title="Edit" class="fa fa-edit"></i></a>
+                    </td>
+                }*@
+                <td style="width:5%" class="center">
+                    <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                </td>
+            </tr>
+                }
+            }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+</div>
+
+

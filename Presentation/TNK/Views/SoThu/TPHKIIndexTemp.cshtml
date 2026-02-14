@@ -1,0 +1,161 @@
+﻿@model List<TNK.Core.Domain.View.ViewTPHKITemp>
+@{
+    Layout = null;
+    int i = 1;
+    var currentUrl = Request.RawUrl.ToLower();
+    string lastSegment = Request.Url.Segments.Last().Trim('/').ToLower();
+    string loai = lastSegment.Contains("nkmpkindex") ? "" : lastSegment;
+}
+<div class="table-responsive">
+    <ul class="nav navbar-right panel_toolbox">
+        <li>
+            <i class="fa fa-plus addNew" title="Thêm mới phiếu tạm" style="cursor:pointer" onclick="AddTicket()"></i>
+        </li>
+    </ul>
+</div>
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th></th>
+            <th>Số hợp đồng</th>
+            <th>Ngày ký hợp đồng</th>
+            <th>Chứng từ</th>
+            <th>Tên khách hàng</th>
+            <th>Số khung</th>
+            @*<th>Mã xe</th>*@
+            <th>Giá bán</th>
+            <th>Giảm giá</th>
+            <th>Thực bán</th>
+            <th>Mã phiếu thu</th>
+            <th>Nợ KMPK còn lại </th>
+            <th>Loại</th>
+            <th>Thao tác</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+        <tr>
+            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+            @if (item.Type == "BAN" && item.MaPhieuThu == "")
+            {
+                <td>
+                    <input type="checkbox" value="@item.ChungTu" class="checkbox" id="checkbox_@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)" />
+                    <input type="hidden" value="@(string.IsNullOrEmpty(item.TEN_KHACH_HANG) ? "null" : item.TEN_KHACH_HANG)" />
+                </td>
+            }
+            else
+            {
+                <td></td>
+            }
+            <td>@item.SO_HOP_DONG</td>
+            <td>@item.NGAY_KY_HOP_DONG.ToString("dd/MM/yyyy")</td>
+            <td>@item.ChungTu</td>
+            <td>@item.TEN_KHACH_HANG</td>
+            <td>@item.SO_KHUNG</td>
+            @*<td>@item.MA_XE</td>*@
+            <td class="number">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(item.GiaBan))</td>
+            <td class="number">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(item.GiamGia))</td>
+            <td class="number">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(item.ThucBan))</td>
+            <td>@item.MaPhieuThu</td>
+            <td  class="number">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(item.NoKMPKConLai))</td>
+            <td>@item.Type</td>
+            <td style="width:5%" class="center">
+                @if (item.Type == "KM" && item.MaPhieuThu == "")
+                {
+                    if (item.NoKMPKConLai > 0 && loai == "")
+                    {
+                        <a id="plus" href="/SoThu/PhieuThu?type=NKMPK&actiontype=Create&MaXe=@item.MA_XE&TypeOfVote=@item.Type&id=@item.MaNoKMPK"><i class="fa fa-plus addNew" title="Xuất phụ kiện tặng KM theo xe"></i></a>
+                    }
+                    else if (item.NoKMPKConLai > 0 && loai != "")
+                    {
+                        <a id="plus" href="/SoThu/PhieuThu?type=NKMPK|HT&actiontype=Create&MaXe=@item.MA_XE&TypeOfVote=@item.Type&id=@item.MaNoKMPK"><i class="fa fa-plus addNew" title="Xuất phụ kiện tặng KM theo xe"></i></a>
+                    }
+                    else
+                    {
+                        <a id="plus" href="/SoThu/PhieuThu?type=TPHKITemp&actiontype=Create&MaXe=@item.MA_XE&TypeOfVote=@item.Type"><i class="fa fa-plus addNew" title="Thêm mới phiếu thu phụ kiện"></i></a>
+                        @*<a href="/SoThu/PhieuThu/MaXe=@item.MA_XE&TypeOfVote=@item.Type&type=TPHKITemp&actiontype=Add"><i title="Add" class="fa fa-plus"></i></a>*@
+                    }
+                }
+                else if (item.Type != "KM" && item.MaPhieuThu == "")
+                {
+                    @*<a href="/SoThu/PhieuThu/MaXe=@item.ChungTu&TypeOfVote=@item.Type&type=TPHKITemp&actiontype=Create"><i title="Add" class="fa fa-plus"></i></a>*@
+                    <a id="plus" href="/SoThu/PhieuThu?type=TPHKITemp&actiontype=Create&MaXe=@item.ChungTu&TypeOfVote=@item.Type"><i class="fa fa-plus addNew" title="Thêm mới phiếu thu phụ kiện"></i></a>
+                }
+            </td>
+        </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+</div>
+<script type="text/javascript">
+    function AddTicket() {
+        var SoChungTu = "";
+        var result = "";
+        var ctbh = "";
+        var flag = true;
+        var InputArrayCustomer = "";
+        debugger;
+        $(".checkbox").map(function (key, val) {
+            if ($(val).is(":checked")) {
+                let a = $(val).closest("td").find("input[type=hidden]").val();
+                //if (ctbh == "") {
+                //    ctbh = a;
+                //}
+                //if (a != ctbh) {
+                //    if (flag) {
+                //        toastError("Chỉ được chọn các phiếu nợ của cùng 1 khách hàng!");
+                //    }
+                //    flag = false;
+                //    return;
+                //}
+                InputArrayCustomer += a + ",";
+                result += $(val).val() + ",";
+            }
+        });
+        debugger;
+        if (result != "") {
+            SoChungTu = result.slice(0, result.length - 1);
+        }
+        if (InputArrayCustomer != "") {
+            InputArrayCustomer = InputArrayCustomer.slice(0, InputArrayCustomer.length - 1);
+        }
+        //vòng lặp để kiểm tra xem có vi phạm về tên khách hàng hay không?
+        var ArrayNameCustomer = InputArrayCustomer.split(",");
+        if (ArrayNameCustomer.length > 1) {
+            for (var i = 0; i < ArrayNameCustomer.length - 1; i++) {
+                for (var j = 1; j < ArrayNameCustomer.length; j++) {
+                    if (ArrayNameCustomer[i].toString() != ArrayNameCustomer[j].toString()) {
+                        flag = false;
+                    }
+                }
+            }
+        }
+        if (flag == false) {
+            toastError("Chỉ được chọn các phiếu nợ của cùng 1 khách hàng!");
+            return;
+        }
+        if (SoChungTu == "" && InputArrayCustomer == "") {
+            window.location.href = "/SoThu/PhieuThu?type=TPHKITemp";
+        }
+        else if (SoChungTu != "" && ArrayNameCustomer.length == 1)
+        {
+            window.location.href = "/SoThu/PhieuThu?type=TPHKITemp&actiontype=Create&MaXe=" + SoChungTu + "&TypeOfVote=BAN";
+        }
+        else {
+            if (SoChungTu != "" && ArrayNameCustomer.length > 1) {
+                window.location.href = "/SoThu/PhieuThu?type=TPHKITemp&actiontype=Create&MaXe=" + SoChungTu + "&TypeOfVote=BAN";
+            }
+        }
+    }
+</script>

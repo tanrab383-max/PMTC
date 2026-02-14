@@ -1,0 +1,82 @@
+﻿@model IEnumerable<TNK.Core.Domain.RoleUser>
+
+@{
+    ViewBag.Title = "Role";
+}
+<input type="hidden" value="@ViewBag.UserId" id="UserId"/>
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b></b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li>
+                            <a href="/Menu/Create"><i class="fa fa-plus"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Active</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>
+                                        @Html.CheckBoxFor(x => item.Active, htmlAttributes: new { @class = " RoleId" })
+                                        @Html.HiddenFor(x => item.Id, htmlAttributes: new { @class = "id" })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(".RoleId").change(function () {
+            debugger;
+            var obj = {
+                check: $(this).prop("checked"),
+                id : $("#UserId").val(),
+                roleid : $(this).closest("td").children("input.id").val()
+            };
+            $.post("/User/UpdateRoleUser", obj).success(function (response) {
+                if(response.result=="success")
+                {
+                    toastSuccess("Cập nhật role thành công!");
+                }
+                else
+                {
+                    toastError("Cập nhật role thất bại!");
+                }
+            });
+            
+        });
+    </script>
+}

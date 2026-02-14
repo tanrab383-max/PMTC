@@ -1,0 +1,227 @@
+﻿@model TNK.Core.Domain.DoiTac
+@{
+    ViewBag.Title = "Đối tác";
+    var doitac = (List<TNK.Core.Domain.CategoryItem>)ViewBag.DoiTac;
+    List<TNK.Core.Domain.View.ViewDoiTac> ListDoiTac = ViewBag.TenDoiTac;
+
+    var lstDoiTacNoiBo = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "0", Text = "Ngoài" },
+            new SelectListItem { Value = "1", Text = "Nội bộ" },
+        };
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>Đối tác</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a href="@ViewBag.LinkCreate"><i class="fa fa-plus addNew"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form method="post" class="form-horizontal form-label-left" action="/DoiTac/ListEdit">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Mã đối tác</label>
+                                @Html.EditorFor(model => model.MaDoiTac, new { htmlAttributes = new { @class = "form-control ", @id = "MaVietTat" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Mã viết tắt</label>
+                                @Html.EditorFor(model => model.MaVietTat, new { htmlAttributes = new { @class = "form-control ", @id = "TenDoiTac" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Tên đối tác</label>
+                                @Html.EditorFor(model => model.TenDoiTac, new { htmlAttributes = new { @class = "form-control ", @id = "TenDoiTac" } })
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Loại đối tác</label>
+                                <select class="select2 fullwidth" name="LoaiDoiTac">
+                                    <option value="">Chọn</option>
+                                    @foreach (var item in doitac)
+                                    {
+                                        <option value="@item.Code" @(Model != null && Model.LoaiDoiTac == item.Code.Trim() ? "selected" : "")>@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th>Mã đối tác</th>
+                            <th>Mã viết tắt</th>
+                            <th>Tên đối tác</th>
+                            <th>Tỷ lệ hoa hồng</th>
+                            <th>Hạn mức vay</th>
+                            <th>Ghi chú</th>
+                            <th>Loại đối tác</th>
+                            <th>Nội bộ?</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var obj in (List<TNK.Core.Domain.View.ViewDoiTac>)ViewBag.ListDoiTac)
+                        {
+                        <tr>
+                            <td>@obj.madoitac</td>
+                            <td>@obj.maviettat</td>
+                            @*<td>@obj.TenDoiTac</td>*@
+                            <td>@Html.EditorFor(x => obj.TenDoiTac, new { htmlAttributes = new { @class = obj.madoitac.Replace(".", "_") + " form-control number input-sm", @type = "text" } })</td>
+                            <td>@Html.EditorFor(x => obj.TyLeHoaHong, new { htmlAttributes = new { @class = obj.madoitac.Replace(".", "_") + " form-control number input-sm", @max = "99999999999", @type = "number", @id = "TLHH_" + obj.madoitac.Replace(".", "_") } })</td>
+                            <td>@Html.EditorFor(x => obj.HanMucVay, new { htmlAttributes = new { @class = obj.madoitac.Replace(".", "_") + " form-control number input-sm", @max = "99999999999", @type = "number", @id = "HMV_" + obj.madoitac.Replace(".", "_") } })</td>
+                            <td>@obj.GhiChu</td>
+                            @*<td>@obj.TenLoaiDoiTac</td>*@
+                            <td>
+                                <select class="select2 fullwidth" @*id="@obj.TenLoaiDoiTac.Trim()"*@ id="LDT_@obj.madoitac.Replace(".", "_")">
+                                    @foreach (var item in doitac)
+                                    {
+                                        <option value="@item.Code" @Html.Raw(item.Name == obj.TenLoaiDoiTac ? "selected" : "")>@item.Name</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <select class="select2 fullwidth" @*id="@obj.TenLoaiDoiTac.Trim()"*@ id="DTNB_@obj.madoitac.Replace(".", "_")">
+                                    @foreach (var item in lstDoiTacNoiBo)
+                                    {
+                                        <option value="@item.Value" @Html.Raw(item.Value == obj .DoiTacNoiBo? "selected" : "")>@item.Text</option>
+                                    }
+                                </select>
+                            </td>
+                            <td style="width:5%" class="center">
+                                @*<a onclick="Edit('@obj.madoitac', '@obj.madoitac.Replace(".", "_")')"><i title="Lưu" class="fa fa-save"></i></a>*@
+                                <a onclick="Edit('@obj.madoitac')"><i title="Lưu" class="fa fa-save"></i></a>
+                            </td>
+                            <td style="width:5%" class="center">
+                                @*<a href="/DoiTac/Delete/@obj"><i title="Delete" class="fa fa-close"></i></a>*@
+                                <a href="javascript:;" onclick="Delete('@obj.madoitac')"><i title="Delete" id="delete" class="fa fa-close"></i></a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="right">
+                    @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            
+@*<link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+<script src="~/assests/plugins/select2/select2.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="~/Scripts/jquery-ui.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>*@
+@section scripts{
+    <script type="text/javascript">
+            
+        $(".select2").select2();
+        debugger;
+        function Edit(madoitac) {
+            if (madoitac == "") {
+                toastWarning("Cập nhật thất bại");
+                return False;
+            }
+            var TLHH = $("#TLHH_" + madoitac.replace(".", "_")).val();
+            var LDT = $("#LDT_" + madoitac.replace(".", "_")).val();
+            var HMVay = $("#HMV_" + madoitac.replace(".", "_")).val();
+            var DTNB = $("#DTNB_" + madoitac.replace(".", "_")).val();
+            if(HMVay == "")
+            {
+                HMVay = 0;
+            }
+            if (TLHH == "")
+                TLHH = 0;
+            //TLHH_XuanThanh.MT
+            //alert(madoitac);
+            //alert(TLHH);
+            //alert(LDT);
+            $.ajax({
+                url: "/DoiTac/EditDoiTac",
+                type: "POST",
+                data: { strMaDoiTac: madoitac, loaiDoiTac: LDT, dblTyLeHoaHong: TLHH, HanMucVay: HMVay, DoiTacNoiBo: DTNB },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi: Cập nhật tỷ lệ hoa hồng.");
+                }
+            });
+        }
+
+        //phan trúc thêm về xóa 1 dòng record
+        //$.post("/SoThu/Delete/", obj).success(function (response) {
+        //    if (response == "success") {
+        //        $(a).closest("tr").remove();
+        //        toastSuccess("Đã xóa thành công");
+        //    }
+        //    else
+        //        toastError(response);
+        //});
+        //$.ajax({
+        //    url: "/SoThu/Delete/" + obj,
+        //    type: "GET",
+        //    dataType: "json",
+        //    success: function (data) {
+        //        alert(data);
+        //    }
+        //});
+        function Delete(obj) {
+            debugger;
+            var result = confirm("Bạn có chắc chắn muốn xóa ?");
+            if(result == true)
+            {
+                $.ajax({
+                    url: "/DoiTac/Delete/" + obj,
+                    type: "POST",
+                    success: function (result) {
+                        if (result == "true") {
+                            //$("#delete").closest("tr").remove();
+                            toastr.success("Đã xóa thành công");
+                            window.location.reload();
+                        }
+                        else {
+                            toastr.error("Xóa không thành công");
+                        }
+                    },
+                });
+            }
+           
+        }
+
+    </script>
+}

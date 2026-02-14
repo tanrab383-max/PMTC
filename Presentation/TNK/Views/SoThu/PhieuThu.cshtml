@@ -1,0 +1,3404 @@
+﻿@model TNK.Model.SoThuModel
+@{
+    var item = Model.Item;
+    string type = ViewBag.Type;
+    string action = ViewBag.Action;
+    string typeoftemp = ViewBag.TypeOfTemp;
+    double totalCoc = 0;
+    double ThucThu = 0;
+    double TienCong = 0;
+    double SoLuong = 0;
+    double GiaVon = 0;
+    int SoDong = 0;
+    item.LoaiBaoHiem = item.LoaiBaoHiem == "" ? "KHAC" : item.LoaiBaoHiem;
+    if (type == "TPHKI" || type == "TPHKITemp" || type == "TKMPHKI" || type == "NKMPK")
+    {
+        SoDong = ViewBag.ListPhuTung.Rows.Count;
+    }
+    List<TNK.Core.Domain.ChiTietBanPhuKien> LPT = new List<TNK.Core.Domain.ChiTietBanPhuKien>();
+    if (type == "T2THK")
+    {
+        ViewBag.Title = "Thu hộ khác";
+    }
+    else if (type == "TBHXH")
+    {
+        ViewBag.Title = "Thu BHXH";
+    }
+    var HANG_TT = Model.CTPT.Where(s => s.HinhThucThanhToan == "HA").ToList();
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>@(action == "Create" ? "Tạo mới" : "Cập nhật") @ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Chi tiết phiếu thu</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="form-data" method="post" class="form-horizontal form-label-left">
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(x => item.MaPhieuThu)
+                    @Html.HiddenFor(x => item.MaLoaiPhieu)
+                    @Html.HiddenFor(x => item.MaPhieuLienQuan)
+                    @Html.HiddenFor(x => item.UpdatedDate)
+                    <input type="hidden" name="actiontype" id="actiontype" value="@action" />
+                    <input type="hidden" name="type" id="type" value="@type" />
+
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số chứng từ (*)</label>
+                                @if (type == "TBAHITemp" || type == "TPHKITemp")
+                                {
+                                    @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "20", id = "SoChungTu", autofocus = "autofocus" } })
+                                }
+                                else if (typeoftemp == "TPHKITemp" || ((type == "TPHKI" || type == "TKMPHKI") && item.CyberId != null && item.CyberId != ""))
+                                {
+                                    @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "20", id = "SoChungTu", @readonly = "" } })
+                                }
+                                else
+                                {
+                                    @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "20", id = "SoChungTu" } })
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày thu</label>
+                                <input type="text" class="form-control input-sm date " id="ngaythu" name="item.NgayThu" value="@item.NgayThu.ToString("dd/MM/yyyy")" />
+                            </div>
+                        </div>
+                        @if (type == "TBDTKKM")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số hợp đồng (*)</label>
+                                    @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "100", @id = "sohopdong" } })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TBHXH" || type == "T2GTX" || type == "T2THK")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Thông tin khác</label>
+                                    @Html.EditorFor(x => item.ThongTinKhac, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "1000" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đối tác (*)</label>
+                                    @Html.DropDownListFor(x => item.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth", @id = "DoiTac" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "T2THK")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Biển số xe (*)</label>
+                                    @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm BienSo", @id = "BienSoTBAHI" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số hợp đồng</label>
+                                    @if (ViewBag.FlagT2THK == false)
+                                    {
+                                        @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong", @maxlength = "1000", @disabled = "disabled" } })
+                                    }
+                                    else
+                                    {
+                                        @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong", @maxlength = "1000" } })
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Lý do thu(*)</label>
+                                    @Html.DropDownListFor(x => Model.Item.LyDoThu, Model.LyDoThu.Select(x => new SelectListItem { Text = x.Name, Value = x.Code }), "Chọn", new { @class = "select2 fullwidth", @id = "LDC", @onchange = "DanhSachCoc(this)" })
+                                </div>
+                            </div>
+                        }
+                        @*Lộc update: Bán lẻ/Khuyến mãi phụ kiện*@
+                        @if (type == "TCOBX" || type == "TCOBXTemp" || type == "TPHKI" || type == "TPHKITemp" || type == "TKMPHKI")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    @*Lộc: Xét ràng buộc TPHKI*@
+                                    @if (type == "TPHKI")
+                                    {
+                                        <label>Số hợp đồng</label>
+                                    }
+                                    else
+                                    {
+                                        <label>Số hợp đồng (*)</label>
+                                    }
+                                    @if (action == "Update" && type == "TPHKI")
+                                    {
+                                        @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong" } })
+                                    }
+                                    else
+                                    {
+                                        @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong", @id = "SoHopDong" } })
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @if (type == "NKMPK")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số hợp đồng</label>
+                                    @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong", @id = "SoHopDong", @readonly = 1 } })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TKHAC")
+                        {
+                            <input hidden name="item.MaPhieuLienQuan" value="@item.MaPhieuLienQuan" />
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Thông tin khác </label>
+                                    @Html.EditorFor(x => item.ThongTinKhac, new { htmlAttributes = new { @class = "form-control input-sm " } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đối tác (*)</label>
+                                    @Html.DropDownListFor(x => item.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth", @id = "DoiTac" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12" style="padding:0px">
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số tiền</label>
+                                        @*@Html.DropDownListFor(x => item.DoiTacTraLai, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth" })*@
+                                        @Html.EditorFor(x => Model.Item.TongCong, new { htmlAttributes = new { @class = "number form-control input-sm", @id = "TCTKHAC", @onchange = "TinhConLai_TKHAC()" } })
+                                    </div>
+                                </div>
+                                @*//Trương Hoài Lộc: 24/08/2020
+                //Thêm loại bảo hiểm: Thu Khác*@
+                                <div class="col-md-7 col-sm-7 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số khung</label>
+                                        @*@Html.DropDownListFor(x => item.DoiTacTraLai, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth" })*@
+                                        @Html.EditorFor(x => Model.Item.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm", @id = "SOKHUNG" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Lý do thu(*)</label>
+                                    @*@Html.DropDownListFor(x => item.DoiTacTraLai, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth" })*@
+                                    @Html.DropDownListFor(x => item.LoaiBaoHiem, Model.LoaiBH.Select(x => new SelectListItem { Text = x.Text, Value = x.Value }), "Chọn", new { @class = "select2 fullwidth", @id = "LoaiBH", @Value = "KHAC" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TLADT")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đối tác trả lãi (*)</label>
+                                    @Html.DropDownListFor(x => item.DoiTacTraLai, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TVAMU")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Hình thức vay(*)</label>
+                                    @*@Html.DropDownListFor(x => item.DoiTacTraLai, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth" })*@
+                                    @Html.DropDownListFor(x => item.LoaiBaoHiem, Model.ListItem.Select(x => new SelectListItem { Text = x.Text, Value = x.Value }), "Chọn", new { @class = "select2 fullwidth", @id = "LoaiBH", @Value = "KHAC" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TVAMU")
+                        {
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đơn vị cho vay (*)</label>
+                                    @Html.DropDownListFor(x => item.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TBAHI")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Họ tên khách hàng(*)</label>
+                                    @Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm HoTen" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Công ty bảo hiểm</label>
+                                    @Html.DropDownListFor(x => item.CTBH, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số hợp đồng (*)</label>
+                                    @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong", @id = "SoHopDongTBAHI" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số khung</label>
+                                    @Html.EditorFor(x => item.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "17", @id = "SoKhungTBAHI" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Biển số xe (*)</label>
+                                    @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm BienSo", @id = "BienSoTBAHI" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Thực bán (*) </label>
+                                    @Html.EditorFor(x => item.TongCong, new { htmlAttributes = new { @class = "form-control input-sm number ThanhTienBH", @maxlength = "15" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Tiền trả BH </label>
+                                    @Html.EditorFor(x => item.TienTraBH, new { htmlAttributes = new { @class = "form-control input-sm number TienTraBH", @maxlength = "15" } })
+                                    @*<input name="item.TienTraBH" class="form-control input-sm number TienTraBH" maxlength="15" value="@item.TienTraBH" />*@
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Hoa hồng</label>
+                                    @Html.EditorFor(x => item.HoaHong, new { htmlAttributes = new { @class = "form-control input-sm number HoaHong", @maxlength = "15" } })
+                                    @*<input name="item.HoaHong" class="form-control input-sm number HoaHong" maxlength="15" value="@item.HoaHong" />*@
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12" hidden>
+                                <div class="form-group">
+                                    <label>Thu hoa hồng ngay</label>
+                                    @if (item.ThuHoaHongNgay != null && action == "Update")
+                                    {
+                                        <div class="form-inline">
+                                            <input type="checkbox" onchange="Checked(this)" id="check" checked />
+                                            <select id="hoahongngay" name="@item.ThuHoaHongNgay" class="form-control input-sm" style="height:29px;width:94%">
+                                                @foreach (var THH in ViewBag.ThuHoaHong)
+                                                {
+                                                    <option value="@THH.GiaTri" @(item.ThuHoaHongNgay == THH.GiaTri ? "selected" : "")>@THH.HienThi</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="form-inline">
+                                            <input type="checkbox" onchange="Checked(this)" id="check" />
+                                            <select id="hoahongngay" name="@item.ThuHoaHongNgay" class="form-control input-sm" style="height:29px;width:94%"></select>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Giá bán</label>
+                                    @Html.EditorFor(x => item.GiaVon, new { htmlAttributes = new { @class = "form-control input-sm number GiaBanBH", @readonly = "" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Giảm giá</label>
+                                    @Html.EditorFor(x => item.GiamGia, new { htmlAttributes = new { @class = "form-control input-sm number GiamGiaBH", @readonly = "" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Tái tục</label>
+                                    @Html.DropDownListFor(x => item.LoaiBaoHiem, Model.ListItem.Select(x => new SelectListItem { Text = x.Text, Value = x.Value }), "Chọn", new { @class = "select2 fullwidth LoaiBaoHiem" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "THHHB")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Đối tác</label>
+                                    @Html.DropDownListFor(x => item.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TCODV" || type == "TBDTK")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Biển số (*)</label>
+                                    @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm BienSo", @id = "BSX" } })
+                                </div>
+                            </div>
+                        }
+
+                        @if (type == "TBDTK")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số hợp đồng (*)</label>
+                                    @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong", @id = "SoHopDong" } })
+
+                                </div>
+                            </div>
+                        }
+
+                        @if (type == "T2GTX")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Biển số (*)</label>
+                                    @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm BienSo", @id = "BSX" } })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số hợp đồng (*)</label>
+                                    @Html.EditorFor(x => item.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm SoHopDong", @id = "SoHopDong" } })
+
+                                </div>
+                            </div>
+                        }
+
+
+                        @if (type == "TCOBX" || type == "TCODV")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="DT">
+                                    <label>Điện thoại</label>
+                                    @Html.EditorFor(x => item.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm", @id = "dienthoai" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="DC">
+                                    <label>Địa chỉ</label>
+                                    @Html.EditorFor(x => item.DiaChi, new { htmlAttributes = new { @class = "form-control input-sm", @id = "diachi" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="HTKH">
+                                    <label>Họ tên khách hàng(*)</label>
+                                    @Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm", @id = "hoten" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="GiaBan">
+                                    <label>Giá bán</label>
+                                    @Html.EditorFor(x => item.GiaBan, new { htmlAttributes = new { @class = "form-control input-sm number", @maxlength = "15" } })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TPHKI" || type == "TKMPHKI")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="DT">
+                                    <label>Điện thoại</label>
+                                    @Html.EditorFor(x => item.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm", @id = "dienthoai" } })
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="form-group" id="DC">
+                                    <label>Địa chỉ</label>
+                                    @Html.EditorFor(x => item.DiaChi, new { htmlAttributes = new { @class = "form-control input-sm", @id = "diachi" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="HTKH">
+                                    <label>Họ tên khách hàng (*)</label>
+                                    @if (typeoftemp == "TPHKITemp" || ((type == "TPHKI" || type == "TKMPHKI") && item.CyberId != null && item.CyberId != ""))
+                                    {
+                                        @Html.EditorFor(x => item.HoTen, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control input-sm HoTen",
+                                                @id = "hoten"@*, @readonly = ""*@}
+})
+                                    }
+                                    else
+                                    {
+                                        @Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm HoTen", @id = "hoten" } })
+
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Biển Số</label>
+                                    @if (action == "Update" && (type == "TPHKI" || type == "TKMPHKI"))
+                                    {
+                                        @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm BienSo" } })
+                                    }
+                                    else
+                                    {
+                                        @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm BienSo" } })
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    @*Lộc: Xét ràng buộc TKMPHKI*@
+                                    @if (type == "TKMPHKI")
+                                    {
+                                        <label>Số khung(*)</label>
+                                    }
+                                    else
+                                    {
+                                        <label>Số khung</label>
+                                    }
+                                    @if (typeoftemp == "TPHKITemp" || ((type == "TPHKI" || type == "TKMPHKI") && item.CyberId != null && item.CyberId != ""))
+                                    {
+                                        @Html.EditorFor(x => item.SoKhung, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control input-sm HoTen",
+                                                @maxlength = "17"@*, @readonly = ""*@}
+})
+                                    }
+                                    else
+                                    {
+                                        @Html.EditorFor(x => item.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm HoTen", @maxlength = "17" } })
+
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Loại xe</label>
+                                    @Html.DropDownListFor(x => item.LoaiXe, Model.MaXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                </div>
+                            </div>
+                            if (type == "TKMPHKI")
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Nợ khuyến mãi</label>
+                                        @if (ViewBag.CheckNKM == false)
+                                        {
+                                            @Html.EditorFor(x => item.NoKhuyenMai, new { htmlAttributes = new { @class = "form-control input-sm number" } })
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control input-sm number" value="@item.NoKhuyenMai" maxlength="15" readonly />
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else if (type == "NKMPK")
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số tiền còn nợ KM</label>
+                                        <input type="text" class="form-control input-sm number" id="nokmconlai" value="@ViewBag.NoKMConLai" maxlength="15" readonly />
+                                    </div>
+                                </div>
+                            }
+                            if (typeoftemp == "TPHKITemp" || ((type == "TPHKI" || type == "TKMPHKI")))
+                            {
+                                <div class="form-group col-md-4">
+                                    <label>Đối tác</label>
+                                    @Html.DropDownListFor(x => item.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth", @id = "DoiTac" })
+                                </div>
+                            }
+                            <!--if (type == "TKMPHKI")
+        {
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="form-check">
+                    @*@Html.CheckBoxFor(x => item.HuaTangKM, new { @checked = "checked",@style = "width: 21px; height: 21px; margin-top: 25px", })-->
+                    @*<input style="width: 21px; height: 21px; margin-top: 25px" class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="HuaTangKM">*@
+                    <!--<label class="form-check-label" for="defaultCheck1" style="margin-top:-15px">
+                        KM hứa tặng
+                    </label>
+                </div>
+            </div>
+        }-->
+                            //Bỏ phần này ngày 2023-12-04
+                            @*if (type == "TKMPHKI")
+            {
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                        <label>Nợ khuyến mãi</label>
+                        @if (ViewBag.CheckNKM == false)
+                        {
+                            @Html.EditorFor(x => item.NoKhuyenMai, new { htmlAttributes = new { @class = "form-control input-sm number" } })
+                        }
+                        else
+                        {
+                            <input type="text" class="form-control input-sm number" value="@item.NoKhuyenMai" maxlength="15" readonly />
+                        }
+                    </div>
+                </div>
+            }
+            else if (type == "NKMPK")
+            {
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                        <label>Số tiền còn nợ KM</label>
+                        <input type="text" class="form-control input-sm number" id="nokmconlai" value="@ViewBag.NoKMConLai" maxlength="15" readonly />
+                    </div>
+                </div>
+            }*@
+                        }
+                        @if (type == "NKMPK")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="DT">
+                                    <label>Điện thoại</label>
+                                    @Html.EditorFor(x => item.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm", @id = "dienthoai", @readonly = 1 } })
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <div class="form-group" id="DC">
+                                    <label>Địa chỉ</label>
+                                    @Html.EditorFor(x => item.DiaChi, new { htmlAttributes = new { @class = "form-control input-sm", @id = "diachi", @readonly = 1 } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="HTKH">
+                                    <label>Họ tên khách hàng (*)</label>
+                                    @Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm HoTen", @id = "hoten", @readonly = 1 } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Biển Số</label>
+                                    @Html.EditorFor(x => item.BienSo, new { htmlAttributes = new { @class = "form-control input-sm BienSo", @readonly = 1 } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    @*Lộc: Xét ràng buộc TKMPHKI*@
+                                    <label>Số khung</label>
+                                    @Html.EditorFor(x => item.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm HoTen", @readonly = 1, @maxlength = "17" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Loại xe</label>
+                                    @Html.DropDownListFor(x => item.LoaiXe, Model.MaXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Id.ToString() }), "Chọn", new { @class = "select2 fullwidth", @disabled = "disabled" })
+                                </div>
+                            </div>
+                            if (type == "TKMPHKI" && action == "Create")
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Nợ khuyến mãi</label>
+                                        @if (ViewBag.CheckNKM == false)
+                                        {
+                                            @Html.EditorFor(x => item.NoKhuyenMai, new { htmlAttributes = new { @class = "form-control input-sm number" } })
+                                        }
+                                        else
+                                        {
+                                            <input type="text" class="form-control input-sm number" value="@item.NoKhuyenMai" maxlength="15" readonly />
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            else if (type == "NKMPK")
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số tiền còn nợ KM</label>
+                                        <input type="text" class="form-control input-sm number" id="nokmconlai" value="@ViewBag.NoKMConLai" maxlength="15" readonly />
+                                    </div>
+                                </div>
+                            }
+                        }
+                        @if (type == "TBDTK" || type == "TBDTKKM")
+                        {
+                            @Html.HiddenFor(x => item.CyberId, new { htmlAttributes = new { @class = "form-control input-sm", @id = "CyberId" } })
+                            if (type == "TBDTKKM")
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group" id="HTKH">
+                                        <label>Số khung(*)</label>
+                                        @Html.EditorFor(x => item.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm", @id = "sokhung" } })
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group" id="HTKH">
+                                        <label>Số khung</label>
+                                        @Html.EditorFor(x => item.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm", @id = "sokhung" } })
+                                    </div>
+                                </div>
+                            }
+                            @*<div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="form-group" id="DC">
+                    <label>Địa chỉ</label>
+                    @Html.EditorFor(x => item.DiaChi, new { htmlAttributes = new { @class = "form-control input-sm", @id = "diachi" } })
+                </div>
+            </div>*@
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="HTKH">
+                                    <label>Họ tên khách hàng</label>
+                                    @Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { @class = "form-control input-sm HoTen", @id = "hoten" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="DT">
+                                    <label>Điện thoại</label>
+                                    @Html.EditorFor(x => item.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm", @id = "dienthoai" } })
+                                </div>
+                            </div>
+                            if (type == "TBDTK" || type == "TBDTKKM")
+                            {
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    @Html.Partial("~/Views/Shared/_ThuBDTK.cshtml", null, new ViewDataDictionary { { "CTBDTK", Model.CTBDTK }, { "BDTK", Model.GoiBDTK }, { "type", type }, { "model", Model.Item } })
+                                </div>
+                            }
+                            @*else
+            {
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group" id="GBDTK">
+                        <label>Gói BDTK(*)</label>
+                        @Html.DropDownListFor(x => item.LoaiBaoHiem, Model.GoiBDTK.Select(x => new SelectListItem { Text = x.TenChuongTrinh, Value = x.Ma.ToString() }), "Chọn", new { @class = "select2 fullwidth", @name = "CTBDTK[0].MaBDTK", @id = "bdtk", @onchange = "TinhThucBanBDTKKM()" })
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-2 col-xs-12">
+                    <div class="form-group">
+                        <label>Giá Bán</label>
+                        @Html.EditorFor(x => item.GiaBan, new { htmlAttributes = new { @class = "form-control input-sm number ",@name="CTBDTK[0].GiaBan", @id = "giaban", @readonly = "" } })
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-2 col-xs-12">
+                    <div class="form-group">
+                        <label>Khuyến mãi</label>
+                        @Html.EditorFor(x => item.GiamGia, new { htmlAttributes = new { @class = "form-control input-sm number ",@name="CTBDTK[0].GiamGia", @id = "giamgia", @onchange = "TinhThucBan()" } })
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group" id="HTKH">
+                        <label>Thực bán</label>
+                        @Html.EditorFor(x => item.TongCong, new { htmlAttributes = new { @class = "form-control input-sm number", @name = "CTBDTK[0].GiamGia", @id = "thucthu", @readonly = "" } })
+                    </div>
+                </div>
+            }
+                            *@
+                        }
+                        @if (type == "TCODV" || type == "TBDTK" || type == "TBDTKKM")
+                        {
+
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="MaXe">
+                                    <label>Mã xe</label>
+                                    @Html.DropDownListFor(x => item.MaXe, Model.MaXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Code.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Màu</label>
+                                    @Html.DropDownListFor(x => item.MauXe, Model.MauXe.Select(x => new SelectListItem { Text = x.Code + "-" + x.Name, Value = x.Code.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TCOBX")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group" id="MaXe">
+                                    <label>Mã loại xe</label>
+                                    @Html.DropDownListFor(x => item.LoaiXe, Model.MaLoaiXe.Select(x => new SelectListItem { Text = x.TenModel + "-" + x.TenMau + "-" + x.XuatXu + "-" + x.TenDoiXe + "-" + x.CodeGrad, Value = x.MaLoaiXe.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                </div>
+                            </div>
+                        }
+                        @if (type == "KMTMV")
+                        {
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số tiền KM TMV </label>
+                                    @Html.EditorFor(x => item.TongCong, new { htmlAttributes = new { @class = "form-control input-sm number" } })
+                                </div>
+                            </div>
+                        }
+
+
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Nội dung</label>
+                                @Html.TextAreaFor(x => item.NoiDung, new { @class = "form-control input-sm" })
+                            </div>
+                        </div>
+                        @*//phần trúc thêm design mới*@
+                        @*// Lộc update: 2020/08/25*@
+                        @if (type == "TPHKI" || type == "TKMPHKI" || type == "NKMPK" || type == "TPHKITemp")
+                        {
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <table class="table table-striped jambo_table bulk_action">
+                                    @if (type == "TPHKI")
+                                    {
+                                        <thead>
+                                            <tr>
+                                                <th>Kho Xuất</th>
+                                                <th>Tên Phụ Tùng</th>
+                                                <th>Số lượng</th>
+                                                <th>Giá Bán</th>
+                                                <th>Giảm Giá</th>
+                                                <th>Thực Bán</th>
+                                                <th>Giá Vốn</th>
+                                              
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.ListPhuTung.Rows.Count > 0)
+                                            {
+
+                                                for (int j = 0; j < ViewBag.ListPhuTung.Rows.Count; j++)
+                                                {
+                                                    var a = ViewBag.ListPhuTung.Rows[j]["TenHang"];
+                                                    if (ViewBag.ListPhuTung.Rows[j]["ThucThu"].ToString() != "")
+                                                    {
+                                                        ThucThu += Convert.ToDouble(ViewBag.ListPhuTung.Rows[j]["ThucThu"]);
+                                                        SoLuong += string.IsNullOrWhiteSpace(ViewBag.ListPhuTung.Rows[j]["SoLuong"].ToString())
+                                                                    ? 0
+                                                                    : Convert.ToDouble(ViewBag.ListPhuTung.Rows[j]["SoLuong"]);
+                                                        GiaVon += Convert.ToDouble(ViewBag.ListPhuTung.Rows[j]["GiaVon"]);
+                                                    }
+                                                    //var i = ViewBag.ListPhuTung[j];
+                                                    <tr>
+                                                        <td><input type="text" value="@ViewBag.ListPhuTung.Rows[j]["MaKho"]" name="LPT[@j].MaKho" id="LPT[@j].MaKho" readonly style="border:hidden" hidden />@ViewBag.ListPhuTung.Rows[j]["TenKho"]</td>
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["TenHang"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm" name="LPT[@j].TenHang" value="@ViewBag.ListPhuTung.Rows[j]["TenHang"]" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm" name="LPT[@j].TenHang" /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["SoLuong"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm" name="LPT[@j].SoLuong" value="@ViewBag.ListPhuTung.Rows[j]["SoLuong"]" onchange="SoLuong(this)" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm" name="LPT[@j].SoLuong" /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["GiaBan"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiaBan" id="LPT[@j]GiaBan" value="@ViewBag.ListPhuTung.Rows[j]["GiaBan"]" onchange="GiaBan(this)" maxlength="15" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiaBan" id="LPT[@j]GiaBan" value="0" onchange="GiaBan(this)" maxlength="15" /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["GiamGia"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiamGia" id="LPT[@j]GiamGia" value="@ViewBag.ListPhuTung.Rows[j]["GiamGia"]" onchange="GiamGia(this)" maxlength="15" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiamGia" id="LPT[@j]GiamGia" value="0" onchange="GiamGia(this)" maxlength="15" /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["ThucThu"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].ThucThu" id="LPT[@j]ThucThu" value="@ViewBag.ListPhuTung.Rows[j]["ThucThu"] != null" onchange="ThucThu(this)" maxlength="15" readonly /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].ThucThu" id="LPT[@j]ThucThu" value="0" onchange="ThucThu(this)" maxlength="15" readonly /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["GiaVon"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiaVon" id="LPT[@j]GiaVon" value="@ViewBag.ListPhuTung.Rows[j]["GiaVon"]" onchange="GiaVon(this)" maxlength="15" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiaVon" id="LPT[@j]GiaVon" value="0" onchange="GiaVon(this)" maxlength="15" /></td>
+                                                        }
+                                                       
+                                                        @*<td><input type="text" value="@ViewBag.ListPhuTung.Rows[j]["TenKho"]" name="@ViewBag.ListPhuTung.Rows[j]["MaKho"]" readonly /></td>
+        <td><input type="text" class="form-control input-sm" /></td>
+        <td><input type="text" class="form-control input-sm number" value="0" /></td>
+        <td><input type="text" class="form-control input-sm number" value="0" /></td>
+        <td><input type="text" class="form-control input-sm number" value="0" /></td>*@
+                                                    </tr>
+                                                }
+                                            }
+                                        <tr>
+                                            <td colspan="2">Tổng cộng</td>
+                                            <td id="TongSoLuong"><input value="@SoLuong" class="number"  readonly="readonly" type="text" style="border:hidden;color:black" /></td>
+                                            <td id="TongGiaBan"><input value="0" type="text" style="border:hidden;color:black" /></td>
+                                            <td id="TongGiamGia"><input value="0" type="text" style="border:hidden;color:black" /></td>
+                                            <td id="TongThucThu"><input value="@ThucThu" type="text" style="border:hidden;color:black" /></td>
+                                            <td id="TongGiaVon"><input value="@GiaVon" class="number" readonly="readonly" type="text" style="border:hidden;color:black" /></td>
+                                            @*<td id="TongThucThu"></td>*@
+                                        </tr>
+                                        </tbody>
+                                    }
+                                    else
+                                    {
+                                        <thead>
+                                            <tr>
+                                                <th>Kho Xuất</th>
+                                                <th>Tên Phụ Tùng</th>
+                                                <th>Số lượng</th>
+                                                <th>Công lắp</th>
+                                                <th>Giá vốn</th>
+                                                <th>Tổng khuyến mãi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.ListPhuTung.Rows.Count > 0)
+                                            {
+
+                                                for (int j = 0; j < ViewBag.ListPhuTung.Rows.Count; j++)
+                                                {
+                                                    var a = ViewBag.ListPhuTung.Rows[j]["TenHang"];
+                                                    if (ViewBag.ListPhuTung.Rows[j]["TongKM"].ToString() != "")
+                                                    {
+                                                        ThucThu += Convert.ToDouble(ViewBag.ListPhuTung.Rows[j]["TongKM"]);
+                                                        SoLuong += Convert.ToDouble(ViewBag.ListPhuTung.Rows[j]["SoLuong"]);
+                                                    }
+                                                    //var i = ViewBag.ListPhuTung[j];
+                                                    <tr>
+                                                        <td><input type="text" value="@ViewBag.ListPhuTung.Rows[j]["MaKho"]" name="LPT[@j].MaKho" id="LPT[@j].MaKho" readonly style="border:hidden" hidden />@ViewBag.ListPhuTung.Rows[j]["TenKho"]</td>
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["TenHang"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm" name="LPT[@j].TenHang" value="@ViewBag.ListPhuTung.Rows[j]["TenHang"]" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm" name="LPT[@j].TenHang" /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["SoLuong"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm" name="LPT[@j].SoLuong" value="@ViewBag.ListPhuTung.Rows[j]["SoLuong"]" onchange="SoLuong(this)" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm" name="LPT[@j].SoLuong" /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["TienCong"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].TienCong" id="LPT[@j]TienCong" value="@ViewBag.ListPhuTung.Rows[j]["TienCong"]" onchange="TienCong(this)" maxlength="15" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].TienCong" id="LPT[@j]TienCong" value="0" onchange="TienCong(this)" maxlength="15" /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["GiaVon"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiaVon" id="LPT[@j]GiaVon" value="@ViewBag.ListPhuTung.Rows[j]["GiaVon"]" onchange="GiaVon(this)" maxlength="15" /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].GiaVon" id="LPT[@j]GiaVon" value="0" onchange="GiaVon(this)" maxlength="15" /></td>
+                                                        }
+                                                        @if (ViewBag.ListPhuTung.Rows[j]["TongKM"].ToString() != "")
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].TongKM" id="LPT[@j]TongKM" value="@ViewBag.ListPhuTung.Rows[j]["TongKM"]" onchange="TongKM(this)" maxlength="15" readonly /></td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td><input type="text" class="form-control input-sm number" name="LPT[@j].TongKM" id="LPT[@j]TongKM" value="0" onchange="TongKM(this)" maxlength="15" readonly /></td>
+                                                        }
+
+                                                        @*<td><input type="text" value="@ViewBag.ListPhuTung.Rows[j]["TenKho"]" name="@ViewBag.ListPhuTung.Rows[j]["MaKho"]" readonly /></td>
+        <td><input type="text" class="form-control input-sm" /></td>
+        <td><input type="text" class="form-control input-sm number" value="0" /></td>
+        <td><input type="text" class="form-control input-sm number" value="0" /></td>
+        <td><input type="text" class="form-control input-sm number" value="0" /></td>*@
+                                                    </tr>
+                                                }
+                                            }
+                                        <tr>
+                                            <td colspan="2">Tổng cộng</td>
+                                            <td id="TongSoLuong"><input value="@SoLuong" class="number" readonly="readonly" type="text" style="border:hidden;color:black" /></td>
+                                            <td id="TongTienCong"><input value="0" type="text" style="border:hidden;color:black" /></td>
+                                            <td id="TongGiaVon"><input value="0" type="text" style="border:hidden;color:black" /></td>
+                                            <td id="TongKM"><input value="0" type="text" style="border:hidden;color:black" /></td>
+                                        </tr>
+                                        </tbody>
+
+                                    }
+                                </table>
+                                @if (type == "NKMPK")
+                                {
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Còn Lại</label>
+                                            <input type="text" class="form-control input-sm number" id="conno" maxlength="15" readonly />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        @if (type == "TPHKI" || type == "TPHKITemp")
+                        {
+                            <div class="col-md-12 col-sm-12 col-xs-12" hidden>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Giá bán</label>
+                                        @Html.EditorFor(x => item.GiaBan, new { htmlAttributes = new { @class = "form-control input-sm number GiaBanPK ", @readonly = "" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Giảm giá</label>
+                                        @Html.EditorFor(x => item.GiamGia, new { htmlAttributes = new { @class = "form-control input-sm number GiamGiaPK " } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Thực bán(*)</label>
+                                        @Html.EditorFor(x => item.TongCong, new { htmlAttributes = new { @class = "form-control input-sm number ThanhTienPK" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group table-responsive">
+                                    <label>Cọc: </label>
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                            <tr>
+                                                <th>Phiếu cọc</th>
+                                                <th>Tổng cọc</th>
+                                                <th>Số tiền sử dụng</th>
+                                                <th>Còn lại</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DanhSachCoc">
+                                            @if (action == "Create")
+                                            {
+                                                if (Model.Coc != null)
+                                                {
+                                                    for (int j = 0; j < Model.Coc.Count; j++)
+                                                    {
+                                                        var i = Model.Coc[j];
+                                                        if (i.ConLai != 0) /*Còn lại khác 0 mới hiển thị Lôc 200828*/
+                                                        {
+                                                            <tr title="Ngay thu: @i.NgayThu.ToString("dd/MM/yyyy") + Ma so coc: @i.MaPhieuThu + Ho ten:@i.HoTen +  Bien so: @i.BienSo + So hop dong:@i.SoHopDong">
+                                                                <td>
+                                                                    <input type="hidden" name="coc[@j].SoThamChieu" value="@i.MaPhieuThu" />
+                                                                    <label class="control-label">@i.HoTen+@i.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                                </td>
+                                                                <td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="@i.ConLai" readonly /></td>
+                                                                <td><input type="text" name="coc[@j].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number dungCoc" onchange="change(this)" value="0" /></td>
+                                                                <td><input type="text" class="form-control input-sm SoTienConLai number" value="@i.ConLai" readonly /></td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (Model.Coc != null)
+                                                {
+                                                    for (int i = 0; i < Model.Coc.Count; i++)
+                                                    {
+                                                        var itemCoc = Model.Coc[i];
+                                                        var ii = Model.CTPT.FirstOrDefault(x => x.SoThamChieu == itemCoc.MaPhieuThu.ToString());
+                                                        var totali = itemCoc.TongCong;
+                                                        if (itemCoc.SoTienDaSuDung != 0)
+                                                        {
+                                                            if (ii != null)
+                                                            {
+                                                                totali = totali - ii.SoTienThanhToan;
+                                                                totalCoc += ii.SoTienThanhToan;
+                                                                <tr title="Ngay thu: @itemCoc.NgayThu.ToString("dd/MM/yyyy") + Ma so coc: @itemCoc.MaPhieuThu + Ho ten:@itemCoc.HoTen +  Bien so: @itemCoc.BienSo + So hop dong:@itemCoc.SoHopDong">
+                                                                    <td>
+                                                                        <label class="control-label">@itemCoc.MaPhieuThu + @itemCoc.HoTen+@itemCoc.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                                        <input type="hidden" value="@ii.Id" name="coc[@i].Id" />
+                                                                        <input type="hidden" value="@ii.SoThamChieu" name="coc[@i].SoThamChieu" />
+                                                                    </td>
+                                                                    <td><input type="text" class="number form-control input-sm SoTienCoTheSuDung" value="@(itemCoc.ConLai + ii.SoTienThanhToan)" readonly /></td>
+
+                                                                    <td><input type="text" width="300" class="number form-control input-sm SoTienThanhToan dungCoc" onchange="change(this)" name="coc[@i].SoTienThanhToan" value="@ii.SoTienThanhToan" /></td>
+
+                                                                    <td><input type="text" width="300" class="number form-control input-sm SoTienConLai " value="@itemCoc.ConLai" readonly /></td>
+                                                                </tr>
+                                                            }
+                                                            else
+                                                            {
+                                                                <tr title="Ngay thu: @itemCoc.NgayThu.ToString("dd/MM/yyyy") + Ma so coc: @itemCoc.MaPhieuThu + Ho ten:@itemCoc.HoTen +  Bien so: @itemCoc.BienSo + So hop dong:@itemCoc.SoHopDong">
+                                                                    <td>
+                                                                        <label class="control-label">@itemCoc.MaPhieuThu + @itemCoc.HoTen+@itemCoc.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                                        <input type="hidden" value="@Guid.NewGuid()" name="coc[@i].Id" />
+                                                                        <input type="hidden" value="@itemCoc.MaPhieuThu" name="coc[@i].SoThamChieu" />
+                                                                    </td>
+                                                                    <td><input type="text" class="number form-control input-sm SoTienCoTheSuDung input" value="@(itemCoc.ConLai)" readonly /></td>
+
+                                                                    <td><input type="text" class="number form-control input-sm SoTienThanhToan dungCoc" onchange="change(this)" name="coc[@i].SoTienThanhToan" value="0" /></td>
+
+                                                                    <td><input type="text" class="number form-control input-sm SoTienConLai " value="@itemCoc.ConLai" readonly /></td>
+                                                                </tr>
+                                                            }
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>Tổng cộng: </td>
+                                                <td></td>
+                                                <td class="number TotalCoc" id="TongCongThanhToanCoc"></td>
+                                                <td></td>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                        @if (type == "TBAHI" || type == "TBDTK" || type == "T1GHB" || type == "T2GTX" || type == "T2THK")
+                        {
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group table-responsive">
+                                    <label>Cọc: </label>
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                            <tr>
+                                                <th>Phiếu cọc</th>
+                                                <th>Tổng cọc</th>
+                                                <th>Số tiền sử dụng</th>
+                                                <th>Còn lại</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DanhSachCoc">
+                                            @if (action == "Create")
+                                            {
+                                                if (Model.Coc != null)
+                                                {
+                                                    for (int j = 0; j < Model.Coc.Count; j++)
+                                                    {
+                                                        var i = Model.Coc[j];
+                                                        if (i.ConLai != 0) /*Còn lại khác 0 mới hiển thị Lôc 200828*/
+                                                        {
+                                                            <tr title="Ngay thu:(@i.NgayThu.ToString("dd/MM/yyyy")) + Ma so coc:(@i.MaPhieuThu) + Ho ten:(@i.HoTen) +  Bien so:(@i.BienSo) + So hop dong:(@i.SoHopDong)">
+                                                                <td>
+                                                                    <input type="hidden" name="coc[@j].SoThamChieu" value="@i.MaPhieuThu" />
+                                                                    <label class="control-label">@i.MaPhieuThu+@i.HoTen+@i.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                                </td>
+                                                                <td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="@i.ConLai" readonly /></td>
+                                                                <td><input type="text" name="coc[@j].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number dungCoc" onchange="changeTBAHI(this)" value="0" /></td>
+                                                                <td><input type="text" class="form-control input-sm SoTienConLai number" value="@i.ConLai" readonly /></td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (Model.Coc != null)
+                                                {
+                                                    for (int i = 0; i < Model.Coc.Count; i++)
+                                                    {
+                                                        var itemCoc = Model.Coc[i];
+                                                        var ii = Model.CTPT.FirstOrDefault(x => x.SoThamChieu == itemCoc.MaPhieuThu.ToString());
+                                                        var totali = itemCoc.TongCong;
+                                                        //  if (itemCoc.ConLai != 0)
+                                                        //  {
+                                                        if (ii != null)
+                                                        {
+                                                            totali = totali - ii.SoTienThanhToan;
+                                                            totalCoc += ii.SoTienThanhToan;
+                                                            <tr title="Ngay thu:(@itemCoc.NgayThu.ToString("dd/MM/yyyy")) + Ma so coc:(@itemCoc.MaPhieuThu) + Ho ten:(@itemCoc.HoTen) +  Bien so:(@itemCoc.BienSo) + So hop dong:(@itemCoc.SoHopDong)">
+                                                                <td>
+                                                                    <label class="control-label">@itemCoc.MaPhieuThu+@itemCoc.HoTen+@itemCoc.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                                    <input type="hidden" value="@ii.Id" name="coc[@i].Id" />
+                                                                    <input type="hidden" value="@ii.SoThamChieu" name="coc[@i].SoThamChieu" />
+                                                                </td>
+                                                                <td><input type="text" class="number form-control input-sm SoTienCoTheSuDung" value="@(itemCoc.ConLai + ii.SoTienThanhToan)" readonly /></td>
+
+                                                                <td><input type="text" width="300" class="number form-control input-sm SoTienThanhToan dungCoc" onchange="changeTBAHI(this)" name="coc[@i].SoTienThanhToan" value="@ii.SoTienThanhToan" /></td>
+
+                                                                <td><input type="text" width="300" class="number form-control input-sm SoTienConLai " value="@itemCoc.ConLai" readonly /></td>
+                                                            </tr>
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    <label class="control-label">@itemCoc.MaPhieuThu+@itemCoc.HoTen+@itemCoc.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                                    <input type="hidden" value="@Guid.NewGuid()" name="coc[@i].Id" />
+                                                                    <input type="hidden" value="@itemCoc.MaPhieuThu" name="coc[@i].SoThamChieu" />
+                                                                </td>
+                                                                <td><input type="text" class="number form-control input-sm SoTienCoTheSuDung input" value="@(itemCoc.ConLai)" readonly /></td>
+
+                                                                <td><input type="text" class="number form-control input-sm SoTienThanhToan dungCoc" onchange="changeTBAHI(this)" name="coc[@i].SoTienThanhToan" value="0" /></td>
+
+                                                                <td><input type="text" class="number form-control input-sm SoTienConLai " value="@itemCoc.ConLai" readonly /></td>
+                                                            </tr>
+                                                        }
+                                                        //   }
+                                                    }
+                                                }
+                                            }
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td>Tổng cộng: </td>
+                                                <td></td>
+                                                <td class="number TotalCoc" id="TongCongThanhToanCoc">0</td>
+                                                <td></td>
+
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                        @if (type != "TKMPHKI" && type != "NKMPK")
+                        {
+                            if (type != "KMTMV" && type != "TBDTKKM") //KMTMV sẽ không có phần thanh toán
+                            {
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    @Html.Partial("~/Views/Shared/_ThanhToan_1.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT.FindAll(x => x.HinhThucThanhToan != "DC" && x.HinhThucThanhToan !="HA") }, { "HTTT", Model.HTTT } })
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-12 col-sm-12 col-xs-12" style="visibility:hidden;height:1px;">
+                                    @Html.Partial("~/Views/Shared/_ThanhToan_1.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT.FindAll(x => x.HinhThucThanhToan != "DC" && x.HinhThucThanhToan != "HA") }, { "HTTT", Model.HTTT } })
+                                </div>
+                            }
+                            if (type == "TPHKI" || type == "TPHKITemp")
+                            {
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Hãng thanh toán:</label>
+                                        <table class="table table-striped jambo_table bulk_action" id="HangThanhToan">
+                                            <thead>
+                                                <tr>
+                                                    <th>Loại thanh toán</th>
+                                                    <th>Số tiền</th>
+                                                    <td style="background-color: #405467"></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody_lhtt">
+                                                <tr id="tr_Hang" class="animated fadeIn" hidden>
+                                                    <td>
+                                                        @*<input type="hidden" name="lhtt[0].Id" value="" />*@
+                                                        <select class="fullwidth MaNganHang" name="lhtt[-1].MaNganHang">
+                                                            <option value="">Chọn</option>
+                                                            @foreach (var i in Model.LHTT)
+                                                            {
+                                                                <option value="@i.MaCTDV.ToUpper()">@i.TenCTDV</option>
+                                                            }
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input name="lhtt[-1].SoTienThanhToan" onchange="CalThanhToan(this)" type="text" class="form-control input-sm SoTienThanhToan LHTT number" value="0" maxlength="15" />
+                                                    </td>
+                                                    <td><i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i></td>
+                                                </tr>
+                                                @{double totalHTT = 0; }
+                                                @for (int j = 0; j < HANG_TT.Count; j++)
+                                                {
+
+                                                    var k = HANG_TT[j];
+                                                    totalHTT += k.SoTienThanhToan;
+                                                    <tr class="animated fadeIn">
+                                                        <td>
+                                                            @* <input type="hidden" name="lhtt[@j].Id" value="@k.Id" />*@
+                                                            <select class="select2 fullwidth MaNganHang" name="lhtt[@j].MaNganHang">
+                                                                <option value="">Chọn</option>
+                                                                @foreach (var i in Model.LHTT)
+                                                                {
+                                                                    <option value="@i.MaCTDV.ToUpper()" @(i.MaCTDV.ToUpper() == (i.MaCTDV != null ? k.MaNganHang.ToUpper() : "") ? "selected" : "" )>@i.TenCTDV</option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            @if (HANG_TT != null)
+                                                            {
+                                                                <input name="lhtt[@j].SoTienThanhToan" onchange="calHang()" type="text" class="form-control input-sm SoTienThanhToan LHTT number" value="@HANG_TT[j].SoTienThanhToan.ToString().Replace(",", ".")" maxlength="15" />
+                                                                <input type="hidden" class="IsDeleted" name="lhtt[@j].IsDeleted" value="false" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input name="lhtt[@j].SoTienThanhToan" onchange="calHang()" type="text" class="form-control input-sm SoTienThanhToan LHTT number" value="0" maxlength="15" />
+                                                                <input type="hidden" class="IsDeleted" name="lhtt[@j].IsDeleted" value="false" />
+                                                            }
+                                                        </td>
+                                                        <td><i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td>Tổng cộng</td>
+                                                    @*   <td class="Total">@totalHTT.ToString().Replace(",", ".")</td>*@
+                                                    <td class="number TotalHang" id="TongCongThanhToanHang" value="@totalHTT.ToString().Replace(",", ".")"></td>
+                                                    <td class="right"><i class="fa fa-plus addLHTT" style="cursor:pointer"></i></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Còn lại</label>
+                                            @Html.EditorFor(x => item.ConLai, new { htmlAttributes = new { @class = "form-control input-sm number", @readonly = "true", id = "item_ConLai" } })
+                                        </div>
+                                    </div>
+                                    }
+                                    if (type == "TKHAC")
+                                    {
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Còn lại</label>
+                                            @Html.EditorFor(x => item.ConLai, new { htmlAttributes = new { @class = "form-control input-sm number", @readonly = "true", id = "Item_ConLai" } })
+                                        </div>
+                                    </div>
+                                    }
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Ghi chú</label>
+                                            @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm GhiChu" })
+                                            @if (type == "TCOBX")
+                                            {
+                                                <div><b>(Nếu thu cọc lần 1 thì ghi chú là </b><label> lần 1</label>)</div>
+                                            }
+                                        </div>
+                                    </div>
+                                    }
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Kế toán trưởng</label>
+                                            @Html.DropDownListFor(x => item.KeToanTruong, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Người lập phiếu</label>
+                                            @Html.DropDownListFor(x => item.NguoiLapPhieu, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Người nộp tiền</label>
+                                            @Html.DropDownListFor(x => item.NguoiNopTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Người thu tiền (*)</label>
+                                            @Html.DropDownListFor(x => item.NguoiThuTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="ln_solid"></div>
+                                <div class="form-group center">
+                                    <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                        @if ((type == "TCOBX" || type == "TCODV" || type == "TCODVTemp" || type == "TCOBXTemp") && item.ConLai != item.TongCong)
+                                        {
+                                            //coc da su dung khong cho hien thi nut luu
+                                        }
+                                        else if (action == "View")
+                                        {
+                                            <a class="Back" href="/SoThu/Index">Quay lại</a>
+                                        }
+                                        else
+                                        {
+                                            if (ViewBag.CurrentUser != "banhang")
+                                            {
+                                                <input type="submit" name="submit" id="Create" value="Lưu" class="btn btn-success" onsubmit="return submit()" />
+                                                <input type="submit" name="submit" id="New" value="Lưu và thêm mới" class="btn btn-success" />
+                                            }
+
+                                        }
+                                    </div>
+                                </div>
+                                <div class="ln_solid"></div>
+</form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<a class="Back" href="/SoThu/@(type)Index">Quay lại</a>*@
+
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+
+    @if (type == "KMTMV")
+    {
+        <script src="~/Scripts/KMTMVCommon.js"></script>
+    }
+    else
+    {
+        <script src="~/Scripts/SoThuCommon.js?v=1.0.0.2"></script>
+    }
+<script>
+        $("#TongCongThanhToan").val(parseFloat($("#TongCongThanhToan").text()));
+        var maPhieuThu = '@item.MaPhieuThu';
+        $(".BienSo").change(function () {
+            //alert(1);
+            debugger;
+            var soHopDong = $(".SoHopDong").val();
+            var bienso = $(".BienSo").val();
+            var hoten = "";
+            hoten = $(".HoTen").val();
+            if (soHopDong == "" && bienso == "" && hoten == "")
+                $("#DanhSachCoc").html("");
+            else {
+
+                GetPhieuCoc_V2(maPhieuThu, hoten, bienso, soHopDong);
+                var TongCongThanhToanCoc = 0;
+                $("#TongCongThanhToanCoc").html(TongCongThanhToanCoc.toLocaleString('en-us'));
+                $("#TongCongThanhToanCoc").val(TongCongThanhToanCoc.toLocaleString('en-us'));
+
+                //SoHopDong
+                $("#BienSo").html(bienso.toLocaleString('en-us'));
+                $("#BienSo").val(bienso.toLocaleString('en-us'));
+            }
+        })
+        $(".SoHopDong").change(function () {
+            debugger;
+            var soHopDong = $(".SoHopDong").val();
+            var bienso = $(".BienSo").val();
+            var hoten = "";
+            hoten = $(".HoTen").val();
+            if (soHopDong == "" && bienso == "" && hoten == "")
+                $("#DanhSachCoc").html("");
+            else {
+
+                GetPhieuCoc_V2(maPhieuThu, hoten, bienso, soHopDong);
+                var TongCongThanhToanCoc = 0;
+                $("#TongCongThanhToanCoc").html(TongCongThanhToanCoc.toLocaleString('en-us'));
+                $("#TongCongThanhToanCoc").val(TongCongThanhToanCoc.toLocaleString('en-us'));
+
+                //SoHopDong
+                $("#SoHopDong").html(soHopDong.toLocaleString('en-us'));
+                $("#SoHopDong").val(soHopDong.toLocaleString('en-us'));
+            }
+        })
+        $(".HoTen").change(function () {
+            debugger;
+            var soHopDong = $(".SoHopDong").val();
+            var bienso = $(".BienSo").val();
+            var hoten = "";
+            hoten = $(".HoTen").val();
+            if (soHopDong == "" && bienso == "" && hoten == "")
+                $("#DanhSachCoc").html("");
+            else {
+
+                GetPhieuCoc_V2(maPhieuThu, hoten, bienso, soHopDong);
+                var TongCongThanhToanCoc = 0;
+                $("#TongCongThanhToanCoc").html(TongCongThanhToanCoc.toLocaleString('en-us'));
+                $("#TongCongThanhToanCoc").val(TongCongThanhToanCoc.toLocaleString('en-us'));
+            }
+
+        })
+        function Cal() {
+            //CalPK();
+        }
+
+        //function GetPhieuCoc(val) {
+        //    var strTicket = val; //$(".BienSo").val().trim();
+
+        //    var $tbody = $('#DanhSachCoc'); //ID table anh cần add dữ liệu vào
+        //    $tbody.html('');
+        //    if (strTicket.length > 0) {
+        //        $.ajax({
+        //            url: "/SoThu/GetPhieuCoc",
+        //            type: "POST",
+        //            data: { "strBienSo": strTicket },
+        //            success: function (result) {
+        //                if (!result.IsError) {
+        //                    if (result.ListObj.length > 0) {
+        //                        let j = 0;
+
+        //                        $.each(result.ListObj, function (i, obj) {
+
+        //                            var $tr = $('<tr></tr>');
+        //                            var $td1 = $('<td></td>');
+        //                            var $input = $('<input type="hidden" name="coc[' + i + '].SoThamChieu" value="' + obj.MaPhieuThu + '" /><label class="control-label">' + obj.HoTen + " " + formatDateToString(convertJsonDateTimeToJs(obj.NgayThu), "dd/MM/yyyy") + '</label>');
+        //                            $td1.append($input);
+        //                            var $td2 = $('<td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="' + obj.ConLai.toLocaleString('en-us') + '" readonly /></td> ');
+        //                            var $td3 = $(' <td><input type="text" name="coc[' + i + '].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number dungCoc" onchange="change(this)" value="0" /></td> ');
+        //                            var $td4 = $(' <td><input type="text" class="form-control input-sm SoTienConLai number" value="' + obj.ConLai.toLocaleString('en-us') + '" readonly /></td>');
+
+        //                            $tr.append($td1);
+        //                            $tr.append($td2);
+        //                            $tr.append($td3);
+        //                            $tr.append($td4);
+        //                            $tbody.append($tr);// add thẻ tr vào tbody table
+        //                        });
+
+        //                    }
+        //                    else {
+        //                        //toastWarning(result.Message);
+        //                    }
+        //                }
+        //            },
+        //            error: function (result) {
+
+        //            }
+        //        });
+        //    }
+
+        //}
+
+    function GetPhieuCoc(maPhieuThu,hoten,thamso) {
+        debugger;
+        if ('@type' != "TPHKITemp") {
+            var strHoTen = hoten; //$(".BienSo").val().trim();
+            var strTicket = thamso;
+            var $tbody = $('#DanhSachCoc'); //ID table anh cần add dữ liệu vào
+            var tienThanhToanCoc = 0;
+            $tbody.html('');
+            $.ajax({
+                url: "/SoThu/GetPhieuCoc",
+                type: "POST",
+                data: { "maPhieuThu": maPhieuThu, "strHoTen": strHoTen, "strTicket": strTicket },
+                success: function (result) {
+                    if (!result.IsError) {
+                        if (result.ListObj.length > 0) {
+                            let j = 0;
+
+                            $.each(result.ListObj, function (i, obj) {
+
+                                var $tr = $('<tr></tr>');
+                                var $td1 = $('<td></td>');
+                                var $input = $('<input type="hidden" name="coc[' + i + '].SoThamChieu" value="' + obj.MaPhieuThu + '" /><label class="control-label">' + obj.HoTen + " " + formatDateToString(convertJsonDateTimeToJs(obj.NgayThu), "dd/MM/yyyy") + '</label>');
+                                $td1.append($input);
+                                var $td2 = $('<td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="' + obj.TongCong.toLocaleString('en-us') + '" readonly /></td> ');
+                                var $td3 = $(' <td><input type="text" name="coc[' + i + '].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number dungCoc" id="coc[' + i + ']" onchange="change(this)" value="' + obj.SoTienDaSuDung.toLocaleString('en-us') + '" /></td> ');
+                                var $td4 = $(' <td><input type="text" class="form-control input-sm SoTienConLai number" value="' + obj.ConLai.toLocaleString('en-us') + '" readonly /></td>');
+
+                                tienThanhToanCoc += obj.SoTienDaSuDung;
+                                $tr.append($td1);
+                                $tr.append($td2);
+                                $tr.append($td3);
+                                $tr.append($td4);
+                                $tbody.append($tr);// add thẻ tr vào tbody table
+                            });
+
+                        }
+                        else {
+                            //toastWarning(result.Message);
+                        }
+                        $("#TongCongThanhToanCoc").html(tienThanhToanCoc.toLocaleString('en-us'));
+                        $("#TongCongThanhToanCoc").val(tienThanhToanCoc.toLocaleString('en-us'));
+                    }
+                },
+                error: function (result) {
+                }
+            });
+        }
+                //
+    }
+    function GetPhieuCoc_V2(maPhieuThu, hoten, bienso, sohopdong) {
+        debugger;
+        var strHoTen = hoten; //$(".BienSo").val().trim();
+        //var strTicket = thamso;
+        var $tbody = $('#DanhSachCoc'); //ID table anh c?n add d? li?u vào
+        var tienThanhToanCoc = 0;
+        var maLoaiPhieu = $('#type').val();
+        var changeAction = "change(this)";
+        if (maLoaiPhieu == "TBAHI" || maLoaiPhieu == "TBDTK" || maLoaiPhieu == "T2GTX" || maLoaiPhieu == "T1GHB" || maLoaiPhieu == "T2THK")
+            changeAction = "changeTBAHI(this)";
+        //  alert(maLoaiPhieu);
+        $tbody.html('');
+        $.ajax({
+            url: "/SoThu/GetPhieuCoc_V2",
+            type: "POST",
+            data: { "maPhieuThu": maPhieuThu, "strHoTen": strHoTen, "strBienSo": bienso, "strSoHopDong": sohopdong },
+            success: function (result) {
+                if (!result.IsError) {
+                    if (result.ListObj.length > 0) {
+                        let j = 0;
+
+                        $.each(result.ListObj, function (i, obj) {
+
+                            var $tr = $('<tr title ="Ngay thu:(' + formatDateToString(convertJsonDateTimeToJs(obj.NgayThu), "dd/MM/yyyy")  + ') Ma so coc: (' + obj.MaPhieuThu + ') + Ho ten: (' + obj.HoTen + ') + Bien so: (' + obj.BienSo + ') + So hop dong: (' + obj.SoHopDong + ')"></tr>');
+                            var $td1 = $('<td></td>');
+                            var $input = $('<input type="hidden" name="coc[' + i + '].SoThamChieu" value="' + obj.MaPhieuThu + '" /><label class="control-label">' + obj.MaPhieuThu + '+' + obj.HoTen + "+" + formatDateToString(convertJsonDateTimeToJs(obj.NgayThu), "dd/MM/yyyy") + '</label>');
+                            $td1.append($input);
+                            var $td2 = $('<td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="' + obj.TongCong.toLocaleString('en-us') + '" readonly /></td> ');
+                            var $td3 = $(' <td><input type="text" name="coc[' + i + '].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number dungCoc" id="coc[' + i + ']" onchange="' + changeAction + '" value="' + obj.SoTienDaSuDung.toLocaleString('en-us') + '" /></td> ');
+                            var $td4 = $(' <td><input type="text" class="form-control input-sm SoTienConLai number" value="' + obj.ConLai.toLocaleString('en-us') + '" readonly /></td>');
+
+                            tienThanhToanCoc += obj.SoTienDaSuDung;
+                            $tr.append($td1);
+                            $tr.append($td2);
+                            $tr.append($td3);
+                            $tr.append($td4);
+                            $tbody.append($tr);// add th? tr vào tbody table
+                        });
+
+                    }
+                    else {
+                        //toastWarning(result.Message);
+                    }
+                    $("#TongCongThanhToanCoc").html(tienThanhToanCoc.toLocaleString('en-us'));
+                    $("#TongCongThanhToanCoc").val(tienThanhToanCoc.toLocaleString('en-us'));
+                }
+            },
+            error: function (result) {
+            }
+        });
+        //
+    }
+</script>
+    @*@if (type == "TPHKI" || type == "T2GTX")
+    {*@
+        <script>
+            debugger;
+            idx = @ViewBag.CountCTPT;
+        </script>
+    @*}
+    else
+    {
+        <script>
+            idx = '@Model.CTPT.Count';
+        </script>
+    }*@
+    @if (type == "TBDTK" || type == "TBDTKKM")
+    {
+        <script>
+                        indexj = '@Model.CTBDTK.Count';
+
+                    $(".addBDTK").click(function() {
+                                        debugger;
+                                        var html = trbdtk.split("CTBDTK[0]").join("CTBDTK[" + indexj + "]");
+                                        html = html.split("bdtk_0").join("bdtk_" + indexj);
+                                        html = html.split("gianiemyet_0").join("gianiemyet_" + indexj);
+                                        html = html.split("giamgia_0").join("giamgia_" + indexj);
+                                        html = html.split("giaban_0").join("giaban_" + indexj);
+                                        if (html.indexOf("disabled") > 0 && type == "TBDTKKM")
+                                            html = html.split("disabled").join("");
+                                        //alert(html);
+                                        @if(Model.CTBDTK.Count > 0)
+                        {
+                                            @Html.Raw("html=html.replace('" + Model.CTBDTK[0].MaBDTK + "','');")
+                             @Html.Raw("html=html.replace('" + Model.CTBDTK[0].GiaBan + "','0');")
+                             @Html.Raw("html=html.replace('" + Model.CTBDTK[0].GiaNiemYet + "','0');")
+                             @Html.Raw("html=html.replace('" + Model.CTBDTK[0].GiamGia + "','0');")
+                             @Html.Raw("html=html.replace('" + Model.CTBDTK[0].ThucBan + "','0');")
+                             @Html.Raw("html=html.replace('selected','');")
+                        }
+                        $("#tbody_bdtk").append("<tr>" + html + "</tr>");
+                                        indexj++;
+                                        setTimeout(function() {
+                            $('.select2').select2({
+                                            placeholder: "Select an option",
+                                allowClear: true
+                            });
+                            removeSelectbdtk();
+                        }, 200);
+                    })
+        </script>
+    }
+<script>
+        @*$(".addHTTT").click(function () {
+            debugger;
+            var html = tr.split("httt[0]").join("httt[" + idx + "]");
+            if(html.indexOf("disabled") > 0)
+                html = html.split("disabled").join("");
+            //alert(html);
+            @if (Model.CTPT.Count > 0)
+            {
+                 @Html.Raw("html=html.replace('" + Model.CTPT[0].Id + "','');")
+                 @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan + "','');")
+                 @Html.Raw("html=html.replace('selected','');")
+                 @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            idx++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })*@
+
+        $(".addHTTT").click(function () {
+            debugger;
+
+            // Tạo bản sao từ template mẫu `tr`
+            // Biến `tr` nên lưu HTML gốc của dòng đầu tiên lúc load page
+            var html = tr.split("httt[0]").join("httt[" + idx + "]");
+            @if (Model.CTPT.Count > 0)
+            {
+                 @Html.Raw("html=html.replace('" + Model.CTPT[0].Id + "','');")
+            }
+            // Bỏ disabled nếu có
+            if (html.indexOf("disabled") > 0) {
+                html = html.split("disabled").join("");
+            }
+
+            // Chuyển sang DOM để thao tác an toàn
+            var $tempRow = $("<tr>" + html + "</tr>");
+
+            // Reset các input text, number, textarea
+            $tempRow.find("input[type='text'], input[type='number'], textarea").val("");
+
+            // Reset các select (giữ nguyên option và value của option)
+            $tempRow.find("select").each(function () {
+                $(this).val("").trigger("change");
+            });
+
+            // Thêm dòng vào table
+            $("#tbody").append($tempRow);
+
+            idx++;
+
+            // Khởi tạo lại select2 cho select mới
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect(); // nếu hàm này bạn dùng để xử lý khác
+            }, 200);
+        });
+
+
+
+        var j = '@(Model.CTBPK != null?Model.CTBPK.Count:0)';
+        var trCTBPK = $($("#tbodyCTBPK").find("tr")[0]).html();
+        $(".addCTBPK").click(function () {
+            $("#tbodyCTBPK").append("<tr>" + trCTBPK.split("CTBPK[0]").join("CTBPK[" + j + "]") + "</tr>");
+            $($("#tbodyCTBPK").find("tr")[j]).find("input.number").val(0);
+            $($("#tbodyCTBPK").find("tr")[j]).find("input").val("");
+            $($("#tbodyCTBPK").find("tr")[j]).find("select").val("");
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+            j++;
+        })
+
+        $(document).on("change", ".number", function () {
+            debugger;
+            var valnumber = $(this).val();
+            if (valnumber != "") {
+                valnumber = valnumber.split(",").join("");
+                valnumber = parseInt(valnumber);
+                // val = val * 1000;
+                $(this).val(valnumber.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+            let total = 0;
+            //03032018
+            if($("#type").val() == "TBAHI")
+            {
+                var tongcong = 0;
+                setTimeout(function () {
+                    $("#tbody").find("tr").map(function (key, val) {
+                        if ($(val).is(":visible")) {
+                            var isDeleted = $(val).find(".IsDeleted").val();
+
+                            if (isDeleted != "true") {
+                                let i = parseInt($(val).find(".number").val().split(",").join(""));
+                                if (!isNaN(i))
+                                    tongcong += i;
+                            }
+
+                        }
+                    });
+                });
+                $("#ThanhToan").find(".Total").html(tongcong.toLocaleString('en-us'));
+                $("#ThanhToan").find(".Total").val(tongcong.toLocaleString('en-us'));
+            }
+            CalThanhToan($(this));
+
+            //tinh con lai de tinh coc
+            TinhConLai();
+            //if($("#type").val() == "TKHAC")
+            //    TinhConLai_TKHAC();
+        });
+        $(document).on("change", ".ThanhTienBH,.GiamGiaBH", function () {
+            debugger;
+            let GiaBanBH = 0;
+            let GiamGiaBH = 0;
+            let ThanhTienBH = 0;
+            let HoaHong = 0;
+            ThanhTienBH = GiaBanBH = parseInt($(".ThanhTienBH").val().split(",").join(""));
+            GiaBanBH = parseInt($(".GiaBanBH").val().split(",").join(""));
+            GiamGiaBH = parseInt($(".GiamGiaBH").val().split(",").join(""));
+            $(".GiaBanBH").val((ThanhTienBH + GiamGiaBH).toLocaleString('en-us'));
+        });
+        //$("#Create").click(function(){
+        //    debugger;
+        //    if (CheckValidatePhieuThu() == false)
+        //        return false;
+        //})
+        $("#form-data").submit(function () {
+            debugger;
+            CalThanhToan(this);
+            let flag = true;
+            $("#tbody").find("tr").map(function (key, val) {
+                if ($(val).is(":visible")) {
+                    var tuitien = $(val).find(".Temp").select2('val');
+                    var sotien = $(val).find(".number").val().split(",").join("");
+                    tuitien = tuitien == "Chọn" ? "" : tuitien;
+                    sotien = sotien == "" ? 0 : parseInt(sotien);
+                    if (tuitien != "" && sotien === 0 && $("#type").val() != "TBDTKKM"){
+                        toastWarning("Vui lòng nhập số tiền");
+                        $(val).find(".number").focus();
+                        flag = false;
+                        return;
+                    }
+                    if (tuitien == "" && sotien != 0 && $("#type").val() != "TBDTKKM") {
+                        toastWarning("Vui lòng nhập túi tiền");
+                        $(val).find(".Temp").focus();
+                        flag = false;
+                        return;
+                    }
+                }
+            })
+            //$("#tbody_lhtt").find("tr").map(function (key, val) {
+            //    if ($(val).is(":visible")) {
+            //        var tuitien = $(val).find(".Temp").select2('val');
+            //        var sotien = $(val).find(".number").val().split(",").join("");
+            //        tuitien = tuitien == "Chọn" ? "" : tuitien;
+            //        sotien = sotien == "" ? 0 : parseInt(sotien);
+            //        if (tuitien != "" && sotien === 0) {
+            //            toastWarning("Vui lòng nhập số tiền");
+            //            $(val).find(".number").focus();
+            //            flag = false;
+            //            return;
+            //        }
+            //        if (tuitien == "" && sotien != 0) {
+            //            toastWarning("Vui lòng nhập loại thanh toán");
+            //            $(val).find(".Temp").focus();
+            //            flag = false;
+            //            return;
+            //        }
+            //    }
+            //})
+            //if($("#type").val() == "TKHAC")
+            //{
+            //    if($("#DoiTac").val() == "")
+            //    {
+            //        toastWarning("Vui lòng chọn đối tác.");
+            //        return false;
+            //    }
+            //}
+
+
+
+            if (!flag) {
+                return false;
+            }
+            if (CheckValidatePhieuThu() == false)
+                return false;
+            if (CheckValidateThongTinNguoiThanhToan_PhieuThu() == false)
+                return false;
+            var lst = $(".number");
+            lst.map(function (key, val) {
+                $(val).val($(val).val().split(",").join(""));
+            });
+
+        })
+        function change(a) {
+            debugger;
+            var num = $(a).val().split(",").join("");
+            var tot = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+            if(parseInt(num) > parseInt(tot))
+            {
+                var conlai = 0;
+                $(a).val(tot.toLocaleString('en-us'));
+                $(a).html(tot.toLocaleString('en-us'));
+                $(a).closest("tr").find(".SoTienConLai").val(conlai.toLocaleString('en-us'));
+            }
+            else
+            {
+                $(a).closest("tr").find(".SoTienConLai").val((tot - num).toLocaleString('en-us'));
+            }
+            // $(a).closest("tr").find(".SoTienConLai").val((tot - num*1000).toLocaleString('en-us'));
+
+            Cal();
+            TinhConLai();
+            if($("#type").val() == "TKHAC")
+                TinhConLai_TKHAC();
+        }
+        function changeTBAHI(a) {
+            debugger;
+            var num = $(a).val().split(",").join("");
+            var tot = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+            if (parseInt(num) > parseInt(tot)) {
+                var conlai = 0;
+                $(a).val(tot.toLocaleString('en-us'));
+                $(a).html(tot.toLocaleString('en-us'));
+                $(a).closest("tr").find(".SoTienConLai").val(conlai.toLocaleString('en-us'));
+            }
+            else {
+                $(a).closest("tr").find(".SoTienConLai").val((tot - num).toLocaleString('en-us'));
+            }
+            // $(a).closest("tr").find(".SoTienConLai").val((tot - num*1000).toLocaleString('en-us'));
+
+            //Cal();
+            calCoc();
+            TinhConLai();
+
+        }
+        function calCoc() {
+            var tienThanhToanCoc = 0;
+            $("#DanhSachCoc").find(".dungCoc").map(function (key, val) {
+                if ($(val).val() != "") {
+                    tienThanhToanCoc += parseInt($(val).val().split(",").join(""));
+                }
+            });
+
+            $("#TongCongThanhToanCoc").html(tienThanhToanCoc.toLocaleString('en-us'));
+            $("#TongCongThanhToanCoc").val(tienThanhToanCoc.toLocaleString('en-us'));
+
+    }
+    function calHang() {
+        var tienThanhToanHang = 0;
+        $("#tbody_lhtt").find(".SoTienThanhToan").map(function (key, val) {
+            if ($(val).val() != "") {
+                tienThanhToanHang += parseInt($(val).val().split(",").join(""));
+            }
+        });
+
+        $("#TongCongThanhToanHang").html(tienThanhToanHang.toLocaleString('en-us'));
+        $("#TongCongThanhToanHang").val(tienThanhToanHang.toLocaleString('en-us'));
+
+    }
+</script>
+    @if (type == "TBAHI" || type == "TBDTK" || type == "T2GTX" || type == "T1GHB" || type == "T2THK")
+    {
+        <script>
+            $("#form-data").submit(function () {
+                $("#DanhSachCoc").find("tr").map(function (key, val) {
+                    let td = $(val).find("td");
+
+                    let soTienConLai = $(td[4]).find(".SoTienConLai").val();
+                    let SoTienThanhToan = $(td[3]).find(".SoTienThanhToan").val();
+                    // alert(SoTienThanhToan);
+                    if (soTienConLai < 0) {
+                        toastWarning("Vui lòng kiểm tra lại số tiền sử dụng cọc");
+                        $(td[3]).find("input").focus();
+                        return false;
+                    }
+
+                });
+            });
+        </script>
+    }
+    @if (type == "TBAHI")
+    {
+        <script>
+            calCoc();
+            $("#form-data").submit(function () {
+
+                if ($("#item_LoaiBaoHiem").val() == "") {
+                    toastWarning("Vui lòng nhập loại bảo hiểm");
+                    return false;
+                }
+
+                if ($(".GiaBanBH").val().split(",").join("") < 0) {
+                    toastWarning("Giá bán không được nhỏ hơn 0");
+                    return false;
+                }
+
+                if ($("#item_SoHopDong").val() == "" && $("item_TongCong").val().split(",").join("") == 0) {
+                    toastWarning("Vui lòng nhập số hợp đồng.");
+                    return false;
+                }
+            });
+        </script>
+    }
+    @if (type == "TPHKI" || type == "TPHKITemp" )//khac MVL
+    {
+        <script>
+            var Dem = @SoDong;
+            function GiaBan()
+            {
+                var TongGiaBan = 0;
+                for (var i = 0; i < Dem; i++)
+                {
+                    var SoTien = parseInt($("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                    var GiamGia = parseInt($("#LPT\\[" + i + "\\]GiamGia").val().split(",").join(""));
+                    if (SoTien < GiamGia && $("#type").val() != "TKMPHKI")
+                    {
+                        toastWarning("Giá bán không được nhỏ hơn giảm giá");
+                        SoTien = GiamGia;
+                        $("#LPT\\[" + i + "\\]GiaBan").val(SoTien.toLocaleString('en-us'));
+                        $("#LPT\\[" + i + "\\]ThucThu").val((SoTien - GiamGia).toLocaleString('en-us'));
+                        return false;
+                    }
+                    if(isNaN(SoTien) != true)
+                    {
+                        TongGiaBan += SoTien;
+                        if ($("#type").val() == "TPHKI") {
+                            $("#LPT\\[" + i + "\\]ThucThu").val((SoTien - GiamGia).toLocaleString('en-us'));
+                        }
+                        else {
+                            $("#LPT\\[" + i + "\\]ThucThu").val((SoTien + GiamGia).toLocaleString('en-us'));
+                        }
+                        ThucThu();
+                    }
+                    else
+                    {
+                        TongGiaBan += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongGiaBan").html(TongGiaBan.toLocaleString('en-us'));
+            }
+            function GiamGia()
+            {
+                debugger;
+                var TongGiamGia = 0;
+                for (var i = 0; i < Dem; i++)
+                {
+                    var SoTien = parseInt($("#LPT\\[" + i + "\\]GiamGia").val().split(",").join(""));
+                    var GiaBan = parseInt($("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                    if (SoTien > GiaBan && $("#type").val() != "TKMPHKI")
+                    {
+
+                        toastWarning("Số tiền giảm giá không được lớn hơn giá bán");
+                        SoTien = 0;
+                        $("#LPT\\[" + i + "\\]GiamGia").val(SoTien.toLocaleString('en-us'));
+                        $("#TongGiamGia").html(TongGiamGia.toLocaleString('en-us'));
+                        $("#LPT\\[" + i + "\\]ThucThu").val(GiaBan.toLocaleString('en-us'));
+                        ThucThu();
+                        return false;
+                    }
+                    if(isNaN(SoTien) != true)
+                    {
+                        TongGiamGia += SoTien;
+                        if ($("#type").val() == "TPHKI") {
+                            $("#LPT\\[" + i + "\\]ThucThu").val((GiaBan - SoTien).toLocaleString('en-us'));
+
+                        }
+                        else {
+                            $("#LPT\\[" + i + "\\]ThucThu").val((GiaBan + SoTien).toLocaleString('en-us'));
+                        }
+                        ThucThu();
+                    }
+                    else
+                    {
+                        SoTien = 0;
+                        if ($("#type").val() == "TPHKI") {
+                            $("#LPT\\[" + i + "\\]ThucThu").val((GiaBan - SoTien).toLocaleString('en-us'));
+                        }
+                        else {
+                            $("#LPT\\[" + i + "\\]ThucThu").val((GiaBan + SoTien).toLocaleString('en-us'));
+                        }
+                        TongGiamGia += 0;
+                        ThucThu();
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongGiamGia").html(TongGiamGia.toLocaleString('en-us'));
+            }
+            function ThucThu()
+            {
+                debugger;
+                var TongThucThu = 0;
+                for (var i = 0; i < Dem; i++)
+                {
+                    var SoTien = parseInt($("#LPT\\[" + i + "\\]ThucThu").val().split(",").join(""));
+                    if(isNaN(SoTien) != true)
+                    {
+                        TongThucThu += SoTien;
+                    }
+                    else
+                    {
+                        TongThucThu += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongThucThu").html(TongThucThu.toLocaleString('en-us'));
+                $("#TongThucThu").val(TongThucThu.toLocaleString('en-us'));
+                if(TongThucThu != 0)
+                    TinhConLai();
+                if (TongThucThu == 0 && ($("#type").val() == "TPHKI" || $("#type").val() == "TKMPHKI" || $("#type").val() == "TPHKITemp"))
+                    TinhConLai();
+            }
+            function GiaVon() {
+                debugger;
+                var TongThucThu = 0;
+                for (var i = 0; i < Dem; i++) {
+                    var SoTien = parseInt($("#LPT\\[" + i + "\\]GiaVon").val().split(",").join(""));
+                    if (isNaN(SoTien) != true) {
+                        TongThucThu += SoTien;
+                    }
+                    else {
+                        TongThucThu += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongGiaVon").html(TongThucThu.toLocaleString('en-us'));
+                $("#TongGiaVon").val(TongThucThu.toLocaleString('en-us'));
+               
+            }
+            function SoLuong() {
+                debugger;
+                var TongThucThu = 0;
+                for (var i = 0; i < Dem; i++) {
+                    var SoTien = parseInt($("#LPT\\[" + i + "\\]SoLuong").val().split(",").join(""));
+                    if (isNaN(SoTien) != true) {
+                        TongThucThu += SoTien;
+                    }
+                    else {
+                        TongThucThu += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongSoLuong").html(TongThucThu.toLocaleString('en-us'));
+                $("#TongSoLuong").val(TongThucThu.toLocaleString('en-us'));
+
+            }
+            function CalGiaBan() {
+                var TongGiaBan = 0;
+                for (var i = 0; i < Dem; i++)
+                {
+                    var SoTien = parseInt($("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                    if(isNaN(SoTien) != true)
+                    {
+                        TongGiaBan += SoTien;
+                    }
+                    else
+                    {
+                        TongGiaBan += 0;
+                    }
+                }
+                $("#TongGiaBan").html(TongGiaBan.toLocaleString('en-us'));
+            }
+            function CalGiamGia()
+            {
+                var TongGiamGia = 0;
+                for (var i = 0; i < Dem; i++)
+                {
+                    var SoTien = parseInt($("#LPT\\[" + i + "\\]GiamGia").val().split(",").join(""));
+                    if(isNaN(SoTien) != true)
+                    {
+                        TongGiamGia += SoTien;
+                    }
+                    else
+                    {
+                        TongGiamGia += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongGiamGia").html(TongGiamGia.toLocaleString('en-us'));
+            }
+            function CalThucThu(){
+                var TongThucThu = 0;
+                for (var i = 0; i < Dem; i++)
+                {
+                    var SoTien = parseInt($("#LPT\\[" + i + "\\]ThucThu").val().split(",").join(""));
+                    if(isNaN(SoTien) != true)
+                    {
+                        TongThucThu += SoTien;
+                    }
+                    else
+                    {
+                        TongThucThu += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongThucThu").html(TongThucThu.toLocaleString('en-us'));
+                $("#TongThucThu").val(TongThucThu.toLocaleString('en-us'));
+            }
+            $(document).ready(function(){
+                debugger;
+                CalGiaBan();
+                CalGiamGia();
+                CalThucThu();
+                TinhConLai();
+            });
+        </script>
+    }
+    @if (type == "TKMPHKI" || type == "NKMPK")
+    {
+        <script>
+            var Dem = @SoDong;
+            function TienCong()
+                {
+                    var TongTienCong = 0;
+                    for (var i = 0; i < Dem; i++)
+                    {
+                        var TienCong = parseInt($("#LPT\\[" + i + "\\]TienCong").val().split(",").join(""));
+                        var GiaVon = parseInt($("#LPT\\[" + i + "\\]GiaVon").val().split(",").join(""));
+                        if (isNaN(TienCong) != true)
+                        {
+                            TongTienCong += TienCong;
+                            $("#LPT\\[" + i + "\\]TongKM").val((TienCong + GiaVon).toLocaleString('en-us'));
+                            TongKM();
+                        }
+                        else
+                        {
+                            TienCong = 0;
+                            $("#LPT\\[" + i + "\\]TongKM").val((TienCong + GiaVon).toLocaleString('en-us'));
+                            TongTienCong += 0;
+                        }
+                        //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                    }
+                $("#TongTienCong").html(TongTienCong.toLocaleString('en-us'));
+            }
+            function GiaVon() {
+                var TongGiaVon = 0;
+                for (var i = 0; i < Dem; i++) {
+                    var TienCong = parseInt($("#LPT\\[" + i + "\\]TienCong").val().split(",").join(""));
+                    var GiaVon = parseInt($("#LPT\\[" + i + "\\]GiaVon").val().split(",").join(""));
+                    if (isNaN(GiaVon) != true) {
+                        TongGiaVon += GiaVon;
+                        $("#LPT\\[" + i + "\\]TongKM").val((TienCong + GiaVon).toLocaleString('en-us'));
+                        TongKM();
+                    }
+                    else {
+                        GiaVon = 0  
+                        $("#LPT\\[" + i + "\\]TongKM").val((TienCong + GiaVon).toLocaleString('en-us'));
+                        TongGiaVon += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $("#TongGiaVon").html(TongGiaVon.toLocaleString('en-us'));
+            }
+            function TongKM() {
+                var TongKM = 0;
+                for (var i = 0; i < Dem; i++) {
+                    var KM = parseInt( $("#LPT\\[" + i + "\\]TongKM").val().split(",").join(""));
+                    if (isNaN(KM) != true) {
+                        TongKM += KM;
+                    }
+                    else {
+                        TongKM += 0;
+                    }
+                    //TongGiaBan += parseInt($(val).find("#LPT\\[" + i + "\\]GiaBan").val().split(",").join(""));
+                }
+                $($("#LPT\\[" + i + "\\]TongKM")).html(TongKM.toLocaleString('en-us'));
+                $("#TongKM").html(TongKM.toLocaleString('en-us'));
+                type = '@ViewBag.Type';
+                if (type == "NKMPK" && $("#actiontype").val() == "Update") {
+                    var notkmcl = parseInt($("#nokmconlai").val().split(",").join(""));
+                    $("#conno").val(notkmcl.toLocaleString('en-us'));
+                }
+                else if(type != "TKMPHKI"){
+                    ConNo();
+                }
+            }
+            function ConNo() {
+                var notkmcl = parseInt($("#nokmconlai").val().split(",").join(""));
+                var tongtra = isNaN(parseInt($("#TongKM").text().split(",").join(""))) != true ? parseInt($("#TongKM").text().split(",").join("")) : 0;
+                var conno = notkmcl - tongtra;
+                $("#conno").val(conno.toLocaleString('en-us'));
+            }
+            $(document).ready(function(){
+                debugger;
+                TienCong();
+                GiaVon();
+                TongKM();
+                var action = $("#actiontype").val();
+                 type = '@ViewBag.Type';
+                if (type == "NKMPK" && action == "Update") {
+                    $("input").prop("disabled", true);
+                    $("select").prop("disabled", true);
+                }
+            });
+        </script>
+    }
+    @if (type == "TPHKI" || type == "TPHKITemp" || type == "TPHKITemp")
+    {
+<script>
+            $("#form-data").submit(function () {
+                debugger;
+                //$("#tbodyCTBPK").find("tr").map(function (key, val) {
+                //    let td = $(val).find("td");
+                //    let isDeleted = $(td[1]).find("input").val();
+                //    if (isDeleted == "false") {
+                //        let tenhang = $(td[0]).find("input").val();
+                //        let nhacungcap = $(td[1]).find("select").select2('val');
+                //        let giavon = $(td[2]).find("input").val();
+                //        let giaban = $(td[3]).find("input").val();
+                //        let f = true;
+                //        if ((tenhang == "" && giaban == "" && nhacungcap == "" && giavon == "") || (tenhang != "" && giaban != "" && nhacungcap != "" && giavon != "")) {
+                //        }
+                //        else {
+                //            toastWarning("Nhập đủ thông tin phụ kiện");
+                //            return false;
+                //        }
+                //    }
+                //});
+                $("#DanhSachCoc").find("tr").map(function (key, val) {
+                    let td = $(val).find("td");
+
+                    let soTienConLai = $(td[4]).find(".SoTienConLai").val();
+                    //alert(soTienConLai);
+                    if (soTienConLai < 0) {
+                        toastWarning("Vui lòng kiểm tra lại số tiền sử dụng cọc");
+                        $(td[3]).find("input").focus();
+                        return false;
+                    }
+
+                });
+                //if ($(".GiaBanPK").val().split(",").join("") < 0) {
+                //    toastWarning("Giá bán không được nhỏ hơn 0");
+                //    return false;
+                //}
+                //if ($("#item_ConLai").val().split(",").join("") < 0) {
+                //    toastWarning("Số tiền còn lại không được nhỏ hơn 0");
+                //    return false;
+                //}
+            });
+            $(document).on("change", "#tbodyCTBPK .giavon", function () {
+                let a = 0;
+                $("#tbodyCTBPK").find(".giavon").map(function (key, val) {
+                    if ($(val).val() != "") {
+                        a += parseInt($(val).val().split(",").join(""));
+                    }
+                });
+                $(".CTBPKGiaVon").html(a.toLocaleString('en-us'));
+            });
+
+
+            CalPK();
+
+            function CalPK() {
+                debugger;
+                let GiaBanPK = 0;
+                let GiamGiaPK = 0;
+                let ThanhTienPK = 0;
+                ThanhTienPK = parseInt($(".ThanhTienPK").val().split(",").join(""));
+
+                GiaBanPK = parseInt($(".GiaBanPK").val().split(",").join(""));
+                GiamGiaPK = parseInt($(".GiamGiaPK").val().split(",").join(""));
+
+                $(".GiaBanPK").val((ThanhTienPK + GiamGiaPK).toLocaleString('en-us'));
+                //tinh toan so tien con lai
+
+                let tienThanhToan = 0;
+                let tienThanhToanCoc = 0;
+
+                $("#tbody").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien = parseInt($(val).find(".number").val().split(",").join(""));
+                            if (isNaN(sotien))
+                                sotien = 0;
+                            tienThanhToan += sotien;
+                        }
+                    }
+                });
+
+                $("#DanhSachCoc").find(".dungCoc").map(function (key, val) {
+                    if ($(val).val() != "") {
+                        tienThanhToanCoc += parseInt($(val).val().split(",").join(""));
+                    }
+                });
+
+                $("#TongCongThanhToanCoc").html(tienThanhToanCoc.toLocaleString('en-us'));
+                $("#TongCongThanhToanCoc").val(tienThanhToanCoc.toLocaleString('en-us'));
+                if('@type' != "TPHKI"|| '@type' == "TPHKITemp")
+                    $("#item_ConLai").val((ThanhTienPK - tienThanhToan - tienThanhToanCoc).toLocaleString('en-us'));
+                //else
+                //{
+                //    var TongThucThu = parseInt($("#TongThucThu").val().split(",").join(""));
+                //    $("#item_ConLai").val((TongThucThu - tienThanhToan - tienThanhToanCoc).toLocaleString('en-us'));
+                //    $("#item_ConLai").html((TongThucThu - tienThanhToan - tienThanhToanCoc).toLocaleString('en-us'));
+                //}
+            }
+
+            //$(document).on("change", "#DanhSachCoc .dungCoc", function () {
+            //    CalPK();
+            //});
+
+            $(document).on("change", ".ThanhTienPK,.GiamGiaPK", function () {
+
+                CalPK();
+            });
+            $(document).on("change", "#tbody .number .TongCongThanhToanText", function () {
+                setTimeout(function () {
+                    let a = 0, b = 0;
+                    //$("#tbodyCTBPK").find(".giaban").map(function (key, val) {
+                    //    if ($(val).val() != "") {
+                    //        a += parseInt($(val).val().split(",").join(""));
+                    //    }
+                    //});
+                    //$(".CTBPKGiaBan").html(parseInt(a).toLocaleString('en-us'));
+
+                    //thang them o day
+                    //let giamGiaPK = parseInt($(".GiamGiaPK").val().split(",").join(""));
+                    // alert(giamGiaPK);
+                    //$(".ThanhTienPK").val(parseInt(a - giamGiaPK).toLocaleString('en-us'));
+
+
+                    //a = parseInt($(".ThanhTienPK").val().split(",").join(""));
+                    //$("#tbody").find(".number").map(function (key, val) {
+                    //    if ($(val).val() != "") {
+                    //        b += parseInt($(val).val().split(",").join(""));
+                    //    }
+                    //});
+
+                    //$("#item_ConLai").val((a - b).toLocaleString('en-us'));
+
+                    CalPK();
+                }, 200);
+            });
+</script>
+    }
+
+
+
+    @if (type == "TBDTK" || type == "TBDTKKM")
+    {
+<script>
+            function TinhThucBanBDTKKM() {
+                var Ma = $("#bdtk").val();
+                $.ajax({
+                    url: "/SoThu/LayGiaBanBDTK",
+                    type: "POST",
+                    data: { MaBDTK: Ma },
+                    success: function (result) {
+                        CalThanhToan(this);
+                        if (result != null)
+                            giaban = result.GiaBan;
+                        //if (GiamGia > giaban)
+                        //    toastWarning("Vui lòng nhập giảm giá nhỏ hơn giá bán");
+                        //else {
+                        $("#giaban").val((giaban).toLocaleString('en-us'));
+                        $("#giamgia").val((giaban).toLocaleString('en-us'));
+
+                        $("#thucthu").val((0).toLocaleString('en-us'));
+                        var s = $("#httt[0].SoTienThanhToan").val();
+                        $("#httt[0].SoTienThanhToan").val((giaban).toLocaleString('en-us'));
+                        TinhTongGiaBan();
+                    }
+                })
+            }
+            function TinhThucBan(a) {
+                var j = a.id.substring((a.id.length - 1), a.id.length);
+                var TongKM = 0;
+                var id = "#bdtk_" + j;
+                var Ma = $(id).val();
+                var giaban = 0;
+                if ($("#tbody_bdtk").find("tr:visible select option:selected[value='" + Ma + "']").length > 1) {
+                    $("#gianiemyet_" + j).val(0);
+                    $("#giamgia_" + j).val(0);
+                    $("#giaban_" + j).val(0);
+                    $("#hansudung_" + j).val('');
+                    $(id).val("");
+                    $(id).select2().trigger('change');
+
+                    toastError("Gói bảo dưỡng đã được chọn");
+                }
+                else {
+                    $.ajax({
+                        url: "/SoThu/LayGiaBanBDTK",
+                        type: "POST",
+                        data: { MaBDTK: Ma },
+                        success: function (result) {
+                            CalThanhToan(this);
+                            if (result != null)
+                                giaban = result.GiaBan;
+                            $("#gianiemyet_" + j).val((giaban).toLocaleString('en-us'));
+                            $("#giaban_" + j).val((giaban).toLocaleString('en-us'));
+                            var s = $("#httt[0].SoTienThanhToan").val();
+                            $("#httt[0].SoTienThanhToan").val((giaban).toLocaleString('en-us'));
+                            TinhGiamGia();
+                        }
+                    })
+                }
+
+            }
+            function TinhTongGiaBan(heso) {
+                var sogoi = $("#tbody_bdtk").find("tr:visible select option:selected[value!='']").length
+                var sogoicyber = $('#tbody_bdtk').find('input.tengoibdtk').length;
+                if (sogoi == 0) {
+                    sogoi = sogoicyber;
+                }
+                sogoi = isNaN(sogoi) ? 0 : sogoi;
+
+                debugger
+                var s = $('#ngaythu').val();
+                var arr = $('#ngaythu').val().split('/');
+
+                var ngay = arr[0];
+                var thang = arr[1];
+                var nam = parseInt(arr[2]);
+                var hansudung = '';
+
+
+                if (sogoi != undefined) {
+                    var n = parseInt(arr[0]); // ngày
+                    var t = parseInt(arr[1]); // tháng (0-11 trong Date)
+                    var nn = parseInt(arr[2]); // năm
+
+                    // Tính toán lại tháng
+                    var date = new Date(nn, t - 1, n); // Trừ 1 để đưa về 0-11
+                    date.setMonth(date.getMonth() + (sogoi * 6 + 1));
+                    // Lấy ngày với 2 chữ số
+                    var ngay = date.getDate() < 10 ? '0' + date.getDate() : date.getDate().toString();
+
+                    // Lấy tháng với 2 chữ số (cộng 1 do getMonth() trả về 0-11)
+                    var thang = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1).toString();
+
+                    // Lấy năm
+                    var nam = date.getFullYear().toString();
+
+                    // Chuỗi ngày/tháng/năm
+                    var hansudung = ngay + '/' + thang + '/' + nam;
+
+                    console.log(hansudung);
+                    $(".hansudung").val(hansudung);
+                    $('.hansudung').attr("disabled", 'disabled');
+                }
+                else {
+                    $(".hansudung").val("");
+                    $('.hansudung').removeAttr('disabled');
+                }
+                //var count = $("#tbody_bdtk").find("tr").length;
+                tonggiaban = 0; tonggiamgia = 0; tongthucthu = 0; tonggianiemyet = 0;
+                total = 0;
+                $("#tbody_bdtk").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            //Giá niêm yết
+                            var gianiemyet = parseInt($(val).find(".gianiemyet").val().split(",").join(""));
+                            if (isNaN(gianiemyet))
+                                gianiemyet = 0;
+                            tonggianiemyet += gianiemyet;
+                            //Giảm giá
+                            $(val).find(".giamgia").val(Math.round(gianiemyet * (heso)).toLocaleString('en-us'));
+                            //giá bán
+                            $(val).find(".giaban").val(Math.round(gianiemyet * (1 - heso)).toLocaleString('en-us'));
+
+                            var giaban = parseInt($(val).find(".giaban").val().split(",").join(""));
+                            if (isNaN(giaban))
+                                giaban = 0;
+                            tonggiaban += giaban;
+                        }
+                    }
+                });
+                $("#TongCongGiaNietYet").val((tonggianiemyet).toLocaleString('en-us'));
+                if ($("#type").val() == "TBDTKKM") {
+                    $("#TongCongGiaBan").val(Math.round(tonggiaban).toLocaleString('en-us'));
+                    $("#TongCongGiamGia").val((tonggiaban).toLocaleString('en-us'));
+                }
+                else {
+
+                    var totalGiamGia = parseInt($("#TongCongGiamGia").val().split(",").join(""));
+                    $("#TongCongGiaBan").val(Math.round(tonggiaban).toLocaleString('en-us'));
+                    $("#TongCongThucThu").val(Math.round(tonggiaban - totalGiamGia).toLocaleString('en-us'));
+                }
+            }
+            function TinhGiamGia(a) {
+                debugger;
+
+                setTimeout(function () {
+                    //var dem = 0;
+                    //$("#tbody_bdtk").find("tr").map(function (key, val) {
+                    //   if ($(val).is(":visible")) {
+                    //      var isDeleted = $(val).find(".IsDeleted").val();
+                    //       if (isDeleted != "true") {
+                    //          dem++;
+                    //      }
+                    //  }
+                    // });
+                    a = a == undefined || a == null ? 0 : a;
+                    //var dem =  $("#tbody_bdtk").find("tr:visible  .giaban[value!='0' ]")
+
+                    var dems = $("#tbody_bdtk").find("tr:visible select option:selected[value!='']")
+                    var dem = $("#tbody_bdtk").find("tr:visible select option:selected[value!='']").length //- a
+                    heso = 0
+                    if (dem >= 4)
+                        heso = 0.15;
+                    else if (dem >= 2)
+                        heso = 0.1;
+                    else
+                        heso = 0;
+                    TinhTongGiaBan(heso);
+                }, 400)
+            }
+            function RemoveBDTK(a) {
+                var tr1 = $(a.closest("tr"));
+                tr1.hide("fadeOut");
+                tr1.find(".IsDeleted").val("true");
+                tr1.html(tr1.html().split("required").join(""));
+
+                tr1.find("input").map(function (key, val) {
+                    $(val).val(0);
+                });
+                TinhGiamGia(1);
+            }
+            function removeSelectbdtk() {
+                setTimeout(function () {
+                    var a = $('select.select3');
+                    a.map(function (key, val) {
+                        $(val).removeClass("select2");
+                    });
+                }, 100);
+            }
+            var isPageLoaded = false;
+
+            $(document).ready(function () {
+                isPageLoaded = true; // Đánh dấu trang đã load xong
+            });
+            var cyberId = "@(item.CyberId ?? "")";
+            if (cyberId != '' && cyberId != undefined) {
+                // vẫn submit được vì chỉ readonly
+                $("#ngaythu").prop("readonly", true);
+
+                // cách 1: hủy datepicker (không mở lịch nữa)
+                $("#ngaythu").datepicker("destroy");
+
+                // cách 2: nếu không muốn destroy plugin thì chặn mở popup
+                $("#ngaythu").off("focus").on("focus", function (e) {
+                    $(this).blur(); // không cho mở popup chọn ngày
+                });// k cho sửa khi lấy phiếu từ cyber
+            }
+            $("#ngaythu").change(function () {
+                if (isPageLoaded) {
+                    // Gọi TinhGiamGia() chỉ khi người dùng thực sự thay đổi giá trị
+                    TinhGiamGia();
+                }
+            });
+
+</script>
+
+    }
+
+<script>
+        function CheckValidatePhieuThu() {
+            //if ($("#item_SoChungTu").val() == "") {
+            //    toastWarning("Vui lòng nhập Số chứng từ.");
+            //    $("#item_SoChungTu").focus();
+            //    return false;
+            //}
+            debugger;
+            if ($("#item_NgayThu").val() == "") {
+                toastWarning("Vui lòng nhập Ngày thu.");
+                $("#item_NgayThu").focus();
+                return false;
+            }
+            if ($("#item_SoChungTu").val() == "") {
+                toastWarning("Vui lòng nhập Số chứng từ.");
+                $("#item_SoChungTu").focus();
+                return false;
+            }
+            var type = $("#type").val();
+            //chi kiem tra phieu khac phieu thu phu kien
+            if ($("#type").val() != "TKHAC" && $("#type").val() != "TPHKI"
+                && $("#type").val() != "TBAHI" && $("#type").val() != "TBDTKKM"
+                && $("#type").val() != "TBDTK" && $("#type").val() != "T2GTX"
+                && $("#type").val() != "T1GHB" && $("#type").val() != "T2THK"
+                && $("#type").val() != "TPHKITemp"
+            )
+            {
+
+                if ($("#TongCongThanhToan").val() == "0") {
+                    toastWarning("Vui lòng nhập thanh toán.");
+                    return false;
+                }
+            }
+
+            let validCoc = true;
+            let TongCongThanhToan = 0;
+
+            switch ($("#type").val()) {
+                case "TKHAC":
+                    if ($("#Item_ConLai").val().split(",").join("") < 0) {
+                        toastWarning("Còn lại không được nhỏ hơn 0");
+                        return false;
+                    }
+                    if ($("#item_ThongTinKhac").val() == "") {
+                        toastWarning("Vui lòng nhập thông tin khác");
+                        return false;
+                    }
+                    if ($("#LoaiBH").val() != ""
+                        && (
+                            $("#LoaiBH").val() == "TTBH"
+                            || $("#LoaiBH").val() == "HHDKX"
+                            || $("#LoaiBH").val() == "HTXX"
+                        )
+                        && $("#SOKHUNG").val() == "") {
+                        toastWarning("Vui lòng nhập số khung (nhập khoảng trắng nếu không cần thiết nhập số khung)");
+                        return false;
+                    }
+                    //if (($("#LoaiBH").val() == "" || $("#LoaiBH").val() == "KHAC") && $("#SOKHUNG").val() != "") {
+                    if ($("#LoaiBH").val() == "") {
+                        toastWarning("Vui lòng chọn lý do thu.");
+                        return false;
+                    }
+                    break;
+                case "TBATS":
+                    if ($("#item_HoTen").val() == "") {
+                        toastWarning("Vui lòng nhập Họ tên khách hàng.");
+                        $("#item_HoTen").focus();
+                        return false;
+                    }
+
+                    if ($("#item_DienThoai").val() == "") {
+                        toastWarning("Vui lòng nhập Số điện thoại.");
+                        $("#item_DienThoai").focus();
+                        return false;
+                    }
+                    if ($("#item_NoiDung").val() == "") {
+                        toastWarning("Vui lòng nhập Nội dung.");
+                        $("#item_NoiDung").focus();
+                        return false;
+                    }
+                case "TLADT":
+                    if ($("#item_DoiTacTraLai").val() == "") {
+                        toastWarning("Vui lòng nhập Đối tác trả lãi.");
+                        $("#item_DoiTacTraLai").focus();
+                        return false;
+                    }
+                    break;
+                case "TBHXH":
+                    if ($("#DoiTac").val() == "") {
+                        toastWarning("Vui lòng nhập đối tác.");
+                        $("#DoiTac").focus();
+                        return false;
+                    }
+                    break;
+                case "T2THK":
+                    if ($("#DoiTac").val() == "") {
+                        toastWarning("Vui lòng nhập đối tác.");
+                        $("#DoiTac").focus();
+                        return false;
+                    }
+                    break;
+                case "T2GTX":
+                    if ($("#DoiTac").val() == "") {
+                        toastWarning("Vui lòng nhập đối tác.");
+                        $("#DoiTac").focus();
+                        return false;
+                    }
+                    break;
+                case "TBAHI":
+                    if ($("#item_CTBH").val() == "") {
+                        toastWarning("Vui lòng chọn Công ty bảo hiểm.");
+                        $("#item_CTBH").focus();
+                        return false;
+                    }
+                    let ThanhTienBH = 0;
+                    TongCongThanhToan = 0;
+                    ThanhTienBH = parseInt($(".ThanhTienBH").val().split(",").join(""));
+                    TongCongThanhToan = parseInt($("#TongCongThanhToan").html().split(",").join(""));
+                    TongCongThanhToanCoc = parseInt($("#TongCongThanhToanCoc").html().split(",").join(""));
+                    debugger
+                    /* alert(ThanhTienBH);
+                     alert(TongCongThanhToanCoc);
+                     alert(TongCongThanhToan);
+                     */
+                    TongCongThanhToan = TongCongThanhToan + TongCongThanhToanCoc;
+                    //alert(ThanhTienBH);
+                    //alert(TongCongThanhToan);
+                    if (ThanhTienBH != TongCongThanhToan) {
+                        toastWarning("Số tiền thanh toán phải bằng thực bán.");
+                        return false;
+                    }
+                    //Trúc thêm mới 20.08.2019
+                    if ($("#SoHopDongTBAHI").val() != "" && ThanhTienBH == 0 && $("#BienSoTBAHI").val() == "") {
+                        if ($("#SoKhungTBAHI").val() == "") {
+                            toastWarning("Vui lòng nhập số khung nếu như có số hợp đồng.");
+                            $("#SoKhungTBAHI").focus();
+                            return false;
+                        }
+                    }
+                    break;
+                case "THHHB":
+                    if ($("#item_DoiTac").val() == "") {
+                        toastWarning("Vui lòng chọn Đối tác.");
+                        $("#item_DoiTac").focus();
+                        return false;
+                    }
+                    break;
+                case "TPHKI":
+                    if ($("#hoten").val() == "") {
+                        toastWarning("Vui lòng nhập Họ tên khách hàng.");
+                        $("#hoten").focus();
+                        return false;
+                    }
+
+                    //if ($("#item_BienSo").val() == "") {
+                    //    toastWarning("Vui lòng nhập Biển số xe.");
+                    //    $("#item_BienSo").focus();
+                    //    return false;
+                    //}
+                    //if ($("#item_LoaiXe").val() == "") {
+                    //    toastWarning("Vui lòng nhập Loại xe.");
+                    //    $("#item_LoaiXe").focus();
+                    //    return false;
+                    //}
+
+                    //if ($("#item_NhaCungCap").val() == "") {
+                    //    toastWarning("Vui lòng chọn Nhà cung cấp.");
+                    //    $("#item_NhaCungCap").focus();
+                    //    return false;
+                    //}
+                    //if ($("#item_GiaVon").val() == "") {
+                    //    toastWarning("Vui lòng nhập Giá vốn.");
+                    //    $("#item_GiaVon").focus();
+                    //    return false;
+                    //}
+                    //if ($("#item_GiaBan").val() == "") {
+                    //    toastWarning("Vui lòng nhập Giá bán.");
+                    //    $("#item_GiaBan").focus();
+                    //    return false;
+                    //}
+                    validCoc = true;
+                    $("#DanhSachCoc").find("tr").map(function (key, val) {
+                        let td = $(val).find("td");
+
+                        let soTienConLai = $(td[3]).find("input").val().split(",").join("");
+                        // alert(soTienConLai);
+                        if (soTienConLai < 0) {
+                            toastWarning("Vui lòng kiểm tra lại số tiền sử dụng cọc");
+                            validCoc = false;
+                            // $(td[3]).find("input").focus();
+                            return false;
+                        }
+
+                    });
+                    if (validCoc == false)
+                        return false;
+                    if ($(".GiaBanPK").val().split(",").join("") < 0) {
+                        toastWarning("Giá bán không được nhỏ hơn 0");
+                        return false;
+                    }
+
+                    if ($("#item_ConLai").val().split(",").join("") < 0) {
+                        toastWarning("Số tiền còn lại không được nhỏ hơn 0");
+                        return false;
+                    }
+                    break;
+                case "TKMPHKI":
+                    if ($("#SoHopDong").val() == "") {
+                        toastWarning("Vui lòng nhập Số hợp đồng.");
+                        $("#SoHopDong").focus();
+                        return false;
+                    }
+                    if ($("#hoten").val() == "") {
+                        toastWarning("Vui lòng nhập Họ tên khách hàng.");
+                        $("#hoten").focus();
+                        return false;
+                    }
+                    if ($("#item_SoKhung").val() == "") {
+                        toastWarning("Vui lòng nhập Số khung.");
+                        $("#item_SoKhung").focus();
+                        return false;
+                    }
+                    if ($("#TongKM").text() == "0") {
+                        toastWarning("Vui lòng nhập giá trị khuyến mãi.");
+                        $("#LPT[0]TienCong").focus();
+                        return false;
+                    }
+                    break;
+                case "TVAMU":
+                    if ($("#item_DoiTac").val() == "") {
+                        toastWarning("Vui lòng nhập Đơn vị cho vay.");
+                        $("#item_DoiTac").focus();
+                        return false;
+                    }
+                    break;
+                case "TCODV":
+                    if ($("#item_SoChungTu").val() == "") {
+                        toastWarning("Vui lòng nhập Số chứng từ.");
+                        $("#item_SoChungTu").focus();
+                        return false;
+                    }
+                    if ($("#item_HoTen").val() == "") {
+                        toastWarning("Vui lòng nhập Họ tên khách hàng.");
+                        $("#item_HoTen").focus();
+                        return false;
+                    }
+                    //if ($("#item_DienThoai").val() == "") {
+                    //    toastWarning("Vui lòng nhập Số điện thoại.");
+                    //    $("#item_DienThoai").focus();
+                    //    return false;
+                    //}
+                    if ($("#item_BienSo").val() == "") {
+                        toastWarning("Vui lòng nhập Biển số xe.");
+                        $("#item_BienSo").focus();
+                        return false;
+                    }
+                    //if ($("#item_MaXe").val() == "") {
+                    //    toastWarning("Vui lòng chọn Mã xe.");
+                    //    $("#item_MaXe").focus();
+                    //    return false;
+                    //}
+                    //if ($("#item_MauXe").val() == "") {
+                    //    toastWarning("Vui lòng chọn Màu xe.");
+                    //    $("#item_MauXe").focus();
+                    //    return false;
+                    //}
+                    //break;
+                case "TCOBX":
+                    if ($("#item_SoChungTu").val() == "") {
+                        toastWarning("Vui lòng nhập Số chứng từ.");
+                        $("#item_SoChungTu").focus();
+                        return false;
+                    }
+                    if ($("#item_HoTen").val() == "") {
+                        toastWarning("Vui lòng nhập Họ tên khách hàng.");
+                        $("#item_HoTen").focus();
+                        return false;
+                    }
+                    if ($("#item_SoHopDong").val() == "") {
+                        toastWarning("Vui lòng nhập Số hợp đồng.");
+                        $("#item_SoHopDong").focus();
+                        return false;
+                    }
+
+                    //if ($("#item_MaXe").val() == "") {
+                    //    toastWarning("Vui lòng chọn Mã xe.");
+                    //    $("#item_MaXe").focus();
+                    //    return false;
+                    //}
+                    //if ($("#item_MauXe").val() == "") {
+                    //    toastWarning("Vui lòng chọn Màu xe.");
+                    //    $("#item_MauXe").focus();
+                    //    return false;
+                    //}
+                    break;
+                case "TBDTK":
+                    if ($("#BSX").val() == "") {
+                        toastWarning("Vui lòng nhập Biển số xe.");
+                        $("#BSX").focus();
+                        return false;
+                    }
+                    if ($("#bdtk").val() == "") {
+                        toastWarning("Vui lòng chọn gói bảo dưỡng tiết kiệm.");
+                        $("#bdtk").focus();
+                        return false;
+                    }
+                    //<!--thang.tran them ngay 30/5/2022
+                    validCoc = true;
+                    $("#DanhSachCoc").find("tr").map(function (key, val) {
+                        let td = $(val).find("td");
+
+                        let soTienConLai = $(td[3]).find("input").val().split(",").join("");
+                        // alert(soTienConLai);
+                        if (soTienConLai < 0) {
+                            toastWarning("Vui lòng kiểm tra lại số tiền sử dụng cọc");
+                            validCoc = false;
+                            // $(td[3]).find("input").focus();
+                            return false;
+                        }
+
+                    });
+
+                    if (validCoc == false) {
+                        console.log("TBDTK-Sai cọc.");
+                        return false;
+                    }
+
+                    //-->
+
+                    //  let ThanhTienBDTK = 0;
+                    // let TongCongThanhToanBDTK = 0;
+                    TongCongThucThu = parseInt($("#TongCongThucThu").val().split(",").join(""));
+                    TongCongThanhToan = parseInt($("#TongCongThanhToan").html().split(",").join(""));
+                    TongCongThanhToanCoc = parseInt($("#TongCongThanhToanCoc").html().split(",").join(""));
+                    /* alert(ThanhTienBH);
+                     alert(TongCongThanhToanCoc);
+                     alert(TongCongThanhToan);
+                     */
+                    TongCongThanhToan = TongCongThanhToan + TongCongThanhToanCoc;
+                    //alert(ThanhTienBH);
+                    //alert(TongCongThanhToan);
+                    if (TongCongThucThu != TongCongThanhToan) {
+                        toastWarning("Số tiền thanh toán phải bằng thực bán.");
+                        console.log("TBDTK-Số tiền thanh toán phải bằng thực bán.");
+                        return false;
+                    }
+
+                    //if ($("#TongCongThanhToan").val() != $("#TongCongThucThu").val()) {
+                    //    toastWarning("Vui lòng nhập thanh toán bằng thực bán.");
+                    //    return false;
+                    //}
+                    break;
+                case "TBDTKKM":
+                    if ($("#sohopdong").val() == "") {
+                        toastWarning("Vui lòng nhập Số hợp đồng.");
+                        $("#sohopdong").focus();
+                        return false;
+                    }
+                    if ($("#sokhung").val() == "") {
+                        toastWarning("Vui lòng nhập Số khung.");
+                        $("#sokhung").focus();
+                        return false;
+                    }
+                    if ($("#bdtk").val() == "") {
+                        toastWarning("Vui lòng chọn gói bảo dưỡng tiết kiệm.");
+                        $("#bdtk").focus();
+                        return false;
+                    }
+                    //debugger;
+                    //var s = $("#TongCongThanhToan").val();
+                    //var ss = $("#TongCongThanhToan").val();
+                    //if ($("#TongCongThanhToan").val() != $("#TongCongThanhToan").val()) {
+                    //    toastWarning("Vui lòng nhập thanh toán bằng thực bán.");
+                    //    return false;
+                    //}
+                    debugger;
+                    var s = $("#TongCongThanhToan").val();
+                    var ss = $("#TongCongThanhToan").val();
+                    if ($("#TongCongThanhToan").val() != $("#TongCongThanhToan").val()) {
+                        toastWarning("Vui lòng nhập thanh toán bằng thực bán.");
+                        return false;
+                    }
+
+
+                    //<!--thang.tran them ngay 30/5/2022
+                    validCoc = true;
+                    $("#DanhSachCoc").find("tr").map(function (key, val) {
+                        let td = $(val).find("td");
+
+                        let soTienConLai = $(td[3]).find("input").val().split(",").join("");
+                        // alert(soTienConLai);
+                        if (soTienConLai < 0) {
+                            toastWarning("Vui lòng kiểm tra lại số tiền sử dụng cọc");
+                            validCoc = false;
+                            // $(td[3]).find("input").focus();
+                            return false;
+                        }
+
+                    });
+                    if (validCoc == false)
+                        return false;
+                    //-->
+                    break;
+                case "NKMPK":
+                    if ($("#SoHopDong").val() == "") {
+                        toastWarning("Vui lòng nhập Số hợp đồng.");
+                        $("#SoHopDong").focus();
+                        return false;
+                    }
+                    if ($("#hoten").val() == "") {
+                        toastWarning("Vui lòng nhập Họ tên khách hàng.");
+                        $("#hoten").focus();
+                        return false;
+                    }
+                    if ($("#item_SoKhung").val() == "") {
+                        toastWarning("Vui lòng nhập Số khung.");
+                        $("#item_SoKhung").focus();
+                        return false;
+                    }
+                    if ($("#TongKM").text() == "0") {
+                        toastWarning("Vui lòng nhập giá trị khuyến mãi.");
+                        $("#LPT[0]TienCong").focus();
+                        return false;
+                    }
+                    var TongKM = $("#TongKM").text().split(",").join("");
+                    var NoKM = '@ViewBag.NoKMConLai' == "" ? 0 : '@ViewBag.NoKMConLai';
+                    if (parseFloat(TongKM) > parseFloat(NoKM)) {
+                        toastWarning("Vui lòng nhập giá trị khuyến mãi nhỏ hơn nợ khuyến mãi.");
+                        $("#LPT[0]TienCong").focus();
+                        return false;
+
+                    }
+                    break;
+                case "NKMPK":
+                    if ($("#SoHopDong").val() == "") {
+                        toastWarning("Vui lòng nhập Số hợp đồng.");
+                        $("#SoHopDong").focus();
+                        return false;
+                    }
+                    if ($("#hoten").val() == "") {
+                        toastWarning("Vui lòng nhập Họ tên khách hàng.");
+                        $("#hoten").focus();
+                        return false;
+                    }
+                    if ($("#item_SoKhung").val() == "") {
+                        toastWarning("Vui lòng nhập Số khung.");
+                        $("#item_SoKhung").focus();
+                        return false;
+                    }
+                    if ($("#TongKM").text() == "0") {
+                        toastWarning("Vui lòng nhập giá trị khuyến mãi.");
+                        $("#LPT[0]TienCong").focus();
+                        return false;
+                    }
+                    var TongKM = $("#TongKM").text().split(",").join("");
+                    var NoKM = '@ViewBag.NoKMConLai' == "" ? 0 : '@ViewBag.NoKMConLai';
+                    if (parseFloat(TongKM) > parseFloat(NoKM)) {
+                        toastWarning("Vui lòng nhập giá trị khuyến mãi nhỏ hơn nợ khuyến mãi.");
+                        $("#LPT[0]TienCong").focus();
+                        return false;
+
+                    }
+                    break;
+            }
+            //if ($("#item_NoiDung").val() == "") {
+            //    toastWarning("Vui lòng nhập Nội dung.");
+            //    $("#item_NoiDung").focus();
+            //    return false;
+            //}
+            return true;
+        }
+        function KeyEnter(e) {
+            if (e.keyCode == 13) {
+                GetInfoTicket();
+            }
+        }
+        //function Search()
+        //function Search(){
+        //    var SHD = $("#SoHopDong").val();
+        //    $.ajax({
+        //        url: "/SoThu/LaySHD",
+        //        type: "POST",
+        //        data: { soHopDong: SHD },
+        //        success: function (result) {
+        //            if(result == "")
+        //            {
+        //                toastWarning("Số hợp đồng chưa có.");
+        //                return false;
+        //            }
+        //            else
+        //            {
+        //                $("#HTKH").empty();
+        //                $("#DT").empty();
+        //                $("#DC").empty();
+        //                var html = "",html1="",html2="";
+        //                for (var i = 0; i < result.length; i++) {
+        //                    html += "<label>Họ tên khách hàng</label> <br />";
+        //                    html +="<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value="+result[i].HoTen+">";
+        //                    html1 += "<label>Điện thoại</label> <br />";
+        //                    html1 +="<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value="+result[i].DienThoai+">";
+        //                    html2 += "<label>Địa chỉ</label> <br />";
+        //                    html2 +="<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value="+result[i].DiaChi+">";
+        //                }
+        //                $("#HTKH").append(html);
+        //                $("#DT").append(html1);
+        //                $("#DC").append(html2);
+        //            }
+        //        }
+        //    });
+        //}
+        $(document).ready(function()
+        {
+            debugger;
+            var type = '@ViewBag.Type';
+            var action = '@ViewBag.Action';
+
+            $("#TongCongThanhToan").val(parseFloat($("#TongCongThanhToan").text()));
+            if(type == "TCOBX" && action == "Create")
+            {
+                $("input[name='item.SoHopDong']").focusout(function(){
+                    debugger;
+                    if (type != "TPHKITemp") {
+                        var SHD = $("#SoHopDong").val();
+                        $.ajax({
+                            url: "/SoThu/LaySHD",
+                            type: "POST",
+                            data: { soHopDong: SHD },
+                            success: function (result) {
+                                if (result == "") {
+                                    $("#HTKH").empty();
+                                    $("#DT").empty();
+                                    $("#DC").empty();
+                                    var html = "", html1 = "", html2 = "";
+                                    html += "<label>Họ tên khách hàng(*)</label> <br />";
+                                    html += "<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value=''>";
+                                    html1 += "<label>Điện thoại</label> <br />";
+                                    html1 += "<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value=''>";
+                                    html2 += "<label>Địa chỉ</label> <br />";
+                                    html2 += "<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value=''>";
+
+                                    $("#HTKH").append(html);
+                                    $("#DT").append(html1);
+                                    $("#DC").append(html2);
+                                    //return false;
+                                }
+                                else {
+                                    $("#HTKH").empty();
+                                    $("#DT").empty();
+                                    $("#DC").empty();
+                                    var html = "", html1 = "", html2 = "";
+                                    for (var i = 0; i < result.length; i++) {
+                                        if (result[i].HoTen == "null" || result[i].HoTen == null)
+                                            result[i].HoTen = "";
+                                        if (result[i].DienThoai == "null" || result[i].DienThoai == null)
+                                            result[i].DienThoai = "";
+                                        if (result[i].DiaChi == "null" || result[i].DiaChi == null)
+                                            result[i].DiaChi = "";
+                                        html += "<label>Họ tên khách hàng(*)</label> <br />";
+                                        html += "<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value='" + result[i].HoTen + "'>";
+                                        html1 += "<label>Điện thoại</label> <br />";
+                                        html1 += "<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value='" + result[i].DienThoai + "'>";
+                                        html2 += "<label>Địa chỉ</label> <br />";
+                                        html2 += "<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value='" + result[i].DiaChi + "'>";
+                                    }
+                                    $("#HTKH").append(html);
+                                    $("#DT").append(html1);
+                                    $("#DC").append(html2);
+                                }
+                            }
+                        });
+                    }
+                }).focus();
+            }
+            if (type == "TCODV" || type == "TCODVTemp")
+            {
+                $("input[name='item.BienSo']").onchange(function(){
+                    debugger;
+                    var BSX = $("#BSX").val();
+                    $.ajax({
+                        url: "/SoThu/LayBSX",
+                        type: "POST",
+                        data: { bsx: BSX },
+                        success: function (result) {
+                            if(result == "")
+                            {
+                                $("#HTKH").empty();
+                                $("#DT").empty();
+                                $("#DC").empty();
+                                var html = "",html1="",html2="";
+                                html += "<label>Họ tên khách hàng(*)</label> <br />";
+                                html +="<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value=''>";
+                                html1 += "<label>Điện thoại</label> <br />";
+                                html1 +="<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value=''>";
+                                html2 += "<label>Địa chỉ</label> <br />";
+                                html2 +="<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value=''>";
+                                $("#HTKH").append(html);
+                                $("#DT").append(html1);
+                                $("#DC").append(html2);
+                                //return false;
+                            }
+                            else
+                            {
+                                $("#HTKH").empty();
+                                $("#DT").empty();
+                                $("#DC").empty();
+                                var html = "",html1="",html2="";
+                                for (var i = 0; i < result.length; i++) {
+                                    html += "<label>Họ tên khách hàng(*)</label> <br />";
+                                    html +="<input type='text' name='item.HoTen' class='form-control input-sm' id='hoten' value='"+ result[i].HoTen+"'>";
+                                    html1 += "<label>Điện thoại</label> <br />";
+                                    html1 +="<input type='text' name='item.DienThoai' class='form-control input-sm' id='hoten' value='"+result[i].DienThoai+"'>";
+                                    html2 += "<label>Địa chỉ</label> <br />";
+                                    html2 +="<input type='text' name='item.DiaChi' class='form-control input-sm' id='hoten' value='"+result[i].DiaChi+"'>";
+                                }
+                                $("#HTKH").append(html);
+                                $("#DT").append(html1);
+                                $("#DC").append(html2);
+                            }
+                        }
+                    });
+                }).focus();
+            }
+              $("input[name='item.SoChungTu']").on("change", function () {
+                debugger;
+                var a = window.location.href.slice(-9);
+                if ('@type' == "TPHKITemp" && window.location.href.slice(-9) == "TPHKITemp") {
+                    var SCT = $("#SoChungTu").val().toUpperCase();
+                    if (SCT != "KM" && SCT != "" && SCT != null && SCT != undefined) {
+                        $.ajax({
+                            url: "/SoThu/LoadSoChungTuForTPHKITemp",
+                            type: "POST",
+                            data: { SoChungTu: SCT, SoHopDong: "" },
+                            success: function (result) {
+                                debugger;
+                                if (result != "") {
+                                    window.location.href = result;
+                                    return;
+                                }
+                                else if (result == "" && SCT != "KM" && SCT != "") {
+                                    window.location.href = "/SoThu/PhieuThu?type=TPHKI";
+                                    return;
+                                }
+                            }
+                        });
+                    }
+                    else if (SCT == "KM" && $("#SoHopDong").val() != "" && $("#SoHopDong").val() != undefined && $("#SoHopDong").val() != null) {
+                        $.ajax({
+                            url: "/SoThu/LoadSoChungTuForTPHKITemp",
+                            type: "POST",
+                            data: { SoChungTu: SCT, SoHopDong: $("#SoHopDong").val() },
+                            success: function (result) {
+                                debugger;
+                                if (result != "") {
+                                    window.location = result;
+                                }
+                                else if (result == "" && $("#SoHopDong").val() != "" && $("#SoHopDong").val() != "") {
+                                    window.location.href = "/SoThu/PhieuThu?type=TPHKI";
+                                }
+                            }
+                        });
+                    }
+                }
+              })
+              $("input[name='item.SoHopDong']").on("change", function () {
+                debugger;
+                var a = window.location.href.slice(-9);
+                if ('@type' == "TPHKITemp" && window.location.href.slice(-9) == "TPHKITemp") {
+                    var SHD = $("#SoHopDong").val();
+                    var SCT = $("#SoChungTu").val().toUpperCase();
+                    if (SCT == "KM") {
+                        $.ajax({
+                            url: "/SoThu/LoadSoChungTuForTPHKITemp",
+                            type: "POST",
+                            data: { SoChungTu: SCT, SoHopDong: SHD },
+                            success: function (result) {
+                                debugger;
+                                if (result != "") {
+                                    window.location = result;
+                                }
+                                else if (result == "" && SHD != "" && SHD != "") {
+                                    window.location.href = "/SoThu/PhieuThu?type=TPHKI";
+                                }
+                            }
+                        });
+                    }
+                }
+            })
+            if (type == "TBDTK" || type == "TBDTKKM") {
+                //TinhTongGiaBan();
+                //    TinhGiamGia();
+
+            }
+            calCoc()
+            Cal()
+        });
+        //phan cho phan bao hiem
+        function Checked(a)
+        {
+            if(a.checked)
+            {
+                $.ajax({
+                    url: "/SoThu/ThuHoaHongNgay",
+                    type: "POST",
+                    data: {},
+                    success: function (result) {
+                        if(result != "")
+                        {
+                            var html = "";
+                            for(var i = 0; i < result.length;i++)
+                            {
+                                html+= "<option value="+result[i].GiaTri+">"+result[i].HienThi+"</option>";
+                            }
+                            $("#hoahongngay").append(html);
+                        }
+                    }
+                });
+            }
+            else
+            {
+                $("#hoahongngay").empty();
+            }
+        }
+        // phan tinh thuc ban va giam gia
+        $(document).on("change", ".TienTraBH, .HoaHong,#item_TongCong", function () {
+            debugger;
+            let TienTraBH = 0;
+            let HoaHong = 0;
+            let Thucban = 0;
+            let GiaVon = 0,GiamGia = 0;
+            TienTraBH = parseInt($("#item_TienTraBH").val().split(",").join(""));
+            HoaHong = parseInt($("#item_HoaHong").val().split(",").join(""));
+            Thucban = parseInt($("#item_TongCong").val().split(",").join(""));
+            $("#item_GiaVon").val((TienTraBH + HoaHong).toLocaleString('en-us'));
+            GiaVon = parseInt($("#item_GiaVon").val().split(",").join(""));
+            $("#item_GiamGia").val((GiaVon - Thucban).toLocaleString('en-us'));
+        });
+        function TinhConLai()
+        {
+            debugger;
+            var TongThucThu = 0,TongCoc = 0,TongThanhToan = 0,TongHang=0;
+            var a = $("#TongThucThu").val();
+            if($("#TongThucThu").val() != 0 && $("#TongThucThu").val() !=  undefined)
+            {
+                TongThucThu = parseInt($("#TongThucThu").val().split(",").join(""));
+            }
+            if($("#TongCongThanhToanCoc").val() != 0 && $("#TongCongThanhToanCoc").val() != undefined)
+            {
+                TongCoc = parseInt($("#TongCongThanhToanCoc").val().split(",").join(""));
+            }
+            if($("#TongCongThanhToan").val() != 0 && $("#TongCongThanhToan").val() !=  undefined)
+            {
+                TongThanhToan = parseInt($("#TongCongThanhToan").val().split(",").join(""));
+            }
+            if("@type" == "TPHKI" || "@type" == "TPHKITemp" )
+            {
+                if ($("#TongCongThanhToan").val() == "" || $("#TongCongThanhToan").val()==0)
+                {
+                    TongThanhToan = parseInt("@ViewBag.TongCong");
+                }
+                else if ($("#TongCongThanhToan").text() != "")//TH load lại phiếu giảm cọc tăng thanh toán
+                {
+                    TongThanhToan = parseInt($("#TongCongThanhToan").text().split(",").join(""));
+                }
+            }
+            if ($("#TongCongThanhToanHang").val() != 0 && $("#TongCongThanhToanHang").val() != undefined) {
+                TongHang = parseInt($("#TongCongThanhToanHang").val().split(",").join(""));
+            }
+            var SoTien = TongThucThu - TongCoc - TongThanhToan - TongHang;
+            $("#item_ConLai").val(SoTien.toLocaleString('en-us'));
+            $("#item_ConLai").html(SoTien.toLocaleString('en-us'));
+        }
+        function TinhConLai_TKHAC() {
+            debugger;
+            var total = parseInt($("#TongCongThanhToan").text().split(",").join(""));
+            var price = $("#TCTKHAC").val() == "" ? 0 : parseInt($("#TCTKHAC").val().split(",").join(""));
+            var rest = price - total;
+            $("#TCTKHAC").val(price.toLocaleString('en-us'));
+            $("#Item_ConLai").val(rest.toLocaleString('en-us'));
+            $("#Item_ConLai").html(rest.toLocaleString('en-us'));
+    }
+    var o = '@HANG_TT.Count';
+        $(".addLHTT").click(function () {
+            debugger
+            // Lấy nội dung HTML từ #tr_Hang và chuyển thành chuỗi
+            var html = $('#tr_Hang').prop('outerHTML');
+            html = html.replace(/id="[^"]*"/g, '');
+            // Thay thế lhtt[0] bằng lhtt[i]
+            html = html.split("lhtt[-1]").join("lhtt[" + o + "]");
+
+            @if(HANG_TT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + HANG_TT[0].Id+"','');");
+             @Html.Raw("html=html.replace('" + HANG_TT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('hidden','');")
+             @Html.Raw("html=html.replace('fullwidth','select2 fullwidth');")
+
+            }
+            $("#tbody_lhtt").append(html);
+            o++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+</script>
+}
+
+
+@*html += "Html.EditorFor(x => item.HoTen, new { htmlAttributes = new { class = 'form-control input-sm', id = 'hoten', value="+result[i].HoTen+" } })";     *@

@@ -1,0 +1,212 @@
+﻿@model List<TNK.Core.Domain.View.ViewTBAHITemp>
+@{
+    Layout = null;
+    int i = 1;
+}
+@*<div class="right">
+    <a  class="btn btn-dark" id="ThemMoi"> <i class="" style="cursor:pointer"></i>Đồng bộ</a>
+</div>*@
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            @*<th>
+            <input type="checkbox" id="CHKALL" />
+        </th>*@
+            <th>Số hợp đồng</th>
+            <th>Ngày ký hợp đồng</th>
+            <th>Chứng từ</th>
+            <th>Tên khách hàng</th>
+            <th>Số khung</th>
+            <th>Giá bán</th>
+            <th>Giảm giá</th>
+            <th>Thực bán</th>
+            <th>Mã phiếu thu</th>
+            <th>Tên công ty BH</th>
+            <th>Phân loại</th>
+            <th>Thanh toán</th>
+            <th>Bán/tặng</th>
+            <th>Thao tác</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+        <tr>
+            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+             @*<td>  <input type="checkbox" id="chk_@item.ChungTu" value="@item.ChungTu" class="checkbox" /></td>*@
+            @*@if (item.ThanhToan > 0)
+            {
+                <td>  <input type="checkbox" id="chk_@item.ChungTu" value="@item.ChungTu" class="checkbox" /></td>
+            }
+            else
+            {
+                <td></td>
+            }*@
+            @*<td>
+            <input type="checkbox" id="chk_@item.ChungTu" value="@item.ChungTu" class="checkbox" />
+        </td>*@
+            <td>@item.SO_HOP_DONG</td>
+            <td>@item.NGAY_KY_HOP_DONG.ToString("dd/MM/yyyy")</td>
+            <td>@item.ChungTu</td>
+            <td>@item.TEN_KHACH_HANG</td>
+            <td>@item.SO_KHUNG</td>
+
+            <td class="number">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(item.GiaBan))</td>
+            <td class="number">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(item.GiamGia))</td>
+            <td class="number">@TNK.Core.Common.ToCurrencyString(Convert.ToDouble(item.ThucBan))</td>
+            <td>@item.MaPhieuThu</td>
+            <td>@item.TenDoiTac</td>
+            @if (item.TaiTuc.ToString().ToUpper() == "TT")
+            {
+                <td>Tái tục</td>
+            }
+            else
+            {
+                <td>Ký mới</td>
+            }
+            <td>@item.ThanhToan</td>
+            <td>@item.Type</td>
+            <td style="width:5%" class="center">
+                @if (item.Type == "KM" && item.MaPhieuThu == "")
+                {
+                    <a id="plus" href="/SoThu/PhieuThu?type=TBAHITemp&actiontype=Create&MaXe=@item.ChungTu&TypeOfVote=@item.Type"><i class="fa fa-plus addNew" title="Thêm mới phiếu thu bảo hiểm"></i></a>
+                }
+                else if (item.Type != "KM" && item.MaPhieuThu == "")
+                {
+                    <a id="plus" href="/SoThu/PhieuThu?type=TBAHITemp&actiontype=Create&MaXe=@item.ChungTu&TypeOfVote=@item.Type"><i class="fa fa-plus addNew" title="Thêm mới phiếu tặng bảo hiểm"></i></a>
+                }
+            </td>
+        </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging_v3.cshtml")
+</div>
+<script type="text/javascript">
+    $("#CHKALL").change(function () {
+        debugger;
+        $("input:checkbox").prop('checked', $(this).prop("checked"));
+    });
+    var chk = "";
+    var flag = true;
+    $(".checkbox").change(function () {
+        debugger;
+        chk = "";
+        $(".checkbox").map(function (key, val) {
+            flag = true;
+            if ($(val).is(":checked")) {
+                let a = $(val).closest("th").find("input[type=hidden]").val();
+                if (chk == "") {
+                    chk = a;
+                }
+
+            }
+        })
+
+    })
+    function AddTicket() {
+        var SoChungTu = "";
+        var result = "";
+        var ctbh = "";
+        var flag = true;
+        var InputArrayCustomer = "";
+        debugger;
+        $(".checkbox").map(function (key, val) {
+            if ($(val).is(":checked")) {
+                let a = $(val).closest("td").find("input[type=hidden]").val();
+                //if (ctbh == "") {
+                //    ctbh = a;
+                //}
+                //if (a != ctbh) {
+                //    if (flag) {
+                //        toastError("Chỉ được chọn các phiếu nợ của cùng 1 khách hàng!");
+                //    }
+                //    flag = false;
+                //    return;
+                //}
+                InputArrayCustomer += a + ",";
+                result += $(val).val() + ",";
+            }
+        });
+        debugger;
+        if (result != "") {
+            SoChungTu = result.slice(0, result.length - 1);
+        }
+        if (InputArrayCustomer != "") {
+            InputArrayCustomer = InputArrayCustomer.slice(0, InputArrayCustomer.length - 1);
+        }
+        //vòng lặp để kiểm tra xem có vi phạm về tên khách hàng hay không?
+        var ArrayNameCustomer = InputArrayCustomer.split(",");
+        if (ArrayNameCustomer.length > 1) {
+            for (var i = 0; i < ArrayNameCustomer.length - 1; i++) {
+                for (var j = 1; j < ArrayNameCustomer.length; j++) {
+                    if (ArrayNameCustomer[i].toString() != ArrayNameCustomer[j].toString()) {
+                        flag = false;
+                    }
+                }
+            }
+        }
+        if (flag == false) {
+            toastError("Chỉ được chọn các phiếu nợ của cùng 1 khách hàng!");
+            return;
+        }
+        if (SoChungTu == "" && InputArrayCustomer == "") {
+            window.location.href = "/SoThu/PhieuThu?type=TPHKITemp";
+        }
+        else if (SoChungTu != "" && ArrayNameCustomer.length == 1) {
+            window.location.href = "/SoThu/PhieuThu?type=TPHKITemp&actiontype=Create&MaXe=" + SoChungTu + "&TypeOfVote=BAN";
+        }
+        else {
+            if (SoChungTu != "" && ArrayNameCustomer.length > 1) {
+                window.location.href = "/SoThu/PhieuThu?type=TPHKITemp&actiontype=Create&MaXe=" + SoChungTu + "&TypeOfVote=BAN";
+            }
+        }
+    }
+    $("#ThemMoi").click(function () {
+        debugger;
+        var result = "";
+        var flag = true;
+        var ctbh = "";
+        $(".checkbox").map(function (key, val) {
+            if ($(val).is(":checked")) {
+                let a = $(val).closest("th").find("input[type=hidden]").val();
+                result += $(val).val() + ",";
+            }
+        })
+        if (result != "") {
+            result = result.substring(0, result.length - 1);
+        }
+
+        if (result != "") {
+            if (confirm("Bạn có muốn đồng bộ thành phiếu thu bảo hiểm?")) {
+               // setCookie("link", result);
+                $.ajax({
+                    url: "/SoThu/DongBoPhieuThuBHICyber",
+                    type: "POST",
+                    data: { ids: result },
+                    success: function (result) {
+                        if (!result.IsError) {
+                            toastSuccess(result.Message);
+                        }
+                        else {
+                            toastWarning(result.Message);
+                        }
+                    },
+                    error: function (result) {
+                        toastWarning("Lỗi cập nhật giải trình.");
+                    }
+                });
+            }
+        }
+
+    })
+</script>

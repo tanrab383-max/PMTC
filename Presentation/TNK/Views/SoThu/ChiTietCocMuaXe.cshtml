@@ -1,0 +1,78 @@
+﻿@model List<TNK.Core.Domain.View.ViewGiaoDichCoc>
+@{
+    
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title </h3>
+
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="success">
+                                <th>Ngày</th>
+                                <th>Mã phiếu</th>
+                                <th>Loại phiếu</th>
+                                <th>Số tiền sử dụng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.NgayPhatSinh.ToString("dd/MM/yyyy")</td>
+                                    @switch (item.MaLoaiPhieu)
+                                    {
+                                        case "TBAXE":
+                                            <td><a href="~/SoThu/TBAXEEdit/@item.MaPhieuPhatSinh">@item.MaPhieuPhatSinh</a></td>
+                                            break;
+                                        case "TDIVU":
+                                            <td><a href="~/SoThu/DVEdit_New/@item.MaPhieuPhatSinh">@item.MaPhieuPhatSinh</a></td>
+                                            break;
+                                        case "TBAHI":
+                                            <td><a href="~/SoThu/PhieuThu/@item.MaPhieuPhatSinh?type=TBAHI&actiontype=Update">@item.MaPhieuPhatSinh</a></td>
+                                            break;
+                                        case "TPHKI":
+                                            <td><a href="~/SoThu/PhieuThu/@item.MaPhieuPhatSinh?type=TPHKI&actiontype=Update">@item.MaPhieuPhatSinh</a></td>
+                                            break;
+                                        case "CHCBX":
+                                            <td><a href="~/SoChi/CHCBXEdit/@item.MaPhieuPhatSinh">@item.MaPhieuPhatSinh</a></td>
+                                            break;
+                                        case "CHCPT":
+                                            <td><a href="~/SoChi/CHCPTEdit/@item.MaPhieuPhatSinh">@item.MaPhieuPhatSinh</a></td>
+                                            break;
+                                        //CHCPT
+                                        default:
+                                            <td><a href="#">@item.MaPhieuPhatSinh</a></td>
+                                            break;
+                                    }
+                                    <td>@item.MaLoaiPhieu</td>
+                                    <td>@TNK.Core.Common.ToCurrencyString(item.SoTien)</td>
+                                </tr>
+
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts
+{
+    <script>
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+    </script>
+}

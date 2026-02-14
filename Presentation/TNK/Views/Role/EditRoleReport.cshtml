@@ -1,0 +1,104 @@
+﻿@model TNK.Core.Domain.Role
+
+@{
+    ViewBag.Title = "Cập nhật role " + Model.Name;
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <form>
+                    <div class="x_title">
+                        <h2><b>BÁO CÁO</b></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tên báo cáo</th>
+                                    <th style="width:10%">Chọn tất cả:</th>
+                                    <th><input type="checkbox" id="checkAll" @(ViewBag.IsCheckAll == true ? "checked" : "") /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in ViewBag.Reports)
+                                {
+                                    <tr>
+                                        <td>@item.ReportName</td>
+                                        <td></td>
+                                        <td>
+                                            <input type="checkbox" @(item.IsActive == false ? "" : "checked") class="MenuTypeActive" />
+                                            <input hidden class="UIID" value="@item.UIID" />
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Quay lại", "Index")
+</div>
+@section scripts{
+    <script>
+         var id = '@Model.Id';
+        $("#checkAll").click(function () {
+            $('input:checkbox').not(this).prop('checked', this.checked);
+            var list = [];
+            $('input[type=checkbox]').each(function () {
+                list.push({ RoleId: id, IsActive: this.checked, ReportId: $(this).closest("td").children("input.UIID").val() });
+            });
+            reports = JSON.stringify({ 'reports': list.filter(s => s.ReportId != undefined) });
+            $.ajax({
+                method: "POST",
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                url: "/Role/UpdateActiveRoleReportLists",
+                data: reports
+            })
+            .done(function (msg) {
+                if (msg.result == "success")
+                    toastSuccess("Cập nhật thành công!");
+                else
+                    toastError("Cập nhật thất bại!");
+            });
+        });
+
+        $(".MenuTypeActive").change(function () {
+            var checked = $(this).prop("checked");
+            var UIID = $(this).closest("td").children("input.UIID").val();
+            $.ajax({
+                method: "POST",
+                url: "/Role/UpdateActiveRoleReport",
+                data: { roleId: id, isActive: checked, reportID: UIID },
+                dataType: "json"
+            })
+              .done(function (msg) {
+                  if (msg.result == "success")
+                      toastSuccess("Cập nhật thành công!");
+                  else
+                      toastError("Cập nhật thất bại!");
+              });
+        });
+    </script>
+
+}

@@ -1,0 +1,32 @@
+﻿@{
+    var listItem = ViewBag.List;
+}
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Mã đợt</th>
+            <th>Ghi chú</th>
+            <th>Xem</th>
+            <th>Xóa</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 1;
+            foreach (var a in listItem)
+            {
+                <tr>
+                    <td>@i</td>
+                    <td>@a.MaKhoiTao</td>
+                    <td>@a.TenKhoiTao</td>
+                    <td><a href="/GopVon/XemCTGV/@a.MaKhoiTao"><i class="fa fa-eye"></i></a></td>
+                    <td><a href="#" onclick="Delete('@a.MaKhoiTao');"><i class="fa fa-remove"></i></a></td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
+
+

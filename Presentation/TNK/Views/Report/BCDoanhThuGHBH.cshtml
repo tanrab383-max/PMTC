@@ -1,0 +1,188 @@
+﻿@using System.Data;
+<div class="x_content">
+    <div id="BCDoanhThuGHBH" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='15' class="tile">DOANH THU GIA HẠN BẢO HÀNH</th>
+                </tr>
+                <tr>
+                    <th colspan='15' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr class="headings">
+                    <th class="column-title">STT</th>
+                    <th class="column-title">Ngày Thu</th>
+                    <th class="column-title">Mã Phiếu Thu</th>
+                    <th class="column-title">Tên Khách Hàng</th>
+                    <th class="column-title">Số Hợp Đồng</th>
+                    <th class="column-title">Biển Số</th>
+                    <th class="column-title">Chứng Từ Thu</th>
+                    <th class="column-title">Công Ty Thu Hộ</th>
+                    <th class="column-title">Giá Bán</th>
+                    <th class="column-title">Giảm Giá</th>
+                    <th class="column-title">CHUYỂN CỌC (XE/DV)</th>
+                    <th class="column-title">TM/NH</th>
+                    <th class="column-title">Thực Thu</th>
+                    <th class="column-title">Thanh Toán</th>
+                    <th class="column-title">Hoa hồng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background-color:lightblue">
+                    <td colspan="15"><b>A - KHÁCH LẺ</b></td>
+                </tr>
+                @{
+                    double TongGiaBan = 0,
+                        TongThucThu = 0,
+                        TongGiamGia = 0,
+                        TongThanhToan = 0,
+                        TongHoaHong = 0, TongChuyenCoc = 0,
+                        TongTM_NH = 0;}
+                @if (ViewBag.dtbKL != null)
+                {
+
+                    int intCount = 0;
+                    foreach (DataRow row in (ViewBag.dtbKL as DataTable).Rows)
+                    {
+                        TongGiaBan += row["GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaVon"]);
+                        TongGiamGia += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                        TongThucThu += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                        TongThanhToan += row["SoTienThu"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienThu"]);
+                        TongHoaHong += row["HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["HoaHong"]);
+                        TongChuyenCoc += row["ChuyenCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["ChuyenCoc"]);
+                        TongTM_NH += row["TM_NH"].ToString() == "" ? 0 : Convert.ToDouble(row["TM_NH"]);
+            <tr class="even pointer">
+                <td>@(++intCount)</td>
+                <td>@row["NgayThu"]</td>
+                <td>@row["MaPhieuThu"].ToString()</td>
+                <td>@row["Hoten"].ToString()</td>
+                <td style="text-align:left">@row["SoHopDong"].ToString()</td>
+                <td>@row["BienSo"].ToString()</td>
+                <td style="text-align:left">@row["SoChungTu"]</td>
+                <td>@row["TenDoiTac"].ToString()</td>
+                <td class="number">@row["GiaVon"].ToString().Replace(",", ".")</td>
+                <td class="number">@row["GiamGia"].ToString().Replace(",", ".")</td>
+                <td class="number">@row["ChuyenCoc"].ToString().Replace(",", ".")</td>
+                <td class="number">@row["TM_NH"].ToString().Replace(",", ".")</td>
+                <td class="number">@row["TongCong"].ToString()</td>
+                <td class="number">@row["SoTienThu"].ToString()</td>
+                <td class="number">@row["HoaHong"].ToString()</td>
+            </tr>
+                    }
+            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                <td colspan="8"><b>TỔNG :</b></td>
+                <td class="number">@TongGiaBan.ToString().Replace(",", ".")</td>
+                <td class="number">@TongGiamGia.ToString().Replace(",", ".")</td>
+                <td class="number">@TongChuyenCoc.ToString().Replace(",", ".")</td>
+                <td class="number">@TongTM_NH.ToString().Replace(",", ".")</td>
+                <td class="number">@TongThucThu.ToString().Replace(",", ".")</td>
+                <td class="number">@TongThanhToan.ToString().Replace(",", ".")</td>
+                <td class="number">@TongHoaHong.ToString().Replace(",", ".")</td>
+            </tr>
+                }
+
+                <tr style="background-color:lightblue">
+                    <td colspan="15"><b>B - KHUYẾN MÃI</b></td>
+                </tr>
+                @{
+                    double TongGiaBanKM = 0,
+                      TongThucThuKM = 0,
+                      TongGiamGiaKM = 0,
+                      TongThanhToanKM = 0,
+                      TongHoaHongKM = 0,
+                      TongChuyenCocKM = 0,
+                      TongTM_NHKM = 0;
+                }
+                @if (ViewBag.dtbKM != null)
+                {
+
+
+                    int intCount = 0;
+                    foreach (DataRow row in (ViewBag.dtbKM as DataTable).Rows)
+                    {
+                        TongGiaBanKM += row["GiaVon"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaVon"]);
+                        TongGiamGiaKM += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                        TongThucThuKM += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                        TongThanhToanKM += row["SoTienThu"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienThu"]);
+                        TongHoaHongKM += row["HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["HoaHong"]);
+                        TongChuyenCocKM += row["ChuyenCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["ChuyenCoc"]);
+                        TongTM_NHKM += row["TM_NH"].ToString() == "" ? 0 : Convert.ToDouble(row["TM_NH"]);
+            <tr class="even pointer">
+                <td>@(++intCount)</td>
+                <td>@row["NgayThu"]</td>
+                <td>@row["MaPhieuThu"].ToString()</td>
+                <td>@row["Hoten"].ToString()</td>
+                <td style="text-align:left">@row["SoHopDong"].ToString()</td>
+                <td>@row["BienSo"].ToString()</td>
+                <td style="text-align:left">@row["SoChungTu"]</td>
+                <td>@row["TenDoiTac"].ToString()</td>
+                <td class="number">@row["GiaVon"].ToString().Replace(",", ".")</td>
+                <td class="number">@row["GiamGia"].ToString().Replace(",", ".")</td>
+                <td class="number">@row["ChuyenCoc"].ToString().Replace(",", ".")</td>
+                <td class="number">@row["TM_NH"].ToString().Replace(",", ".")</td>
+                <td class="number">@row["TongCong"].ToString()</td>
+                <td class="number">@row["SoTienThu"].ToString()</td>
+                <td class="number">@row["HoaHong"].ToString()</td>
+            </tr>
+                    }
+            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                <td colspan="8"><b>TỔNG :</b></td>
+
+                <td class="number">@TongGiaBanKM.ToString().Replace(",", ".")</td>
+                <td class="number">@TongGiamGiaKM.ToString().Replace(",", ".")</td>
+                <td class="number">@TongChuyenCocKM.ToString().Replace(",", ".")</td>
+                <td class="number">@TongTM_NHKM.ToString().Replace(",", ".")</td>
+                <td class="number">@TongThucThuKM.ToString().Replace(",", ".")</td>
+                <td class="number">@TongThanhToanKM.ToString().Replace(",", ".")</td>
+                <td class="number">@TongHoaHongKM.ToString().Replace(",", ".")</td>
+            </tr>
+                }
+                @{
+                    double TongGiaBanTT = 0,
+                        TongThucThuTT = 0,
+                        TongGiamGiaTT = 0,
+                        TongTienThanhToanTT = 0,
+                        TongHoaHongTT = 0,
+                        TongChuyenCocTT = 0,
+                        TongTM_NHTT = 0;
+                    TongGiaBanTT = TongGiaBan + TongGiaBanKM;
+                    TongThucThuTT = TongThucThu + TongThucThuKM;
+                    TongGiamGiaTT = TongGiamGia + TongGiamGiaKM;
+                    TongTienThanhToanTT = TongThanhToan + TongThanhToanKM;
+                    TongHoaHongTT = TongHoaHong + TongHoaHongKM;
+                    TongChuyenCocTT = TongChuyenCoc + TongChuyenCocKM;
+                    TongTM_NHTT = TongTM_NH + TongTM_NHKM;
+                }
+            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                <td colspan="8"><b>TỔNG CỘNG:</b></td>
+                <td class="number">@TongGiaBanTT.ToString().Replace(",", ".")</td>
+                <td class="number">@TongGiamGiaTT.ToString().Replace(",", ".")</td>
+                <td class="number">@TongChuyenCocTT.ToString().Replace(",", ".")</td>
+                <td class="number">@TongTM_NHTT.ToString().Replace(",", ".")</td>
+                <td class="number">@TongThucThuTT.ToString().Replace(",", ".")</td>
+                <td class="number">@TongTienThanhToanTT.ToString().Replace(",", ".")</td>
+                <td class="number">@TongHoaHongTT.ToString().Replace(",", ".")</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

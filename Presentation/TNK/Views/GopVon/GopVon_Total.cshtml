@@ -1,0 +1,688 @@
+﻿@model TNK.Model.ChiTietGopVonModel
+@{
+    var DT = ViewBag.DoiTac;
+    var DGV = Model.DGV;
+    var CTGV = Model.CTGV;
+    var DT2 = Model.DT;
+    string str = ViewBag.Alert;
+    ViewBag.Title = "Góp vốn";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                        Góp vốn
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                        Đợt góp vốn
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_1" href="#tab_2" data-toggle="tab" aria-expanded="false">
+                        Danh sách phiếu thu góp vốn
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_1" href="#tab_3" data-toggle="tab" aria-expanded="false">
+                        Đợt rút vốn
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_1" href="#tab_4" data-toggle="tab" aria-expanded="false">
+                        Danh sách phiếu chi rút vốn
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Quản lý góp vốn</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li>
+                                    <a class="collapse-link" href="/GopVon/TaoRutVon" style="color:blue">@*<i class="fa fa-plus addNew"></i>*@Khởi tạo rút</a>
+                                </li>
+                                <li>
+                                    <a class="collapse-link" href="/GopVon/TaoGopVon" style="color:blue">@*<i class="fa fa-plus addNew"></i>*@Khởi tạo góp</a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <form id="form-data" method="post" action="@Url.Action("TaoGopVon", "GopVon")" class="form-horizontal form-label-left">
+                                <div class="row">
+
+                                    <div class="col-md-12 col-sm-12 col-xs-12">
+
+                                        <div class="form-group  table-responsive">
+                                            <table id="ThanhToan" class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:20%">Nhà đầu tư</th>
+                                                        <th style="width:15%">Tổng tiền góp</th>
+                                                        <th style="width:10%">Số tiền thực góp</th>
+                                                        <th style="width:15%">Số tiền thực rút</th>
+                                                        <th style="width:15%">Số tiền chưa góp</th>
+                                                        <th style="width:15%">Số tiền chưa rút</th>
+                                                        <th style="width:10%">Tỷ lệ(%)</th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbody">
+                                                    @if (ViewBag.ListTongHop != null)
+                                                    {
+                                                        for (int i = 0; i < ViewBag.ListTongHop.Rows.Count; i++)
+                                                        {
+                                                            <tr id="tr" class="animated fadeIn">
+                                                                <td>@ViewBag.ListTongHop.Rows[i]["TenDoiTac"]</td>
+                                                                <td>@TNK.Core.Common.ToCurrencyString(ViewBag.ListTongHop.Rows[i]["SoTienGop"])</td>
+                                                                <td>@TNK.Core.Common.ToCurrencyString(ViewBag.ListTongHop.Rows[i]["ThucGop"])</td>
+                                                                <td>@TNK.Core.Common.ToCurrencyString(ViewBag.ListTongHop.Rows[i]["ThucRut"])</td>
+                                                                <td>@TNK.Core.Common.ToCurrencyString(ViewBag.ListTongHop.Rows[i]["TienChuaGop"])</td>
+                                                                <td>@TNK.Core.Common.ToCurrencyString(ViewBag.ListTongHop.Rows[i]["ChuaRut"])</td>
+                                                                <td>@ViewBag.ListTongHop.Rows[i]["TyLe"]</td>
+                                                                @if (ViewBag.ListTongHop.Rows[i]["TienChuaGop"] == 0)
+                                                                {
+                                                                    <td class="right"><a href="#"><input class="btn btn-success" type="button" value="Góp" disabled /></a></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="right"><a href="/GopVon/PhieuThuGopVonCreate/@ViewBag.ListTongHop.Rows[i]["MaDoiTac"]"><input class="btn btn-success" type="button" value="Góp" /></a></td>
+                                                                }
+                                                                @if (ViewBag.ListTongHop.Rows[i]["ChuaRut"] == 0)
+                                                                {
+                                                                    <td class="right"><a href="#"><input class="btn btn-primary" type="button" value="Rút" disabled /></a></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="right"><a href="/GopVon/PhieuChiRutVonCreate/@ViewBag.ListTongHop.Rows[i]["MaDoiTac"]"><input class="btn btn-primary" type="button" value="Rút" /></a></td>
+                                                                }
+
+                                                            </tr>
+                                                        }
+                                                    }
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Danh sách đợt góp vốn</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày</label>
+                                        <input type="text" class="form-control input-sm date" id="ngayFrom" value="@DateTime.Now.ToString("dd/MM/yyyy")" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày</label>
+                                        <input type="text" class="form-control input-sm date" id="ngayTo" value="@DateTime.Now.ToString("dd/MM/yyyy")" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="button" value="Tìm kiếm" id="searchDSDotGopVon" class="btn btn-success search" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="right">
+                                <a href="/GopVon/TaoGopVon"> <i class="fa fa-plus addNew" style="cursor:pointer" id="ThemMoi"></i></a>
+                            </div>
+                            <div class="x_content">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Mã đợt</th>
+                                                <th>Tên đợt</th>                                                
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DSDotGopVon"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_2">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Danh sách thu góp vốn</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày</label>
+                                        <input type="text" class="form-control input-sm date" id="TGV_from" value="@DateTime.Now.ToString("dd/MM/yyyy")" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày</label>
+                                        <input type="text" class="form-control input-sm date" id="TGV_to" value="@DateTime.Now.ToString("dd/MM/yyyy")" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đối tác</label>
+                                        <select class="select2" style="height:29px" id="doiTac">
+                                            <option value="">Chọn</option>
+                                            @foreach (var dt in DT)
+                                            {
+                                                <option value="@dt.madoitac">@dt.TenDoiTac</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="Số chứng từ" placeholder="Số chứng từ" class="form-control input-sm " value="@ViewBag.Query" id="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-sm-1 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="button" value="Tìm kiếm" id="searchThuGopVon" class="btn btn-success search" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="x_content">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>Số chứng từ</th>
+                                                <th>Ngày thu</th>
+                                                <th>Số tiền</th>
+                                                <th>Đối tác</th>
+                                                <th>Ghi chú</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DSThuGopVon"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="tab_3">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Danh sách đợt rút vốn</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày</label>
+                                        <input type="text" class="form-control input-sm date" id="ngayFrom_RutVon" value="@DateTime.Now.ToString("dd/MM/yyyy")" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày</label>
+                                        <input type="text" class="form-control input-sm date" id="ngayTo_RutVon" value="@DateTime.Now.ToString("dd/MM/yyyy")" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="button" value="Tìm kiếm" id="searchDSDotRutVon" class="btn btn-success search" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="right">
+                                <a href="/GopVon/TaoRutVon"> <i class="fa fa-plus addNew" style="cursor:pointer" id="ThemMoi"></i></a>
+                            </div>
+                            <div class="x_content">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Mã đợt</th>
+                                                <th>Tên đợt</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DSDotRutVon"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_4">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Danh sách rút vốn</h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày</label>
+                                        <input type="text" class="form-control input-sm date" id="from_DSRV" value="@DateTime.Now.ToString("dd/MM/yyyy")" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày</label>
+                                        <input type="text" class="form-control input-sm date" id="to_DSRV" value="@DateTime.Now.ToString("dd/MM/yyyy")" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đối tác</label>
+                                        <select class="select2" style="height:29px" id="doiTac_DSRV">
+                                            <option value="">Chọn</option>
+                                            @foreach (var dt in DT)
+                                            {
+                                                <option value="@dt.madoitac">@dt.TenDoiTac</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="Số chứng từ" placeholder="Số chứng từ" class="form-control input-sm " value="@ViewBag.Query" id="query_DSRV" />
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-sm-1 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="button" value="Tìm kiếm" id="searchRutVon" class="btn btn-success search" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="x_content">
+
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>Số chứng từ</th>
+                                                <th>Ngày chi</th>
+                                                <th>Số tiền</th>
+                                                <th>Đối tác</th>
+                                                <th>Ghi chú</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DSRutVon"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        $(document).ready(function () {
+            @*if(@str != "")
+            {
+                alert(@str);
+            }*@
+        });
+        var p = 1;
+        $("#searchDSDotGopVon").click(function () {
+            debugger;
+            var $this = $(this);
+            $this.button('loading');
+            setTimeout(function () {
+                $this.button('reset');
+            }, 300);
+            Search(this);
+        })
+        $("#searchDSDotRutVon").click(function () {
+            debugger;
+            var $this = $(this);
+            $this.button('loading');
+            setTimeout(function () {
+                $this.button('reset');
+            }, 300);
+            Search_RutVon(this);
+        })
+        $("#searchThuGopVon").click(function () {
+            debugger;
+            var $this = $(this);
+            $this.button('loading');
+            setTimeout(function () {
+                $this.button('reset');
+            }, 300);
+            SearchTGV(this);
+        })
+        $("#searchRutVon").click(function () {
+            debugger;
+            var $this = $(this);
+            $this.button('loading');
+            setTimeout(function () {
+                $this.button('reset');
+            }, 300);
+            SearchRutVon(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function DanhSach() {
+            debugger;
+            var from = $("#ngayFrom").val();
+            var to = $("#ngayTo").val();
+            $.ajax({
+                url: "/GopVon/HistoryGV",
+                type: "POST",
+                dataType: "json",
+                data: { From: from, To: to },
+                success: function (result) {
+                    var html = "";
+                    if(result != null)
+                    {
+                        $("#DSDotGopVon").empty();
+                        for(var i = 0; i < result.length;i++)
+                        {
+                            var j = i + 1;
+                            html +="<tr>";
+                            html += "<td>" + j + "</td>";
+                            html += "<td>" + result[i].NgayGopVon + "</td>";
+                            html += "<td>" + result[i].MaKhoiTao + "</td>";
+                            html += "<td>" + result[i].TenKhoiTao + "</td>";                                                  
+                            
+                            html += "<td><a href='/GopVon/XemCTGV/" + result[i].MaKhoiTao + "'><i class='fa fa-eye'></i></a> ";
+                            html += "<a href='#' onclick=DeleteChiTietDotGopVon('" + result[i].MaKhoiTao + "');><i class='fa fa-remove'></i></a>";
+                            html += "</td> ";
+                            //html +="<td><a href='#' onclick=Delete('" +result[i.MaKhoiTao +"');><i class='fa fa-remove'></i></a></td>";
+                            html += "</tr>";
+                        }
+                        $("#DSDotGopVon").append(html);
+                    }
+                }
+            });
+        }
+        function DanhSach_RutVon() {
+            debugger;
+            var from = $("#ngayFrom_RutVon").val();
+            var to = $("#ngayTo_RutVon").val();
+            $.ajax({
+                url: "/GopVon/HistoryRutVon",
+                type: "POST",
+                dataType: "json",
+                data: { From: from, To: to },
+                success: function (result) {
+                    var html = "";
+                    if (result != null) {
+                        $("#DSDotRutVon").empty();
+                        for (var i = 0; i < result.length; i++) {
+                            var j = i + 1;
+                            html += "<tr>";
+                            html += "<td>" + j + "</td>";
+                            html += "<td>" + result[i].NgayGopVon + "</td>";
+                            html += "<td>" + result[i].TenKhoiTao + "</td>";
+                            html += "<td><a href='/GopVon/XemCTGV/" + result[i].MaKhoiTao + "'><i class='fa fa-eye'></i></a>";
+                            html += "<a href='#' onclick=DeleteChiTietDotGopVon('" + result[i].MaKhoiTao + "');><i class='fa fa-remove'></i></a>";
+                            html += "</td>"
+                            html += "</tr>";
+                        }
+                        $("#DSDotRutVon").append(html);
+                    }
+                }
+            });
+        }
+        function DanhSachTGV() {
+            debugger;
+            var from = $("#TGV_from").val();
+            var to = $("#TGV_to").val();
+            var doitac = $("#doiTac").val();
+            var query = $("#query").val();
+            $.ajax({
+                url: "/GopVon/DSThuGV",
+                type: "POST",
+                dataType: "json",
+                data: { From: from, To: to,DoiTac : doitac,Query : query },
+                success: function (result) {
+                        var html = "";
+                        if (result != null) {
+                        $("#DSThuGopVon").empty();
+                        for (var i = 0; i < result.length; i++) {
+                            debugger;
+                            var j = i + 1;
+                            html += "<tr>";
+                            html += "<td>"+j+"</td>";
+                            html += "<td>" +result[i].SoChungTu +"</td>";
+                            html += "<td>" +result[i].NgayThu+"</td>";
+                            html += "<td>" + result[i].TongCong+ "</td>";
+                            html += "<td>" +result[i].TenDoiTac+"</td>";
+                            html += "<td>" +result[i].GhiChu+"</td>";
+                            html += "<td><a href='' onclick="+"DeletePTGopVon('"+result[i].MaPhieuThu+"')"+"><i class='fa fa-remove'></i></a></td>";
+                            html += "</tr>";
+                        }
+                        $("#DSThuGopVon").append(html);
+                                    }
+                                }
+                            });
+        }
+        function DanhSachDSRutVon() {
+            debugger;
+            var from = $("#from_DSRV").val();
+            var to = $("#to_DSRV").val();
+            var doitac = $("#doiTac_DSRV").val();
+            var query = $("#query_DSRV").val();
+            $.ajax({
+                url: "/GopVon/DSRutVon",
+                type: "POST",
+                dataType: "json",
+                data: { From: from, To: to, DoiTac: doitac, Query: query },
+                success: function (result) {
+                    var html = "";
+                    if (result != null) {
+                        $("#DSRutVon").empty();
+                        for (var i = 0; i < result.length; i++) {
+                            debugger;
+                            var j = i + 1;
+                            html += "<tr>";
+                            html += "<td>" + j + "</td>";
+                            html += "<td>" + result[i].SoChungTu + "</td>";
+                            html += "<td>" + result[i].NgayThu + "</td>";
+                            html += "<td>" + result[i].TongCong + "</td>";
+                            html += "<td>" + result[i].TenDoiTac + "</td>";
+                            html += "<td>" + result[i].GhiChu + "</td>";
+                            html += "<td><a href='' onclick=" + "DeletePCRutVon('" + result[i].MaPhieuChi + "')" + "><i class='fa fa-remove'></i></a></td>";
+                            html += "</tr>";
+                        }
+                        $("#DSRutVon").append(html);
+                    }
+                }
+            });
+        }
+        function Search(obj) {
+            debugger;
+            DanhSach();
+        $(obj).val("Tìm kiếm");
+        $(obj).prop('disabled', false);
+
+        }
+        function Search_RutVon(obj) {
+            debugger;
+            DanhSach_RutVon();
+            $(obj).val("Tìm kiếm");
+            $(obj).prop('disabled', false);
+
+        }
+        function SearchTGV(obj) {
+            debugger;
+            DanhSachTGV();
+        $(obj).val("Tìm kiếm");
+        $(obj).prop('disabled', false);
+
+        }
+        function SearchRutVon(obj) {
+            debugger;
+            DanhSachDSRutVon();
+            $(obj).val("Tìm kiếm");
+            $(obj).prop('disabled', false);
+
+        }
+                        //$.get("/GopVon/HistoryGV?from=" + from + "&to=" + to).success(function (response) {
+                        //    $("#DSDotGopVon").html(response);
+                        //    $(obj).val("Tìm kiếm");
+                        //    $(obj).prop('disabled', false);
+                        //})
+                        //}
+        var a;
+        $(document).on("click", "#tbody a", function () {
+        a = $(this).attr("href");
+        var b = a.split("&");
+        p = b[3].split("=")[1];
+        Search();
+        return false;
+        })
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+            });
+       function DeletePTGopVon(id) {
+                if (confirm('Xác nhận xóa phiếu thu góp vốn')) {
+                    data = { id: id, type: 'TGOVO' };
+                        $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                if (response == "success") {
+                $(a).closest("tr").remove();
+                    toastSuccess("Đã xóa thành công");
+                }
+                else
+                    toastError(response);
+            });
+        }
+       }
+
+       function DeletePCRutVon(id) {
+           if (confirm('Xác nhận xóa phiếu chi rút vốn')) {
+               data = { id: id};
+               $.post("/SoChi/Delete", data).success(function (response) {
+                   if (response == "success") {
+                       $(a).closest("tr").remove();
+                       toastSuccess("Đã xóa thành công");
+                   }
+                   else
+                       toastError(response);
+               });
+           }
+        }
+
+        function DeleteDotGopVon(id) {
+            if (confirm('Xác nhận xóa phiếu chi góp vốn')) {
+                data = { id: id };
+                $.post("/SoChi/Delete", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        function DeleteChiTietDotGopVon(id) {
+            if (confirm('Xác nhận xóa đợt góp vốn')) {
+                $.ajax({
+                    url: "/GopVon/DeleteGopVon",
+                    type: "POST",
+                    data: { "id": id },
+                    success: function (result) {
+                        if (!result.IsError) {
+                            toastWarning("Đã xóa đợt góp vốn");
+                        }
+                        else {
+                            toastWarning(result.Message);
+                            //window.location.href = "/SoThu/TBAXECreate_New/" + strTicket;
+                        }
+                    },
+                    error: function (result) {
+                        toastWarning("Lỗi khi xóa đợt góp vốn.");
+                    }
+                });
+                //data = { id: id };
+                //$.post("/GopVon/DeleteGopVon", data).success(function (response) {
+                //    if (response == "success") {
+                //        $(a).closest("tr").remove();
+                //        toastSuccess("Đã xóa thành công");
+                //    }
+                //    else
+                //        toastError(response);
+                //});
+
+
+            }
+        }
+
+    </script>
+}

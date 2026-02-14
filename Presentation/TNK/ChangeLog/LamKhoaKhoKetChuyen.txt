@@ -1,0 +1,789 @@
+﻿
+GO
+
+/****** Object:  Table [dbo].[SoKhoaKho]    Script Date: 9/13/2024 3:51:29 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[SoKhoaKho](
+	[Id] [uniqueidentifier] NOT NULL,
+	[NgayKetChuyen] [char](8) NULL,
+	[NguoiKetChuyen] [varchar](50) NULL,
+	[TinhTrang] [char](2) NULL,
+	[GhiChu] [nvarchar](max) NULL,
+	[IsDeleted] [bit] NULL,
+	[IsActive] [bit] NULL,
+	[CreatedBy] [varchar](50) NULL,
+	[CreatedDate] [datetime] NULL,
+	[UpdatedBy] [varchar](50) NULL,
+	[UpdatedDate] [datetime] NULL,
+ CONSTRAINT [PK_SoKhoaKho] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[SoKhoaKho] ADD  CONSTRAINT [DF_SoKhoaKho_Id]  DEFAULT (newid()) FOR [Id]
+GO
+
+ALTER TABLE [dbo].[SoKhoaKho] ADD  CONSTRAINT [DF_SoKhoaKho_IsDeleted]  DEFAULT ((0)) FOR [IsDeleted]
+GO
+
+ALTER TABLE [dbo].[SoKhoaKho] ADD  CONSTRAINT [DF_SoKhoaKho_IsActive]  DEFAULT ((1)) FOR [IsActive]
+GO
+
+ALTER TABLE [dbo].[SoKhoaKho] ADD  CONSTRAINT [DF_SoKhoaKho_CreatedDate]  DEFAULT (getdate()) FOR [CreatedDate]
+GO
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'KC: Kết chuyển; HU: huy' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'SoKhoaKho', @level2type=N'COLUMN',@level2name=N'TinhTrang'
+GO
+
+
+
+ALTER proc [dbo].[sp_LayNgayKetChuyenCuoi]
+(
+	@ngayKetChuyenCuoi datetime output
+)
+as
+begin
+	select top 1 @ngayKetChuyenCuoi =  convert(datetime,NgayKetChuyen,112)
+	--from SoKetChuyen
+	from SoKhoaKho
+	where TinhTrang ='KC'
+	order by NgayKetChuyen desc
+
+end
+
+
+GO
+
+
+ALTER PROCEDURE [dbo].[sp_HuyKetChuyen]
+	@Id [uniqueidentifier],
+	@NguoiHuy [varchar](100),
+	@message [nvarchar](max) OUTPUT,
+	@ghiChu [nvarchar](max)
+WITH EXECUTE AS CALLER
+AS
+begin	
+	--kiem tra neu da co thiet lập kết chuyển sau ngày này rồi thì cảnh báo
+	if(@message is null)
+		set @message = ''
+	if(@ghiChu is null)
+		set @ghiChu = 'Không có ghi chú'
+	declare @sNgayKetChuyen varchar(8)
+	declare @sNgayKetChuyenGanNhat varchar(8)
+	--select @sNgayKetChuyen = NgayKetChuyen from SoKetChuyen where Id = @Id
+	select @sNgayKetChuyen = NgayKetChuyen from SoKhoaKho where Id = @Id
+	--if(exists(select * from SoKetChuyen where NgayKetChuyen > @sNgayKetChuyen and TinhTrang ='KC'))
+	if(exists(select * from SoKhoaKho where NgayKetChuyen > @sNgayKetChuyen and TinhTrang ='KC'))
+	begin
+		set @message = @message + N'Vui lòng hủy các kết chuyển sau ' + @sNgayKetChuyen + N' mới có thể tiếp tục'
+	end
+	else 
+	begin
+		--select top 1 @sNgayKetChuyenGanNhat = NgayKetChuyen from SoKetChuyen where NgayKetChuyen < @sNgayKetChuyen order by NgayKetChuyen desc
+		select top 1 @sNgayKetChuyenGanNhat = NgayKetChuyen from SoKhoaKho where NgayKetChuyen < @sNgayKetChuyen order by NgayKetChuyen desc
+		if(@sNgayKetChuyenGanNhat is null or @sNgayKetChuyenGanNhat = '')
+			set @sNgayKetChuyenGanNhat ='2000-01-01'
+			/* dong xu ly ket chuyen sau nay làm ket chuyen thi mo lai
+		-- chuyen cac record trong khoang thoi gian @sNgayKetChuyenGanNhat - @sNgayKetChuyen sang trang thái IsActive =1
+			update PhieuThu 
+			set IsActive = 1 
+			where convert(varchar(8),NgayHachToan,112) > @sNgayKetChuyenGanNhat 
+				and convert(varchar(8),NgayHachToan,112) <=@sNgayKetChuyen
+				
+			update PhieuChi set IsActive = 1 
+			where convert(varchar(8),NgayHachToan,112) > @sNgayKetChuyenGanNhat 
+				and convert(varchar(8),NgayHachToan,112) <=@sNgayKetChuyen
+
+			update PhieuChuyenTienNoiBo set IsActive = 1 
+			where convert(varchar(8),NgayHachToan,112) > @sNgayKetChuyenGanNhat 
+				and convert(varchar(8),NgayHachToan,112) <=@sNgayKetChuyen
+
+			delete from KetChuyen_KhoXe where Ngay = @sNgayKetChuyen
+			delete from KetChuyen_TuiTien where Ngay = @sNgayKetChuyen
+			*/
+			--update SoKetChuyen
+			update SoKhoaKho
+			set TinhTrang = 'HU'
+				,UpdatedBy = @NguoiHuy
+				,UpdatedDate = getdate()
+				,GhiChu = GhiChu + @NguoiHuy + N' hủy kết chuyển lúc ' + convert(varchar(19),getdate(),121) + ':' + @ghiChu
+			where id = @Id
+	end
+
+		/*
+		declare @message nvarchar(1000)
+
+		 exec [spHuyKetChuyen] '','thien'	,@message output
+		 */
+end
+
+
+
+
+GO
+ALTER proc [dbo].[sp_LayDanhSachSoKetChuyen]
+(
+	@TinhTrang varchar(2) = 'KC'
+)
+as
+begin
+	--select * from SoKetChuyen 
+	select * from SoKhoaKho 
+	where TinhTrang = @TinhTrang 
+	or @TinhTrang = '' 
+	or @TinhTrang is null
+	order by NgayKetChuyen desc
+		
+	-- cau lenh lay ngay cuoi thang  SELECT DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,getdate())+1,0))
+
+	/*
+	
+declare @ms varchar(10)
+exec sp_LayDanhSachNgayKetChuyen '2017-07-01',@ms output
+
+print @ms
+	*/
+end
+
+
+
+GO
+ALTER PROCEDURE [dbo].[sp_TaoKetChuyen]
+	@NgayKetChuyen [datetime] = null,
+	@NguoiKetChuyen [varchar](100),
+	@message [nvarchar](max) OUTPUT
+WITH EXECUTE AS CALLER
+AS
+begin	
+	--kiem tra neu da co thiet lập kết chuyển sau ngày này rồi thì cảnh báo
+	if(@message is null)
+		set @message = ''
+	declare @sNgayChot varchar(8)
+	declare @sNgayChotCuoi varchar(8)
+	--lay ngay ket chuyen theo cau hinh
+	exec [sp_LayNgayKetChuyenKeTiep] @sNgayChot output
+	set @NgayKetChuyen = convert(datetime,@sNgayChot,112)
+	print @sNgayChot
+
+	--select top 1 @sNgayChotCuoi = NgayKetChuyen from SoKetChuyen where TinhTrang ='KC' order by NgayKetChuyen desc
+	select top 1 @sNgayChotCuoi = NgayKetChuyen from SoKhoaKho where TinhTrang ='KC' order by NgayKetChuyen desc
+
+	print @sNgayChotCuoi
+	if(@sNgayChotCuoi is not null and @sNgayChotCuoi >= @sNgayChot)
+	begin
+		set @message = N'Đã có kết chuyển từ ngày ' + @sNgayChot
+	end 
+	else if(@sNgayChot > convert(varchar(8),getdate(),112))
+		begin
+			set @message = N'Chưa đến ngày kết chuyển. Phải thực hiện kết chuyển sau ngày ' + @sNgayChot
+		end	
+		else if(@sNgayChotCuoi is null 
+					or left(@sNgayChotCuoi,6) < convert(varchar(6),dateadd(month,-1,@NgayKetChuyen),112)
+			)  -- kiem tra neu thang truoc chua co ket chuyen thi canh bao chua co ket chuyen thang truoc
+			begin
+				set @message = N'Chưa có kết chuyển tháng ' + convert(nvarchar(7),dateadd(month,-1,@NgayKetChuyen),121)
+			end
+			else
+			begin		
+				/* dong ket chuyen sau nay mo ra lai 
+				-- tao ket chuyen kho xe
+				delete from KetChuyen_KhoXe where Ngay = @NgayKetChuyen
+				exec [spTaoKetChuyen_KhoXe] @NgayKetChuyen,@NguoiKetChuyen,@message output
+				print ' da tao [spTaoKetChuyen_KhoXe] '
+				-- tao ket chuyen tui tien
+				delete from KetChuyen_TuiTien where Ngay = @NgayKetChuyen
+				exec [spTaoKetChuyen_TuiTien] @NgayKetChuyen,@NguoiKetChuyen,@message output
+				print ' da tao [spTaoKetChuyen_TuiTien] '
+				-- khoa cac table khong cho edit cac record truoc ngay ket chuyen
+				update PhieuThu set IsActive = 0 where convert(varchar(8),NgayHachToan,112) <=@sNgayChot and IsActive = 1
+				update PhieuChi set IsActive = 0 where convert(varchar(8),NgayHachToan,112) <=@sNgayChot and IsActive = 1
+				update PhieuChuyenTienNoiBo set IsActive = 0 where convert(varchar(8),NgayHachToan,112) <=@sNgayChot and IsActive = 1
+				print ' da khoa cac du lieu bi ket chuyen khong cho sua/xoa'
+				*/
+				-- ghi nhan lich su ket chuyen
+				INSERT INTO [dbo].[SoKhoaKho]
+				   ([Id]
+				   ,[NgayKetChuyen]
+				   ,[NguoiKetChuyen]
+				   ,[TinhTrang]
+				   ,[GhiChu]
+				   ,[IsDeleted]
+				   ,[IsActive]
+				   ,[CreatedBy]
+				   ,[CreatedDate]
+				  )
+				VALUES
+					(
+						newid()
+						,@sNgayChot
+						,@NguoiKetChuyen
+						,'KC'
+						,@message
+						,0
+						,1
+						,@NguoiKetChuyen
+						,getdate()
+					)
+
+					print 'insert vao so ket chuyen'
+			end
+		/*
+		declare @message nvarchar(1000)
+
+		 exec [sp_TaoKetChuyen] null,'thien'	,@message output
+		 print @message
+		 */
+end
+
+
+
+
+GO
+ALTER proc [dbo].[sp_LayNgayKetChuyenKeTiep]
+(
+	@NgayKetChuyen varchar(8) output
+)
+as
+begin
+	declare @month datetime	
+	declare @ngayKetChuyenCuoi varchar(8)
+	--select @ngayKetChuyenCuoi = NgayKetChuyen from SoKetChuyen where TinhTrang ='KC' order by NgayKetChuyen desc
+	select top 1 @ngayKetChuyenCuoi = NgayKetChuyen from SoKhoaKho where TinhTrang ='KC' order by NgayKetChuyen desc
+	if(@ngayKetChuyenCuoi is not null)
+	begin
+		set @month = dateadd(month,1, convert(datetime,@ngayKetChuyenCuoi,112))
+	end
+	else
+		set @month = getdate()
+
+	
+	set @NgayKetChuyen = dbo.fn_GetNgayKetChuyen(@month)
+		
+	-- cau lenh lay ngay cuoi thang  SELECT DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,getdate())+1,0))
+
+	/*
+	
+declare @ms varchar(10)
+exec [sp_LayNgayKetChuyenKeTiep] @ms output
+print @ms
+
+print @ms
+	*/
+end
+
+
+
+
+
+GO
+ALTER PROCEDURE [dbo].[sp_XuLyTruocKhiInsertPhieuThu]
+	@MaLoaiPhieu [varchar](15),
+	@Ngay [datetime],
+	@message [nvarchar](max) OUTPUT,
+	@SoHopDong [nvarchar](100) = '',
+	@BienSo [nvarchar](100) = '',
+	@TongCong [float] = 0,
+	@SoTienThu [float] = 0
+WITH EXECUTE AS CALLER
+AS
+begin
+	if(@message is null) 
+		set @message = ''	
+	
+	if(exists(select *  from SoKhoaKho where NgayKetChuyen >=convert(varchar(8),@ngay,112))
+		or (@maLoaiPhieu in ('TDIVU','TPHKI') and @ngay <='2022-07-31 23:59:59')
+	) -- neu da co ngay ket chuyen thi canh bao khong cho tao phieu
+	begin
+		set @message = @message + N'Phiếu đã bị khóa kết chuyển. Vui lòng liên hệ Phòng kiểm toán nội bộ.'
+	end
+	else
+	begin
+		if(@MaLoaiPhieu = 'TPHKI')
+		begin
+			if(1=0)
+			--if(exists(select * from PhieuThu where MaLoaiPhieu ='TBAXE' and IsDeleted = 0 and SoHopDong = @SoHopDong and datediff(day,NgayThu,@ngay) >45))
+				set @message = @message +  N'Không thể tạo phiếu khuyến mãi phụ kiện quá 45 ngày kể từ ngày bán xe. Vui lòng liên hệ phòng Kiểm toán nội bộ.'
+			--set @message =''
+		end
+		else
+		begin
+			declare @soTienCanTaiKhoan float
+			select @soTienCanTaiKhoan = sum(case when MaTui  IN ('TIEN','TAISAN') then SoTienDangCo else -1*SoTienDangCo end)
+			from TuiDinhKhoan where MaTui in ('VAY','TIEN','TAISAN','NGUONVON')
+			--neu tui tien khong can thi ghi nhan lai thong tin cac tui bi mat can tai khoan
+			if(ABS( @soTienCanTaiKhoan) >= 1000)
+			begin
+				declare @danhSachTuiTien nvarchar(max)
+				select @danhSachTuiTien = STUFF(
+							(
+								select ',' + MaTui + ':' + cast(cast(SoTienDangCo as bigint)  as varchar(20))
+								from TuiDinhKhoan
+								where IsDeleted = 0
+									and MaTui in ('VAY','TIEN','TAISAN','NGUONVON')
+								FOR XML PATH ('') 	
+							), 1, 1, '')
+				print @danhSachTuiTien
+				set @message = @message + @danhSachTuiTien
+				set @message = N'Không cân'
+			end
+			else			
+				set @message = ''
+			set @message = ''
+		end
+	end
+end
+
+GO
+
+
+ALTER proc [dbo].[sp_XuLyTruocKhiInsertPhieuChi]
+(
+	@MaLoaiPhieu varchar(15)
+	,@Ngay datetime
+	,@message nvarchar(MAX) output
+)as
+begin
+	/*
+		declare @message nvarchar(max)
+		exec [sp_XuLyTruocKhiInsertPhieuChi] 'aaa','2020-06-08', @message output
+	*/
+	if(@message is null) 
+		set @message = ''	
+	if(exists(select *  from SoKhoaKho where NgayKetChuyen >=convert(varchar(8),@ngay,112))
+		or (@maLoaiPhieu in ('CMPTU') and @Ngay <='2022-07-31 23:59:59')
+	) -- neu da co ngay ket chuyen thi canh bao khong cho tao phieu
+	begin
+		set @message = @message + N'Phiếu đã bị khóa kết chuyển. Vui lòng liên hệ Phòng kiểm toán nội bộ.'
+	end
+	else
+	begin
+		declare @soTienCanTaiKhoan float
+		select @soTienCanTaiKhoan = sum(case when MaTui  IN ('TIEN','TAISAN') then SoTienDangCo else -1*SoTienDangCo end)
+		from TuiDinhKhoan where MaTui in ('VAY','TIEN','TAISAN','NGUONVON')
+		--neu tui tien khong can thi ghi nhan lai thong tin cac tui bi mat can tai khoan
+		if(ABS( @soTienCanTaiKhoan) >= 1000)
+		begin
+			declare @danhSachTuiTien nvarchar(max)
+			select @danhSachTuiTien = STUFF(
+						(
+							select ',' + MaTui + ':' + cast(cast(SoTienDangCo as bigint)  as varchar(20))
+							from TuiDinhKhoan
+							where IsDeleted = 0
+								and MaTui in ('VAY','TIEN','TAISAN','NGUONVON')
+							FOR XML PATH ('') 	
+						), 1, 1, '')
+			print @danhSachTuiTien
+			set @message = @message + @danhSachTuiTien
+		end		
+		if(ABS( @soTienCanTaiKhoan) >= 1000)
+			set @message = N'Không cân'
+		else
+			set @message = ''
+		set @message =''
+	end
+end
+
+
+
+
+go
+
+
+GO
+ALTER PROCEDURE [dbo].[sp_KiemTraRangBuocCapNhatPhieuChi]
+	@MaPhieu [char](15),
+	@Ngay [datetime],
+	@message [nvarchar](max) OUTPUT
+WITH EXECUTE AS CALLER
+AS
+begin
+	declare @ngayKhoaPhieu datetime -- = '2024-02-29 23:59:59'
+	declare @maLoaiPhieu varchar(20)
+	declare @isActive bit
+	declare @isDeleted bit
+	declare @ngayThu datetime
+	declare @maPhieuLienQuan varchar(MAX)
+	declare @createdDate datetime
+	declare @soKhung varchar(50)
+	if(@message is null)
+		set @message = ''
+
+	exec sp_LayNgayKetChuyenCuoi @ngayKhoaPhieu output
+	
+	select @maLoaiPhieu = MaLoaiPhieu,@isDeleted = IsDeleted,@isActive = IsActive
+		,@NgayThu = NgayChi,@MaPhieuLienQuan = MaPhieuLienQuan 
+		,@createdDate = CreatedDate
+		,@soKhung = SoKhung
+	from PhieuChi where MaPhieuChi = @MaPhieu
+
+	
+	if(@maLoaiPhieu in ('CMPTU') and ( @ngayThu <= @ngayKhoaPhieu or @Ngay <= @ngayKhoaPhieu))
+	begin
+		set @message = N'Đã khóa phiếu liên quan đến xuất/nhập kho phụ tùng - phụ kiện trước ' + convert(varchar(10),@ngayKhoaPhieu,103) + N'.Vui lòng liên hệ phòng kiểm toán nội bộ.'
+	end
+	else
+	begin
+	
+		if(@isDeleted = 1)
+		begin
+			set @message = @message + N'Phiếu đã bị xóa'
+			return
+		end
+		else if(exists(select *  
+					from SoKetChuyen 
+					where TinhTrang ='KC' 
+					and (NgayKetChuyen >convert(varchar(8),@NgayThu,112) or NgayKetChuyen >convert(varchar(8),@Ngay,112))	
+					)
+					or (@maLoaiPhieu in ('CMPTU') and @ngayThu <=@ngayKhoaPhieu)
+					) -- neu da co ngay ket chuyen thi canh bao khong cho tao phieu
+			begin
+				set @message = @message + N'Phiếu đã bị khóa kết chuyển. Vui lòng liên hệ Phòng Kiểm toán nội bộ.'
+				return
+			end		
+			else
+				begin
+					declare @result nvarchar(MAX)	
+					declare @maPhieuNo varchar(20),@LoaiPhieuNo nvarchar(max)
+					select @maPhieuNo = MaPhieuNo 
+						, @LoaiPhieuNo = isnull(DG.Ten,LoaiPhieuNo)
+					from NoPhaiTra N LEFT JOIN DanhMucDienGiai DG ON N.LoaiPhieuNo = DG.MaVietTat 
+					where MaPhieuPhatSinh = @MaPhieu and SoTienDaTra >0 and N.IsDeleted = 0
+					if(@maPhieuNo is not null and @maPhieuNo <> '')
+						set @message = @message + N'Đã phát sinh phiếu chi trả ' + @loaiPhieuNo
+					else
+					begin
+						select @maPhieuNo = MaPhieuNo 
+						, @LoaiPhieuNo = isnull(DG.Ten,LoaiPhieuNo)
+						from NoPhaiThu  N LEFT JOIN DanhMucDienGiai DG ON N.LoaiPhieuNo = DG.MaVietTat
+						where MaPhieuPhatSinh = @MaPhieu 
+							and SoTienDaTra >0 
+							and N.IsDeleted = 0
+						if(@maPhieuNo is not null and @maPhieuNo <> '')
+							set @message = @message + N'Đã phát sinh phiếu thu ' + @loaiPhieuNo
+					end
+					--neu la cac phieu dat coc thi phai kiem tra da co su dung coc o dau chua
+					if(@maLoaiPhieu  IN ( 'CDACO','CCOTH','CCOTS','CCOMX','CCOPT','CCOGC')	)
+					begin
+						if(exists(select SoThamChieu 
+								from ChiTietPhieuChi CT INNER JOIN PhieuChi C on CT.MaPhieuChi = C.MaPhieuChi and cT.IsDeleted = 0
+								where CT.SoThamChieu = @MaPhieu
+									and CT.SoTienThanhToan >0
+								)
+							)
+							set @message = @message + N'Đã phát sinh sử dụng cọc từ phiếu cọc ' + @MaPhieu
+						else if (exists(select MaPhieuLienQuan from  PhieuThu where MaPhieuLienQuan = @MaPhieu))
+							set @message = @message + N'Đã phát sinh hoàn cọc từ phiếu cọc ' + @MaPhieu
+
+					end
+					/*if(exists(select MaPhieuNo from NoPhaiTra where MaPhieuPhatSinh = @MaPhieu and SoTienDaTra >0 and IsDeleted = 0))
+						set @message = @message + N'Đã phát sinh phiếu chi trả nợ'
+					else if(exists(select MaPhieuNo from NoPhaiThu where MaPhieuPhatSinh = @MaPhieu and SoTienDaTra >0 and IsDeleted = 0))
+						set @message = @message + N'Đã phát sinh phiếu thu nợ'
+						*/
+				
+				if(@maLoaiPhieu in ('NBHKM','NMPTU','NGCNG','NMXTT','NTHBH','NBHBX','NVAMU','NHHBX','NTHPK','HHTXE','NMUTS','NKHAC','NBHXH'))
+				begin	
+				
+					--if(exists(select MaPhieuThu from PhieuThu where IsDeleted = 0 and MaPhieuLienQuan = @maPhieuLienQuan and CreatedDate > @CreatedDate))
+					SELECT @result = STUFF((
+							select ',' + MaPhieuChi
+							from PhieuChi 
+							where IsDeleted = 0 						
+								and MaPhieuChi > @MaPhieu		
+								and MaPhieuLienQuan = @maPhieuLienQuan					
+							FOR XML PATH ('') 	
+							), 1, 1, '')
+					if(@result is not null and @result <> '')
+					begin
+						set @message = @message + N'Đã có phiếu chi nợ khác tạo sau phiếu chi nợ này. Các phiếu liên quan:' + @result
+					end
+				
+				end
+					--truong hop xe da xuat ban thi khong cho xoa/sua
+				if(@maLoaiPhieu ='CMXTT')
+				begin
+					print 'CMXTT'
+					print 'SoKhung:' + @soKhung
+					if(exists(select SoKhung from PhieuThu where MaLoaiPhieu ='TBAXE' and SoKhung = @soKhung and IsDeleted = 0))
+					begin
+						set @message = @message + N'Đã phát sinh phiếu bán xe có số khung ' + @soKhung
+					end
+				end
+				end
+		end
+	/*
+	declare @log nvarchar(max)
+exec [sp_KiemTraRangBuocCapNhatPhieuChi] 'CMXTT1710140001',@log output
+print @log
+	*/
+	
+end
+
+
+
+
+
+go
+GO
+ALTER PROCEDURE [dbo].[sp_KiemTraRangBuocCapNhatPhieuThu]
+	@MaPhieu [char](15),
+	@Ngay [datetime],
+	@message [nvarchar](max) OUTPUT
+WITH EXECUTE AS CALLER
+AS
+begin
+	declare @ngayKhoaPhieu datetime --='2024-02-29 23:59:59'
+	declare @maLoaiPhieu varchar(20)
+	declare @isActive bit
+	declare @isDeleted bit
+	declare @ngayThu datetime
+	declare @maPhieuLienQuan varchar(MAX)
+	declare @createdDate datetime
+	declare @soHopDong varchar(50)
+	
+	
+	exec sp_LayNgayKetChuyenCuoi @ngayKhoaPhieu output
+
+	select @maLoaiPhieu = MaLoaiPhieu,@isDeleted = IsDeleted,@isActive = IsActive
+		,@NgayThu = NgayThu,@MaPhieuLienQuan = MaPhieuLienQuan 
+		,@createdDate = CreatedDate
+		,@soHopDong =SoHopDong
+	from PhieuThu where MaPhieuThu = @MaPhieu
+	
+	if(@message is null)
+		set @message = ''
+	if(@maLoaiPhieu in ('TDIVU','TPHKI') and ( @ngayThu <= @ngayKhoaPhieu or @Ngay <= @ngayKhoaPhieu))
+	begin
+		set @message = N'Đã khóa phiếu liên quan đến xuất/nhập kho phụ tùng - phụ kiện trước ngay ' + convert(varchar(10),@ngayKhoaPhieu,103) + N'.Vui lòng liên hệ phòng kiểm toán nội bộ.'
+	end	
+	else if(exists(select *  from SoKetChuyen where NgayKetChuyen >convert(varchar(8),@ngay,112)or NgayKetChuyen >=convert(varchar(8),@ngayThu,112))
+
+			--or (@maLoaiPhieu in ('TPHKI') and @ngayThu <='2022-07-31 23:59:59')
+			or (@maLoaiPhieu in ('TDIVU','TPHKI') and @ngayThu <=@ngayKhoaPhieu)
+		) -- neu da co ngay ket chuyen thi canh bao khong cho tao phieu
+		begin
+			set @message = @message + N'Phiếu đã bị khóa kết chuyển. Vui lòng liên hệ Phòng kiểm toán nội bộ.'
+		end
+		else
+		begin
+			
+			declare @result nvarchar(MAX)	
+			/* Neu la PHIẾU BÁN XE cần kiểm tra các vấn đề:
+				+ Đã Giải ngân phiếu nợ ngân hàng bán xe chưa
+				+ Đã Trả nợ Bán xe chưa
+				+ Đã chi Trả bảo hiểm bán xe chưa
+			*/			
+			if(@maLoaiPhieu = 'TBAXE')
+			begin				
+			/*
+				--kiem tra phieu giai ngan cua ngan hang cho vay
+				print 'TBAXE'			
+				SELECT @result = STUFF((
+						select ',' + MaPhieuNo 
+						from NoPhaiThu
+						where MaPhieuPhatSinh = @MaPhieu
+							and isnull(SoTienDaTra,0) <> 0 
+							and IsDeleted = 0
+						FOR XML PATH ('') 	
+						), 1, 1, '')
+				FROM NoPhaiThu					
+			
+				-- neu co phieu NNHBX
+				if(@result like '%NNHBX%') set @message = @message + N'Đã giải ngân từ ngân hàng cho vay.'
+				-- neu co phieu NBAXE
+				if(@result like '%NBAXE%') set @message = @message + N'Đã phát sinh phiếu trả nợ bán xe.'
+				if(@result like '%NHHBX%') set @message = @message + N'Đã phát sinh phiếu trả nợ hoa hồng bán xe.'
+
+
+				if(@message <> '' and @message is not null)
+					set @message = @message +  N'Các phiếu liên quan:' + @result
+				*/
+				if(@message = '')
+				begin
+					set @result = ''
+					/*SELECT @result = STUFF((
+							select ',' + MaPhieuNo 
+							from NoPhaiTra
+							where MaPhieuPhatSinh = @MaPhieu
+								and isnull(SoTienDaTra,0) <> 0 
+								and IsDeleted = 0
+							FOR XML PATH ('') 	
+							), 1, 1, '')
+					FROM NoPhaiThu	
+					*/
+					-- neu co phieu chi Bảo hiểm bán xe
+					--if(exists
+					--		(select * from PhieuChi 
+					--				where MaPhieuLienQuan in 
+					--					(	select MaPhieuNo 
+					--						from NoPhaiTra N inner join PhieuThu T on N.
+					--						where LoaiPhieuNo ='NBHBX' 
+					--							and SoHopDong = @soHopDong and SoTienNo >0
+					--					)
+					--		)
+					--		)
+					--	set @message = @message + N'Đã phát sinh phiếu thanh toán bảo hiểm bán xe'
+				end
+
+			
+			end
+
+			/* Neu la PHIẾU BÁN XE cần kiểm tra các vấn đề:
+				+ Đã Chi gia công ngoài chưa NoPhaitra = 'NGCNG'
+				+ Đã Chi hoa hồng tài xế chưa NoPhaiTra = 'HHTXE'
+				+ Đã Thu bảo hiểm thanh toán cho phiếu dịch vụ chưa NoPhaiThu ='NBHDV'
+				+ Đã Thu nợ của phiếu dịch vụ chưa NoPhaiThu = 'NDIVU'
+			*/
+			else if(@maLoaiPhieu = 'TDIVU')
+			begin
+				print 'TDIVU'
+				/*
+				--kiem tra phieu giai ngan cua ngan hang cho vay						
+				SELECT @result = STUFF((
+						select ',' + MaPhieuNo 
+						from NoPhaiThu
+						where MaPhieuPhatSinh = @MaPhieu
+							and isnull(SoTienDaTra,0) <> 0 
+							and IsDeleted = 0
+						FOR XML PATH ('') 	
+						), 1, 1, '')
+				FROM NoPhaiThu					
+				-- neu co phieu NBHDV
+				if(@result like '%NBHDV%') set @message = @message + N'Đã giải ngân từ công ty bảo hiểm.'
+				-- neu co phieu NBHDV
+				if(@result like '%NDIVU%') set @message = @message + N'Đã phát sinh phiếu thu nợ dịch vụ.'
+
+				if(@message <> '' and @message is not null)
+					set @message = @message +  N'Các phiếu liên quan:' + @result
+				*/
+				--khong can kiem tra gia cong ngoai va hoa hong tai xe vi da kiem tren form
+				--chi can kiem tra lien quan đến phần thu
+				/*
+				if(@message ='')
+				begin
+					set @result = ''
+					SELECT @result = STUFF((
+							select ',' + MaPhieuNo 
+							from NoPhaiTra
+							where MaPhieuPhatSinh = @MaPhieu
+								and isnull(SoTienDaTra,0) <> 0 
+								and IsDeleted = 0
+							FOR XML PATH ('') 	
+							), 1, 1, '')
+					FROM NoPhaiThu	
+					-- neu co phieu chi Gia công ngoài
+					if(@result like '%NGCNG%') set @message = @message + N'Đã phát sinh phiếu thanh toán gia công ngoài. Các phiếu liên quan:' + @result
+					-- neu co phieu chi Hoa hồng tài xế
+					if(@result like '%HHTXE%') set @message = @message + N'Đã phát sinh phiếu thanh toán hoa hồng tài xế. Các phiếu liên quan:' + @result
+				end
+				*/
+					
+			end
+
+			else if(@maLoaiPhieu = 'TCODV' or @maLoaiPhieu ='TCOBX' or @maLoaiPhieu ='TCONO')			
+			begin
+				print 'kiem tra thu coc '
+				set @result =''
+				SELECT @result = STUFF((
+						select ',' + T.MaPhieuThu 
+						from Chi_Tiet_Phieu_Thu CT INNER JOIN PhieuThu T ON CT.MaPhieuThu = T.MaPhieuThu
+						where CT.IsDeleted = 0 
+							and T.IsDeleted = 0
+							and SoThamChieu = @MaPhieu
+							and CT.SoTienThanhToan >0
+						FOR XML PATH ('') 	
+						), 1, 1, '')
+				--FROM PhieuThu		
+				--if exists(select * from Chi_Tiet_Phieu_Thu where IsDeleted = 0 and SoThamChieu = @MaPhieu)
+				if(@result is not null and @result <> '')
+				begin
+					if(@maLoaiPhieu = 'TCODV' or @maLoaiPhieu ='TCOBX')
+						set @message = @message + N'Đã có phiếu thu sử dụng cọc. Các phiếu sử dụng:' + @result
+					else 
+						set @message = @message + N'Đã có phiếu thu được phân bổ công nợ. Các phiếu đã phân bổ:' + @result
+				end	
+				else 
+				begin
+					set @result =''
+					SELECT @result = STUFF((
+						select ',' + C.MaPhieuChi
+						from PhieuChi C 
+						where C.IsDeleted = 0 						
+							and MaPhieuLienQuan = @MaPhieu
+						FOR XML PATH ('') 	
+						), 1, 1, '')
+					--if exists(select * from PhieuChi where IsDeleted = 0 and MaPhieuLienQuan = @MaPhieu)
+					if(@result is not null and @result <> '')
+						set @message = @message + N'Đã có phiếu hoàn cọc. Các phiếu liên quan:' + @result
+				end
+			end
+			--neu la phieu no thi kiem tra co phieu no nao tao ra sau phieu nay khong
+			--neu co phieu tao sau roi thi khong cho xoa
+			else if(@maLoaiPhieu in ('NBAXE','NDIVU','NNHBX','NBHDV','NPTPK','NVAMU','NHHBH','NTAUN'))
+			begin	
+				
+				--if(exists(select MaPhieuThu from PhieuThu where IsDeleted = 0 and MaPhieuLienQuan = @maPhieuLienQuan and CreatedDate > @CreatedDate))
+				SELECT @result = STUFF((
+						select ',' + MaPhieuThu
+						from PhieuThu 
+						where IsDeleted = 0 						
+							and MaPhieuThu > @MaPhieu		
+							and MaPhieuLienQuan = @maPhieuLienQuan					
+						FOR XML PATH ('') 	
+						), 1, 1, '')
+				if(@result is not null and @result <> '')
+				begin
+					set @message = @message + N'Đã có phiếu thu nợ khác tạo sau phiếu thu nợ này. Các phiếu liên quan:' + @result
+				end
+				
+			end
+			else	if(@MaLoaiPhieu = 'TPHKI')
+			begin
+				if(1=0) -- if(@isKMPK = 1 and exists(select * from PhieuThu where MaLoaiPhieu ='TBAXE' and IsDeleted = 0 and SoHopDong = @SoHopDong and datediff(day,NgayThu,@ngay) >45))
+					set @message = @message + N'Không thể tạo phiếu khuyến mãi phụ kiện quá 45 ngày kể từ ngày bán xe. Vui lòng liên hệ phòng Kiểm toán nội bộ.'
+			end
+		
+			else
+			begin
+				print (@maLoaiPhieu)
+				print @MaPhieu
+				--kiem tra phieu giai ngan cua ngan hang cho vay						
+				SELECT @result = STUFF((
+						select ',' + MaPhieuNo 
+						from NoPhaiThu
+						where MaPhieuPhatSinh = @MaPhieu
+							and isnull(SoTienDaTra,0) <> 0 
+							and IsDeleted = 0
+						FOR XML PATH ('') 	
+						), 1, 1, '')
+				FROM NoPhaiThu			
+				if(@result is not null and @result <> '')
+					set @message = @message + N'Đã có phát sinh phiếu thu nợ. Các phiếu liên quan ' + @result
+				else
+				begin
+					set @result = ''
+					SELECT @result = STUFF((
+						select ',' + MaPhieuNo 
+						from NoPhaiTra
+						where MaPhieuPhatSinh = @MaPhieu
+							and isnull(SoTienDaTra,0) <> 0 
+							and IsDeleted = 0
+						FOR XML PATH ('') 	
+						), 1, 1, '')
+					FROM NoPhaiTra	
+					if(@result is not null and @result <> '')
+						set @message = @message + N'Đã có phát sinh phiếu chi trả nợ. Các phiếu liên quan ' + @result		
+				end
+			end
+
+
+		end
+	
+end

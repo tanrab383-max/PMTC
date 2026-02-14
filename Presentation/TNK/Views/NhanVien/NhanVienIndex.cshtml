@@ -1,0 +1,136 @@
+﻿@model List<TNK.Core.Domain.NhanVien>
+@{
+    int i = 1;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+
+                        <div class="x_title">
+                            <h2><b>Danh sách</b></h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li>
+                                    <a href="~/@ViewBag.LinkCreate"><i class="fa fa-plus addNew addNew"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+
+                        <div class="x_content">
+                            <form method="get" class="row">
+
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="Mã kho" placeholder="Nhập Tên Nhân Viên" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Tên Nhân Viên</th>
+                                            <th>Giới Tính</th>
+                                            <th>Tình Trạng</th>
+                                            <th>Thao Tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                       @foreach (var item in Model)
+                                       {
+                                           
+                                           var gioitinh = "";
+                                           var active = "";
+                                           if (Convert.ToInt32(item.GioiTinh) == 1)
+                                           {
+                                               gioitinh = "Nam";
+                                           }
+
+                                           else
+                                           {
+                                               gioitinh = "Nữ";
+                                           }
+                                           if(Convert.ToInt32(item.IsActive) == 1)
+                                           {
+                                               active = "Đang Hoạt Động";
+                                           }
+                                           else
+                                           {
+                                               active = "Không Còn Hoạt Động";
+                                           }
+                                           
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.HoTen</td>
+                                                <td>@gioitinh</td>
+                                                <td>@active</td>
+                                                <td style="width:10%" class="center">
+                                                    <a href="~/NhanVien/NhanVienUpdate/@item.MaNhanVien"><i title="Edit" class="fa fa-edit"></i></a>
+                                                    @*<a href="~/NhanVien/DeleteNhanVien/@item.MaNhanVien"><i title="Delete" class="fa fa-trash-o"></i></a>*@
+                                                    <a href="#" onclick="Delete('@item.MaNhanVien');"><i title="Delete" class="fa fa-trash-o"></i></a>
+                                                </td>
+                                            </tr>
+                                           i++;
+                                       }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+<script type="text/javascript">
+    var Delete = function (MaNhanVien) {
+        debugger;
+        var result = confirm("Bạn Có Chắc Chắn Muốn Xóa !!!");
+        if(result == true)
+        {
+            $.ajax({
+                url: "/NhanVien/DeleteNhanVien/" + MaNhanVien,
+                type: 'post',
+
+                success: function (result) {
+                    if (result == "True")
+                    {
+                        window.location.reload();
+                    }
+                    else
+                        toastr.error("Xóa không thành công");
+                }
+            });
+        }
+    }
+</script>
+

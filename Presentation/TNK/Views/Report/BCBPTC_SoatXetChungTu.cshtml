@@ -1,0 +1,208 @@
+﻿@using System.Data;
+
+@{ 
+    double TotalTM = 0;
+    double TotalNH = 0;
+    double TotalTong = 0;
+    DataTable dtbTong = ViewBag.dtbTong;
+    DataTable dtbChiTiet = ViewBag.dtbChiTiet;
+
+}
+
+<div id="BCBPTC_SoatXetChungTu" class="x_content">
+    <div class="row col-sm-6" style="float:left">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                
+                            <table class="table table-striped table-bordered table-condensed">
+                                <thead>
+                                    <tr class="headings">
+                                        <th colspan='6' class="tile">BÁO CÁO CÁC KHOẢN CHI @ViewBag.ShowRoom</th>
+                                    </tr>
+                                    <tr>
+                                        <th colspan='6' class="tile">@ViewBag.TuNgayDenNgay</th>
+                                    </tr>
+                                    <tr>
+                                        <th>TÊN ĐƠN VỊ/ ĐẠI LÝ</th>
+                                        <th colspan='3' class="tile">HÌNH THỨC THANH TOÁN</th>
+                                    </tr>
+                                    <tr class="headings">
+                                        <th class="column-title">TỔNG SỐ CHI TRONG KỲ</th>
+                                        <th class="column-title">TIỀN MẶT</th>
+                                        <th class="column-title">CHUYỂN KHOẢN NH</th>
+                                        <th class="column-title">TỔNG CỘNG</th>
+                                        @*<th class="column-title">HHXE</th>
+                    <th class="column-title">HHPT</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (dtbTong != null)
+                                    {
+                                        foreach (DataRow row in (dtbTong as DataTable).Rows)
+                                        {
+                                            TotalTM += row["ThanhToanTM"].ToString() == "" ? 0 : Convert.ToDouble(row["ThanhToanTM"]);
+                                            TotalNH += row["ThanhToanNH"].ToString() == "" ? 0 : Convert.ToDouble(row["ThanhToanNH"]);
+                                            TotalTong += row["ThanhToanTong"].ToString() == "" ? 0 : Convert.ToDouble(row["ThanhToanTong"]);
+                                            if (@row["Loai"].ToString() == "SUM" || @row["Loai"].ToString() == "SUM1")
+                                            {
+                                                <tr style="background-color:lightblue;font-weight:bold">
+                                                    <td>@row["LyDoChi"]</td>
+                                                    <td class="number">@row["ThanhToanTM"].ToString().Replace(",", ".")</td>
+                                                    <td class="number">@row["ThanhToanNH"].ToString().Replace(",", ".")</td>
+                                                    <td class="number">@row["ThanhToanTong"].ToString().Replace(",", ".")</td>
+
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td>@row["LyDoChi"]</td>
+                                                    <td class="number">@row["ThanhToanTM"].ToString().Replace(",", ".")</td>
+                                                    <td class="number">@row["ThanhToanNH"].ToString().Replace(",", ".")</td>
+                                                    <td class="number">@row["ThanhToanTong"].ToString().Replace(",", ".")</td>
+
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                    <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                        <td>TỔNG</td>
+                                        <td class="number">@TotalTM.ToString().Replace(",", ".")</td>
+                                        <td class="number">@TotalNH.ToString().Replace(",", ".")</td>
+                                        <td class="number">@TotalTong.ToString().Replace(",", ".")</td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                       
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="row col-sm-6" style="float:left">
+        <div class="col-sm-12">
+            <div class="control-group">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='8' class="tile">CHI CHUYỂN KHOẢN NGÂN HÀNG</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">STT</th>
+                                <th class="column-title">NGÀY</th>
+                                <th class="column-title">NỘI DUNG</th>
+                                <th class="column-title">SỐ TIỀN</th>
+                                <th class="column-title">MÃ</th>
+                                <th class="column-title">TỔNG MỤC CHI PHÍ</th>
+                                <th class="column-title">NGƯỜI DUYỆT ĐỀ XUẤT</th>
+                                <th class="column-title">NGƯỜI DUYỆT THANH TOÁN</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">A</th>
+                                <th class="column-title">B</th>
+                                <th class="column-title">E</th>
+                                <th class="column-title">F</th>
+                                <th class="column-title">G</th>
+                                <th class="column-title">H</th>
+                                <th class="column-title">I</th>
+                                <th class="column-title">J</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+
+                                int i = 1;
+                                foreach (DataRow row in (ViewBag.dtbChiTietNH as DataTable).Rows)
+                                {
+
+
+                                    <tr class="even pointer">
+                                        <td>@i</td>
+                                        <td>@row["Ngay"]</td>
+                                        <td>@row["NoiDung"]</td>
+                                        <td class="number">@row["SoTien"].ToString().Replace(",", ".")</td>
+                                        <td>@row["Ma"]</td>
+                                        <td class="number">@row["TongMucChiPhi"].ToString().Replace(",", ".")</td>
+                                        <td>@row["NguoiDuyet"]</td>
+                                        <td></td>
+                                    </tr>
+                                    i = i + 1;
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='8' class="tile">CHI TIỀN MẶT</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">STT</th>
+                                <th class="column-title">NGÀY</th>
+                                <th class="column-title">NỘI DUNG</th>
+                                <th class="column-title">SỐ TIỀN</th>
+                                <th class="column-title">MÃ</th>
+                                <th class="column-title">TỔNG MỤC CHI PHÍ</th>
+                                <th class="column-title">NGƯỜI DUYỆT ĐỀ XUẤT</th>
+                                <th class="column-title">NGƯỜI DUYỆT THANH TOÁN</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">A</th>
+                                <th class="column-title">B</th>
+                                <th class="column-title">E</th>
+                                <th class="column-title">F</th>
+                                <th class="column-title">G</th>
+                                <th class="column-title">H</th>
+                                <th class="column-title">I</th>
+                                <th class="column-title">J</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+
+                                i = 1;
+                                foreach (DataRow row in (ViewBag.dtbChiTietTM as DataTable).Rows)
+                                {
+
+
+                                    <tr class="even pointer">
+                                        <td>@i</td>
+                                        <td>@row["Ngay"]</td>
+                                        <td>@row["NoiDung"]</td>
+                                        <td class="number">@row["SoTien"].ToString().Replace(",", ".")</td>
+                                        <td>@row["Ma"]</td>
+                                        <td class="number">@row["TongMucChiPhi"].ToString().Replace(",", ".")</td>
+                                        <td>@row["NguoiDuyet"]</td>
+                                        <td></td>
+                                    </tr>
+                                    i = i + 1;
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    
+
+    <script type="text/javascript">
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            //val = val.replace(",", ".");
+            val = val.split(",").join("");
+            val = parseFloat(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+    </script>

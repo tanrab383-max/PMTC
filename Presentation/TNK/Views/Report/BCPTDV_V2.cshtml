@@ -1,0 +1,268 @@
+﻿@using System.Data;
+
+<div class="x_content">
+    <div id="BCPTDV_V2" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan='45' class="tile">BÁO CÁO DOANH THU DỊCH VỤ & PHỤ TÙNG @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan='45' class="tile">@ViewBag.TuNgayDenNgay</th>
+                </tr>
+                <tr></tr>
+                <tr class="headings">
+                    <th class="column-title" rowspan="2">STT</th>
+                    <th class="column-title" rowspan="2">NGÀY THU</th>
+                    <th class="column-title" rowspan="2">SỐ PHIẾU</th>
+                    <th class="column-title" rowspan="2">BIỂN SỐ</th>
+                    <th class="column-title" style="width:500px;" rowspan="2">KHÁCH HÀNG</th>
+
+                    @*<th class="column-title" colspan="4">GIA CÔNG NGOÀI</th>*@
+                    <th class="column-title" colspan="3">CÔNG DV</th>
+                    <th class="column-title" colspan="5">PHỤ TÙNG</th>
+                    <th class="column-title" colspan="5">PHỤ KIỆN</th>
+                    <th class="column-title" colspan="5">VẬT TƯ SƠN</th>
+                    <th class="column-title" colspan="5">QUÀ TẶNG</th>
+
+                    <th class="column-title" rowspan="2">TỔNG DOANH THU</th>
+                    <th class="column-title" rowspan="2">TỔNG GIÁ VỐN</th>
+                    <th class="column-title" rowspan="2">CÔNG LẮP KM THEO XE</th>
+                    <th class="column-title" rowspan="2">TỔNG GIẢM GIÁ</th>
+                    <th class="column-title" rowspan="2">TỔNG DOANH THU SAU GIẢM GIÁ</th>
+                    <th class="column-title" rowspan="2">CHI GCN</th>
+                    <th class="column-title" rowspan="2">TRẠM DV</th>
+                </tr>
+                <tr>
+                    @*<th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">THỰC THU</th>
+                    <th class="column-title">CHI</th>*@
+                    <!--SCC-->
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*đồng THU sơn*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*PHỤ TÙNG TRONG*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*PHỤ KIỆN NGOÀI*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                    @*QUÀ TẶNG*@
+                    <th class="column-title">GIÁ BÁN</th>
+                    <th class="column-title">GIÁ VỐN</th>
+                    <th class="column-title">KM THEO XE</th>
+                    <th class="column-title">GIẢM GIÁ</th>
+                    <th class="column-title">DOANH THU</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background-color:orange;color:black;font-weight:bold">
+                    <td colspan="45"><b>A - PHIẾU DỊCH VỤ</b></td>
+                </tr>
+                @if (ViewBag.dtbResult != null)
+                {
+                    foreach (DataRow row in (ViewBag.dtbResult as DataTable).Rows)
+                    {
+                        if (@row["NgayThu"].ToString().Contains('/'))
+                        {
+                            <tr class="even pointer">
+                                <td>@row["Row#"]</td>
+                                <td>@row["NgayThu"]</td>
+                                <td>@row["SoHopDong"]</td>
+                                <td>@row["BienSo"]</td>
+                                <td>@row["Hoten"]</td>
+                                <td class="number">@row["SC_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SC_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SC_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["PTT_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PTT_GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PTT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PTT_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PTT_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["PhuKien_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhuKien_GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhuKien_KhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhuKien_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhuKien_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["DS_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DS_GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DS_KhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DS_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DS_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["QuaTang_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["QuaTang_GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["QuaTang_KhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["QuaTang_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["QuaTang_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["TongGiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongGiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongGiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongThucThu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["GCN_ChiGCN"].ToString().Replace(",", ".")</td>
+                                <td>@row["TramDV"].ToString()</td>
+                            </tr>
+                        }
+                        else if (@row["NgayThu"].ToString().Contains("TỔNG"))
+                        {
+                            <tr style="background-color: lightblue;color:black; font-weight: bold">
+                                <td colspan="5">@row["NgayThu"]</td>
+                                <td class="number">@row["SC_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SC_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SC_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["PTT_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PTT_GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PTT_KhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PTT_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PTT_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["PhuKien_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhuKien_GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhuKien_KhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhuKien_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["PhuKien_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["DS_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DS_GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DS_KhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DS_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DS_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["QuaTang_GiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["QuaTang_GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["QuaTang_KhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["QuaTang_GiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["QuaTang_ThucThu"].ToString().Replace(",", ".")</td>
+
+                                <td class="number">@row["TongGiaBan"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongGiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongGiamGia"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TongThucThu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["GCN_ChiGCN"].ToString().Replace(",", ".")</td>
+                                <td>@row["TramDV"].ToString()</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr style="background-color:orange;color:black;font-weight:bold">
+
+                                <td colspan="45"><b> @row["NgayThu"] </b></td>
+
+                            </tr>
+                        }
+
+                    }
+                }
+            </tbody>
+        </table>
+        <br />
+        <div class="x_content">
+            <div class="table-responsive">
+                <div class="col-md-8">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <tbody>
+                            <tr>
+                                <td><b>Nợ cọc ĐK</b></td>
+                                <td class="number">@ViewBag.NoCocDK.ToString().Replace(",", ".")</td>
+                                <td><b>Nợ lẻ ĐK</b></td>
+                                <td class="number">@ViewBag.NoLeDK.ToString().Replace(",", ".")</td>
+                                <td><b>Nợ ĐK hãng</b></td>
+                                <td class="number">@ViewBag.NoLeDK_Hang.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Thu TM</b></td>
+                                <td class="number">@ViewBag.ThuTM.ToString().Replace(",", ".")</td>
+                                <td><b>P/s nợ lẻ</b></td>
+                                <td class="number">@ViewBag.PSNoLe.ToString().Replace(",", ".")</td>
+                                <td><b>P/s nợ hãng</b></td>
+                                <td class="number">@ViewBag.PSNoLe_Hang.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Thu NH</b></td>
+                                <td class="number">@ViewBag.ThuNH.ToString().Replace(",", ".")</td>
+                                <td><b>Thu TM</b></td>
+                                <td class="number">@ViewBag.ThuTMat.ToString().Replace(",", ".")</td>
+                                <td><b>Thu TM hãng</b></td>
+                                <td class="number">@ViewBag.ThuTMat_Hang.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Chi cọc</b></td>
+                                <td class="number">@ViewBag.ChiCoc.ToString().Replace(",", ".")</td>
+                                <td><b>Thu N.Hàng</b></td>
+                                <td class="number">@ViewBag.ThuNganHang.ToString().Replace(",", ".")</td>
+                                <td><b>Thu N.Hàng hãng</b></td>
+                                <td class="number">@ViewBag.ThuNganHang_Hang.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Hoàn cọc</b></td>
+                                <td class="number">@ViewBag.SoTienHoanCoc.ToString().Replace(",", ".") </td>
+                                <td><b>Nợ lẻ CK</b></td>
+                                <td class="number"> @ViewBag.NoLeCK.ToString().Replace(",", ".")</td>
+                                <td><b>Nợ CK hãng</b></td>
+                                <td class="number"> @ViewBag.NoLeCK_Hang.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc PT-PK</b></td>
+                                <td class="number">@ViewBag.ChuyenCocTPHKI.ToString().Replace(",", ".") </td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc BHTH</b></td>
+                                <td class="number">@ViewBag.ChuyenCocBHTH.ToString().Replace(",", ".") </td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc GHBH</b></td>
+                                <td class="number">@ViewBag.ChuyenCocGHBH.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc GTX</b></td>
+                                <td class="number">@ViewBag.ChuyenCocGTX.ToString().Replace(",", ".")</td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc BDTK</b></td>
+                                <td class="number">@ViewBag.ChuyenCocTBDTK.ToString().Replace(",", ".") </td>
+                            </tr>
+                            <tr>
+                                <td><b>Chuyển cọc thu hộ khác</b></td>
+                                <td class="number">@ViewBag.ChuyenCocTHK.ToString().Replace(",", ".") </td>
+                            </tr>
+                            <tr>
+                                <td><b>Nợ cọc CK</b></td>
+                                <td class="number">@ViewBag.NoCocCK.ToString().Replace(",", ".") </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

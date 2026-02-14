@@ -1,0 +1,44 @@
+﻿@model List<PhieuQTModel>
+@{
+    int i = 1;
+}
+<table id="promiseTable" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Ngày nợ</th>
+            <th>Mã phiếu</th>
+            <th>Khách hàng</th>
+            <th>Số hợp đồng</th>
+            <th>Biển số</th>
+            <th>Số khung</th>
+            <th>Số tiền còn lại</th>
+            <th>Số tiền quyết toán</th>
+        </tr>
+    </thead>
+    <tbody id="promiseTableBody">
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                    <td>@item.MaPhieuQuyetToan</td>
+                    <td>
+                        @item.MaPhieuNo
+                    </td>
+                    <td>@Html.Raw(item.KhachHang)</td>
+                    <td>@item.SoHopDong</td>
+                    <td>@item.BienSo</td>
+                    <td>@item.SoKhung</td>
+                    <td>@TNK.Core.Common.ToCurrencyString(double.Parse(item.SoTienQuyetToan.ToString()))</td>
+                    <td>@TNK.Core.Common.ToCurrencyString(double.Parse(item.SoTienQuyetToan.ToString()))</td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging_v3.cshtml")
+</div>

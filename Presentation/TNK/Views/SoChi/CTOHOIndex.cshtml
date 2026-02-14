@@ -1,0 +1,177 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuChi>
+@{
+    int i = 1;
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+    <div class="title_right" style="margin-left:88%">
+        <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu(*.xlxs)</span></a>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b>Danh sách</b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a href="@ViewBag.LinkCreate"><i class="fa fa-plus addNew addNew"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày chi</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày chi</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Chứng từ chi, Người nhận, Lý do chi" placeholder="Chứng từ chi, Người nhận, Lý do chi" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                            <input style="width:40%" onclick="ImportData()" title="Import dữ liệu" value="Import Excel" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </form>
+                <div class="x_content">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>STT</th>
+                                    <th>Mã phiếu chi</th>
+                                    <th>Ngày chi</th>
+                                    <th>Chứng từ chi</th>
+                                    <th>Người nhận</th>
+                                    <th>Số điện thoại</th>
+                                    <th>Số tiền chi</th>
+                                    <th>Lý do chi</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                        <td>@item.MaPhieuChi</td>
+                                        <td>@item.NgayChi.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.SoChungTu</td>
+                                        <td>@item.HoTen</td>
+                                        <td>@item.DienThoai</td>                             
+                                        <td>@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>   
+                                        <td>@item.LyDoChi</td>               
+                                        <td style="width:5%" class="center">
+                                            <a href="@ViewBag.LinkEdit/@item.MaPhieuChi"><i title="Edit" class="fa fa-edit"></i></a>
+                                        </td>
+                                        <td style="width:5%" class="center">
+                                            <a href="@ViewBag.LinkDelete/@item.MaPhieuChi"><i title="Delete" class="fa fa-close"></i></a>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            </tbody>
+                        </table>
+                        <div class="right">
+                            @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+    </div>
+</div>
+@section scripts
+{
+<script src="~/Scripts/IndexCommon.js"></script>
+<script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        $("#FileMau").click(function () {
+            debugger;
+            $.fileDownload("/SoChi/ExportFile_ChiTongHop", {
+                httpMethod: "POST",
+                data: {},
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+        var datafile = new FormData();
+        function ImportData() {
+            $("#txtUploadFile").trigger('click');
+        }
+        $('#txtUploadFile').on('change', function (e) {
+            //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFile").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoChi/ImportData_ChiTongHop",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile").value = "";
+                        datafile.delete('file');
+                    },
+                    success: function (result) {
+                        if (result.IsError)
+                            toastError(result.Message);
+                        else {
+                            toastSuccess("Import thành công");
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        toastError("Lỗi: Import file excel.");
+                    }
+                });
+            }
+        });
+
+
+    </script>
+}

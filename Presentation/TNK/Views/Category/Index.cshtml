@@ -1,0 +1,509 @@
+﻿@model List<TNK.Core.Domain.Category>
+@{
+    ViewBag.Title = "Index";
+    var item = new TNK.Core.Domain.Category();
+    var edit = new TNK.Core.Domain.Category();
+    var categoryitem = new TNK.Core.Domain.CategoryItem();
+    var categoryitemedit = new TNK.Core.Domain.CategoryItem();
+
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-4 col-sm-6 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2 id="CategoryName"></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="tree">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 col-sm-6 col-xs-12" id="Items" style="display:none">
+        <div class="row">
+            <div class="col-md-12" id="Update" style="display:none">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Cập nhật danh mục: <b class="CategoryTitle"></b></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <form method="post" action="/Category/UpdateCategory" class="form-horizontal form-label-left">
+                            <div class="form-body">
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(x => edit.Id)
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Mã  danh mục</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => edit.Code, new { htmlAttributes = new { @class = "form-control required", @maxlength = 5 } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tên  danh mục</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => edit.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Ghi chú</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => edit.Note, new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions margin-top-10">
+                                <div class="row">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Save" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" id="Create" style="display:none">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Thêm mới danh mục: <b class="CategoryTitle"></b></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <form method="post" action="/Category/AddCategory" class="form-horizontal form-label-left">
+                            <div class="form-body">
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(x => item.Parent)
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Mã danh mục</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => item.Code, new { htmlAttributes = new { @class = "form-control required" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tên danh mục</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => item.Name, new { htmlAttributes = new { @class = "form-control required" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Ghi chú</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => item.Note, new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions margin-top-10">
+                                <div class="row">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Save" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" id="CreateItem" style="display:none">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Thêm mới item: <b class="CategoryTitle"></b></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <form method="post" action="/Category/AddCategoryItem" class="form-horizontal form-label-left">
+                            <div class="form-body">
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(x => categoryitem.Parent)
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Mã item</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => categoryitem.Code, new { htmlAttributes = new { @class = "form-control required" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tên item</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => categoryitem.Name, new { htmlAttributes = new { @class = "form-control required" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Ghi chú</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => categoryitem.Note, new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions margin-top-10">
+                                <div class="row">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Save" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12" id="UpdateCategoryItem" style="display:none">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Thêm mới item: <b class="CategoryTitle"></b></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <form method="post" action="/Category/UpdateCategoryItem" class="form-horizontal form-label-left">
+                            <div class="form-body">
+                                @Html.AntiForgeryToken()
+                                @Html.HiddenFor(x => categoryitemedit.Id)
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Mã item</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => categoryitemedit.Code, new { htmlAttributes = new { @class = "form-control required" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Tên item</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => categoryitemedit.Name, new { htmlAttributes = new { @class = "form-control required" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Ghi chú</label>
+                                    <div class="col-md-9 col-sm-12 col-xs-12">
+                                        @Html.EditorFor(x => categoryitemedit.Note, new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions margin-top-10">
+                                <div class="row">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Save" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Danh sách item: <b class="CategoryTitle"></b></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="input-group-btn ">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Action <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" style="max-width:200px" role="menu">
+                                <li>
+                                    <a href="#" onclick="AddCategoryItem()">Thêm mới item</a>
+                                </li>
+                                <li hidden>
+                                    <a href="#" onclick="UpdateCategory()">Cập nhật danh mục</a>
+                                </li>
+                                <li hidden>
+                                    <a href="#" onclick="DeleteCategory()">Xóa danh mục</a>
+                                </li>
+                                <li hidden class="divider">
+                                </li>
+                                <li hidden>
+                                    <a href="#" onclick="AddCategory()">Thêm mới danh mục</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Mã</th>
+                                    <th>Tên</th>
+                                    <th>Ghi chú</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblCategoryItem"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-12" id="LoaiXeIndex" style="display:none">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Danh sách loại xe </h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a href="/LoaiXe/Create"><i class="fa fa-plus"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content" id="divLoaiXeIndex">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12" id="DoiTacIndex" style="display:none">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Đối tác</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        <a href="/DoiTac/Create"><i class="fa fa-plus"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content" id="divDoiTacIndex">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <link href="~/assests/plugins/jstree/dist/themes/default/style.min.css" rel="stylesheet" />
+    <script src="~/assests/plugins/jstree/dist/jstree.min.js"></script>
+    <script src="~/assests/plugins/bootstrap-contextmenu/bootstrap-contextmenu.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script>
+        createTree();
+        function createTree() {
+            debugger;
+            $('.tree').jstree({
+                "core": {
+                    "themes": {
+                        "responsive": false
+                    },
+                    // so that create works
+                    "check_callback": true,
+                    'data': {
+                        'url': function (node) {
+                            return '/category/GetCategory/';
+                        },
+                        'data': function (node) {
+                            return { 'parent': node.id };
+                        }
+                    }
+                },
+                "types": {
+                    "default": {
+                        "icon": "fa fa-folder icon-state-warning icon-lg"
+                    },
+                    "file": {
+                        "icon": "fa fa-file icon-state-warning icon-lg"
+                    }
+                },
+                "state": { "key": "demo3" },
+                "plugins": ["dnd", "state", "types"]
+            })
+        }
+        var selected;
+        var selectedId;
+        $('.tree').on('select_node.jstree', function (e, data) {
+            debugger;
+            selected = data.node;
+            selectedId = selected.id.replace("node_", "");
+            //$("#LoaiXeIndex").hide();
+            $("#Update").hide();
+            $("#Create").hide();
+            $("#UpdateCategoryItem").hide();
+            $("#CreateItem").hide();
+            $("#Items").hide();
+            //$("#DoiTacIndex").hide();
+            
+            switch (selectedId) {
+                //case "00":
+                //    $("#LoaiXeIndex").show();
+                //    $.get("/LoaiXe/Index").success(function (response) {
+                //        $("#divLoaiXeIndex").html(response);
+                //    });
+                //    break;
+                //case "000":
+                //    $("#DoiTacIndex").show();
+                //    $.get("/DoiTac/Index").success(function (response) {
+                //        $("#divDoiTacIndex").html(response);
+                //    });
+                //    break;
+                default:
+                    $("#Items").show();
+                    $(".CategoryTitle").html(selected.text);
+                    $("#item_Parent").val(selectedId);
+                    $("#edit_Id").val(selectedId);
+                    $("#categoryitem_Parent").val(selectedId);
+                    $.get("/Category/GetCategoryItem/" + selectedId).success(function (response) {
+
+                        $("#tblCategoryItem").html(response);
+                    });
+                    break;
+            }
+
+        });
+
+        function AddCategory() {
+            debugger;
+            $("#Create").show("fadeIn");
+            $("#UpdateCategoryItem").hide();
+            $("#Update").hide();
+            $("#CreateItem").hide();
+        }
+        function UpdateCategory() {
+            debugger;
+            $("#Update").show("fadeIn");
+            $("#CreateItem").hide();
+            $("#UpdateCategoryItem").hide();
+            $("#Create").hide();
+            $.get("/category/get/" + selectedId).success(function (response) {
+                $("#edit_Code").val(response.code);
+                $("#edit_Name").val(response.name);
+                $("#edit_Note").val(response.note);
+                $("#edit_Id").val(response.id);
+            });
+        }
+        function DeleteCategory() {
+            debugger;
+            if (confirm('Xác nhận xóa')) {
+                $.post("/Category/Delete/" + selectedId).success(function (response) {
+                    if (response == "success") {
+                        window.location.reload();
+                    }
+                    else {
+                        alert('Có lỗi xảy ra');
+                    }
+                });
+            }
+        }
+
+        function AddCategoryItem() {
+            debugger;
+            $("#CreateItem").show("fadeIn");
+            $("#Update").hide();
+            $("#UpdateCategoryItem").hide();
+            $("#Create").hide();
+        }
+        function UpdateCategoryItem(id) {
+            debugger;
+            $("#CreateItem").hide();
+            $("#Update").hide();
+            $("#Create").hide();
+            $.get("/Category/GetInfoCategoryItem/" + id).success(function (response) {
+                $("#UpdateCategoryItem").show("fadeIn");
+                $("#categoryitemedit_Code").val(response.code);
+                $("#categoryitemedit_Name").val(response.name);
+                $("#categoryitemedit_Note").val(response.note);
+                $("#categoryitemedit_Id").val(response.id);
+            });
+        }
+
+        function DeleteCategoryItem(id) {
+            debugger;
+            if (confirm('Xác nhận xóa')) {
+                $.post("/Category/DeleteCategoryItem/" + id).success(function (response) {
+                    if (response == "success") {
+                        window.location.reload();
+                    }
+                    else {
+                        alert('Có lỗi xảy ra');
+                    }
+                });
+            }
+        }
+
+        $('#jstree_demo').jstree({
+            "core": {
+                "animation": 0,
+                "check_callback": true,
+                "themes": { "stripes": true },
+                'data': {
+                    'url': function (node) {
+                        return node.id === '#' ?
+                          'ajax_demo_roots.json' : 'ajax_demo_children.json';
+                    },
+                    'data': function (node) {
+                        return { 'id': node.id };
+                    }
+                }
+            },
+            "types": {
+                "#": {
+                    "max_children": 1,
+                    "max_depth": 4,
+                    "valid_children": ["root"]
+                },
+                "root": {
+                    "icon": "/static/3.3.4/assets/images/tree_icon.png",
+                    "valid_children": ["default"]
+                },
+                "default": {
+                    "valid_children": ["default", "file"]
+                },
+                "file": {
+                    "icon": "glyphicon glyphicon-file",
+                    "valid_children": []
+                }
+            },
+            "plugins": [
+              "contextmenu", "dnd", "search",
+              "state", "types", "wholerow"
+            ]
+        });
+    </script>
+}

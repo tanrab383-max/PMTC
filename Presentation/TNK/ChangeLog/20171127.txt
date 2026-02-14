@@ -1,0 +1,468 @@
+﻿-- sua store sp_XuLyPhieuChiThuHoBaoHiem
+-- them truong HoaHong vao phieu thu
+-- sua store sp_XuLyCapNhatTienTrongTuiDinhKhoan
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[sp_XuLyPhieuChiThuHoBaoHiem]    Script Date: 11/27/2017 11:25:26 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_XuLyPhieuChiThuHoBaoHiem]
+(
+	@MaPhieu char(15) --xu ly loai phieu CVAMU
+	,@message nvarchar(max) output
+)
+as
+begin
+	print '[sp_XuLyPhieuChiThuHoBaoHiem]'
+	set @message = @message + + '<br/>(start)' +  '(' + convert(varchar(24),getdate(),121) + ')[sp_XuLyPhieuChiThuHoBaoHiem]'
+	set @message = @message + '<br/>Khong can xu ly hoa hong bao hiem nua ma hoa hong bao hiem da xu ly tren phieu thu'
+	/*
+	declare @soTienThu float
+	select @soTienThu = sum(SoTienThanhToan) from ChiTietPhieuChi where MaPhieuChi = @MaPhieu 
+	-- Kiem tra tong tien thuc thu co du khong , neu chua du thi tao thong tin NoPhaiThu Ban xe
+	declare @soTienNo float,@nguoiBaoLanh nvarchar(256),@giaVon float,@doiTac nvarchar(256)
+	set @nguoiBaoLanh = ''
+	set @soTienNo = 0
+	select @doiTac = DoiTac,@nguoiBaoLanh = NguoiDuyet from PhieuChi where MaPhieuChi = @MaPhieu
+	declare @tyLeHoaHong float
+	select @tyLeHoaHong = TyLeHoaHong from DOI_TAC where MaDoiTac = @doiTac
+	set @soTienNo = @soTienThu * @tyLeHoaHong/100
+	print 'So tien no:'
+	print cast(@sotienno as varchar(20))
+	if(@soTienNo > 0)
+	begin
+		print 'tao phieu no phai tra NHHBH'
+		declare @maPhieuNoThuHoPK varchar(15)
+		select @maPhieuNoThuHoPK = MaPhieuNo from NoPhaiThu where IsDeleted = 0 and MaPhieuPhatSinh = @MaPhieu and LoaiPhieuNo = 'NHHBH'
+		if(@maPhieuNoThuHoPK is  null or @maPhieuNoThuHoPK = '')
+		begin
+			exec [sp_InsertNoPhaiThu] @maPhieuNoThuHoPK output,'NHHBH',@maPhieu,@nguoiBaoLanh,@soTienNo,@DoiTac
+		end
+		else
+			update NoPhaiThu 
+			set SoTienNo = @soTienNo, DonViNo = @DoiTac, SoTienConLai = @soTienNo
+			where MaPhieuNo = @maPhieuNoThuHoPK
+			set @message = @message + N'-- [sp_XuLyPhieuChiThuHoBaoHiem]:Tao phieu no phải thu hoa hồng bảo hiểm ' + @maPhieuNoThuHoPK
+
+
+	end
+	*/
+	set @message = @message + + '<br/>(end)' +  '(' + convert(varchar(24),getdate(),121) + ')[sp_XuLyPhieuChiThuHoBaoHiem]'
+	print @message
+end
+Go
+
+ALTER proc [dbo].[sp_XuLyCapNhatTienTrongTuiDinhKhoan]
+(
+	@MaTui varchar(50)
+	,@message varchar(MAX) output
+	,@loaiTui varchar(10) = ''
+	,@sessionId varchar(100) = ''
+)
+as
+begin
+	if(@message is null)
+		set @message = ''
+	set @message = @message + N'<br/>(start)' +  '(' + convert(varchar(24),getdate(),121) + ')[sp_XuLyCapNhatTienTrongTuiDinhKhoan] MaTui=' +isnull( @MaTui,'') + ' LoaiTui=' + isnull( @LoaiTui,'') 
+	declare @soTienDangCoTruocCapNhat float
+	declare @soTienDangCoSauCapNhat float
+	declare @ghiChu nvarchar(max)
+	set @ghiChu = ''
+	select @soTienDangCoTruocCapNhat = SoTienDangCo from TuiDinhKhoan where MaTui = @MaTui
+
+	/*=== TINH TOÁN TÚI COCDV ====*/
+	if(@maTui = 'COCDV')
+	begin	
+		select @soTienDangCoSauCapNhat = isnull(sum(isnull(ConLai,0)),0) from PhieuThu where MaLoaiPhieu ='TCODV' and IsDeleted = 0		
+	end
+	/*=== TINH TOÁN TÚI COCBX ====*/
+	if(@maTui = 'COCBX')
+	begin	
+		select @soTienDangCoSauCapNhat = isnull(sum(isnull(ConLai,0)),0) from PhieuThu where MaLoaiPhieu ='TCOBX'	 and IsDeleted = 0
+	end
+	/*=== TINH TOÁN TÚI DTBX (DOANH THU BÁN XE) ====*/
+	if(@maTui = 'DTBX')
+	begin		
+		select @soTienDangCoSauCapNhat = isnull(sum(isnull(TongCong,0)),0) from PhieuThu where MaLoaiPhieu ='TBAXE' and IsDeleted = 0	
+	end	
+	/*=== TINH TOÁN TÚI DTBX (DOANH THU BÁN XE) ====*/
+	if(@maTui = 'DTDV')
+	begin			
+		select @soTienDangCoSauCapNhat = isnull(sum(isnull(TongCong,0)),0) from PhieuThu where MaLoaiPhieu ='TDIVU' and IsDeleted = 0		
+	end
+	/*=== TINH TOÁN TÚI NỢ PHẢI TRẢ ====*/
+	if(@maTui = 'NO_PHTRA')
+	begin
+	
+		select @soTienDangCoSauCapNhat = sum(ISNULL(SoTienConLai,0)) 
+		from NoPhaiTra N
+			LEFT JOIN PhieuThu T on N.MaPhieuPhatSinh = T.MaPhieuThu and T.IsDeleted = 0
+			LEFT JOIN PhieuChi C on N.MaPhieuPhatSinh = C.MaPhieuChi and C.IsDeleted = 0
+		where N.IsDeleted = 0 and N.IsActive = 1
+			and( T.MaPhieuThu is not null or C.MaPhieuChi is not null)
+			and N.LoaiPhieuNo not in ('NVAMU')
+	end
+	/*=== TINH TOÁN TÚI NỢ PHẢI THU ====*/
+	if(@maTui = 'NO_PHTHU')
+	begin		
+		select @soTienDangCoSauCapNhat = sum(ISNULL(SoTienConLai,0)) 
+		from NoPhaiThu N
+			LEFT JOIN PhieuThu T on N.MaPhieuPhatSinh = T.MaPhieuThu and T.IsDeleted = 0
+			LEFT JOIN PhieuChi C on N.MaPhieuPhatSinh = C.MaPhieuChi and C.IsDeleted = 0
+		where N.IsDeleted = 0 and N.IsActive = 1
+			and( T.MaPhieuThu is not null or C.MaPhieuChi is not null)
+			and N.LoaiPhieuNo not in('NTAUN')
+	end	
+	/*=== TINH TOÁN TÚI DOANH THU KHÁC ====*/
+	if(@maTui = 'DTKHAC')
+	begin
+	
+		select @soTienDangCoSauCapNhat = sum(ISNULL(TongCong,0)) 		
+		from PhieuThu 
+		where IsDeleted = 0 and IsActive = 1 and MaLoaiPhieu in('TLADT','TKHAC','TBAHI','TPHKI','NHHBX')
+	end
+	/*=== TINH TOÁN  KHO XE ====*/
+	if(@maTui = 'KHOXE')
+	begin	
+		select @soTienDangCoSauCapNhat = sum(ISNULL(GiaVon,0)) 
+		from ViewKhoXe 
+		where IsDeleted = 0 and TinhTrang ='N'		
+	end
+	/*=== TINH TOÁN  KHO TAI SAN ====*/
+	if(@maTui = 'KHO_TAISAN')
+	begin
+		
+		select @soTienDangCoSauCapNhat = sum(ISNULL(GiaMua,0)) 
+		from ViewKhoTaiSan 
+		where MaPhieuXuat is null or MaPhieuXuat = ''		
+	end
+	/*=== TINH TOÁN  KHO PHU TUNG ====*/
+	if(@maTui in (select MaKho from KhoPhuTung))
+	begin
+		exec [sp_XuLyTinhToanLaiKhoPhuTung] @maTui,@message output, @sessionId		
+		select @soTienDangCoSauCapNhat = sum(ISNULL(TongTien,0)) 
+		from KhoPhuTung 
+		where IsDeleted = 0
+			and MaKho = @MaTui		
+	end
+
+	/*=== TINH TOÁN TÚI HÀNG TRÊN ĐƯỜNG ====*/
+	if(@loaiTui like 'HTD%')
+	begin	
+		declare @NCC varchar(20)		
+		set @NCC = SUBSTRING(@maTui,5,len(@maTui)-4)
+		print @NCC
+		declare @thuHTD float
+		declare @chiHTD float
+		select @thuHTD = isnull(Thu.HTD,0),@chiHTD = isnull( Chi.Chi,0)
+		from
+			(
+				select @maTui as MaTui, SUM(TongCong) HTD
+				from PhieuChi
+				where IsDeleted = 0 and MaLoaiPhieu = 'CMHTD'
+					and ( DoiTac = @NCC)
+				group by DoiTac
+			) Thu
+			LEFT JOIN 
+			(
+				select @maTui as MaTui,SUM(GiaVon) Chi
+				from KhoXe INNER JOIN PhieuNhapKho ON KhoXe.MaPhieuNhap = PhieuNhapKho.MaPN
+				where KhoXe.IsDeleted = 0
+					and PhieuNhapKho.MaPhieuChi = @MaTui --neu nhap tu HTD thi ma phieu nhap ma la tui HTD tương ứng
+			)Chi ON Thu.MaTui = Chi.MaTui	
+		set @thuHTD = isnull(@thuHTD,0)
+		set @chiHTD = ISNULL(@chiHTD,0)	
+		set @soTienDangCoSauCapNhat = @thuHTD - @chiHTD
+		begin try
+			set @ghiChu = 'Thu HTD:' + cast (cast(@thuHTD as bigint) as varchar(100))
+					+ ';Chi HTD:' + cast (cast(@chiHTD as bigint) as varchar(100))
+		end try
+		begin catch
+		end catch
+	end	
+	/*=== TÍNH TOÁN TÚI TIỀN NGÂN HÀNG ===*/
+	if(@loaiTui = 'TM' or @loaiTui ='CK' or @LoaiTui ='CT') -- khong tinh toan @loaiTui = 'BH' or @loaiTui = 'NH' vi cai nay la no, khong phai tui tien da thu vaoa
+	begin		
+		select @soTienDangCoSauCapNhat = isnull(sum(isnull(SoTien,0)*TangGiam),0) from ViewGiaoDichTuiTien where MaTuiTien = @MaTui 		
+	end
+	/*=== TÍNH TOÁN TÚI TIỀN TẠM ỨNG ===*/
+	if(@maTui ='TAMUNG')
+	begin		
+		select @soTienDangCoSauCapNhat = sum(isnull(N.SoTienConLai,0)) 
+		from NoPhaiThu N INNER JOIN PhieuChi C on N.MaPhieuPhatSinh = C.MaPhieuChi
+		where N.IsDeleted = 0 and C.IsDeleted = 0 and C.MaLoaiPhieu = 'CTAUN'		
+	end
+	/*=== TÍNH TOÁN TÚI TIỀN ĐẦU TƯ ===*/
+	if(@maTui ='TDAUTU')
+	begin		
+		select @soTienDangCoSauCapNhat = sum(isnull(TongCong,0)) 
+		from PhieuChi
+		where IsDeleted = 0 and MaLoaiPhieu = 'CDATU'		
+	end
+	/*=== TÍNH TOÁN TÚI TIỀN ĐẦU TƯ ===*/
+	if(@maTui ='DATCOC')
+	begin		
+		select @soTienDangCoSauCapNhat = sum(isnull(TongCong,0)) 
+		from PhieuChi
+		where IsDeleted = 0 and MaLoaiPhieu = 'CDACO'		
+	end
+	/*=== TÍNH TOÁN TÚI TIỀN ĐẦU TƯ ===*/
+	if(@maTui ='GOPVON')
+	begin		
+		declare @soTienGopVon float
+				,@soTienRutVon float = 0
+		select @soTienGopVon = sum(isnull(TongCong,0)) 
+		from PhieuThu PT INNER JOIN DotGopVon GV ON PT.DotGopVon = GV.MaKhoiTao
+		where PT.IsDeleted = 0 
+			and GV.IsDeleted = 0 
+			and GV.IsActive = 1
+			and MaLoaiPhieu = 'TGOVO'		
+		set @message = @message + '<br/>So tien gop von:' + cast(cast(@soTienGopVon as bigint) as varchar(20))
+		set @message = @message + '<br/>So tien rut von:chưa xử lý' ---+ cast(cast(@soTienGopVon as bigint) as varchar(20))
+		set @soTienDangCoSauCapNhat = @soTienGopVon - @soTienRutVon
+	end
+	/*=== TÍNH TOÁN TÚI TIỀN CHI PHÍ ===*/
+	if(@maTui ='CHIKHAC')
+	begin		
+		select @soTienDangCoSauCapNhat = sum(isnull(TongCong,0)) 
+		from PhieuChi
+		where IsDeleted = 0 and MaLoaiPhieu = 'CTOHO'	
+	end
+	/*=== TÍNH TOÁN TÚI TIỀN VAY NGAN HÀNG: lấy những phiếu thu vay mượn có đối tác là ngân hàng ===*/
+	if(@maTui ='VAY_NH')
+	begin		
+		select @soTienDangCoSauCapNhat = sum(isnull(N.SoTienConLai,0))
+		from PhieuThu T INNER JOIN DOI_TAC DT on T.DoiTac = DT.MaDoiTac and DT.LoaiDoiTac ='NH'		
+			LEFT JOIN NoPhaiTra N ON T.MaPhieuThu = N.MaPhieuPhatSinh and N.IsDeleted = 0			
+		where T.IsDeleted = 0 
+			and T.MaLoaiPhieu = 'TVAMU'	
+			and DT.LoaiDoiTac is not null
+	end
+	/*=== TÍNH TOÁN TÚI TIỀN VAY CÁ NHÂN: lấy những phiếu thu vay mượn có đối tác không phải là ngân hàng ===*/
+	if(@maTui ='VAY_CN')
+	begin				
+		select @soTienDangCoSauCapNhat = sum(isnull(N.SoTienConLai,0))
+		from PhieuThu T LEFT JOIN DOI_TAC DT on T.DoiTac = DT.MaDoiTac and DT.LoaiDoiTac ='NH'	
+			LEFT JOIN NoPhaiTra N ON T.MaPhieuThu = N.MaPhieuPhatSinh and N.IsDeleted = 0		
+		where T.IsDeleted = 0 
+			and T.MaLoaiPhieu = 'TVAMU'	
+			and DT.MaDoiTac is null
+	end
+	/*=== TÍNH TOÁN LỢI NHUẬN BÁN XE===*/
+	/*Lợi nhuận bán xe = Thực bán - Giá vốn - Khuyến mãi (Bảo hiểm + Phụ kiện + Hoa hồng + Quà tặng theo xe + Quà tặng khác)*/
+	if(@maTui ='LN_BANXE')
+	begin		
+		declare @thucBan float
+		declare @giaVon float
+		declare @khuyenMaiKho float
+		declare @khuyenMaiBH float
+		declare @khuyenMaiPhuKien float
+		declare @tyLeGiaVonPKKM float
+
+		select @thucBan = sum(isnull(T.TongCong,0))
+			,@giaVon = sum( isnull(K.GiaVon,0)) 
+		from PhieuThu T INNER JOIN KhoXe K on T.SoKhung = K.SoKhung
+		where T.IsDeleted = 0 
+			and K.IsDeleted = 0
+			and MaLoaiPhieu = 'TBAXE'
+
+		--tinh toan khuyen mai trong danh sach khuyen mai (khong tinh khuyen mai bao duong)
+		select @khuyenMaiKho = sum(KM.GiaVon) 
+		from ChiTietKhuyenMai KM INNER JOIN PhieuThu PT on KM.MaPhieuThu = PT.MaPhieuThu and PT.IsDeleted = 0
+		where KM.IsDeleted = 0
+		and NguonKhuyenMai <> 'BD' --and NguonKhuyenMai <> 'HH'
+		--tinh toan khuyen mai bao hiem tu cac phieu thu bao hiem (co SoHopDong và so tiền thực thu = 0)
+		select @khuyenMaiBH = sum(isnull(GiaVon,0))
+		from PhieuThu
+		where MaLoaiPhieu = 'TBAHI'
+			and isdeleted = 0
+			and TongCong = 0
+			and SoHopDong is not null
+			and SoHopDong <> ''
+		--tinh toan khuyen mai phụ kiện tu cac phieu thu phụ kiện (co SoHopDong và so tiền thực thu = 0)
+		select @tyLeGiaVonPKKM = PhanTramGiaVon 
+		from KhoPhuTung
+		where MaKho = 'KHO_PKDV'
+
+		--gia von khuyen mai = gia ban * tyLeGiaVon
+		select @khuyenMaiPhuKien = sum(isnull(GiaBan*@tyLeGiaVonPKKM,0))
+		from PhieuThu
+		where MaLoaiPhieu = 'TPHKI'
+			and Isdeleted = 0
+			and TongCong = 0
+			and SoHopDong is not null
+			and SoHopDong <> ''
+
+		set @thucBan = isnull(@thucBan,0)
+		set @giaVon = isnull(@giaVon,0)
+		set @khuyenMaiKho = isnull(@khuyenMaiKho,0)
+		set @khuyenMaiBH = isnull(@khuyenMaiBH,0)
+		set @khuyenMaiPhuKien = isnull(@khuyenMaiPhuKien,0)
+		begin try
+			set @message = @message + '<br/>Tong thuc thu:' + cast(cast(@thucban as bigint) as varchar(100))
+			set @message = @message + '<br/>Gia von:' + cast(cast(@giaVon as bigint) as varchar(100))
+			set @message = @message + '<br/>Khuyen mai kho(tren luoi KM):' + cast(cast(@khuyenMaiKho as bigint) as varchar(100))			
+			set @message = @message + '<br/>Khuyen mai BH:' + cast(cast(@khuyenMaiBH as bigint) as varchar(100))
+			set @message = @message + '<br/>Khuyen mai PK:' + cast(cast(@khuyenMaiPhuKien as bigint) as varchar(100))
+
+			set @ghiChu = @ghiChu + 'Tong thuc thu:' + cast(cast(@thucban as bigint) as varchar(100))
+			set @ghiChu = @ghiChu + ';Gia von:' + cast(cast(@giaVon as bigint) as varchar(100))
+			set @ghiChu = @ghiChu + ';Khuyen mai kho(tren luoi KM):' + cast(cast(@khuyenMaiKho as bigint) as varchar(100))			
+			set @ghiChu = @ghiChu + ';Khuyen mai BH:' + cast(cast(@khuyenMaiBH as bigint) as varchar(100))
+			set @ghiChu = @ghiChu + ';Khuyen mai PK:' + cast(cast(@khuyenMaiPhuKien as bigint) as varchar(100))
+	
+		end try
+		begin catch
+
+		end catch
+		set @soTienDangCoSauCapNhat = isnull(@thucBan,0) - isnull(@giaVon,0) - isnull(@khuyenMaiKho,0) - isnull(@khuyenMaiBH,0) - isnull(@khuyenMaiPhuKien,0)
+	end
+	/*=== TÍNH TOÁN LỢI NHUẬN DỊCH VỤ===*/
+	/*Lợi nhuận dịch vụ = Thực bán (Sau VAT) - Giá bán phụ tùng* tỷ lệ giá vốn trừ của từng kho*VAT
+		 - Chi gia cong ngoài
+		 - Hoa hồng tài xê
+	*/
+	if(@maTui ='LN_DICHVU')
+	begin		
+		declare @thucBanDV float
+		declare @giaVonDV float
+		declare @giaCongNgoai float
+		declare @hoaHongTaiXe float
+
+		select @thucBanDV = sum(isnull(T.TongCong,0))
+			,@hoaHongTaiXe = sum(isnull(T.HoaHongTaiXe,0))
+		from PhieuThu T
+		where T.IsDeleted = 0 
+			and MaLoaiPhieu = 'TDIVU'		
+			
+		select @giaVonDV = sum( 
+							case when MaKho <> 'SC' then
+										isnull(CT.GiaVon*1.1,0)
+								else 0
+							end
+							)
+			,@giaCongNgoai = sum(isnull(CT.GCN,0))
+		from ChiTietPhieuDichVu CT inner join  PhieuThu T ON ct.MaPhieuThu = T.MaPhieuThu and T.IsDeleted = 0 and CT.IsDeleted = 0
+		where CT.IsDeleted = 0 
+			and MaLoaiPhieu = 'TDIVU'	
+
+		set @thucBanDV = isnull(@thucBanDV,0)
+		set @giaVonDV = isnull(@giaVonDV,0)
+		set @giaCongNgoai = isnull(@giaCongNgoai,0)
+		set @hoaHongTaiXe = isnull(@hoaHongTaiXe,0)
+	
+		set @soTienDangCoSauCapNhat = @thucBanDV - @giaVonDV - @giaCongNgoai - @hoaHongTaiXe
+		begin try
+		set @ghiChu = @ghiChu + 'Thuc thu:' + cast(cast(@thucBanDV as bigint) as varchar(100))
+			set @ghiChu = @ghiChu + ';Gia von:' + cast(cast(@giaVonDV as bigint) as varchar(100))
+			set @ghiChu = @ghiChu + ';GCN:' + cast(cast(@giaCongNgoai as bigint) as varchar(100))			
+			set @ghiChu = @ghiChu + ';HHTX:' + cast(cast(@hoaHongTaiXe as bigint) as varchar(100))
+		end try
+		begin catch
+		end catch
+			
+	end
+	/*=== TÍNH TOÁN LỢI NHUẬN DỊCH VỤ===*/
+	/*Lợi nhuận phụ tùng = Thực bán  - Giá bán phụ tùng* tỷ lệ giá vốn trừ của từng kho (tính trên phieu thu phụ kiện)
+	*/
+	if(@maTui ='LN_PHUTUNG')
+	begin		
+		declare @thucBanPK float
+		declare @giaBanPK float
+		declare @giaVonPK float
+		--trong phieu thu phu tung phu kien thi gia von da tinh toan ty le tru kho
+		select @thucBanPK = sum(isnull(T.TongCong,0) )
+		--	,@giaBanPK = sum(isnull(T.GiaBan,0) )
+			,@giaVonPK = sum(isnull(T.GiaVon,0))
+		from PhieuThu T 
+		where T.IsDeleted = 0 
+			and MaLoaiPhieu = 'TPHKI'		
+
+		set @thucBanPK = isnull(@thucBanPK,0)
+		--set @giaBanPK = isnull(@giaBanPK,0)
+		set @giaVonPK = isnull(@giaVonPK,0) 
+
+		set @soTienDangCoSauCapNhat = @thucBanPK - @giaVonPK
+		begin try
+			set @ghiChu = @ghiChu + 'Thuc thu:' + cast(cast(@thucBanPK as bigint) as varchar(100))
+			set @ghiChu = @ghiChu + ';Gia von:' + cast(cast(@giaVonPK as bigint) as varchar(100))		
+		end try
+		begin catch
+		end catch	
+
+	end
+	/*=== TÍNH TOÁN LỢI NHUẬN KHÁC===*/
+	/*Lợi nhuận khác = Thu lãi + Hoa hồng HB + Hoa hồng bảo hiểm  + Thu khác + Bán tài sản (Thực bán - Giá trị còn lại)
+	*/
+	if(@maTui ='LN_KHAC')
+	begin		
+		declare @tongThuKhac float
+		declare @tongLNBATS float
+		declare @tongHoaHongBaoHiem float
+
+		select @tongThuKhac = sum(isnull(T.TongCong,0))
+		from PhieuThu T
+		where T.IsDeleted = 0 
+			and MaLoaiPhieu IN ('TLDAT','THHHB','TKHAC')	-- bo 'NHHBH' vi khong co phat sinh no HHBH nua ma tinh truc tiep tren cot hoahong
+
+		select @tongHoaHongBaoHiem = sum(isnull(T.HoaHong,0))
+		from PhieuThu T
+		where T.IsDeleted = 0 
+			and MaLoaiPhieu IN ('TBAHI')	-- bo 'NHHBH' vi khong co phat sinh no HHBH nua ma tinh truc tiep tren cot hoahong
+
+			
+		select @tongLNBATS = sum(isnull(CT.GiaBan,0)) - sum(isnull(K.GiaTriConLai,0))
+		from PhieuThu T
+			INNER JOIN ChiTietBanTaiSan CT ON T.MaPhieuThu = CT.MaPhieuThu
+			INNER JOIN KhoTaiSan K ON CT.MaTaiSan = K.Id
+		where T.IsDeleted = 0
+			and CT.IsDeleted = 0
+			and K.IsDeleted = 0
+
+		set @tongThuKhac = isnull(@tongThuKhac,0)
+		set @tongLNBATS = isnull(@tongLNBATS,0)
+		set @tongHoaHongBaoHiem = isnull(@tongHoaHongBaoHiem,0)
+
+		set @soTienDangCoSauCapNhat = @tongThuKhac + @tongLNBATS + @tongHoaHongBaoHiem
+
+		begin try
+			set @ghiChu = @ghiChu + 'Tong thu khac:' + cast(cast(@tongThuKhac as bigint) as varchar(100))
+			set @ghiChu = @ghiChu + ';Tong loi nhuan ban tai sao:' + cast(cast(@tongLNBATS as bigint) as varchar(100))		
+		end try
+		begin catch
+		end catch	
+	end
+	/*===CẬP NHẬT TÚI ĐỊNH KHOẢN===*/
+	update TuiDinhKhoan 
+	set SoTienDangCoLanTruoc = isnull(SoTienDangCo,0)
+		,SoTienDangCo = isnull(@soTienDangCoSauCapNhat,0) + SoTienKhoiTao 
+		, SoTienThayDoi =isnull( @soTienDangCoSauCapNhat ,0)
+		, LastSessionId = @sessionId
+		,GhiChu = @ghiChu
+		,UpdatedDate = getdate()
+	where MaTui = @MaTui
+	begin try
+		set @message = @message + N'<br/>Cap nhat TuiDinhKhoan.' + ISNULL(@MaTui,'') + ':' + ISNULL( cast(cast(isnull(@soTienDangCoSauCapNhat,0) as bigint) as nvarchar(20)),'')
+	end try
+	begin catch
+		set @message = @message + N'<br/>Cap nhat TuiDinhKhoan.' +  ISNULL(@MaTui,'') + N':(không ghi log được số tiền do vượt quá kiểu int)'
+	end catch
+	/*==GHI LOG LichSuThayDoiTuiDinhKhoan====*/
+	select @soTienDangCoSauCapNhat = SoTienDangCo from TuiDinhKhoan where MaTui = @MaTui
+	set @message = @message + N'<br/>SoTienTruocThayDoi:' + cast(cast(isnull(@soTienDangCoTruocCapNhat,0) as bigint) as varchar(20))
+	set @message = @message + N'<br/>SoTienSauThayDoi:' + cast(cast(isnull(@soTienDangCoSauCapNhat,0) as bigint) as varchar(20))
+	set @message = @message + N'<br/>GhiChu:' + @ghiChu
+	insert into LichSuThayDoiTuiDinhKhoan (SessionId,MaTui,SoTienTruocThayDoi,SoTienSauThayDoi,CreatedDate)
+	values(@sessionId,@MaTui,isnull(@soTienDangCoTruocCapNhat,0),isnull(@soTienDangCoSauCapNhat,0),getdate())
+
+	set @message = @message + N'<br/>(end)'+ '(' + convert(varchar(24),getdate(),121) + ')[sp_XuLyCapNhatTienTrongTuiDinhKhoan]'
+	print @message
+end
+
+
+
+
+

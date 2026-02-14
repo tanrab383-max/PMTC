@@ -1,0 +1,253 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+ @{
+        // Lấy giá trị cookie
+        var storeIdCookie = Request.Cookies["StoreId"];
+        var storeId = storeIdCookie?.Value; // Lấy giá trị từ cookie
+        var title = ViewBag.Title ?? "Default Title"; // Lấy giá trị từ ViewBag.Title hoặc dùng tiêu đề mặc định nếu không có
+}
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@storeId-@ViewBag.Title</title>
+    <!-- Bootstrap -->
+    <link href="~/assests/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="~/assests/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="~/assests/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="~/assests/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="~/assests/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- bootstrap-daterangepicker -->
+    <link href="~/assests/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <!-- Custom Theme Style -->
+    <link href="~/assests/vendors/switchery/dist/switchery.min.css" rel="stylesheet">
+    <link href="~/assests/build/css/custom.css" rel="stylesheet">
+    @*<link href="~/Content/animation.css" rel="stylesheet" />*@
+    <link href="~/assests/css/multiselect/jquery.multiselect.css" rel="stylesheet" />
+    <link href="~/assests/css/multiselect/jquery.multiselect.filter.css" rel="stylesheet" />
+    <link href="~/assests/css/animate.css" rel="stylesheet" />
+    <link href="~/assests/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <link href="~/assests/plugins/jQuery-contextMenu/sass/jquery.contextMenu.min.css" rel="stylesheet" />
+    @*<link href="~/assests/css/Toogle.css" rel="stylesheet" />*@
+    @*phần về chart*@
+    <script type="text/javascript" src="~/Scripts/chart-loader.js"></script>
+</head>
+<body class="nav-md">
+    <div class="container body">
+        <div class="main_container">
+            @Html.Partial("~/Views/Shared/_LeftMenu.cshtml")
+            <!-- top navigation -->
+
+            @Html.Partial("~/Views/Shared/_TopMenu.cshtml")
+            <!-- /top navigation -->
+            <!-- page content -->
+
+            <div class="right_col" role="main">
+                <div class="col-md-12">
+                    @if (ViewBag.Alert != null && ViewBag.Alert != "")
+                    {
+                        @*<script>
+                                toastError('@ViewBag.Alert');
+                            </script>*@
+                        @*<div class="alert alert-success alert-dismissible fade in " style="margin-top:60px" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                @ViewBag.Alert
+                            </div>*@
+                    }
+                </div>
+                @RenderBody()
+            </div>
+            <!-- /page content -->
+            <!-- footer content -->
+            @Html.Partial("~/Views/Shared/_Footer.cshtml")
+            <!-- /footer content -->
+        </div>
+    </div>
+    <!-- jQuery -->
+    <script src="~/assests/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/assests/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="~/assests/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="~/assests/vendors/nprogress/nprogress.js"></script>
+    <!-- Chart.js -->
+    <script src="~/assests/vendors/Chart.js/dist/Chart.min.js"></script>
+    <!-- gauge.js -->
+    <script src="~/assests/vendors/gauge.js/dist/gauge.min.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="~/assests/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="~/assests/vendors/iCheck/icheck.min.js"></script>
+    <!-- Skycons -->
+    <script src="~/assests/vendors/skycons/skycons.js"></script>
+    <script src="~/assests/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <!-- Flot -->
+    <script src="~/assests/vendors/switchery/dist/switchery.min.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="~/assests/vendors/moment/min/moment.min.js"></script>
+
+    <script src="~/assests/vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="~/assests/build/js/custom.min.js"></script>
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/assests/plugins/jQuery-contextMenu/jquery.contextMenu.js"></script>
+    @*<script src="~/assests/js/multiselect/jquery.multiselect.js"></script>
+        <script src="~/assests/js/multiselect/jquery.multiselect.filter.js"></script>*@
+    @*<script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+        <script src="~/signalr/hubs"></script>*@
+    <style>
+        .select2 {
+            width: 100%;
+        }
+
+        .fullwidth {
+            width: 100%;
+        }
+
+        .fullwidthx {
+            min-width: 200px;
+            width: 100%;
+        }
+
+        .input-100 {
+            width: 100px;
+        }
+
+        .GiaVon {
+            width: 80px;
+        }
+    </style>
+
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/handlebars.min.js"></script>
+    <script src="~/Scripts/typeahead.bundle.js"></script>
+    <link href="~/Content/typeahead.css" rel="stylesheet" />
+    <script src="~/assests/plugins/bootstrap-toastr/toastr.min.js"></script>
+    <script src="~/Scripts/ToastService.js"></script>
+    @RenderSection("scripts", false)
+    <script>
+        $("form").submit(function () {
+            $("input[type=submit]").hide();
+            setTimeout(function () {
+                $("input[type=submit]").show();
+            }, 3000);
+            //$(".nav side-menu").hide();
+        })
+        $(window).keydown(function (e) {
+            //Xu ly control_s: submit form
+            //N:78
+            //F:70
+            if (e.ctrlKey && e.keyCode === 66) {//ctrl+b back về
+                document.location = $(".Back").attr("href");
+            }
+            // e.preventDefault();
+            if (e.ctrlKey && e.keyCode === 83) {
+                //   alert("CTL_S"); save lại
+                $("#form-data").submit();
+                return false;
+            }
+            //CTRL_F
+            if (e.ctrlKey && e.keyCode === 70) {
+                // alert("CTL_F"); tìm kiếm
+                $("#formSearch").submit();
+                return false;
+            }
+            //CTRL_N
+            if (e.ctrlKey && e.keyCode === 65) {
+                //  alert("CTL_N"); tạo mới
+                e.preventDefault();
+                $(".addNew").click();
+
+                return false;
+            }
+            return true;
+
+        })
+    </script>
+    <!-- Flot -->
+    @*<script>
+        var PTTNKHub = $.connection.pTTNKHub;
+        $.connection.hub.qs = { 'user': 'admin' };//truyền user name vào
+        $.connection.hub.start().done(function () {
+        });
+        $.connection.hub.reconnecting(function () {
+            tryingToReconnect = true;
+        });
+        $.connection.hub.reconnected(function () {
+            tryingToReconnect = false;
+        });
+        $.connection.hub.disconnected(function () {
+
+        });
+        PTTNKHub.client.Test = function (data) {
+            console.log(data);
+        }
+
+        $("#Test").click(function () {
+            PTTNKHub.server.test("aaaaaaaaaaaaaa");
+        });
+        </script>*@
+    @if (ViewBag.Warning != null && ViewBag.Warning != "")
+    {
+        <script>
+
+            toastWarning('@ViewBag.Warning');
+        </script>
+    }
+    @if (ViewBag.Alert != null && ViewBag.Alert != "")
+    {
+        <script>
+
+            toastWarning('@ViewBag.Alert');
+        </script>
+    }
+    else if (TempData["Alert"] != null && TempData["Alert"].ToString() != "")
+    {
+        <script>
+
+            toastError('@TempData["Alert"]');
+        </script>
+    }
+
+    @if (ViewBag.Error != null && ViewBag.Error != "")
+    {
+        <script>
+
+            toastError('@ViewBag.Error');
+        </script>
+    }
+    else if (TempData["Error"] != null && TempData["Error"].ToString() != "")
+    {
+        <script>
+
+            toastError('@TempData["Error"]');
+        </script>
+    }
+    @if (ViewBag.Info != null && ViewBag.Info != "")
+    {
+        <script>
+
+            toastSuccess('@ViewBag.Info');
+        </script>
+    }
+    else if (TempData["Info"] != null && TempData["Info"].ToString() != "")
+    {
+        <script>
+
+            toastError('@TempData["Info"].ToString()');
+        </script>
+    }
+</body>
+</html>

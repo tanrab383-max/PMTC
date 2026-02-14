@@ -1,0 +1,404 @@
+﻿@model List<TNK.Core.Domain.View.ViewTCOBX>
+@{
+    int i = 1;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>Danh sách cọc mua xe</h3>
+    </div>
+    <div class="title_right" style="margin-left:88%">
+        @if (ViewBag.CurrentUser != "banhang")
+        {
+            <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu(*.xlxs)</span></a>
+        }
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b></b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li>
+                        @if (ViewBag.CurrentUser != "banhang")
+                        {
+                            <a href="/SoThu/PhieuThu?type=TCOBX"><i class="fa fa-plus addNew"></i></a>
+                        }
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày thu</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" id="FromDate" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày thu</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="ToDate" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Mã phiếu thu, Khách hàng, Số chứng từ, Số HĐ, Điện thoại" placeholder="Mã phiếu thu, Khách hàng, Số chứng từ, Số HĐ, Điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" id="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" style="width:30%" class="btn btn-success search" />
+                            <input name="export" id="btnExportExcel" value="Xuất Excel" style="width:26%" class="btn btn-primary" />
+                            @if (ViewBag.CurrentUser != "banhang")
+                            {
+                                <input style="width:30%" onclick="ImportData()" title="Import dữ liệu" value="Import Excel" class="btn btn-primary" />
+                            }
+
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="form-group">
+                            @Html.RadioButton("tinhtrang", "", true, new { id = "All" }) Tất Cả
+                            @Html.RadioButton("tinhtrang", "D", false, new { id = "D" }) Đang sử dụng
+                            @Html.RadioButton("tinhtrang", "H", false, new { id = "H" }) Hoàn tất
+                            @Html.RadioButton("tinhtrang", "C", false, new { id = "C" }) Chưa sử dụng
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="success">
+
+                                <th>STT</th>
+                                @if (ViewBag.CurrentUser != "banhang")
+                                {
+                                    <th>Bỏ cọc</th>
+                                }
+                                <th>Ngày thu</th>
+                                <th>Mã phiếu thu</th>
+                                <th>Chứng từ</th>
+                                <th>Số hợp đồng</th>
+                                <th>Loại xe</th>
+                                <th>Khách hàng</th>
+                                <th>Địa chỉ</th>
+                                <th>Số tiền</th>
+                                <th>Đã dùng</th>
+                                <th>Trả cọc</th>
+                                <th>Còn lại</th>
+                                <th>Tình trạng</th>
+                                <th></th>
+                                <th></th>
+                                @if (ViewBag.CurrentUser != "banhang")
+                                {
+                                    <th></th>
+                                    <th></th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                              
+                                foreach (var item in Model)
+                                {
+                            <tr>
+                                @if (item.TinhTrangPhieu == "H")
+                                {
+                                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                    if (ViewBag.CurrentUser != "banhang")
+                                    {
+                                        <td>
+                                            <input type="checkbox" class="chkActive" ptId="@item.MaPhieuThu" @(item.TTPCode == "B" ? "checked" : "") />
+                                        </td>
+                                    }
+                                    <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.MaPhieuThu</td>
+                                    <td>@item.SoChungTu</td>
+                                    <td>@item.SoHopDong</td>
+                                    <td>@item.LoaiXe</td>
+                                    <td>@item.HoTen</td>
+                                    if (item.DiaChi == "null" || item.DiaChi == null)
+                                    {
+                                        <td></td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.DiaChi</td>
+                                    }
+                                    <td class="number2">@item.TongCong</td>
+                                    <td class="number2">@item.SoTienDaSuDung</td>
+                                    <td class="number2">@item.SoTienChiTra</td>
+                                    <td class="number2">@item.ConLai</td>
+                                    <td><a href="" style="color:blue" onclick="window.open('/SoThu/ChiTietCocMuaXe?MaPhieuThu=@item.MaPhieuThu', 'newwindow', 'width=900, height=900,left=200'); return false;" target="_blank" title="LỊCH SỬ DÙNG CỌC">Hoàn tất</a></td>
+                                    <td style="width:5%" class="center">
+                                        @if (item.TongCong != item.ConLai)
+                                        {
+                                            <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TCOBX&actiontype=Update"><i title="Xem" class="fa fa-eye"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TCOBX&actiontype=Update"><i title="Edit" class="fa fa-edit"></i></a>
+                                        }
+                                    </td>
+                                    if (ViewBag.CurrentUser != "banhang")
+                                    {
+                                        <td style="width:5%" class="center">
+                                            <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                                        </td>
+                                        <td></td>
+                                    }
+
+                                }
+                                else if (item.TinhTrangPhieu == "D")
+                                {
+                                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                    if (ViewBag.CurrentUser != "banhang")
+                                    {
+                                        <td>
+                                            <input type="checkbox" class="chkActive" ptId="@item.MaPhieuThu" @(item.TTPCode == "B" ? "checked" : "") />
+                                        </td>
+                                    }
+                                    <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.MaPhieuThu</td>
+                                    <td>@item.SoChungTu</td>
+                                    <td>@item.SoHopDong</td>
+                                    <td>@item.LoaiXe</td>
+                                    <td>@item.HoTen</td>
+                                    if (item.DiaChi == "null" || item.DiaChi == null)
+                                    {
+                                        <td></td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.DiaChi</td>
+                                    }
+                                    <td class="number2">@item.TongCong</td>
+                                    <td class="number2">@item.SoTienDaSuDung</td>
+                                    <td class="number2">@item.SoTienChiTra</td>
+                                    <td class="number2">@item.ConLai</td>
+                                    <td><a href="" style="color:blue" onclick="window.open('/SoThu/ChiTietCocMuaXe?MaPhieuThu=@item.MaPhieuThu', 'newwindow', 'width=900, height=900,left=200'); return false;" target="_blank" title="LỊCH SỬ DÙNG CỌC">Đang sử dụng</a></td>
+                                    <td style="width:5%" class="center">
+                                        @if (item.TongCong != item.ConLai)
+                                        {
+                                            <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TCOBX&actiontype=Update"><i title="Xem" class="fa fa-eye"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TCOBX&actiontype=Update"><i title="Edit" class="fa fa-edit"></i></a>
+                                        }
+                                    </td>
+                                    if (ViewBag.CurrentUser != "banhang")
+                                    {
+                                        <td style="width:5%" class="center">
+                                            <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                                        </td>
+                                        <td></td>
+                                    }
+                                }
+                                else if (item.TinhTrangPhieu == "C")
+                                {
+                                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                    if (ViewBag.CurrentUser != "banhang")
+                                    {
+                                        <td>
+                                            <input type="checkbox" class="chkActive" ptId="@item.MaPhieuThu" @(item.TTPCode == "B" ? "checked" : "") />
+                                        </td>
+                                    }
+                                    <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                    <td>@item.MaPhieuThu</td>
+                                    <td>@item.SoChungTu</td>
+                                    if (item.SoHopDong != "")
+                                    {
+                                        <td>@item.SoHopDong</td>
+                                    }
+                                    else
+                                    {
+                                        <td><input type="text" id="SHD_@item.MaPhieuThu" class="form-control input-sm" /></td>
+                                    }
+                                    <td>@item.LoaiXe</td>
+                                    <td>@item.HoTen</td>
+                                    if (item.DiaChi == "null" || item.DiaChi == null)
+                                    {
+                                        <td></td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.DiaChi</td>
+                                    }
+                                    <td class="number2">@item.TongCong</td>
+                                    <td class="number2">@item.SoTienDaSuDung</td>
+                                    <td class="number2">@item.SoTienChiTra</td>
+                                    <td class="number2">@item.ConLai</td>
+                                    <td>Chưa sử dụng</td>
+                                    <td style="width:5%" class="center">
+                                        @if (item.TongCong != item.ConLai)
+                                        {
+                                            <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TCOBX&actiontype=Update"><i title="Xem" class="fa fa-eye"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TCOBX&actiontype=Update"><i title="Edit" class="fa fa-edit"></i></a>
+                                        }
+                                    </td>
+                                    if (ViewBag.CurrentUser != "banhang")
+                                    {
+                                        <td style="width:5%" class="center">
+                                            <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                                        </td>
+                                        if (item.SoHopDong == "")
+                                        {
+                                            <td style="width:5%" class="center">
+                                                <a href="javascript:;" onclick="Update(this,'@item.MaPhieuThu')"><i title="Cập nhật" class="fa fa-save"></i></a>
+                                            </td>
+                                        }
+                                    }
+                                }
+                            </tr>
+                                        i++;
+                                    }
+                                }
+                        </tbody>
+                    </table>
+                    <div class="right">
+                        @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                    </div>
+                    <div class="center">
+                        Tìm thấy : @ViewBag.Total data
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'TCOBX' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+
+        function Update(a, id) {
+            if (confirm('Xác nhận')) {
+                var shd = $("#SHD_" + id).val();
+                data = { id: id, shd : shd};
+                $.post("/SoThu/UpdateSoHopDongTCOBX", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã cập nhật thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+
+        $(".chkActive").change(function () {
+            if (confirm("Xác nhận bỏ cọc")) {
+                var type = $(this).is(":checked");
+                var id = $(this).attr("ptId");
+                $.post("/SoThu/ChangeTypeTCOBX", { id: id, type: type }).success(function (response) {
+                    if (response === "success") {
+                        toastSuccess("Cập nhật bỏ cọc thành công");
+                    }
+                    else {
+                        toastError("Cập nhật không thành công");
+                    }
+                });
+            }
+        })
+        $("#FileMau").click(function () {
+            debugger;
+            $.fileDownload("/SoThu/ExportFile_TCBX", {
+                httpMethod: "POST",
+                data: {},
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+        var datafile = new FormData();
+        function ImportData() {
+            $("#txtUploadFile").trigger('click');
+        }
+        $('#txtUploadFile').on('change', function (e) {
+            if (document.getElementById("txtUploadFile").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_TCBX",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile").value = "";
+                        datafile.delete('file');
+                    },
+                    success: function (result) {
+                        if (result.IsError)
+                            toastError(result.Message);
+                        else {
+                            toastSuccess("Import thành công");
+                            //window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        toastError("Lỗi: Import file excel.");
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+
+        $("#btnExportExcel").click(function () {
+            $.fileDownload("/SoThu/Export_ExcelTCOBX", {
+                httpMethod: "POST",
+                data: {
+                    FromDate: $("#FromDate").val(),
+                    ToDate: $("#ToDate").val(),
+                    Query: $("#query").val(),
+                },
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+    </script>
+}

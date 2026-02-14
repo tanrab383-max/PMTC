@@ -1,0 +1,99 @@
+﻿@model List<TNK.Core.Domain.View.ViewNoPhaiThu>
+@{
+    int i = 1;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                        Phiếu tạm
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                        Phiếu hoàn thành
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th></th>
+                                            <th>Mã phiếu</th>
+                                            <th>Ngày nợ</th>
+                                            @*<th>Lý do nợ</th>*@
+                                            <th>Khách hàng</th>
+                                            <th>Số tiền nợ</th>
+                                            <th>Số tiền đã thanh toán</th>
+                                            <th>Số tiền còn lại</th>
+                                            <th>Người bảo lãnh</th>
+                                            <th>Tình trạng</th>
+                                            @*<th></th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>@i</td>
+                                                <td>@item.MaPhieuNo</td>
+                                                <td>@item.NgayNo</td>
+                                                @*<td>@item.LyDoNo</td>*@
+                                                <td>@item.KhachHang</td>
+                                                <td>@item.SoTienNo.ToString("0,0")</td>
+                                                <td>@item.SoTienDaTra.ToString("0,0")</td>
+                                                <td>@item.SoTienConLai.ToString("0,0")</td>
+                                                <td>@item.NguoiBaoLanh</td>
+                                                <td>@item.TinhTrang</td>
+                                                @*<td style="width:5%" class="center">
+                                                    if(@item.SoTienConLai>0)
+                                                    {
+                                                        <a href="/SoThu/ThuNoCreate/@item.SoPhieuQuyetToan"><i title="Edit"  class="fa fa-edit"></i></a>
+                                                    }
+                                                </td>*@
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                                @*<div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml");
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_1">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts
+{
+    <script>
+        $("#a_1").click(function () {
+            $.get("/SoThu/DvComplete").success(function (response) {
+                $("#tab_1").html(response);
+            })
+        })
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+    </script>
+}

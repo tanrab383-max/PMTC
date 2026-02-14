@@ -1,0 +1,105 @@
+@using System.Data;
+@{
+    List<double> listToatal = new List<double>();
+    for (int i = 0; i < ViewBag.CountColumns; i++)
+    {
+        listToatal.Add(0);
+    }
+    List<double> listTotalRow = new List<double>();
+    for (int i = 0; i < ViewBag.CountData; i++)
+    {
+        listTotalRow.Add(0);
+    }
+    double TotalColumnsAndRow = 0;
+    for (int i = 0; i < ViewBag.CountColumns; i++)
+    {
+        if (i == 0)
+        {
+            ViewBag.ListHeader[i] = "TÊN ĐƠN VỊ";
+        }
+        else
+        {
+            if (ViewBag.ListHeader[i].ToString().Contains("-"))
+            {
+                ViewBag.ListHeader[i] = ViewBag.ListHeader[i].ToString().Substring(5, 2)
+                + "/" + ViewBag.ListHeader[i].ToString().Substring(0, 4);
+            }
+        }
+    }
+    double colspan = ViewBag.CountColumns + 1;
+}
+<div class="x_content">
+    <div id="BCTongNoBHDV" class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="headings">
+                    <th colspan="@colspan" class="tile">TỔNG NỢ BẢO HIỂM DỊCH VỤ THEO THÁNG @ViewBag.ShowRoom</th>
+                </tr>
+                <tr>
+                    <th colspan="@colspan" class="tile">@ViewBag.ToDate</th>
+                </tr>
+                <tr class="headings">
+                    @for (int i = 0; i < ViewBag.CountColumns; i++)
+                    {
+                        <th class="tile">@ViewBag.ListHeader[i]</th>
+                    }
+                    <th>TỔNG CỘNG</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < ViewBag.CountData; i++)
+                {
+                    <tr class="even pointer">
+                        @for (int j = 0; j < ViewBag.CountColumns; j++)
+                        {
+
+                            if (string.IsNullOrEmpty(ViewBag.Data.Rows[i][j].ToString()))
+                            {
+                                ViewBag.Data.Rows[i][j] = 0;
+                            }
+                            if (j == 0)
+                            {
+                                <td>@ViewBag.Data.Rows[i][j]</td>
+                            }
+                            else
+                            {
+                                listTotalRow[i] = listTotalRow[i] + ViewBag.Data.Rows[i][j];
+                                listToatal[j] = listToatal[j] + ViewBag.Data.Rows[i][j];
+                                <td class="number">@ViewBag.Data.Rows[i][j].ToString().Replace(",", ".")</td>
+                            }
+                        }
+                        <td class="number">@listTotalRow[i].ToString().Replace(",", ".")</td>
+
+                    </tr>
+                    TotalColumnsAndRow = TotalColumnsAndRow + listTotalRow[i];
+                }
+            </tbody>
+            <tfoot>
+                <tr style="font-size: 15px; background-color:aqua;">
+                    @for (int i = 0; i < listToatal.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            <td style="color:red; text-align:left"><b>TỔNG CỘNG</b></td>
+                        }
+                        else
+                        {
+                            <td class="number" style="color:red;">@listToatal[i].ToString().Replace(",", ".")</td>
+                        }
+                    }
+                    <td class="number" style="color:red;">@TotalColumnsAndRow.ToString().Replace(",", ".")</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

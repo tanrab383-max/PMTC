@@ -1,0 +1,458 @@
+﻿@model List<TNK.Core.Domain.View.ViewTPHKI>
+@{
+    int i = 1;
+    var currentUrl = Request.RawUrl.ToLower();
+    string lastSegment = Request.Url.Segments.Last().Trim('/').ToLower();
+    string loai = lastSegment.Contains("tphkiindex") ? "" : lastSegment;
+
+}
+<div class="page-title">
+    <div class="title_left">
+
+
+        @if (loai == "")
+        {
+            <h3>@ViewBag.Title</h3>
+        }
+        else
+        {
+            <h3>Trả hứa tặng</h3>
+        }
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                <li class="@(!lastSegment.Contains("tphkiindex") ? "active" : "")">
+                    <a id="a_2" href="#tab_2" data-toggle="tab" aria-expanded="true">
+                        Phiếu tạm
+                    </a>
+                </li>
+                @if (lastSegment.Contains("tphkiindex"))
+                {
+                    <li class="active">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Thu khách lẻ
+                        </a>
+                    </li>
+                    <li class="">
+                        <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                            Khuyến mãi
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    //Hứa tặng
+                    <li class="">
+                        <a id="a_3" href="#tab_3" data-toggle="tab" aria-expanded="false">
+                            Khuyến mãi hứa tặng
+                        </a>
+                    </li>
+                }
+
+            </ul>
+            <div class="tab-content">
+                @if (lastSegment.Contains("tphkiindex"))
+                {
+                    <div class="tab-pane active" id="tab_0">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <form id="formSearch" method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" id="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" id="query" title="Mã phiếu thu, Khách hàng, Điện thoại" placeholder="Mã phiếu thu, Khách hàng, Điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" id="Search" style="width:50%" value="Tìm kiếm" class="btn btn-success" />
+                                            <input type="button" name="export" value="Excel" class="btn btn-success" id="exportExcel" />
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="table-responsive">
+                                    <ul class="nav navbar-right panel_toolbox">
+                                        <li>
+                                            <a href="/SoThu/PhieuThu?type=TPHKI"><i class="fa fa-plus addNew"></i></a>
+                                        </li>
+                                    </ul>
+                                    <table class="table" id="tbody">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>Ngày thu</th>
+                                                <th>Mã phiếu thu</th>
+                                                <th>Chứng từ thu</th>
+                                                @*<th>Loại xe</th>*@
+                                                <th>Khách hàng</th>
+                                                <th>Biển số</th>
+                                                <th>Điện thoại</th>
+                                                <th>Giá bán</th>
+                                                <th>Giảm giá</th>
+                                                <th>Số tiền thu</th>
+                                                <th>Còn nợ</th>
+                                                @*<th>Tình trạng</th>*@
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                                    <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                                    <td>@item.MaPhieuThu</td>
+                                                    <td>@item.SoChungTu</td>
+                                                    @*<td>@item.LoaiXe</td>*@
+                                                    <td>@item.HoTen</td>
+                                                    <td>@item.BienSo</td>
+                                                    <td>@item.DienThoai</td>
+                                                    <td class="number2">@item.GiaBan</td>
+                                                    <td class="number2">@item.GiamGia</td>
+                                                    <td class="number2">@item.SoTienThu</td>
+                                                    <td class="number2">@item.ConLai</td>
+                                                    @*<td>@item.TinhTrangPhieu</td>*@
+                                                    <td style="width:5%" class="center">
+                                                        <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TPHKI&actiontype=Update"><i title="Edit" class="fa fa-edit"></i></a>
+                                                    </td>
+                                                    <td style="width:5%" class="center">
+                                                        <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                                                    </td>
+                                                </tr>
+                                                i++;
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div class="right">
+                                        @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                <div class="tab-pane" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày thu</label>
+                                        <input type="text" id="from1" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày thu</label>
+                                        <input type="text" id="to1" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="query1" title="Mã phiếu thu,Khách hàng,Điện thoại" placeholder="Mã phiếu thu,Khách hàng,Điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="button" style="width:50%" value="Tìm kiếm" id="Searchtab" class="btn btn-success" />
+                                        <input type="button" name="export" value="Excel" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li>
+                                        <a href="/SoThu/PhieuThu?type=TKMPHKI"><i class="fa fa-plus addNew"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="" id="tbody1">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="@(!Request.RawUrl.Contains("TPHKIIndex") ? "tab-pane active" : "tab-pane")" id="tab_2">
+                    <div class="x_panel ">
+                        <div class="x_content ">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày thu</label>
+                                        <input type="text" id="fromTemp" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày thu</label>
+                                        <input type="text" id="toTemp" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="@(!lastSegment.Contains("tphkiindex") ? "col-md-6 col-sm-6 col-xs-12" : "col-md-4 col-sm-4 col-xs-12")">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="queryTemp" title="Số hợp đồng, Chứng từ, Tên khách hàng" placeholder="Số hợp đồng, Chứng từ, Tên khách hàng" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    @if (loai == "")
+                                    {
+                                        <div class="form-group">
+                                            <label>Loại phiếu</label>
+                                            <select id="TypeTicketTemp" class="form-control select2 fullwidth" style="height:30px">
+                                                <option value="">Tất cả</option>
+                                                <option value="BAN">Bán</option>
+                                                <option value="KM">Khuyến mãi</option>
+                                            </select>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="button" style="width:50%" value="Tìm kiếm" id="SearchtabTemp" class="btn btn-success" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive active" id="tbodyTemp">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane" id="tab_3">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày chi</label>
+                                        <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày chi</label>
+                                        <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="query_complete" placeholder="Id, Số phiếu, Khách hàng" class="form-control input-sm " value="@ViewBag.Query_Complete" name="query_complete" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input value="Tìm kiếm" id="SearchHT" type="button" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive" id="tbody_HuaTang">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        //$(document).ready(function () {
+        //    $('#Searchtab').trigger('click');
+        //});
+        var a;
+        var pTemp = 1;
+        $(document).on("click", "#tbody1 a", function () {
+            a = $(this).attr("href");
+            var b = a.split("&");
+            p = b[3].split("=")[1];
+            SearchTab();
+            return false;
+        })
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'TPHKI' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        var p = 1;
+        function change() {
+            debugger;
+            p = 1;
+        }
+        $("#Searchtab").click(function () {
+            debugger;
+            var $this = $(this);
+            //$this.button('loading');
+            //setTimeout(function () {
+            //    $this.button('reset');
+            //}, 200);
+            //$("#Searchtab").val("Loading...");
+            //$("#Searchtab").prop("disabled", true);
+            Search(this);
+        })
+
+        function SearchTab() {
+            debugger;
+            var from = $("#from1").val();
+            var to = $("#to1").val();
+            var query = $("#query1").val();
+            var pageSizes = document.getElementById('pageSizeTPHKIIndexTab');
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            $.get("/SoThu/TPHKIIndexTab?query=" + query + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tbody1").html(response);
+                $("#tbody1").find(".number2").map(function (key, val) {
+                    var val = $(this).html();
+                    if (val != "") {
+                        val = val.split(",").join("");
+                        val = parseInt(val);
+                        $(this).html(val.toLocaleString());
+                    }
+                })
+            })
+        }
+        $("#SearchtabTemp").click(function () {
+            var $this = $(this);
+            //$this.button('loading');
+            //setTimeout(function () {
+            //    $this.button('reset');
+            //}, 200);
+            SearchTabTemp(this);
+        })
+
+        function SearchTemp() {
+            var lastSegment = "@loai";
+            var from = $("#fromTemp").val();
+            var to = $("#toTemp").val();
+            var query = $("#queryTemp").val();
+            var typeTicketTemp = $("#TypeTicketTemp option:selected").val();
+            $.get("/SoThu/TPHKIIndexTemp?query=" + query + "&from=" + from + "&to=" + to + "&typeTicketTemp=" + typeTicketTemp + "&p=" + pTemp + "&loai=" + lastSegment).success(function (response) {
+                $("#tbodyTemp").html(response);
+                $("#tbodyTemp").find(".number2").map(function (key, val) {
+                    var val = $(this).html();
+                    if (val != "") {
+                        val = val.split(",").join("");
+                        val = parseInt(val);
+                        $(this).html(val.toLocaleString());
+                    }
+                })
+                $("#SearchtabTemp").prop("disabled", false);
+            })
+        }
+        function SearchTabTemp(obj) {
+            //  $("#SearchtabTemp").val("Loading...");
+            $("#SearchtabTemp").prop("disabled", true);
+            SearchTemp();
+            //$(obj).val("Tìm kiếm");
+            //$(obj).prop('disabled', false);
+        }
+
+        function Search(obj) {
+            debugger;
+            SearchTab();
+            $(obj).val("Tìm kiếm");
+            $(obj).prop('disabled', false);
+
+        }
+        $("#SearchHT").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            SearchHT(this);
+        })
+        function SearchHT(obj) {
+            var pageSizes = document.getElementById('pageSizePhieuChiComplete');
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            debugger;
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query_complete").val();
+            $.get("/SoChi/NKMPKComplete?id=NKMPK &query_complete=" + query + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tbody_HuaTang").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+         $("#exportExcel").click(function () {
+            debugger;
+            if ($($("#tab_data li.unactive")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                //var idtable = $($("#tab_data li.unactive")).attr("data-url").replace("/SoChi/PhieuChi/", "#");
+                //alert(idtable);
+                var idtable = "#tbody";
+                var result = $(idtable).html();
+                result = result.replace('class="table"', 'class="table" border="1"');
+                //alert(result)
+                tableToExcel(result, 'TPKI' + '_@ViewBag.Type' + '_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/SoThu/TPHKIIndex?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+
+        var tableToExcel = (function () {
+            debugger;
+            var uri = 'data:application/vnd.ms-excel;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            return function (table, name) {
+                //if (!table.nodeType) table = document.getElementById(table)
+                var ctx = { worksheet: name || 'Worksheet', table: table }
+                var link = document.createElement("A");
+                link.href = uri + base64(format(template, ctx));
+                link.download = name || 'Baocao.xls';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })()
+    </script>
+}

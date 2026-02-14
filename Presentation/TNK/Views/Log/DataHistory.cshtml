@@ -1,0 +1,71 @@
+﻿@model List<TNK.Core.Domain.DataHistory>
+@{   
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title </h3>
+
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                <li class="">
+                    <a href="#tab_0" data-toggle="tab" aria-expanded="false"  style="display:@ViewBag.ShowSystemLog">
+                        Submit từ form
+                    </a>
+                </li>
+                <li class="active">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="true">
+                        Dữ liệu lưu database
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_2" href="#tab_2" data-toggle="tab" aria-expanded="true" style="display:@ViewBag.ShowSystemLog">
+                        Log xử lý store
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_3" href="#tab_3" data-toggle="tab" aria-expanded="true" style="display:@ViewBag.ShowSystemLog">
+                        Túi tiền
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane" id="tab_0"   style="display:@ViewBag.ShowSystemLog">
+                    <div class="x_panel">
+                        <div class="x_content">
+                           @Html.Raw(ViewBag.SubmitData)
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane active" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            @Html.Raw(ViewBag.DataHistory)
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_2" style="display:@ViewBag.ShowSystemLog">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            @Html.Raw(ViewBag.StoreLog)
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_3" style="display:@ViewBag.ShowSystemLog">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            @Html.Raw(ViewBag.TuiTien)
+                        </div>
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+

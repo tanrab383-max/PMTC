@@ -1,0 +1,307 @@
+﻿@using System.Data;
+
+@{
+    DateTime ToDate = ViewBag.ToDate;
+    Double totalSoLuong = 0,
+        totalSoTien = 0,
+        totalSoLuong_1Thang = 0,
+        totalSoTien_1Thang = 0,
+        totalSoLuong_2Thang = 0,
+        totalSoTien_2Thang = 0,
+        totalSoLuong_3Thang = 0,
+        totalSoTien_3Thang = 0,
+        totalSoLuong_Tren3Thang = 0,
+        totalSoTien_Tren3Thang = 0;
+
+    DataTable dtbCNBHTheoLyDoQuaHan = ViewBag.dtbCNBHTheoLyDoQuaHan;
+    DataRow[] lstHoSoQuaHan = dtbCNBHTheoLyDoQuaHan.Select("TinhTrangCongNo='Hồ sơ CHT-Quá hạn'");
+    DataRow[] lstXacNhanQuaHan = dtbCNBHTheoLyDoQuaHan.Select("TinhTrangCongNo='Xác nhận công nợ-Quá hạn'");
+    DataRow[] lstCongNoQuaHan = dtbCNBHTheoLyDoQuaHan.Select("TinhTrangCongNo='Công nợ-Quá hạn'");
+}
+<div id="BCBPTC_CNBHDVTheoLyDoQuaHan">
+    <div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='12' class="tile">Đến ngày @ToDate.Day tháng @ToDate.Month năm @ToDate.Year</th>
+                    </tr>
+                    <tr class="headings">
+                        <th colspan='12' class="tile">BÁO CÁO CÔNG NỢ BẢO HIỂM DỊCH VỤ THEO LÝ DO QUÁ HẠN - HỒ SƠ CHT QUÁ HẠN</th>
+                    </tr>
+
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="2">STT</th>
+                        <th class="column-title" rowspan="2">LÝ DO QUÁ HẠN</th>
+                        <th class="column-title" rowspan="2"> SỐ LƯỢNG</th>
+                        <th class="column-title" rowspan="2"> SỐ TIỀN</th>
+                        <th class="column-title" colspan="2">1 THÁNG</th>
+                        <th class="column-title" colspan="2">2 THÁNG</th>
+                        <th class="column-title" colspan="2">3 THÁNG</th>
+                        <th class="column-title" colspan="2">Trên 3 THÁNG</th>
+
+                    </tr>
+                    <tr>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @if (ViewBag.dtbCNBHTheoLyDoQuaHan != null)
+                    {
+                        int intCount = 0;
+                        foreach (DataRow row in lstHoSoQuaHan)
+                        {
+                            totalSoLuong += row["SoLuong"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong"].ToString());
+                            totalSoTien += row["SoTien"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien"].ToString());
+                            totalSoLuong_1Thang += row["SoLuong_1Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_1Thang"].ToString());
+                            totalSoTien_1Thang += row["SoTien_1Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_1Thang"].ToString());
+                            totalSoLuong_2Thang += row["SoLuong_2Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_2Thang"].ToString());
+                            totalSoTien_2Thang += row["SoTien_2Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_2Thang"].ToString());
+                            totalSoLuong_3Thang += row["SoLuong_3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_3Thang"].ToString());
+                            totalSoTien_3Thang += row["SoTien_3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_3Thang"].ToString());
+                            totalSoLuong_Tren3Thang += row["SoLuong_Tren3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_Tren3Thang"].ToString());
+                            totalSoTien_Tren3Thang += row["SoTien_Tren3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_Tren3Thang"].ToString());
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["LyDoQuaHan"].ToString()</td>
+                                <td class='number'>@row["SoLuong"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_1Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_1Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_2Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_2Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_Tren3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_Tren3Thang"].ToString().Replace(",", ".")</td>
+
+                            </tr>
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="2"><b>TỔNG</b></td>
+                            <td class='number'>@totalSoLuong.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_1Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_1Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_2Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_2Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_Tren3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_Tren3Thang.ToString().Replace(",", ".")</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @{
+
+            totalSoLuong = 0;
+            totalSoTien = 0;
+            totalSoLuong_1Thang = 0;
+            totalSoTien_1Thang = 0;
+            totalSoLuong_2Thang = 0;
+            totalSoTien_2Thang = 0;
+            totalSoLuong_3Thang = 0;
+            totalSoTien_3Thang = 0;
+            totalSoLuong_Tren3Thang = 0;
+            totalSoTien_Tren3Thang = 0;
+        }
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='12' class="tile">BÁO CÁO CÔNG NỢ BẢO HIỂM DỊCH VỤ THEO LÝ DO QUÁ HẠN - XÁC NHẬN CÔNG NỢ QUÁ HẠN</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="2">STT</th>
+                        <th class="column-title" rowspan="2">LÝ DO QUÁ HẠN</th>
+                        <th class="column-title" rowspan="2"> SỐ LƯỢNG</th>
+                        <th class="column-title" rowspan="2"> SỐ TIỀN</th>
+                        <th class="column-title" colspan="2">1 THÁNG</th>
+                        <th class="column-title" colspan="2">2 THÁNG</th>
+                        <th class="column-title" colspan="2">3 THÁNG</th>
+                        <th class="column-title" colspan="2">Trên 3 THÁNG</th>
+
+                    </tr>
+                    <tr>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @if (ViewBag.dtbCNBHTheoLyDoQuaHan != null)
+                    {
+                        int intCount = 0;
+                        foreach (DataRow row in lstXacNhanQuaHan)
+                        {
+                            totalSoLuong += row["SoLuong"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong"].ToString());
+                            totalSoTien += row["SoTien"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien"].ToString());
+                            totalSoLuong_1Thang += row["SoLuong_1Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_1Thang"].ToString());
+                            totalSoTien_1Thang += row["SoTien_1Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_1Thang"].ToString());
+                            totalSoLuong_2Thang += row["SoLuong_2Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_2Thang"].ToString());
+                            totalSoTien_2Thang += row["SoTien_2Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_2Thang"].ToString());
+                            totalSoLuong_3Thang += row["SoLuong_3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_3Thang"].ToString());
+                            totalSoTien_3Thang += row["SoTien_3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_3Thang"].ToString());
+                            totalSoLuong_Tren3Thang += row["SoLuong_Tren3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_Tren3Thang"].ToString());
+                            totalSoTien_Tren3Thang += row["SoTien_Tren3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_Tren3Thang"].ToString());
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["LyDoQuaHan"].ToString()</td>
+                                <td class='number'>@row["SoLuong"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_1Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_1Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_2Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_2Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_Tren3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_Tren3Thang"].ToString().Replace(",", ".")</td>
+
+                            </tr>
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="2"><b>TỔNG</b></td>
+                            <td class='number'>@totalSoLuong.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_1Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_1Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_2Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_2Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_Tren3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_Tren3Thang.ToString().Replace(",", ".")</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @{
+
+            totalSoLuong = 0;
+            totalSoTien = 0;
+            totalSoLuong_1Thang = 0;
+            totalSoTien_1Thang = 0;
+            totalSoLuong_2Thang = 0;
+            totalSoTien_2Thang = 0;
+            totalSoLuong_3Thang = 0;
+            totalSoTien_3Thang = 0;
+            totalSoLuong_Tren3Thang = 0;
+            totalSoTien_Tren3Thang = 0;
+        }
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='12' class="tile">BÁO CÁO CÔNG NỢ BẢO HIỂM DỊCH VỤ THEO LÝ DO QUÁ HẠN - CÔNG NỢ QUÁ HẠN</th>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        <th class="column-title" rowspan="2">STT</th>
+                        <th class="column-title" rowspan="2">LÝ DO QUÁ HẠN</th>
+                        <th class="column-title" rowspan="2"> SỐ LƯỢNG</th>
+                        <th class="column-title" rowspan="2"> SỐ TIỀN</th>
+                        <th class="column-title" colspan="2">1 THÁNG</th>
+                        <th class="column-title" colspan="2">2 THÁNG</th>
+                        <th class="column-title" colspan="2">3 THÁNG</th>
+                        <th class="column-title" colspan="2">Trên 3 THÁNG</th>
+
+                    </tr>
+                    <tr>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                        <th class="column-title">SỐ LƯỢNG</th>
+                        <th class="column-title">SỐ TIỀN</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                    @if (ViewBag.dtbCNBHTheoLyDoQuaHan != null)
+                    {
+                        int intCount = 0;
+                        foreach (DataRow row in lstCongNoQuaHan)
+                        {
+                            totalSoLuong += row["SoLuong"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong"].ToString());
+                            totalSoTien += row["SoTien"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien"].ToString());
+                            totalSoLuong_1Thang += row["SoLuong_1Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_1Thang"].ToString());
+                            totalSoTien_1Thang += row["SoTien_1Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_1Thang"].ToString());
+                            totalSoLuong_2Thang += row["SoLuong_2Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_2Thang"].ToString());
+                            totalSoTien_2Thang += row["SoTien_2Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_2Thang"].ToString());
+                            totalSoLuong_3Thang += row["SoLuong_3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_3Thang"].ToString());
+                            totalSoTien_3Thang += row["SoTien_3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_3Thang"].ToString());
+                            totalSoLuong_Tren3Thang += row["SoLuong_Tren3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong_Tren3Thang"].ToString());
+                            totalSoTien_Tren3Thang += row["SoTien_Tren3Thang"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTien_Tren3Thang"].ToString());
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["LyDoQuaHan"].ToString()</td>
+                                <td class='number'>@row["SoLuong"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_1Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_1Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_2Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_2Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoLuong_Tren3Thang"].ToString().Replace(",", ".")</td>
+                                <td class='number'>@row["SoTien_Tren3Thang"].ToString().Replace(",", ".")</td>
+
+                            </tr>
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="2"><b>TỔNG</b></td>
+                            <td class='number'>@totalSoLuong.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_1Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_1Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_2Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_2Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoLuong_Tren3Thang.ToString().Replace(",", ".")</td>
+                            <td class='number'>@totalSoTien_Tren3Thang.ToString().Replace(",", ".")</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+

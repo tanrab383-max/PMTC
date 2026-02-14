@@ -1,0 +1,81 @@
+﻿@model List<TNK.Core.Domain.Category>
+@{
+    ViewBag.Title = "Create";
+    var model = new TNK.Core.Domain.Category();
+}
+<link rel="stylesheet" type="text/css" href="/administrator/assets/global/plugins/select2/select2.css" />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption font-green-haze">
+                    <i class="icon-plus font-green-haze"></i>
+                    <span class="caption-subject bold uppercase">@ViewBag.Title</span>
+                </div>
+                <div class="actions">
+
+                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;" data-original-title="" title="">
+                        <span class="md-click-circle md-click-animate" style="height: 26px; width: 26px; top: -1px; left: -5.96252px;"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body form" style="height: auto;">
+                <form method="post" class="form-horizontal form-label-left">
+                    <div class="form-body">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(x => model.Id)
+
+                        <div class="form-group">
+                            @Html.LabelFor(x => model.Name, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                @Html.EditorFor(x => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(x => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Danh mục", htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                @Html.DropDownListFor(x => model.Parent, Model.Select(x => new SelectListItem { Text = x.Name, Value = x.Id.ToString() }), new { @class = "form-control select" })
+                                @Html.ValidationMessageFor(x => model.Parent, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Ghi chú", htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                @Html.EditorFor(x => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions margin-top-10">
+                        <div class="row">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Save" class="btn btn-success" onclick="test()" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Quay lại", "Index")
+</div>
+
+@section scripts
+{
+<script type="text/javascript" src="/Administrator/assets/global/plugins/select2/select2.min.js"></script>
+    <script>
+        $('.select').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+
+        function test() {
+            return false;
+        }
+    </script>
+}

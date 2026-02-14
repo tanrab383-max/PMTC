@@ -1,0 +1,87 @@
+﻿@model List<TNK.Core.Domain.View.ViewTBAHI>
+@{
+    Layout = null;
+    int i = 1;
+}
+
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Ngày thu</th>
+            <th>Mã phiếu thu</th>
+            <th>Tên khách hàng</th>
+            <th>Số hợp đồng</th>
+            <th>Biển số</th>
+            <th>Số khung</th>
+            <th>Chứng từ thu</th>
+            <th>Công ty bảo hiểm</th>
+            <th>Giá bán</th>
+            <th>Giảm giá</th>
+            <th>Hoa hồng</th>
+            <th>Thực thu</th>
+
+            <th>Phân loại</th>
+
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+            <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+            <td>@item.MaPhieuThu</td>
+            <td>@item.HoTen</td>
+            <td>@item.SoHopDong</td>
+            <td>@item.BienSo</td>
+            <td>@item.SoKhung</td>
+            <td>@item.SoChungTu</td>
+            <td>@item.CTBH</td>
+            <td class="number">@TNK.Core.Common.ToCurrencyString(@item.GiaVon)</td>
+            <td class="number">@TNK.Core.Common.ToCurrencyString(@item.GiamGia)</td>
+            <td class="number">@TNK.Core.Common.ToCurrencyString(@item.HoaHong.Value)</td>
+            <td class="number">@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>
+
+            @if (item.LoaiBaoHiem.ToUpper() == "TT")
+            {
+                <td>Tái tục</td>
+            }
+            else if (item.LoaiBaoHiem.ToUpper() == "KM")
+            {
+                <td>Ký mới</td>
+            }
+            else
+            {
+                <td>Chưa xác định</td>
+            }
+
+            <td style="width:5%" class="center">
+                @if(ViewBag.Tab == "TBAHI")
+                {
+                    <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=TBAHI&actiontype=Update"><i title="Edit" class="fa fa-edit"></i></a>
+                }
+                else
+                {
+                    <a href="/SoThu/PhieuThuHo/@item.MaPhieuThu?type=@ViewBag.Tab&actiontype=Update"><i title="Edit" class="fa fa-edit"></i></a>
+                }
+                
+            </td>
+            <td style="width:5%" class="center">
+                <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+            </td>
+        </tr>
+
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging_v3.cshtml")
+</div>
+
+
+
+

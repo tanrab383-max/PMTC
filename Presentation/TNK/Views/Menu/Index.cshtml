@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b></b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li>
+                            <a href="/Menu/Create"><i class="fa fa-plus"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th class="center">Controller</th>
+                                <th class="center">Action Default</th>
+                                <th></th>
+                                <th class="center">Active</th>
+                                <th class="center">Add</th>
+                                <th class="center">Edit</th>
+                                <th class="center">Details</th>
+                                <th class="center">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @Html.Action("IndexDetail", "Menu", new { id = 0,tab=0 })
+                        </tbody>
+                    </table>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+
+
+@section scripts{
+<script>
+    $(".MenuActive").change(function () {
+        var checked = $(this).prop("checked");
+        var id = $(this).closest("td").children("input.id").val();
+        $.ajax({
+            method: "POST",
+            url: "/Menu/UpdateActiveMenu",
+            data: { isActive: checked,id:id },
+            dataType: "json"
+        })
+          .done(function (msg) {
+              console.log(msg.result);
+          });
+    });
+    </script>    
+}

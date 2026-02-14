@@ -1,0 +1,47 @@
+﻿@model List<TNK.Core.Domain.View.ViewLoaiXe>
+@{
+    Layout = null;
+    int i = 1;
+}
+
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Mã loại xe</th>
+            <th>Model</th>
+            <th>Grad</th>
+            <th>Đời xe</th>
+            <th>Màu xe</th>
+            <th>Giá niêm yết</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@i</td>
+                <td>@item.MaLoaiXe</td>
+                <td>@item.TenModel</td>
+                <td>@item.TenGrad</td>
+                <td>@item.TenDoiXe</td>
+                <td>@item.TenMau</td>
+                <td>@item.GiaNiemYet.ToString()</td>
+
+                <td style="width:5%" class="center">
+                    <a href="/LoaiXe/Edit/@item.MaLoaiXe"><i title="Edit" class="fa fa-edit"></i></a>
+                </td>
+                <td style="width:5%" class="center">
+                    <a href="/LoaiXe/Delete/@item.MaLoaiXe"><i title="Delete" class="fa fa-close"></i></a>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+
+
+
+

@@ -1,0 +1,22 @@
+﻿@model List<TNK.Core.Domain.CategoryItem>
+@{
+    Layout = null;
+}
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.Id</td>
+        <td>@item.Code</td>
+        <td>@item.Name</td>
+        <td>@item.Note</td>
+        <td style="width:5%" class="center">
+            <a href="#" onclick="UpdateCategoryItem(@item.Id)"><i title="Edit" class="fa fa-edit"></i></a>
+        </td>
+        @*<td style="width:5%" class="center">
+                <a href="#"><i title="Details" class="fa fa-building-o"></i></a>
+            </td>*@
+        <td style="width:5%" class="center">
+            <a href="#" onclick="DeleteCategoryItem(@item.Id)"><i title="Delete" class="fa fa-close"></i></a>
+        </td>
+    </tr>
+}

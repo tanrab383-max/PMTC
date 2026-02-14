@@ -1,0 +1,427 @@
+﻿@using System.Data;
+
+@{
+    DataTable dtbChiTietBanXe = ViewBag.dtbChiTietBanxe;
+    DataTable dtbTongHopBanXe = ViewBag.dtbTongHopBanxe;
+    double TotalGiaNhap = 0, TotalChietKhauTM = 0, TotalHoTroXeXuat = 0, TotalGiaVonThucTe = 0, TotalGiaDeXuat = 0, TotalGiaBan = 0,
+        TotalKM_QuaTang = 0, TotalKM_PhiTruocBa = 0, TotalKM_Khac = 0, TotalKM_PTung = 0, TotalKM_PKien = 0, TotalKM_DSon = 0, TotalKM_BaoHiem = 0,
+        TotalKM_GHBH = 0, TotalKM_HoaHong = 0, TotalTongKM = 0, TotalThueGTGT_CKTM = 0, TotalTongTGTGTPhaiDong = 0, TotalLaiGopBanXe = 0,
+        TotalDoanhThu_HoaHongBaoHiem = 0, TotalDoanhThu_HoaHongNganHang = 0, TotalDoanhThu_BanPhuKien = 0, TotalDoanhThu_GiaHanBaoHanh = 0,
+        TotalDoanhThu_HoaHongDangKyXe= 0, TotalTongLoiNhuanKinhDoanhChuoiGiaTri = 0, TotalTongLoiNhuanGopKinhDoanhXe = 0
+        ;
+    double TotalGiaNhapTH = 0,TotalSlXeXuatTH = 0, TotalChietKhauTMTH = 0, TotalHoTroXeXuatTH = 0, TotalGiaVonThucTeTH = 0, TotalGiaDeXuatTH = 0, TotalGiaBanTH = 0,
+        TotalKM_QuaTangTH = 0, TotalKM_PhiTruocBaTH = 0, TotalKM_KhacTH = 0, TotalKM_PTungTH = 0, TotalKM_PKienTH = 0, TotalKM_DSonTH = 0,
+        TotalKM_BaoHiemTH = 0,
+        TotalKM_GHBHTH = 0, TotalKM_HoaHongTH = 0, TotalTongKMTH = 0, TotalThueGTGT_CKTMTH = 0, TotalTongTGTGTPhaiDongTH = 0, TotalLaiGopBanXeTH = 0,
+        TotalDoanhThu_HoaHongBaoHiemTH = 0, TotalDoanhThu_HoaHongNganHangTH = 0, TotalDoanhThu_BanPhuKienTH = 0, TotalDoanhThu_GiaHanBaoHanhTH = 0,
+        TotalDoanhThu_HoaHongDangKyXeTH = 0, TotalTongLoiNhuanKinhDoanhChuoiGiaTriTH = 0, TotalTongLoiNhuanGopKinhDoanhXeTH = 0
+;
+
+}
+
+<div id="BCBPTC_THCTBX" class="x_content">
+    <div class="row col-sm-12" style="float:left">
+        <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th colspan='31' class="tile" style="font-size:25px;border-top:thin;text-align:left">HONDA Ô TÔ SÀI GÒN - @ViewBag.ShowRoom</th>
+                        </tr>
+                        <tr>
+                            <th colspan='31' class="tile" style="font-size:25px; border-top: none;border-bottom:none; ">BÁO CÁO KẾT QUẢ KINH DOANH CHI TIẾT CHO XE XUẤT</th>
+                        </tr>
+                        <tr>
+                            <th colspan='31' style="border-top: none; ">@ViewBag.TuNgayDenNgay</th>
+                        </tr>
+                        <tr class="headings" style="">
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;">STT</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 100px;">NGÀY KÝ HỢP ĐỒNG</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 100px;">NGÀY XUẤT</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 150px;">LOẠI XE</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2; ">SỐ KHUNG</th>
+                            <th class="column-title" rowspan="2" style="background-color:#E2EFDA;min-width: 80px;">GIÁ NHẬP (có VAT)</th>
+                            <th class="column-title" rowspan="2" style="background-color:#E2EFDA;min-width: 80px;">CHIẾT KHẤU TM</th>
+                            <th class="column-title" rowspan="2" style="background-color:#E2EFDA;min-width: 80px;">HỖ TRỢ XE XUẤT (chưa VAT)</th>
+                            <th class="column-title" rowspan="2" style="background-color:#E2EFDA;min-width: 80px;">GIÁ VỐN THỰC TẾ</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 100px; ">GIÁ ĐỀ XUẤT (có VAT)</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 80px;">GIÁ BÁN (có VAT)</th>
+                            <th class="column-title" colspan="10" style="background-color:#E2EFDA;">CÁC KHOẢN KHUYẾN MẠI (CHƯA CÓ VAT)</th>
+                            <th class="column-title" colspan="2" style="background-color:#E2EFDA;min-width: 80px;">THUẾ GTGT PHẢI ĐÓNG</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 100px;">LÃI GỘP BÁN XE</th>
+                            <th class="column-title" colspan="6" style="background-color:#E2EFDA;min-width: 150px;">LỢI NHUẬN TỪ KINH DOANH CHUỖI GIÁ TRỊ (CHƯA CÓ VAT)</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width:100px;">TỔNG LỢI NHUẬN GỘP KINH DOANH XE</th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">QUÀ TẶNG</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">KM.PHÍ TRƯỚC BẠ</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">KM.KHÁC</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">P.TÙNG</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">P.KIỆN</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">Đ.SƠN</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">BẢO HIỂM</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">GIA HẠN BẢO HÀNH</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">HOA HỒNG</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">TỔNG KHUYẾN MÃI</th>
+
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 120px;">THUẾ GTGT PHẢI ĐÓNG PHẦN CHIẾT KHẤU TM</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">TỔNG THUẾ GTGT PHẢI ĐÓNG</th>
+
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">HOA HỒNG BẢO HIỂM (18%)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">HOA HỒNG NGÂN HÀNG (1%)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">BÁN PHỤ KIỆN (30%)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">GIA HẠN BẢO HÀNH (20%)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">ĐĂNG KÝ XE (550K)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">TỔNG LỢI NHUẬN KINH DOANH CHUỖI GIÁ TRỊ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+
+                            int i = 1;
+                            foreach (DataRow row in dtbChiTietBanXe.Rows)
+                            {
+                                TotalGiaNhap += row["GiaNhap"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaNhap"]);
+                                TotalChietKhauTM += row["ChietKhauTM"].ToString() == "" ? 0 : Convert.ToDouble(row["ChietKhauTM"]);
+                                TotalHoTroXeXuat += row["HoTroXeXuat"].ToString() == "" ? 0 : Convert.ToDouble(row["HoTroXeXuat"]);
+                                TotalGiaVonThucTe += row["GiaVonThucTe"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaVonThucTe"]);
+                                TotalGiaDeXuat += row["GiaDeXuat"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaDeXuat"]);
+                                TotalGiaBan += row["GiaBanCoVAT"].ToString() == "" ? 0 : Convert.ToDouble(row["GiaBanCoVAT"]);
+
+                                TotalKM_QuaTang += row["KM_QuaTang"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_QuaTang"]);
+                                TotalKM_PhiTruocBa += row["KM_PhiTruocBa"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PhiTruocBa"]);
+                                TotalKM_Khac += row["KM_Khac"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_Khac"]);
+                                TotalKM_PTung += row["KM_PhuTung"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PhuTung"]);
+                                TotalKM_PKien += row["KM_PhuKien"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_PhuKien"]);
+                                TotalKM_DSon += row["KM_DongSon"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_DongSon"]);
+                                TotalKM_BaoHiem += row["KM_BaoHiem"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_BaoHiem"]);
+                                TotalKM_GHBH += row["KM_GHBH"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_GHBH"]);
+                                TotalKM_HoaHong += row["KM_HoaHong"].ToString() == "" ? 0 : Convert.ToDouble(row["KM_HoaHong"]);
+                                TotalTongKM += row["TongKhuyenMai"].ToString() == "" ? 0 : Convert.ToDouble(row["TongKhuyenMai"]);
+
+                                TotalThueGTGT_CKTM += row["ThueGTGT_CKTM"].ToString() == "" ? 0 : Convert.ToDouble(row["ThueGTGT_CKTM"]);
+                                TotalTongTGTGTPhaiDong += row["TongTGTGTPhaiDong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongTGTGTPhaiDong"]);
+
+                                TotalLaiGopBanXe += row["LaiGopBanXe"].ToString() == "" ? 0 : Convert.ToDouble(row["LaiGopBanXe"]);
+
+                                TotalDoanhThu_HoaHongBaoHiem += row["DoanhThu_HoaHongBaoHiem"].ToString() == "" ? 0 : Convert.ToDouble(row["DoanhThu_HoaHongBaoHiem"]);
+                                TotalDoanhThu_HoaHongNganHang += row["DoanhThu_HoaHongNganHang"].ToString() == "" ? 0 : Convert.ToDouble(row["DoanhThu_HoaHongNganHang"]);
+                                TotalDoanhThu_BanPhuKien += row["DoanhThu_BanPhuKien"].ToString() == "" ? 0 : Convert.ToDouble(row["DoanhThu_BanPhuKien"]);
+                                TotalDoanhThu_GiaHanBaoHanh += row["DoanhThu_GiaHanBaoHanh"].ToString() == "" ? 0 : Convert.ToDouble(row["DoanhThu_GiaHanBaoHanh"]);
+                                TotalDoanhThu_HoaHongDangKyXe += row["DoanhThu_HoaHongDangKyXe"].ToString() == "" ? 0 : Convert.ToDouble(row["DoanhThu_HoaHongDangKyXe"]);
+                                TotalTongLoiNhuanKinhDoanhChuoiGiaTri += row["TongLoiNhuanKinhDoanhChuoiGiaTri"].ToString() == "" ? 0 : Convert.ToDouble(row["TongLoiNhuanKinhDoanhChuoiGiaTri"]);
+
+                                TotalTongLoiNhuanGopKinhDoanhXe += row["TongLoiNhuanGopKinhDoanhXe"].ToString() == "" ? 0 : Convert.ToDouble(row["TongLoiNhuanGopKinhDoanhXe"]);
+
+
+
+
+
+
+                                <tr class="even pointer">
+                                    <td>@i</td>
+                                    <td>@row["NgayHopDong"].ToString().Substring(0, 10)</td>
+                                    <td>@row["NgayXuat"].ToString().Substring(0, 10)</td>
+                                    <td>@row["MaLoaiXe"].ToString()</td>
+                                    <td>@row["SoKhung"].ToString()</td>
+                                    <td class="number">@row["GiaNhap"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["ChietKhauTM"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["HoTroXeXuat"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["GiaVonThucTe"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["GiaDeXuat"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["GiaBanCoVAT"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["KM_QuaTang"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_PhiTruocBa"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_Khac"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_PhuTung"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_PhuKien"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_DongSon"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_BaoHiem"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_GHBH"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_HoaHong"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["ThueGTGT_CKTM"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["TongTGTGTPhaiDong"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["LaiGopBanXe"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["DoanhThu_HoaHongBaoHiem"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["DoanhThu_HoaHongNganHang"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["DoanhThu_BanPhuKien"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["DoanhThu_GiaHanBaoHanh"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["DoanhThu_HoaHongDangKyXe"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["TongLoiNhuanKinhDoanhChuoiGiaTri"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["TongLoiNhuanGopKinhDoanhXe"].ToString().Replace(",", ".")</td>
+                                </tr>
+                                i = i + 1;
+                            }
+                        }
+
+                        <tr class="even pointer" style="font-weight:bold">
+                            <td colspan="5"  style="background-color:#E2EFDA;font-weight:bold">Tổng Cộng</td>
+                            
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaNhap.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalChietKhauTM.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalHoTroXeXuat.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaVonThucTe.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaDeXuat.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaBan.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_QuaTang.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PhiTruocBa.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_Khac.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PTung.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PKien.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_DSon.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_BaoHiem.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_GHBH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_HoaHong.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongKM.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalThueGTGT_CKTM.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongTGTGTPhaiDong.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalLaiGopBanXe.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongBaoHiem.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongNganHang.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_BanPhuKien.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_GiaHanBaoHanh.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongDangKyXe.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongLoiNhuanKinhDoanhChuoiGiaTri.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongLoiNhuanGopKinhDoanhXe.ToString().Replace(",", ".")</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table class="table table-striped table-bordered table-condensed" style="margin-left: 0px; margin-top: 50px">
+                    <thead>
+                        <tr>
+                            <th colspan='31' class="tile" style="font-size:25px; border-top: none;border-bottom:none;  margin-left: 240px">
+                                BÁO CÁO TỔNG HỢP KẾT QUẢ KINH DOANH CHO XE XUẤT
+                            </th>
+                        </tr>
+                        <tr>
+                            <th colspan='31' style="border-top: none;">@ViewBag.TuNgayDenNgay</th>
+                        </tr>
+                        <tr class="headings" style="">
+                            <th  rowspan="3" style="min-width: 80px;border:hidden"></th>
+                            <th  rowspan="3" style="min-width: 80px;border:hidden"></th>
+                            <th  rowspan="3" style="min-width: 80px;border:hidden;border-right:1px"></th>
+                            <th class="column-title" rowspan="3" style="background-color:#D9E1F2;min-width: 150px">LOẠI XE</th>
+                            <th class="column-title" rowspan="3" style="background-color:#D9E1F2;min-width: 150px;">SỐ LƯỢNG XE XUẤT</th>
+                            <th class="column-title" colspan="26" style="background-color:#E2EFDA;">TRUNG BÌNH/XE XUẤT</th>
+                        </tr>
+                        <tr class="headings" style="">
+                            <th class="column-title" rowspan="2" style="background-color:#E2EFDA;min-width: 80px;">GIÁ NHẬP (có VAT)</th>
+                            <th class="column-title" rowspan="2" style="background-color:#E2EFDA;min-width: 80px;">CHIẾT KHẤU TM</th>
+                            <th class="column-title" rowspan="2" style="background-color:#E2EFDA;min-width: 80px;">HỖ TRỢ XE XUẤT (chưa VAT)</th>
+                            <th class="column-title" rowspan="2" style="background-color:#E2EFDA;min-width: 80px;">GIÁ VỐN THỰC TẾ</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 100px; ">GIÁ ĐỀ XUẤT (có VAT)</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 80px;">GIÁ BÁN (có VAT)</th>
+                            <th class="column-title" colspan="10" style="background-color:#E2EFDA;">CÁC KHOẢN KHUYẾN MẠI (CHƯA CÓ VAT)</th>
+                            <th class="column-title" colspan="2" style="background-color:#E2EFDA;min-width: 80px;">THUẾ GTGT PHẢI ĐÓNG</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width: 100px;">LÃI GỘP BÁN XE</th>
+                            <th class="column-title" colspan="6" style="background-color:#E2EFDA;min-width: 150px;">LỢI NHUẬN TỪ KINH DOANH CHUỖI GIÁ TRỊ (CHƯA CÓ VAT)</th>
+                            <th class="column-title" rowspan="2" style="background-color:#D9E1F2;min-width:100px;">TỔNG LỢI NHUẬN GỘP KINH DOANH XE</th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">QUÀ TẶNG</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">KM.PHÍ TRƯỚC BẠ</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">KM.KHÁC</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">P.TÙNG</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">P.KIỆN</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">Đ.SƠN</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">BẢO HIỂM</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 80px;">GIA HẠN BẢO HÀNH</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">HOA HỒNG</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">TỔNG KHUYẾN MÃI</th>
+
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 120px;">THUẾ GTGT PHẢI ĐÓNG PHẦN CHIẾT KHẤU TM</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">TỔNG THUẾ GTGT PHẢI ĐÓNG</th>
+
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">HOA HỒNG BẢO HIỂM (18%)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">HOA HỒNG NGÂN HÀNG (0.9%)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">BÁN PHỤ KIỆN (30%)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">GIA HẠN BẢO HÀNH (20%)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">ĐĂNG KÝ XE (550K)</th>
+                            <th class="column-title" style="background-color:#E2EFDA;min-width: 100px;">TỔNG LỢI NHUẬN KINH DOANH CHUỖI GIÁ TRỊ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+
+                            i = 1;
+                            foreach (DataRow row in dtbTongHopBanXe.Rows)
+                            {
+                                TotalSlXeXuatTH += row["SoLuong"].ToString() == "" ? 0 : Convert.ToDouble(row["SoLuong"]);
+
+                                <tr class="even pointer">
+                                    <td style="border:hidden"></td>
+                                    <td style="border:hidden"></td>
+                                    <td style="border:hidden; border-right:1px"></td>
+
+                                    <td>@row["MaLoaiXe"].ToString()</td>
+                                    <td>@row["SoLuong"].ToString()</td>
+                                    <td class="number">@row["GiaNhap"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["ChietKhauTM"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["HoTroXeXuat"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["GiaVonThucTe"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["GiaDeXuat"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["GiaBanCoVAT"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["KM_QuaTang"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_PhiTruocBa"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_Khac"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_PhuTung"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_PhuKien"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_DongSon"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_BaoHiem"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_GHBH"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["KM_HoaHong"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["TongKhuyenMai"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["ThueGTGT_CKTM"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["TongTGTGTPhaiDong"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["LaiGopBanXe"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["DoanhThu_HoaHongBaoHiem"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["DoanhThu_HoaHongNganHang"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["DoanhThu_BanPhuKien"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["DoanhThu_GiaHanBaoHanh"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["DoanhThu_HoaHongDangKyXe"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["TongLoiNhuanKinhDoanhChuoiGiaTri"].ToString().Replace(",", ".")</td>
+
+                                    <td class="number">@row["TongLoiNhuanGopKinhDoanhXe"].ToString().Replace(",", ".")</td>
+                                </tr>
+                                i = i + 1;
+                            }
+                            TotalGiaNhapTH = Math.Round(TotalGiaNhap / TotalSlXeXuatTH);
+                            TotalChietKhauTMTH = Math.Round(TotalChietKhauTM / TotalSlXeXuatTH);
+                            TotalHoTroXeXuatTH = Math.Round(TotalHoTroXeXuat / TotalSlXeXuatTH);
+                            TotalGiaVonThucTeTH = Math.Round(TotalGiaVonThucTe / TotalSlXeXuatTH);
+                            TotalGiaDeXuatTH = Math.Round(TotalGiaDeXuat / TotalSlXeXuatTH);
+                            TotalGiaBanTH = Math.Round(TotalGiaBan / TotalSlXeXuatTH);
+                            TotalKM_QuaTangTH = Math.Round(TotalKM_QuaTang / TotalSlXeXuatTH);
+                            TotalKM_PhiTruocBaTH = Math.Round(TotalKM_PhiTruocBa / TotalSlXeXuatTH);
+                            TotalKM_KhacTH = Math.Round(TotalKM_Khac / TotalSlXeXuatTH);
+                            TotalKM_PTungTH = Math.Round(TotalKM_PTung / TotalSlXeXuatTH);
+                            TotalKM_PKienTH = Math.Round(TotalKM_PKien / TotalSlXeXuatTH);
+                            TotalKM_DSonTH = Math.Round(TotalKM_DSon / TotalSlXeXuatTH);
+                            TotalKM_BaoHiemTH = Math.Round(TotalKM_BaoHiem / TotalSlXeXuatTH);
+                            TotalKM_GHBHTH = Math.Round(TotalKM_GHBH / TotalSlXeXuatTH);
+                            TotalKM_HoaHongTH = Math.Round(TotalKM_HoaHong / TotalSlXeXuatTH);
+                            TotalTongKMTH = Math.Round(TotalTongKM / TotalSlXeXuatTH);
+
+                            TotalThueGTGT_CKTMTH = Math.Round(TotalThueGTGT_CKTM / TotalSlXeXuatTH);
+                            TotalTongTGTGTPhaiDongTH = Math.Round(TotalTongTGTGTPhaiDong / TotalSlXeXuatTH);
+
+                            TotalLaiGopBanXeTH = Math.Round(TotalLaiGopBanXe / TotalSlXeXuatTH);
+
+                            TotalDoanhThu_HoaHongBaoHiemTH = Math.Round(TotalDoanhThu_HoaHongBaoHiem / TotalSlXeXuatTH);
+                            TotalDoanhThu_HoaHongNganHangTH = Math.Round(TotalDoanhThu_HoaHongNganHang / TotalSlXeXuatTH);
+                            TotalDoanhThu_BanPhuKienTH = Math.Round(TotalDoanhThu_BanPhuKien / TotalSlXeXuatTH);
+                            TotalDoanhThu_GiaHanBaoHanhTH = Math.Round(TotalDoanhThu_GiaHanBaoHanh / TotalSlXeXuatTH);
+                            TotalDoanhThu_HoaHongDangKyXeTH = Math.Round(TotalDoanhThu_HoaHongDangKyXe / TotalSlXeXuatTH);
+                            TotalTongLoiNhuanKinhDoanhChuoiGiaTriTH = Math.Round(TotalTongLoiNhuanKinhDoanhChuoiGiaTri / TotalSlXeXuatTH);
+
+                            TotalTongLoiNhuanGopKinhDoanhXeTH = Math.Round(TotalTongLoiNhuanGopKinhDoanhXe / TotalSlXeXuatTH);
+
+                        }
+
+                        <tr class="even pointer" style="font-weight:bold">
+                            <td style="border:hidden"></td>
+                            <td style="border:hidden"></td>
+                            <td style="border:hidden; border-right:1px"></td>
+                            <td style="background-color:#E2EFDA;font-weight:bold">TRUNG BÌNH/XE XUẤT</td>
+                            <td class="number" style="background-color:#D9E1F2;text-align:left">@TotalSlXeXuatTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaNhapTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalChietKhauTMTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalHoTroXeXuatTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaVonThucTeTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaDeXuatTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaBanTH.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_QuaTangTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PhiTruocBaTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_KhacTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PTungTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PKienTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_DSonTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_BaoHiemTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_GHBHTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_HoaHongTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongKMTH.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalThueGTGT_CKTMTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongTGTGTPhaiDongTH.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalLaiGopBanXeTH.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongBaoHiemTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongNganHangTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_BanPhuKienTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_GiaHanBaoHanhTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongDangKyXeTH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongLoiNhuanKinhDoanhChuoiGiaTriTH.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongLoiNhuanGopKinhDoanhXeTH.ToString().Replace(",", ".")</td>
+                        </tr>
+                        <tr>
+                            <td colspan="31" style="border:hidden"></td>
+                        </tr>
+                        <tr class="even pointer" style="font-weight:bold">
+                            <td colspan="5" style="background-color:#E2EFDA;font-weight:bold">Tổng Cộng</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaNhap.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalChietKhauTM.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalHoTroXeXuat.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaVonThucTe.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaDeXuat.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalGiaBan.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_QuaTang.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PhiTruocBa.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_Khac.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PTung.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_PKien.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_DSon.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_BaoHiem.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_GHBH.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalKM_HoaHong.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongKM.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalThueGTGT_CKTM.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongTGTGTPhaiDong.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalLaiGopBanXe.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongBaoHiem.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongNganHang.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_BanPhuKien.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_GiaHanBaoHanh.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalDoanhThu_HoaHongDangKyXe.ToString().Replace(",", ".")</td>
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongLoiNhuanKinhDoanhChuoiGiaTri.ToString().Replace(",", ".")</td>
+
+                            <td class="number" style="background-color:#D9E1F2;">@TotalTongLoiNhuanGopKinhDoanhXe.ToString().Replace(",", ".")</td>
+                        </tr>
+</table>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+

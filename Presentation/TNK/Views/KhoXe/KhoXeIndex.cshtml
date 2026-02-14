@@ -1,0 +1,354 @@
+﻿@model List<TNK.Core.Domain.View.ViewKhoXe>
+@{
+    ViewBag.Title = "Kho xe";
+    int i = 1;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+    
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Kho xe
+                        </a>
+                    </li>
+            </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_0">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <form id="formSearch" method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày</label>
+                                            <input type="text" id="FromDate" class="form-control input-sm date" value="@ViewBag.Date" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày</label>
+                                            <input type="text" id="ToDate" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" title="Phiếu chi,tài sản" placeholder="Phiếu nhập,số khung,số máy,số hóa đơn,số tmss,loại xe,nhà cung cấp,..." class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                                            <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group" id="test">
+                                            @Html.RadioButton("chonngay", "NN", true, new { id = "NN" }) Ngày nhập
+                                            @Html.RadioButton("chonngay", "NX", false, new { id = "NX" }) Ngày xuất
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            @Html.RadioButton("tinhTrang", "", false, new { id = "All" }) Tất Cả
+                                            @Html.RadioButton("tinhTrang", "N", true, new { id = "N" }) Trong Kho
+                                            @Html.RadioButton("tinhTrang", "X", false, new { id = "X" }) Đã Xuất
+                                            @Html.RadioButton("tinhTrang", "TC", false, new { id = "TC" }) Đang Thế Chấp
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="table-responsive" style="overflow:auto" id="KhoXeIndex">
+                                    <table class="table" style="width:150%; max-width:150%">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>Ngày nhập</th>
+                                                <th>Ngày xuất</th>
+                                                <th>Phiếu nhập</th>
+                                                <th style="width:200px">Số khung</th>
+                                                <th style="width:500px">Số máy</th>
+                                                <th style="width:500px">Số Hóa Đơn</th>
+                                                <th style="width:500px">Số TMSS</th>
+                                                <th>Giá mua</th>
+                                                <th>Giá niêm yết</th>
+                                                <th style="width:300px">Loại xe</th>
+                                                <th>Nhà cung cấp</th>
+                                                <th>Tình trạng</th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                        <tr>
+                                        @if (item.TinhTrang == "N" || string.IsNullOrEmpty(item.MaPhieuXuat) || item.TinhTrang  == "TC")
+                                        {
+                                            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                            <td>@item.NgayNhapKho.ToString("dd/MM/yyyy")</td>
+                                            <td></td>
+                                            <td>@item.MaPhieuNhap</td>
+                                            <td>@item.SoKhung</td>
+                                            <td style="width:200px">
+                                                @Html.EditorFor(x => item.SoMay, new { htmlAttributes = new { @class = "SoMay_" + item.SoKhung + " form-control number input-sm" } })
+                                            </td>
+                                            <td>
+                                                @Html.EditorFor(x => item.SoHoaDon, new { htmlAttributes = new { @class = "SoHD_" + item.SoKhung + " form-control number input-sm" } })
+                                            </td>
+                                            <td>
+                                                @Html.EditorFor(x => item.SoTMSS, new { htmlAttributes = new { @class = "SoTMSS_" + item.SoKhung + " form-control number input-sm" } })
+                                            </td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.GiaVon)</td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.GiaNiemYet)</td>
+                                            <td>
+                                                @if (ViewBag.ListLoaiXeNotActive != null && ViewBag.ListLoaiXeNotActive.Contains(item.MaLoaiXe))
+                                                {
+                                                    @item.MaLoaiXe
+                                                }
+                                                else
+                                                {
+                                                    <select class="select2 fullwidth" id="MaLX_@item.SoKhung.Trim()">
+                                                        <option value="">Chọn</option>
+                                                        @foreach (TNK.Core.Domain.View.ViewLoaiXe obj in ViewBag.LoaiXe)
+                                                        {
+                                                            <option value="@obj.MaLoaiXe" @Html.Raw(obj.MaLoaiXe == item.MaLoaiXe ? "selected" : "")>@obj.MaLoaiXe</option>
+                                                        }
+                                                    </select>
+                                                }
+
+                                            </td>
+                                            <td>@item.NhaCungCap</td>
+                                        if (item.TinhTrang == "TC")
+                                        {
+                                                <td>Đang Thế Chấp</td>
+                                        }
+                                        else if(item.TinhTrang == "N")
+                                        {
+                                                <td>Trong kho</td>
+                                        }
+                                            <td style="width:5%" class="center">
+                                                <a href="#" onclick="Edit('@item.Id','@item.SoKhung')"><i title="Lưu" class="fa fa-save"></i></a>
+                                            </td>
+                                            <td style="width:5%" class="center">
+                                                @if (item.PhanLoaiNhap == "HTD")
+                                            {
+                                                    <a href="#" onclick="Delete(this, '@item.Id','@item.SoKhung')"><i title="Delete" class="fa fa-close"></i></a>
+                                            }
+                                            else
+                                            {
+                                                    <a href="#" onclick="toastWarning('Không thể xóa xe nhập từ phiếu mua xe thực tế. Vui lòng xóa phiếu mua xe thực tế đã nhập xe này.');">
+                                                        <i title="Không thể xóa xe nhập từ phiếu mua xe thực tế. Vui lòng xóa phiếu mua xe thực tế đã nhập xe này." class="fa fa-ban"></i>
+                                                    </a>
+                                            }
+                                            </td>
+                                            <td>
+                                                <a href="/KhoXe/TheChap/@item.SoKhung"><input type="button" class="btn btn-success" value="Thế Chấp" /></a>
+                                            </td>
+                                            i++;
+                                        }
+                                        else
+                                        {
+                                            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                            <td>@item.NgayNhapKho.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.NgayXuatKho.Value.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.MaPhieuNhap</td>
+                                            <td>@item.SoKhung</td>
+                                            <td>@item.SoMay</td>
+                                            <td>@item.SoHoaDon</td>
+                                            <td>@item.SoTMSS</td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.GiaVon)</td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.GiaNiemYet)</td>
+                                            <td>@item.MaLoaiXe</td>
+                                            <td>@item.NhaCungCap</td>
+                                            <td> Đã xuất </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            i++;
+                                        }
+                                        </tr>
+                                        }
+                                        </tbody>
+                                        </table>
+                                        <div class="right">
+                                        @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                        </div>
+                                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+        </div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        var p = 1;
+        $(document).ready(function () {
+            debugger;
+            $('#Search').trigger('click');
+        });
+        $("#Search").click(function () {
+            debugger;
+            $(this).val("Loading...");
+          
+            Search(this);
+            
+        })
+        function change() {
+            debugger;
+            p = 1;
+        }
+        function Search(obj) {
+            debugger;
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+            $.get("/KhoXe/XeTon?query=" + query + "&to=" + to + "&p=" + p).success(function (response) {
+                $("#tbody").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            a = $(this).attr("href");
+            var b = a.split("&");
+            p = b[3].split("=")[1];
+            Search();
+            return false;
+        })
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        function Edit(ID, sokhung) {
+            debugger;
+            //var sokhung = $("#KX_SoKhung").val();
+            if ($("#MaLX_" + sokhung).val() === "") {
+                toastWarning("Vui lòng chọn loại xe");
+                return false;
+            }
+            if ($("#TheChap_" + sokhung).val() != "") {
+                if ($("#NgayTheChap_" + sokhung).val() == "") {
+                    toastWarning("Vui lòng chọn ngày thế chấp");
+                    return false;
+                }
+            }
+            if ($("#TheChap_" + sokhung).val() == "") {
+                if ($("#NgayTheChap_" + sokhung).val() != "") {
+                    if ($("#NgayHetTheChap_" + sokhung).val() == "") {
+                        toastWarning("Vui lòng chọn ngày hết thế chấp");
+                        return false;
+                    }
+                }
+
+            }
+            //console.log($("#MaLX_" + sokhung).val());
+            var data = {
+                SoKhung: sokhung,
+                SoMay: $(".SoMay_" + sokhung).val(),
+                SoHoaDon: $(".SoHD_" + sokhung).val(),
+                SoTMSS: $(".SoTMSS_" + sokhung).val(),
+                MaLoaiXe: $("#MaLX_" + sokhung).val(),
+                TheChap: $("#TheChap_" + sokhung).val(),
+                NgayTheChap: $("#NgayTheChap_" + sokhung).val(),
+                NgayHetTheChap: $("#NgayHetTheChap_" + sokhung).val(),
+                Id: ID,
+            }
+
+            $.ajax({
+                url: "/KhoXe/EditKhoXe",
+                type: "POST",
+                data: { "objKhoXe": data },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi: Cập nhật kho xe.");
+                }
+            });
+        }
+        function Delete(a, id, sk) {
+            if (confirm('Bạn có muốn xóa thông tin?')) {
+                data = { id: id, sk: sk };
+                $.post("/KhoXe/DeleteKhoXe", data).success(function (response) {
+                    if (response == "success") {
+                        toastSuccess("Xóa xe trong kho xe thành công.");
+                        $(a).closest("tr").remove();
+                    } else if (response == "loi") {
+                        toastWarning("Xe đang thế chấp không được xóa.");
+                    }
+                    else if (response == "Lỗi: đã trả nợ HHHB")
+                    {
+                        toastWarning("Xe đã trả nợ hoa hồng holdback.");
+                    }
+                    else {
+                        toastWarning("Lỗi: Xóa kho xe.");
+                    }
+                });
+            }
+        }
+        $(function () {
+            var chonngay, loai;
+            
+            $("#btnExportExcel").click(function (e) {
+                debugger;
+                loai = "DSX"
+                if ($("#NN").is(":checked") == true)
+                    (
+                       chonngay = "NN"
+                    )
+                if ($("#NX").is(":checked") == true)
+                    (
+                          chonngay = "NX"
+                    )
+                $.fileDownload("/KhoXe/ReportAll", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        chonngay: chonngay,
+                        loai: loai
+                    }
+                });
+            });
+            $("#btnExcelXeTon").click(function (e) {
+                debugger;
+                loai = "DSXT"
+                $.fileDownload("/KhoXe/ReportAll", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate:$("#ToDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        chonngay: "",
+                        loai: loai
+                    }
+                });
+            });
+        })
+    </script>
+}

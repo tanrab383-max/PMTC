@@ -1,0 +1,49 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuBDTKTamCybers>
+@{
+    Layout = null;
+    int i = 1;
+}
+<table class="table">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+            <th>Ngày thu</th>
+            <th>Chứng từ thu</th>
+            <th>Khách hàng</th>
+            <th>Biển số</th>
+            <th>Số Khung</th>
+            <th>Giá bán</th>
+            <th>Giảm giá</th>
+            <th>Thực bán</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                <td>@item.SoChungTu</td>
+                <td>@item.HoTen</td>
+                <td>@item.BienSoXe</td>
+                <td>@item.SoKhung</td>
+                <td class="number2">@item.GiaBan</td>
+                <td class="number2">@item.GiamGia</td>
+                <td class="number2">@item.TongCong</td>
+                <td style="width:5%" class="center">
+                        <a id="plus" href="/SoThu/PhieuThu?type=TBDTKTemp&actiontype=Create&MaXe=@item.SoChungTu&TypeOfVote=@item.Loai"><i class="fa fa-plus addNew" title="Thêm mới phiếu thu phụ kiện"></i></a>
+                </td>
+                <td style="width:5%" class="center">
+                  @*  <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>*@
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+</div>

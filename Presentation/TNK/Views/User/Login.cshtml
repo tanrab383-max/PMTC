@@ -1,0 +1,86 @@
+﻿
+@{
+    //neu lay duoc ten don vi tu domain truy cap thi hien ten don vi, khong thi hien PMTC
+    ViewBag.Title = (!string.IsNullOrEmpty(ViewBag.StoreByDomain) ? ViewBag.StoreByDomain + "-" : "PMTC-") + "Login";
+    Layout = null;
+    var errorMessage = ViewBag.ErrorMessage;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewBag.Title</title>
+    <!-- Bootstrap -->
+    <link href="/assests/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/assests/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/assests/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="/assests/vendors/animate.css/animate.min.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="/assests/build/css/custom.css" rel="stylesheet">
+</head>
+<body class="login">
+    <div>
+        <a class="hiddenanchor" id="signup"></a>
+        <a class="hiddenanchor" id="signin"></a>
+        <div class="login_wrapper">
+            <div class="animate form login_form">
+                <section class="login_content">
+
+                    @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl }))
+                    {
+                        <h1>Login Form</h1>
+                        if (!string.IsNullOrEmpty(errorMessage))
+        {
+                            <div class="alert alert-danger" role="alert">
+                                @errorMessage
+                            </div>
+    }
+                        <div>
+                            <input name="UserName" type="text" class="form-control" placeholder="Username" required="" />
+                        </div>
+                        <div>
+                            <input name="PassWord" type="password" class="form-control" placeholder="Password" required="" />
+                        </div>
+                        <div>
+                            <select class="form-select form-select-lg mb-3 form-control" aria-label=".form-select-lg example" name="selectedStoreId" required>
+                                @*<option selected value="">Chọn đơn vị</option>*@
+                                @if (ViewBag.ListStore != null)
+                                {
+                                    foreach (var item in ViewBag.ListStore)
+                                    {
+                                        <option value="@item.Key">@item.Key - @item.Value</option>
+                                    }
+                                }
+
+                                @*<option value="HBHA">HBHA - HONDA BIÊN HÒA</option>
+                                <option value="HPTN">HPTN - HONDA PHÁT TIẾN</option>
+                                <option value="HLAN">HLAN - HONDA LONG AN</option>
+                                <option value="HTNH">HTNH - HONDA TÂY NINH</option>
+                                <option value="TNK">TNK - TOYOTA NINH KIỀU</option>
+                                <option value="TTG">TTG - TOYOTA TIỀN GIANG</option>
+                                <option value="TBTR">TBTR - TOYOTA BẾN TRE</option>
+                                <option value="MVL">MVL - MITSUBISHI VĨNH LONG</option>
+                                <option value="DEMO">DEMO</option>*@
+                            </select>&nbsp;
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-default submit">Login</button>
+                        </div>
+                        <div>
+                            <a href="~/User/ForgetPassWord" style="text-decoration:none"><span style="font-style:italic"><i>Quên mật khẩu</i></span></a>
+                        </div>
+                        <div class="clearfix"></div>
+                    }
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

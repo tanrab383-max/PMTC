@@ -1,0 +1,50 @@
+﻿
+@model List<PhieuQTModel>
+@{
+    Layout = null;
+    int i = 1;
+}
+<table id="promiseTable" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Ngày quyết toán</th>
+            <th>Mã phiếu quyết toán</th>
+            <th>Mã phiếu nợ</th>
+            <th>Khách hàng</th>
+            <th>Số hợp đồng</th>
+            <th>Biển số</th>
+            <th>Số khung</th>
+            <th>Số tiền còn lại</th>
+            <th>Số tiền quyết toán</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody id="promiseTableBody">
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                     <td>@item.NgayQuyetToan.ToString("dd/MM/yyyy")</td>
+                    <td>@item.MaPhieuQuyetToan</td>
+                    <td>
+                        @item.MaPhieuNo
+                    </td>
+                    <td>@item.KhachHang</td>
+                    <td>@item.SoHopDong</td>
+                    <td>@item.BienSo</td>
+                    <td>@item.SoKhung</td>
+                    <td>@TNK.Core.Common.ToCurrencyString(double.Parse(item.SoTienQuyetToan.ToString()))</td>
+                    <td>@TNK.Core.Common.ToCurrencyString(double.Parse(item.SoTienQuyetToan.ToString()))</td>
+                    <td><a href="javascript:;" onclick="Delete(this,'@item.MaPhieuQuyetToan')"><i title="Delete" class="fa fa-close"></i></a></td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging_v3.cshtml")
+</div>

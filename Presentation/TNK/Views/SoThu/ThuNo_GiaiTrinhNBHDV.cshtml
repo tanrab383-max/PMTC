@@ -1,0 +1,81 @@
+﻿@model List<TNK.Core.Domain.View.ViewNoPhaiThuBHDV>
+@{
+    Layout = null;
+    ViewBag.Type = ViewBag.Type.ToUpper();
+    int i = 1;
+
+}
+<table class="table" id="tableGiaiTrinhExcel">
+    <thead>
+        <tr class="success">
+            <th>STT</th>
+
+            <th>Ngày nợ</th>
+            <th>Mã phiếu</th>
+
+            <th>Khách hàng</th>
+            <th>Số chứng từ</th>
+            <th>Biển số</th>
+            <th>Tình trạng</th>
+            @*<th>Ngày giải trình</th>
+                <th>Người giải trình</th>*@
+
+            @*<th>Số tiền nợ</th>
+                <th>Đã thanh toán</th>
+                <th>Còn nợ</th>*@
+            @*<th style="width:200px">Số hóa đơn</th>
+                <th style="width:200px" title="Ngày xuất hóa đơn">Ngày XHĐ</th>
+                <th style="width:200px" title="Ngày thao tác trên bên mềm việc xuất hóa đơn">Ngày thao tác XHĐ</th>
+                <th style="width:200px" title="Ngày xác nhận công nợ">Ngày XNCN</th>
+                <th style="width:200px" title="Ngày thao tác trên phần mềm ghi nhận công nợ">Ngày thao tác XNCN</th>*@
+            <th>Giải trình</th>
+            <th>Lý do quá hạn</th>
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+
+                    <td class="NgayNo_@item.MaPhieuNo">@item.NgayNo.ToString("dd/MM/yyyy")</td>
+                    <td>@item.MaPhieuNo</td>
+
+                    <td>@item.Hoten</td>
+
+                    <td>@item.SoHopDong</td>
+
+                    <td>@item.BienSo</td>
+                    <td>
+                        @item.TinhTrangCongNo_Title
+                    </td>
+                    @*<td>@(item.NgayGiaiTrinhGanNhat.HasValue ? item.NgayGiaiTrinhGanNhat.Value.ToString("yyyy/MM/dd"):"") </td>
+                        <td title="@item.LichSuGiaiTrinh">@item.NguoiGiaiTrinhGanNhat</td>*@
+                    <td>
+                        <input type="text" id="GiaiTrinh_@item.MaPhieuNo.ToUpper().Trim()" onmousemove="ShowTitle(this);" class="form-control input-sm textGiaiTrinh" value="@item.GiaiTrinh" title="giải trình" style="width:150px" />
+                    </td>
+                    <td  style="width:150px">
+                        <select class="select2 fullwidth" id="LDQH_@item.MaPhieuNo.Trim()">
+                            <option value="">Chọn</option>
+                            @foreach (TNK.Core.Domain.CategoryItem obj in ViewBag.ListLyDoQuaHan)
+                            {
+                                <option value="@obj.Code" @Html.Raw(obj.Code == item.LyDoQuaHan ? "selected" : "")>@obj.Name</option>
+                            }
+                        </select>
+
+                    </td>
+                    <td><i class="fa fa-save" title="Lưu giải trình @item.MaPhieuNo" style="cursor:pointer" onclick="SaveGiaiTrinh('@item.MaPhieuNo')"></i></td>
+
+                </tr>
+
+            }
+        }
+    </tbody>
+</table>
+<div class="right">
+    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+</div>

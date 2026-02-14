@@ -1,0 +1,32 @@
+﻿@model List<TNK.Core.Domain.Report.ReportCongNo>
+@{
+    ViewBag.Title = "Báo cáo đối chiếu công nợ phụ kiện";
+}
+<div class="x_content">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr class="success">
+                    <th>Mã phiếu thu</th>
+                    <th>Khách hàng</th>
+                    <th>Số hợp đồng</th>
+                    <th>Ngày thu</th>
+                    <th>Số khung / Biển số</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.MaPhieuThu</td>
+                        <td>@item.HoTen</td>
+                        <td>@item.SoHopDong</td>
+                        <td>@item.NgayThu</td>
+                        <td>@item.SoKhung</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

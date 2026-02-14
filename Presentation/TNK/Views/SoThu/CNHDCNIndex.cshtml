@@ -1,0 +1,870 @@
+﻿@model List<TNK.Core.Domain.View.ViewNoPhaiThuBHDV>
+@{
+    int i = 1;
+    var flag = true;
+    var count = Model?.Count;
+    //var ModelGiaiTrinh = ViewBag.ModelGiaiTrinh;
+    var activeSearch = ViewBag.Submit == "Search" ? "active" : "";
+    var activeGiaiTrinh = ViewBag.Submit == "SearchGiaiTrinh" ? "active" : "";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs" id="tab_data">
+                @if (ViewBag.Submit == "Search")
+                {
+                    <li class='active' data-url="/SoThu/PhieuThu/@ViewBag.Type">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Phiếu nợ
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="" data-url="/SoThu/PhieuThu/@ViewBag.Type">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Phiếu nợ
+                        </a>
+                    </li>
+                }
+                @if (ViewBag.Submit == "SearchGiaiTrinh")
+                {
+                    <li class="active">
+                        <a id="a_2" href="#tab_2" data-toggle="tab" aria-expanded="false">
+                            Giải trình
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a id="a_2" href="#tab_2" data-toggle="tab" aria-expanded="false">
+                            Giải trình
+                        </a>
+                    </li>
+                }
+            </ul>
+            <div class="tab-content">
+                <div class='tab-pane @activeSearch' id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form method="get" class="row">
+                                <input name="id" type="hidden" value="@ViewBag.Type" />
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" id="FromDate" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="ToDate" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="@ViewBag.SearchHolder" placeholder="@ViewBag.SearchHolder" class="form-control input-sm " value="@ViewBag.Query" name="query" id="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Loại phiếu</label>
+                                        <select class="form-control" name="type" id="type">
+                                            <option value="">Chọn</option>
+                                            <option value="NBHDV">Nợ bảo hiểm dịch vụ</option>
+                                            <option value="NPTPK">Nợ phụ tùng, phụ kiện</option>
+                                            <option value="NDIVU">Nợ dịch vụ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" id="SearchNPT" name="submit" value="Tìm kiếm" title="Tìm kiếm phiếu nợ" class="btn btn-success" />
+                                        <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcel" />
+                                        <input style="width:50%" onclick="ImportData_HoaDon()" id="btnimportData" title="Import hóa đơn" value="Import hóa đơn" class="btn btn-primary" />
+                                        <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        @Html.RadioButton("tinhtrang", "", true, new { id = "All" }) Tất Cả
+                                        @*@Html.RadioButton("tinhtrang", "D", false, new { id = "D" }) Đang sử dụng*@
+                                        @Html.RadioButton("tinhtrang", "H", false, new { id = "H" }) Hoàn tất
+                                        @Html.RadioButton("tinhtrang", "C", false, new { id = "C" }) Chưa hoàn tất
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive" id="@ViewBag.Type">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Ngày nợ</th>
+                                            <th>Mã phiếu</th>
+                                           
+                                                <th>Công ty bảo hiểm</th>
+                                            
+                                            <th>Khách hàng</th>
+                                            <th>Số phiếu quyết toán</th>
+                                            <th>Biển số</th>
+                                            <th>Nội dung</th>
+                                            <th>Số tiền nợ</th>
+                                            <th>Đã thanh toán</th>
+                                            <th>Còn nợ</th>
+                                            <th style="display:@ViewBag.HienThiNguoiBaoLanh">Người bảo lãnh</th>
+                                            <th>Tình trạng</th>
+                                            <th style="width:200px">Số hóa đơn</th>
+                                            <th style="width:200px" title="Ngày xuất hóa đơn">Ngày XHĐ</th>
+                                            <th style="width:200px" title="Ngày thao tác trên bên mềm việc xuất hóa đơn">Ngày thao tác XHĐ</th>
+                                            <th style="width:200px" title="Ngày xác nhận công nợ">Ngày XNCN</th>
+                                            <th style="width:200px" title="Ngày thao tác trên phần mềm ghi nhận công nợ">Ngày thao tác XNCN</th>
+                                            <th>Ghi chú</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                        <tr>
+                                            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                            <td class="NgayNo_@item.MaPhieuNo">@item.NgayNo.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.MaPhieuNo</td>
+                                            @*@if (ViewBag.Type == "NBHDV")
+                                            {*@
+                                                <td>@item.TenDoiTac</td>
+                                           @* }*@
+                                            <td>@item.Hoten</td>
+                                            @if (@item.SoHopDong != null && @item.SoHopDong != "")
+                                            {
+                                                <td>@item.SoHopDong</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@item.ChungTuThu</td>
+                                            }
+                                            <td>@item.BienSo</td>
+                                            <td>@item.NoiDung</td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.SoTienNo)</td>
+                                            <td class="number2 soTienDaTra_@item.MaPhieuNo">
+                                                @TNK.Core.Common.ToCurrencyString(item.SoTienDaTra)
+                                                <input id="soTienDaTra_@item.MaPhieuNo" type="hidden" value="@item.SoTienDaTra" />
+
+                                            </td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.SoTienConLai)</td>
+                                            <td style="display:@ViewBag.HienThiNguoiBaoLanh">@item.NguoiBaoLanh</td>
+
+
+                                            @if (!string.IsNullOrEmpty(item.MaPhieuThu))
+                                            {
+                                                <td style="width:5%" class="center">
+                                                    <a href="/SoThu/ThuNoEdit/@item.MaPhieuThu?type=@ViewBag.Type" style="color:blue;" title="Xem chi tiết phiếu thu nợ">
+                                                        @item.TinhTrang
+                                                    </a>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>@item.TinhTrang</td>
+                                            }
+
+                                            <td style="width:200px">
+                                                <div class="input-group" width="200px">
+                                                    <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="SHD_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="@item.SoHoaDon" style="width:70px" />
+                                                </div>
+                                            </td>
+                                            <td style="width:200px">
+                                                <div class="input-group">
+                                                    @if (item.NgayXuatHoaDon != null)
+                                                    {
+                                                        <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="NgayXHD_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="@item.NgayXuatHoaDon.Value.ToString("dd/MM/yyyy")" style="width:85px" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="NgayXHD_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="" style="width:85px" />
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (item.NgayTaoSoHoaDonLenHeThong != null)
+                                                {
+                                                    @item.NgayTaoSoHoaDonLenHeThong.Value.ToString("dd/MM/yyyy")
+                                                }
+                                            </td>
+                                            <td style="width:200px">
+                                                <div class="input-group">
+                                                    @if (item.NgayXacNhanCongNo != null)
+                                                    {
+                                                        <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="NgayXNCN_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="@item.NgayXacNhanCongNo.Value.ToString("dd/MM/yyyy")" style="width:85px" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="NgayXNCN_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="" style="width:85px" />
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (item.NgayTaoXacNhanCongNoLenHeThong != null)
+                                                {
+                                                    @item.NgayTaoXacNhanCongNoLenHeThong.Value.ToString("dd/MM/yyyy")
+                                                }
+                                            </td>
+                                            <td style="width:200px">
+                                                <div class="input-group" width="200px">
+                                                    <input type="text" @*@(item.SoTienDaTra>0?"disabled='true'":"")*@ id="GhiChu_@item.MaPhieuNo.ToUpper().Trim()" class="form-control input-sm" value="@item.GhiChu" onmousemove="ShowTitle(this);" style="width:70px" />
+                                                </div>
+                                            </td>
+
+                                            <td>
+                                                <i class="fa fa-save" title="Lưu số hóa đơn cho mã phiếu nợ @item.MaPhieuNo" style="cursor:pointer" onclick="SaveSHD('@item.MaPhieuNo')"></i>
+                                            </td>
+                                        </tr>
+                                            //i++;
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Giải trình công nợ -->
+                <div class='tab-pane @activeGiaiTrinh' id="tab_2">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form method="get" class="row">
+                                <input name="id" type="hidden" value="@ViewBag.Type" />
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="01/01/2000" name="from" id="FromDateGiaiTrinh" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="ToDateGiaiTrinh" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="query1" title="Tìm kiếm giải trỉnh: @ViewBag.SearchHolder, Số phiếu quyết toán" placeholder="@ViewBag.SearchHolder,Số phiếu quyết toán" class="form-control input-sm " value="@ViewBag.QueryGiaiTrinh" name="query1" />
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" id="SearchGiaiTrinh" name="submit" value="Tìm kiếm" class="btn btn-success" />
+                                        <input type="button" value="Xuất excel" class="btn btn-info" id="btnExportExcelGiaiTrinh" />
+                                        <input style="width:50%" onclick="ImportData_GiaiTrinh()" id="btnimportDataGiaiTrinh" title="Import giải trình" value="Import giải trình" class="btn btn-primary" />
+                                        <div style="display:none"><input type="file" id="txtUploadFileGiaiTrinh" /></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group" style="align-content:center">
+                                        <center>
+                                            @Html.RadioButton("dagiaitrinh", "All", false, new { id = "giaitrinh" }) Tất Cả
+                                            @Html.RadioButton("dagiaitrinh", "CGT", true, new { id = "giaitrinh" }) Chưa giải trình
+                                            @Html.RadioButton("dagiaitrinh", "DGT", false, new { id = "giaitrinh" }) Đã giải trình
+                                        </center>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group" style="align-content:center ; text-align:center">
+                                        <center>
+                                            @Html.RadioButton("giaitrinh", "All", true, new { id = "giaitrinh" }) Tất Cả
+                                            @*@Html.RadioButton("tinhtrang", "D", false, new { id = "D" }) Đang sử dụng*@
+                                            @Html.RadioButton("giaitrinh", "CHTQH", false, new { id = "giaitrinh" }) Hồ sơ CHT - Quá hạn
+                                            @Html.RadioButton("giaitrinh", "XNCNQH", false, new { id = "giaitrinh" }) Xác nhận CN - Quá hạn
+                                            @Html.RadioButton("giaitrinh", "CNQH", false, new { id = "giaitrinh" }) Công nợ - Quá hạn
+                                        </center>
+                                    </div>
+                                </div>
+
+                            </form>
+                            <div class="table" id="tableGiaiTrinh">
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#SearchGiaiTrinh').trigger('click');
+        })
+        $("#CHKALL").change(function () {
+            debugger;
+            $("input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+        var chk = "";
+        var flag = true;
+        $(".checkbox").change(function () {
+            debugger;
+            chk = "";
+            $(".checkbox").map(function (key, val) {
+                flag = true;
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    if (chk == "") {
+                        chk = a;
+                    }
+                    else {
+                        if (a != chk) {
+                            flag = false;
+                            toastError("Chỉ được chọn các phiếu nợ của cùng 1");
+                            $(val).attr("checked", "false");
+                            $(val).click();
+                        }
+                    }
+                }
+            })
+
+        })
+
+        //$("#CHKALL").change(function () {
+        //    debugger;
+        //      if (! $('input:checkbox').is('checked')) {
+        //          $('input:checkbox').attr('checked','checked');
+        //      } else {
+        //          $('input:checkbox').removeAttr('checked');
+        //      }
+        //});
+
+        function setCookie(cname, cvalue) {
+            document.cookie = cname + "=" + cvalue + ";path=/SoThu/ThuNoCreate/";
+        }
+
+        $("#ThemMoi").click(function () {
+            debugger;
+            var result = "";
+            var flag = true;
+            var ctbh = "";
+            $(".checkbox").map(function (key, val) {
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    if (ctbh == "") {
+                        ctbh = a;
+                    }
+                    if (a != ctbh) {
+                        if (flag) {
+                            toastError("Chỉ được chọn các phiếu nợ của cùng 1 ");
+                        }
+                        flag = false;
+                        return;
+                    }
+                    result += $(val).val() + ",";
+                }
+            })
+            if (result != "") {
+                result = result.substring(0, result.length - 1);
+            }
+            if (result != "" && flag == true)
+            {
+                setCookie("link", result);
+                window.location = "/SoThu/ThuNoCreate/" + 0 + "?type=@ViewBag.Type";
+            }
+
+        })
+
+        var type = '@ViewBag.Type';
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            debugger;
+            var from = $("#FromDate").val();
+            var to = $("#ToDate").val();
+            var query = $("#query").val();
+            $.get("/SoThu/CNHDCNIndex?submit=''"  + "&from=" + from + "&to=" + to + "&query=" + query + "&p=" + p + "&tab = 0&tinhtrang=''").success(function (response) {
+                $("#tbody").html(response);
+                $("#tbody").find(".number2").map(function (key, val) {
+                    var val = $(this).html();
+                    if (val != "") {
+                        val = val.split(",").join("");
+                        val = parseInt(val);
+                        $(this).html(val.toLocaleString());
+                    }
+                })
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+
+            })
+        }
+
+        $("#SearchGiaiTrinh").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            SearchGiaiTrinh(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function SearchGiaiTrinh(obj) {
+            debugger;
+            var from = $("#FromDateGiaiTrinh").val();
+            var to = $("#ToDateGiaiTrinh").val();
+            var query = $("#query1").val();
+            //alert(query);
+            var tinhtrang = $('input[name="giaitrinh"]:checked').val();
+            var dagiaitrinh = $('input[name="dagiaitrinh"]:checked').val();
+
+            $.get("/SoThu/ThuNo_GiaiTrinh?id=" + type + "&tinhtrang=" + tinhtrang + "&queryGiaiTrinh=" + query + "&dagiaitrinh=" + dagiaitrinh + "&from=" + from + "&to=" + to + "&p=" + p).success(function (response) {
+                $("#tableGiaiTrinh").html(response);
+                var count = $('#tableGiaiTrinh tr').length -1;
+                $("#tableGiaiTrinh").find(".number2").map(function (key, val) {
+                    var val = $(this).html();
+                    if (val != "") {
+                        val = val.split(",").join("");
+                        val = parseInt(val);
+                        $(this).html(val.toLocaleString());
+                    }
+                })
+                $("#a_2").html("Giải trình(" + count.toString() + ")");
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+
+            })
+        }
+
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            debugger;
+            try {
+                a = $(this).attr("href");
+                var b = a.split("&");
+                p = b[3].split("=")[1];
+                Search();
+            } catch (ex) {
+                //log.console(ex);
+            }
+
+            return false;
+        })
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'ThuNo' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                    Search($("#Search"));
+                });
+            }
+        }
+        function Save(MaPhieuNo)
+        {
+            debugger;
+            var Sales = $("#Sales_" + MaPhieuNo).val();
+            var GhiChu = $("#GhiChu_" + MaPhieuNo).val();
+            $.ajax({
+                url: "/SoThu/Update_SalesNote",
+                type: "POST",
+                data: { MaPhieuNo: MaPhieuNo, Sales: Sales, GhiChu: GhiChu },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi: Cập nhật Sales và Ghi chú.");
+                }
+            });
+        }
+        function SaveGiaiTrinh(MaPhieuNo) {
+            debugger;
+            var GiaiTrinh = $("#GiaiTrinh_" + MaPhieuNo).val();
+
+            if ($("#LDQH_" + MaPhieuNo).val() === "" && GiaiTrinh != "") {
+                toastWarning("Vui lòng chọn lý do quá hạn");
+                $("#LDQH_" + MaPhieuNo).focus();
+                return false;
+            }
+            var LyDoQuaHan = $("#LDQH_" + MaPhieuNo).val();
+            //var GhiChu = $("#GhiChu_" + MaPhieuNo).val();
+            $.ajax({
+                url: "/SoThu/Update_GiaiTrinh",
+                type: "POST",
+                data: { MaPhieuNo: MaPhieuNo, GiaiTrinh: GiaiTrinh, LyDoQuaHan: LyDoQuaHan },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message);
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                    toastWarning("Lỗi cập nhật giải trình.");
+                }
+            });
+        }
+        function SaveSHD(MaPhieuNo) {
+            debugger;
+            var SoHoaDon = $("#SHD_" + MaPhieuNo).val();
+            var NgayXHD = $("#NgayXHD_" + MaPhieuNo).val();
+            var NgayXNCN = $("#NgayXNCN_" + MaPhieuNo).val();
+            var NgayNo = $(".NgayNo_" + MaPhieuNo).html();
+            var SoTienDaTra = $(".soTienDaTra_" + MaPhieuNo).text();
+            var GhiChu = $("#GhiChu_" + MaPhieuNo).val();
+            if (SoTienDaTra != "0" && (NgayXNCN == "" || SoHoaDon == "" || NgayXHD == ""))
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập đầy đủ thông tin hóa đơn và công nợ vì phiếu đã có thu tiền nợ.");
+                if (NgayXNCN == "") $("#NgayXNCN_" + MaPhieuNo).focus();
+                if (NgayXHD == "") $("#NgayXHD_" + MaPhieuNo).focus();
+                if (SoHoaDon == "") $("#SHD_" + MaPhieuNo).focus();
+                return;
+            }
+            if (NgayXHD.length == 8) {
+                NgayXHD = NgayXHD.substring(0, 2) + '/' + NgayXHD.substring(2, 4) + '/' + NgayXHD.substring(4, 8);
+            }
+            if (NgayXNCN.length == 8) {
+                NgayXNCN = NgayXNCN.substring(0, 2) + '/' + NgayXNCN.substring(2, 4) + '/' + NgayXNCN.substring(4, 8);
+            }
+           // alert(ngayNo.text());
+            console.log("Ngày XHĐ:" + NgayXHD);
+            console.log("NgàyXNCN:" + NgayXNCN);
+            //kiểm tra định dạng ngày
+            if (NgayXHD != "" && !isDate(NgayXHD))
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Ngày xuất hóa đơn] theo định dạng dd/MM/yyyy ");
+                $("#NgayXHD_" + MaPhieuNo).focus();
+                return;
+            }
+            if (NgayXNCN != "" && !isDate(NgayXNCN))
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Ngày ghi nhận công nợ] theo định dạng dd/MM/yyyy ");
+                $("#NgayXNCN_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra neu co số hóa đơn thì phải bắt nhập nsgày nhập hóa đơn
+            if (SoHoaDon != "" && NgayXHD == "")
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Ngày xuất hóa đơn]");
+                $("#NgayXHD_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra neu co số hóa đơn thì phải bắt nhập nsgày nhập hóa đơn
+            if (SoHoaDon == "" && NgayXHD != "") {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Số hóa đơn]");
+                $("#SHD_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra neu co ngày xác nhạn công nợ thì phải có nhập số hóa đơn + ngày xuất hóa đơn
+            if (NgayXHD == "" && NgayXNCN != "")
+            {
+                toastWarning("[" + MaPhieuNo + "]: Vui lòng nhập [Ngày xuất hóa đơn] và [Số hóa đơn]");
+                $("#NgayXHD_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra ngày xuất hóa đơn >= ngày nợ
+            if (isDate(NgayXHD) && toDate(NgayXHD) < toDate(NgayNo))
+            {
+                toastWarning("[" + MaPhieuNo + "]: [Ngày xuất hóa đơn] không được nhỏ hơn [Ngày nợ]");
+                $("#NgayXHD_" + MaPhieuNo).focus();
+                return;
+            }
+            //kiem tra ngày ghi nhận công nợ >= ngày xuất hóa đơn
+            if (isDate(NgayXHD) && isDate(NgayXNCN) && toDate(NgayXNCN) < toDate(NgayXHD))
+            {
+                toastWarning("[" + MaPhieuNo + "]: [Ngày xác nhận công nợ] không được nhỏ hơn [Ngày xuất hóa đơn]");
+                $("#NgayXNCN_" + MaPhieuNo).focus();
+                return;
+            }
+
+            console.log(NgayNo);
+            $.ajax({
+                url: "/SoThu/Update_SHDBHDVByMaPhieuNo",
+                type: "POST",
+                data: { maPhieuNo: MaPhieuNo, soHoaDon: SoHoaDon, ngayXuatHoaDon: NgayXHD, ngayXacNhanCongNo: NgayXNCN, ghiChu: GhiChu },
+                success: function (result) {
+                    debugger;
+                    if (!result.IsError) {
+                        toastSuccess("[" + MaPhieuNo + "]: " + result.Message);
+                        //ản hiện checkbox chọn
+                        if (isDate(NgayXNCN))
+                            $("#chk_" + MaPhieuNo).show();
+                        else
+                            $("#chk_" + MaPhieuNo).hide();
+                    }
+                    else {
+                        toastWarning("[" + MaPhieuNo + "]: " + result.Message);
+
+                    }
+                },
+                error: function (result) {
+                    toastError("[" + MaPhieuNo + "] Lỗi: Cập nhật số hóa đơn cho mã phiếu nợ " + MaPhieuNo + ".");
+                }
+            });
+        }
+        $("#btnExportExcelGiaiTrinh").click(function () {
+            var dagiaitrinh = $('input[name="dagiaitrinh"]:checked').val();
+            var tinhtrang = $('input[name="giaitrinh"]:checked').val();
+            $.fileDownload("/SoThu/Export_Excel_GiaiTrinh", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDateGiaiTrinh").val(),
+                        ToDate: $("#ToDateGiaiTrinh").val(),
+                        Query: $("#query1").val(),
+                        tinhtrang: tinhtrang,
+                        dagiaitrinh: dagiaitrinh,
+                    },
+                    failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+        $("#btnExportExcel").click(function () {
+            debugger;
+            var radioValue = $("input[name='tinhtrang']:checked").val();
+            $.fileDownload("/SoThu/Export_Excel_NoHoaDonCongno", {
+                    httpMethod: "POST",
+                    data: {
+                        FromDate: $("#FromDate").val(),
+                        ToDate: $("#ToDate").val(),
+                        Query: $("#query").val(),
+                        Tinhtrang: radioValue,
+                    },
+                    failMessageHtml: "Có lỗi trong khi tải file excel."
+                });
+            return false;
+        });
+        var datafile = new FormData();
+        function ImportData_HoaDon() {
+            //$("#btnimportData").val("Loading...");
+            //$("#btnimportData").prop('disabled', true);
+            $("#txtUploadFile").trigger('click');
+        }
+        $('#txtUploadFile').on('change', function (e) {
+            //    //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFile").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_HoaDon",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile").value = "";
+                        datafile.delete('file');
+                        //Search($("#Search"));
+                        //window.location.reload();
+                       // $("#SearchNPT").click();
+                    },
+                    success: function (result) {
+                        if (result.IsError) {
+
+                          //  $("#SearchNPT").click();
+                            toastError("Các dòng không import được:" + result.Message);
+                            Search($("#Search"));
+                            //window.location.reload();
+                        }
+                        else {
+
+                            Search($("#Search"));
+                            //window.location.reload();
+                            $("#SearchNPT").click();
+                            toastSuccess("Import thành công");
+                           // window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+
+                       // $("#SearchNPT").click();
+                        toastError("Lỗi: Import file excel.");
+                        //Search($("#Search"));
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+        function ImportData_GiaiTrinh() {
+            //$("#btnimportData").val("Loading...");
+            //$("#btnimportData").prop('disabled', true);
+            $("#txtUploadFileGiaiTrinh").trigger('click');
+        }
+        $('#txtUploadFileGiaiTrinh').on('change', function (e) {
+            //    //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFileGiaiTrinh").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_GiaiTrinhNBHDV",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFileGiaiTrinh").value = "";
+                        datafile.delete('file');
+                        //Search($("#Search"));
+                        //window.location.reload();
+                        // $("#SearchNPT").click();
+                    },
+                    success: function (result) {
+                        if (result.IsError) {
+
+                            //  $("#SearchNPT").click();
+                            toastError("Các dòng không import được:" + result.Message);
+
+                            //Search($("#Search"));
+                            //window.location.reload();
+                        }
+                        else {
+
+                            //Search($("#Search"));
+                            //window.location.reload();
+                            // $("#SearchNPT").click();
+                            toastSuccess("Import thành công");
+                            //window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+
+                        // $("#SearchNPT").click();
+                        toastError("Lỗi: Import file excel.");
+                        //Search($("#Search"));
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+        //kiem tra du lieu ngay thang theo dinh dang dd/MM/yyyy
+        function isDate(ExpiryDate) {
+            var objDate,  // date object initialized from the ExpiryDate string
+                mSeconds, // ExpiryDate in milliseconds
+                day,      // day
+                month,    // month
+                year;     // year
+            // date length should be 10 characters (no more no less)
+            if (ExpiryDate.length < 8) {
+                return false;
+            }
+
+            if (ExpiryDate.length !== 10) {
+                return false;
+            }
+            // third and sixth character should be '/'
+            if (ExpiryDate.substring(2, 3) !== '/' || ExpiryDate.substring(5, 6) !== '/') {
+                return false;
+            }
+            // extract month, day and year from the ExpiryDate (expected format is mm/dd/yyyy)
+            // subtraction will cast variables to integer implicitly (needed
+            // for !== comparing)
+            day = ExpiryDate.substring(0, 2) - 0; // because months in JS start from 0
+            month = ExpiryDate.substring(3, 5) - 1;
+            year = ExpiryDate.substring(6, 10) - 0;
+            // test year range
+            if (year < 1000 || year > 3000) {
+                return false;
+            }
+            // convert ExpiryDate to milliseconds
+            mSeconds = (new Date(year, month, day)).getTime();
+            // initialize Date() object from calculated milliseconds
+            objDate = new Date();
+            objDate.setTime(mSeconds);
+            // compare input date and parts from Date() object
+            // if difference exists then date isn't valid
+            if (objDate.getFullYear() !== year ||
+                objDate.getMonth() !== month ||
+                objDate.getDate() !== day) {
+                return false;
+            }
+            // otherwise return true
+            return true;
+        }
+        function toDate(ExpiryDate) {
+            // date length should be 10 characters (no more no less)
+            if (ExpiryDate.length !== 10) {
+                return null;
+            }
+            // third and sixth character should be '/'
+            if (ExpiryDate.substring(2, 3) !== '/' || ExpiryDate.substring(5, 6) !== '/') {
+                return null;
+            }
+            // extract month, day and year from the ExpiryDate (expected format is mm/dd/yyyy)
+            // subtraction will cast variables to integer implicitly (needed
+            // for !== comparing)
+            day = ExpiryDate.substring(0, 2) - 0; // because months in JS start from 0
+            month = ExpiryDate.substring(3, 5) - 1;
+            year = ExpiryDate.substring(6, 10) - 0;
+            return new Date(year, month, day);
+        }
+
+        //$("#query1").on('change', function (e) {
+        //    alert("Handler for .change() called.");
+        //});
+        function ShowTitle(obj) {
+            $(obj).attr('title', $(obj).val());
+        }
+    </script>
+}
+

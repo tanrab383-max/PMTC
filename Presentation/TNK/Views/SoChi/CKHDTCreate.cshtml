@@ -1,0 +1,321 @@
+﻿
+@model TNK.Model.SoChiModel
+@{
+    var item = Model.Item;
+    item.TongCong = 0;
+    ViewBag.Date = DateTime.Now.ToString("dd/MM/yyyy");
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b>Thông tin phiếu</b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form id="form-data" method="post" class="form-horizontal form-label-left FormPhieuChi">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số chứng từ (*)</label> <!--  (nhập BNTAY nếu là biên nhận tay)-->
+                                    @Html.EditorFor(x => item.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "20" } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày chi</label>
+                                    @Html.EditorFor(x => item.NgayChi, new { htmlAttributes = new { @class = "form-control input-sm date1", @Value = ViewBag.Date } })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ngày hạch toán</label>
+                                    @Html.EditorFor(x => item.NgayHachToan, new { htmlAttributes = new { @class = "form-control input-sm date1", @Value = ViewBag.Date } })
+                                </div>
+                            </div>
+                            @*<div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Dự án</label>
+                                    @Html.DropDownListFor(x => item.DuAn, Model.DuAnDauTu.Select(x => new SelectListItem { Text = x.Name, Value = x.Code }), "Chọn", new { @class = "select2 fullwidth", @id = "DuAn" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số tiền khấu hao</label>
+                                    <input type="text" class="form-control input-sm number" readonly name="item.SoTienChi" id="TongCong" value="@item.TongCong" />
+                                </div>
+                            </div>*@
+
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Dự án(*)</label>
+                                    @Html.DropDownListFor(x => item.DuAn, Model.DuAnDauTu.Select(x => new SelectListItem { Text = x.Name, Value = x.Code }), "Chọn", new { @class = "select2 fullwidth", @id = "DuAn" })
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Tên dự án</label>
+                                    <select class="select2 fullwidth" id="TenDT">
+                                        <option value="">
+                                            Chọn
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group table-responsive">
+                                    <label>Khoản khấu hao: </label>
+                                    <table class="table table-striped jambo_table bulk_action" style="margin-bottom:5px;">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:25%">Tên tài sản</th>
+                                                <th style="width:25%">Giá trị còn lại</th>
+                                                <th style="width:25%">Số tiền khấu hao</th>
+                                                <th style="width:25%">Còn lại</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <div style="max-height:400px; overflow-y:scroll">
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <tbody id="DS_ChiDauTu">
+                                                @*phan append*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <tfoot>
+                                            <tr>
+                                                <td style="width:25%">Tổng cộng: </td>
+                                                <td style="width:25%" class="number TotalCoc" id="giatriconlai"></td>
+                                                <td style="width:25%;"><input type="text" class="form-control input-sm  number" id="itemTongCong" name="item.SoTienChi" value="@item.TongCong" readonly /></td>
+                                                <td style="width:25%"></td>
+                                                <td style="width:25%"> </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Nội dung (*)</label>
+                                    @Html.TextAreaFor(x => item.NoiDung, new { @class = "form-control input-sm" })
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label>Ghi chú</label>
+                                    @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                                </div>
+                            </div>
+                            @Html.Partial("~/Views/Common/UserComfirm.cshtml", null, new ViewDataDictionary { { "User", Model.Users } })
+                        </div>
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                <input type="submit" value="Save" class="btn btn-success" />
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="@ViewBag.LinkIndex" class="Back">Quay lại</a>
+
+
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    @*<link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    @*<script src="~/assests/plugins/select2/select2.min.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>*@
+    <script src="~/Scripts/jquery-ui.js"></script>
+    @*<link href="~/Content/jquery-ui.css" rel="stylesheet" />*@
+
+
+    <script src="~/Scripts/SoChiPhuTungCommon.js"></script>
+    <script type="text/javascript">
+        $(document).on("change", ".number", function () {
+            debugger;
+            var valnumber = $(this).val();
+            if (valnumber != "") {
+                valnumber = valnumber.split(",").join("");
+                valnumber = parseInt(valnumber);
+                // val = val * 1000;
+                $(this).val(valnumber.toLocaleString('en-us'));
+
+            }
+            else {
+                $(this).val(0);
+            }
+            let total = 0;
+            //03032018
+            if ($("#type").val() == "TBAHI") {
+                var tongcong = 0;
+                setTimeout(function () {
+                    $("#tbody").find("tr").map(function (key, val) {
+                        if ($(val).is(":visible")) {
+                            var isDeleted = $(val).find(".IsDeleted").val();
+
+                            if (isDeleted != "true") {
+                                let i = parseInt($(val).find(".number").val().split(",").join(""));
+                                if (!isNaN(i))
+                                    tongcong += i;
+                            }
+
+                        }
+                    });
+                });
+                $("#ThanhToan").find(".Total").html(tongcong.toLocaleString('en-us'));
+                $("#ThanhToan").find(".Total").val(tongcong.toLocaleString('en-us'));
+            }
+            CalThanhToan($(this));
+            //if($("#type").val() == "TKHAC")
+            //    TinhConLai_TKHAC();
+        });
+        $("#DuAn").on("change", function () {
+            $("#select2-chosen-2").text("Chọn");
+            var s = $("#select2-chosen-2").text()
+            GetListChiDauTuDuAn();
+            $("#itemTongCong").val((0).toLocaleString('en-us'));
+            $("#itemTongCong").text((0).toLocaleString('en-us'));
+        })
+        $("#TenDT").on("change", function () {
+            var Id = $("#TenDT").val();
+            if (Id == "")
+                GetListChiDauTuDuAn();
+            else
+                GetPhieuChiDauTu();
+            $("#itemTongCong").val((0).toLocaleString('en-us'));
+            $("#itemTongCong").text((0).toLocaleString('en-us'));
+        })
+
+        function GetListChiDauTuDuAn() {
+            var DuAn = $("#DuAn").val();
+            $.ajax({
+                url: "/SoChi/GetChiDauTuDuAn",
+                type: "POST",
+                data: { DuAn: DuAn },
+                success: function (result) {
+                    if (result.IsError) {
+                        //toastWarning(".");
+                    }
+                    else {
+                        var html = "<option selected value = '' >Chọn</option>";
+                        var html1 = "";
+                        for (var i = 0; i < result.ListCDATU.length; i++) {
+                            html += "<option value='" + result.ListCDATU[i].MaPhieuChi + "'>" + result.ListCDATU[i].NoiDung + "</option>";
+
+                            html1 += "<tr>";
+                            //html += "<td><label name='CTPC[" + i + "].Id'  value='CTPC[" + i + "].Id' hidden></label>";
+                            html1 += "<td><input type='text' class='form-control input-sm number'  id ='TS[" + i + "]NoiDung'  value='" + result.ListCDATU[i].NoiDung + "' readonly /></td>";
+                            html1 += "<td><input type='text' class='form-control input-sm  number' name='CTKH[" + i + "].SoTienConLai'  id ='CTKH[" + i + "]SoTienConLai' value='" + result.ListCDATU[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                            html1 += "<td><input type='text' class='form-control input-sm number' name='CTKH[" + i + "].SoTienKhauHao' id='CTKH[" + i + "]SoTienKhauHao' value='0' maxlength='15' onchange='TinhConLai()'  /></td>";
+                            html1 += "<td><input type='text' class='form-control input-sm  number'  id='CTKH[" + i + "]ConLaiSauKhauHao' value='" + result.ListCDATU[i].ConLai.toLocaleString('en-us') + "' readonly />";
+                            html1 += "<input type='text'style='display:none' name='CTKH[" + i + "].MaPhieuChiGoc' value='" + result.ListCDATU[i].MaPhieuChi + "' hiden /></td>";
+                            html1 += "</tr>";
+                        }
+                        $("#TenDT").empty();
+                        $("#TenDT").append(html);
+
+                        $("#DS_ChiDauTu").empty();
+                        $("#DS_ChiDauTu").append(html1);
+                    }
+
+                }
+            });
+        }
+        function GetPhieuChiDauTu() {
+            var Id = $("#TenDT").val();
+            if (Id != null) {
+                $.ajax({
+                    url: "/SoChi/GetPhieuChiDuAn",
+                    type: "POST",
+                    data: { MaId: Id },
+                    success: function (result) {
+                        if (result == null) {
+                            //toastWarning(".");
+                        }
+                        else {
+                            var html1 = "<tr>";
+                            //html += "<td><label name='CTPC[" + i + "].Id'  value='CTPC[" + i + "].Id' hidden></label>";
+                            html1 += "<td><input type='text' class='form-control input-sm number'  id ='TS[" + 0 + "]NoiDung'  value='" + result.PhieuChi.NoiDung + "' readonly /></td>";
+                            html1 += "<td><input type='text' class='form-control input-sm  number' name='CTKH[" + 0 + "].SoTienConLai'  id ='CTKH[" + 0 + "]SoTienConLai' value='" + result.PhieuChi.ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                            html1 += "<td><input type='text' class='form-control input-sm number' name='CTKH[" + 0 + "].SoTienKhauHao' id='CTKH[" + 0 + "]SoTienKhauHao' value='0' maxlength='15' onchange='TinhConLai()'  /></td>";
+                            html1 += "<td><input type='text' class='form-control input-sm  number'  id='CTKH[" + 0 + "]ConLaiSauKhauHao' value='" + result.PhieuChi.ConLai.toLocaleString('en-us') + "' readonly />";
+                            html1 += "<input type='text'style='display:none' name='CTKH[" + 0 + "].MaPhieuChiGoc' value='" + result.PhieuChi.MaPhieuChi + "' hiden /></td>";
+                            html1 += "</tr>";
+
+                            $("#DS_ChiDauTu").empty();
+                            $("#DS_ChiDauTu").append(html1);
+                        }
+
+                    }
+                });
+            }
+        }
+        function TinhConLai() {
+            dem = $("#DS_ChiDauTu").find("tr").length;
+            var TongCong = 0;
+            for (var i = 0; i < dem; i++) {
+                var KhauHao = parseInt($("#CTKH\\[" + i + "\\]SoTienKhauHao").val().split(",").join(""));
+                var GiaTriConLai = parseInt($("#CTKH\\[" + i + "\\]SoTienConLai").val().split(",").join(""));
+                if (KhauHao > GiaTriConLai) {
+                    toastWarning("Vui lòng nhập số tiền khấu hao nhỏ hơn số tiền còn lại");
+                    $("#CTKH\\[" + i + "\\]SoTienKhauHao").val((0).toLocaleString('en-us'))
+                    TinhConLai();
+                    return;
+                }
+                if (isNaN(KhauHao) != true) {
+                    TongCong += KhauHao;
+                    $("#CTKH\\[" + i + "\\]ConLaiSauKhauHao").val((GiaTriConLai - KhauHao).toLocaleString('en-us'));
+                }
+                else {
+                    KhauHao = 0;
+                    $("#LPT\\[" + i + "\\]TongKM").val((GiaTriConLai - KhauHao).toLocaleString('en-us'));
+                    TongCong += 0;
+                }
+            }
+            $("#itemTongCong").val((TongCong).toLocaleString('en-us'));
+            $("#itemTongCong").text((TongCong).toLocaleString('en-us'));
+
+        }
+        $("#DuAn").on("change", function () {
+            var maduan = $("#DuAn").val();
+            $.ajax({
+                url: "/SoChi/GetTongTienKhauHao",
+                type: "POST",
+                data: { MaDuAn: maduan },
+                success: function (result) {
+                    var test = parseInt(result);
+                    $("#TongCong").val((test).toLocaleString('en-us'));
+                }
+            });
+        })
+    </script>
+}
+

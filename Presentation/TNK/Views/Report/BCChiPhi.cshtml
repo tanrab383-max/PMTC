@@ -1,0 +1,639 @@
+﻿@using System.Data;
+
+@{ 
+    double TotalThu = 0;
+    double TotalChi = 0;
+    double TotalGiam = 0;
+    double TotalTongGiam = 0;
+}
+
+<div id="BCChiPhi" class="x_content">
+    <div class="row col-sm-6" style="float:left">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th colspan='6' class="tile">BẢNG PHÂN TÍCH CHI PHÍ TIỀN MẶT(Q.CHÍNH) @ViewBag.ShowRoom</th>
+                        </tr>
+                        <tr>
+                            <th colspan='6' class="tile">@ViewBag.TuNgayDenNgay</th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title">DIỄN GIẢI</th>
+                            <th class="column-title">THU</th>
+                            <th class="column-title">CHI</th>
+                            <th class="column-title">BỘ PHẬN</th>
+                            <th class="column-title">KÝ DUYỆT</th>
+                            <th class="column-title">GHI CHÚ</th>
+                            @*<th class="column-title">HHXE</th>
+                            <th class="column-title">HHPT</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (DataRow row in (Model as DataTable).Rows)
+                            {
+                                TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                <tr class="even pointer">
+                                    <td>@row["DienGiai"]</td>
+                                    <td class="number">@row["Thu"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                                    <td>@row["BoPhan"]</td>
+                                    <td>@row["NguoiDuyet"]</td>
+                                    <td>@row["GhiChu"]</td>
+                                    @*<td>@row["HHXE"]</td>
+                                    <td>@row["HHPT"]</td>*@
+                                </tr>
+                            }
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td>TỔNG CHI PHÍ</td>
+                            <td class="number">@TotalThu.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            @*<td></td>
+                            <td></td>*@
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th colspan='6' class="tile">BẢNG PHÂN TÍCH CHI PHÍ TREO NỢ @ViewBag.ShowRoom</th>
+                        </tr>
+                        <tr>
+                            <th colspan='6' class="tile">@ViewBag.TuNgayDenNgay</th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title">DIỄN GIẢI</th>
+                            <th class="column-title">THU</th>
+                            <th class="column-title">CHI</th>
+                            <th class="column-title">BỘ PHẬN</th>
+                            <th class="column-title">KÝ DUYỆT</th>
+                            <th class="column-title">GHI CHÚ</th>
+                            @*<th class="column-title">HHXE</th>
+                            <th class="column-title">HHPT</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            TotalChi = 0;
+                            foreach (DataRow row in (ViewBag.ListCTCP as DataTable).Rows)
+                            {
+                                TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                <tr class="even pointer">
+                                    <td>@row["DienGiai"]</td>
+                                    <td></td>
+                                    <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                                    <td>@row["BoPhan"]</td>
+                                    <td></td>
+                                    <td>@row["GhiChu"]</td>
+                                </tr>
+                            }
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td>TỔNG CHI PHÍ</td>
+                            <td></td>
+                            <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="control-group">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='5' class="tile">CÁC KHOẢN CHI QUỸ PHỤ</th>
+                            </tr>
+                            <tr>
+                                <th colspan='5' class="tile">@ViewBag.TuNgayDenNgay</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">DIỄN GIẢI</th>
+                                <th class="column-title">THU</th>
+                                <th class="column-title">CHI</th>
+                                <th class="column-title">KÝ DUYỆT</th>
+                                <th class="column-title">GHI CHÚ</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.ListExtraFund != null)
+                            {
+                                TotalThu = 0; TotalChi = 0;
+                                foreach (DataRow row in (ViewBag.ListExtraFund as DataTable).Rows)
+                                {
+                                    TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                    TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                    <tr class="even pointer">
+                                        <td>@row["DienGiai"]</td>
+                                        <td class="number">@row["Thu"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                                        <td>@row["NguoiDuyet"]</td>
+                                        <td>@row["GhiChu"]</td>
+
+                                    </tr>
+                                }
+                            }
+                            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                <td>TỔNG CHI QUỸ PHỤ</td>
+                                <td class="number">@TotalThu.ToString().Replace(",", ".")</td>
+                                <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="control-group">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='5' class="tile">CÁC KHOẢN CHI PHÍ GÓI BDTK @ViewBag.ShowRoom</th>
+                            </tr>
+                            <tr>
+                                <th colspan='5' class="tile">@ViewBag.TuNgayDenNgay</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">DIỄN GIẢI</th>
+                                <th class="column-title">THU</th>
+                                <th class="column-title">CHI</th>
+                                <th class="column-title">GIẢM GIÁ</th>
+                                <th class="column-title">TỔNG GIẢM</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.ListExtraFund != null)
+                            {
+                                TotalThu = 0; TotalChi = 0; TotalGiam = 0; TotalTongGiam = 0;
+                                foreach (DataRow row in (ViewBag.ListGBDTK as DataTable).Rows)
+                                {
+                                    TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                    TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                    TotalGiam += row["GiamGia"].ToString() == "" ? 0 : Convert.ToDouble(row["GiamGia"]);
+                                    TotalTongGiam += row["TongGiam"].ToString() == "" ? 0 : Convert.ToDouble(row["TongGiam"]);
+                                    <tr class="even pointer">
+                                        <td>@row["DienGiai"]</td>
+                                        <td class="number">@row["Thu"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["GiamGia"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["TongGiam"].ToString().Replace(",", ".")</td>
+                                    </tr>
+                                }
+                            }
+                            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                <td>TỔNG CHI PHÍ GÓI BDTK</td>
+                                <td class="number">@TotalThu.ToString().Replace(",", ".")</td>
+                                <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                                <td class="number">@TotalGiam.ToString().Replace(",", ".")</td>
+                                <td class="number">@TotalTongGiam.ToString().Replace(",", ".")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th colspan='5' class="tile">BẢNG PHÂN TÍCH CÁC KHOẢN CHI THANH TOÁN NHÀ CUNG CẤP </th>
+                        </tr>
+                        <tr>
+                            <th colspan='5' class="tile">@ViewBag.TuNgayDenNgay</th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title">DIỄN GIẢI</th>
+                            <th class="column-title">THU</th>
+                            <th class="column-title">CHI</th>
+                            <th class="column-title">KÝ DUYỆT</th>
+                            <th class="column-title">GHI CHÚ</th>
+                            @*<th class="column-title">HHXE</th>
+                            <th class="column-title">HHPT</th>*@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.ListChiPhiNCC != null)
+                        {
+                            TotalThu = 0;
+                            TotalChi = 0;
+                            foreach (DataRow row in (ViewBag.ListChiPhiNCC as DataTable).Rows)
+                            {
+                                TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                <tr class="even pointer">
+                                    <td>@row["DienGiai"]</td>
+                                    <td class="number">@row["Thu"]</td>
+                                    <td class="number">@row["Chi"]</td>
+                                    <td>@row["NguoiDuyet"]</td>
+                                    <td>@row["GhiChu"]</td>
+                                    @*<td>@row["HHXE"]</td>
+                                    <td>@row["HHPT"]</td>*@
+                                </tr>
+                            }
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td>TỔNG CHI PHÍ</td>
+                            <td class="number">@TotalThu</td>
+                            <td class="number">@TotalChi</td>
+                            <td></td>
+                            <td></td>
+                            @*<td></td>
+                            <td></td>*@
+                        </tr>
+                        <tr style="font-style:italic">
+                            <td colspan="5">
+                                (Các khoản chi thanh toán nhà cung cấp)
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <div class="row col-sm-6">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th colspan='7' class="tile">BẢNG PHÂN TÍCH CHI PHÍ NGÂN HÀNG</th>
+                        </tr>
+                        <tr>
+                            <th colspan='7' class="tile">@ViewBag.TuNgayDenNgay</th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title">DIỄN GIẢI</th>
+                            <th class="column-title">THU</th>
+                            <th class="column-title">CHI</th>
+                            <th class="column-title">BỘ PHẬN</th>
+                            <th class="column-title">KÝ DUYỆT</th>
+                            <th class="column-title">TÊN NH</th>
+                            <th class="column-title">GHI CHÚ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.ListBankCosts != null)
+                        {
+                            TotalThu = 0; TotalChi = 0;
+                            foreach (DataRow row in (ViewBag.ListBankCosts as DataTable).Rows)
+                            {
+                                TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                <tr class="even pointer">
+                                    <td>@row["DienGiai"]</td>
+                                    <td class="number">@row["Thu"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                                    <td>@row["BoPhan"]</td>
+                                    <td>@row["NguoiDuyet"]</td>
+                                    <td>@row["TenNganHang"]</td>
+                                    <td>@row["GhiChu"]</td>
+                                </tr>
+                            }
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td>TỔNG CHI PHÍ</td>
+                            <td class="number">@TotalThu.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                        @*<tr style="font-style:italic">
+                            <td colspan="6">
+                                (Chi phí NH không bao gồm chi phí ngân hàng, phí cà thẻ, chi lãi vay)
+                            </td>
+                        </tr>*@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="control-group">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='6' class="tile">CÁC KHOẢN CHI TRÊN 5 TRIỆU ĐỒNG</th>
+                            </tr>
+                            <tr>
+                                <th colspan='6' class="tile">@ViewBag.TuNgayDenNgay</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">DIỄN GIẢI</th>
+                                <th class="column-title">THU</th>
+                                <th class="column-title">CHI</th>
+                                <th class="column-title">KÝ DUYỆT</th>
+                                <th class="column-title">TÊN NGÂN HÀNG</th>
+                                <th class="column-title">GHI CHÚ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.ListFiveMillion != null)
+                            {
+                                TotalThu = 0; TotalChi = 0;
+                                foreach (DataRow row in (ViewBag.ListFiveMillion as DataTable).Rows)
+                                {
+                                    TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                    TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                    <tr class="even pointer">
+                                        <td>@row["DienGiai"]</td>
+                                        <td class="number">@row["Thu"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                                        <td>@row["NguoiDuyet"]</td>
+                                        <td>@row["MaTuiTien"]</td>
+                                        <td>@row["GhiChu"]</td>
+                                    </tr>
+                                }
+                            }
+                            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                <td>TỔNG CHI</td>
+                                <td class="number">@TotalThu.ToString().Replace(",", ".")</td>
+                                <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th colspan='7' class="tile">BẢNG PHÂN TÍCH CHI PHÍ PHÂN BỐ ,KẾT CHUYỂN</th>
+                        </tr>
+                        <tr>
+                            <th colspan='7' class="tile">@ViewBag.TuNgayDenNgay</th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title">DIỄN GIẢI</th>
+                            <th class="column-title">THU</th>
+                            <th class="column-title">CHI</th>
+                            <th class="column-title">BỘ PHẬN</th>
+                            <th class="column-title">KÝ DUYỆT</th>
+                            <th class="column-title">GHI CHÚ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.ListPBCP != null)
+                        {
+                            TotalThu = 0; TotalChi = 0;
+                            foreach (DataRow row in (ViewBag.ListPBCP as DataTable).Rows)
+                            {
+                                TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                <tr class="even pointer">
+                                    <td>@row["DienGiai"]</td>
+                                    <td class="number">@row["Thu"].ToString().Replace(",", ".")</td>
+                                    <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                                    <td>@row["BoPhan"]</td>
+                                    <td>@row["NguoiDuyet"]</td>
+                                    <td>@row["GhiChu"]</td>
+                                </tr>
+                            }
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td>TỔNG CHI PHÍ</td>
+                            <td class="number">@TotalThu.ToString().Replace(",", ".")</td>
+                            <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="control-group">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='4' class="tile">KHOẢN CHI PHÍ KHẤU HAO - PHÂN BỔ</th>
+                            </tr>
+                            <tr>
+                                <th colspan='4' class="tile">@ViewBag.TuNgayDenNgay</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">DIỄN GIẢI</th>
+                                <th class="column-title">CHI</th>
+                                <th class="column-title">KÝ DUYỆT</th>
+                                <th class="column-title">GHI CHÚ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.ListChiPhiKH != null)
+                            {
+                                TotalThu = 0; TotalChi = 0;
+                                foreach (DataRow row in (ViewBag.ListChiPhiKH as DataTable).Rows)
+                                {
+                                    TotalChi += row["SoTienChi"].ToString() == "" ? 0 : Convert.ToDouble(row["SoTienChi"]);
+                                    <tr class="even pointer">
+                                        <td>@row["NoiDung"]</td>
+                                        <td class="number">@row["SoTienChi"].ToString().Replace(",", ".")</td>
+                                        <td>@row["NguoiDuyet"]</td>
+                                        <td>@row["GhiChu"]</td>
+                                    </tr>
+                                }
+                            }
+                            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                <td>TỔNG CHI</td>
+                                <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="control-group">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='7' class="tile">BẢNG PHÂN TÍCH CHI PHÍ NỢ HOA HỒNG TÀI XẾ</th>
+                            </tr>
+                            <tr>
+                                <th colspan='7' class="tile">@ViewBag.TuNgayDenNgay</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">DIỄN GIẢI</th>
+                                <th class="column-title">THU</th>
+                                <th class="column-title">CHI</th>
+                                <th class="column-title">BỘ PHẬN</th>
+                                <th class="column-title">KÝ DUYỆT</th>
+                                <th class="column-title">GHI CHÚ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.ListCP_HHTX != null)
+                            {
+                                TotalThu = 0; TotalChi = 0;
+                                foreach (DataRow row in (ViewBag.ListCP_HHTX as DataTable).Rows)
+                                {
+                                    TotalChi += row["CHI"].ToString() == "" ? 0 : Convert.ToDouble(row["CHI"]);
+                                    <tr class="even pointer">
+                                        <td>@row["DIENGIAI"]</td>
+                                        <td></td>
+                                        <td class="number">@row["CHI"].ToString().Replace(",", ".")</td>
+                                        <td>@row["BOPHAN"]</td>
+                                        <td>@row["KYDUYET"]</td>
+                                        <td>@row["NgayNoCPQT"]</td>
+                                    </tr>
+                                }
+                            }
+                            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                <td>TỔNG CHI PHÍ NỢ HHTX</td>
+                                <td></td>
+                                <td class="number">@TotalChi.ToString().Replace(",", ".")</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="row">
+        
+    </div>*@
+</div>
+
+
+    @*<div class="row">
+        <div class="col-sm-6">
+            <div class="control-group">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='3' class="tile">CÁC KHOẢN CHI  TẠM ỨNG BIÊN NHẬN TAY</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">DIỄN GIẢI</th>
+                                <th class="column-title">THU</th>
+                                <th class="column-title">CHI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.ListAdvanceHands != null)
+                            {
+                                TotalThu = 0; TotalChi = 0;
+                                foreach (DataRow row in (ViewBag.ListAdvanceHands as DataTable).Rows)
+                                {
+                                    TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                    TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                <tr class="even pointer">
+                                    <td>@row["DienGiai"]</td>
+                                    <td class="number">@row["Thu"]</td>
+                                    <td class="number">@row["Chi"]</td>
+                                </tr>
+                                }
+                            }
+                            <tr class="even pointer">
+                                <td>TỔNG CHI TẠM ỨNG BIÊN NHẬN TAY</td>
+                                <td class="number">@TotalThu</td>
+                                <td class="number">@TotalChi</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="control-group">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <thead>
+                            <tr class="headings">
+                                <th colspan='5' class="tile">CÁC KHOẢN TẠM ỨNG</th>
+                            </tr>
+                            <tr class="headings">
+                                <th class="column-title">DIỄN GIẢI</th>
+                                <th class="column-title">THU</th>
+                                <th class="column-title">CHI</th>
+                                <th class="column-title">KÝ DUYỆT</th>
+                                <th class="column-title">GHI CHÚ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.ListAdvance != null)
+                            {
+                                TotalThu = 0; TotalChi = 0;
+                                foreach (DataRow row in (ViewBag.ListAdvance as DataTable).Rows)
+                                {
+                                    TotalThu += row["Thu"].ToString() == "" ? 0 : Convert.ToDouble(row["Thu"]);
+                                    TotalChi += row["Chi"].ToString() == "" ? 0 : Convert.ToDouble(row["Chi"]);
+                                <tr class="even pointer">
+                                    <td>@row["DienGiai"]</td>
+                                    <td class="number">@row["Thu"]</td>
+                                    <td class="number">@row["Chi"]</td>
+                                    <td>@row["NguoiPheDuyet"]</td>
+                                    <td>@row["GhiChu"]</td>
+                                </tr>
+                                }
+                            }
+                            <tr class="even pointer">
+                                <td>TỔNG CHI</td>
+                                <td class="number">@TotalThu</td>
+                                <td class="number">@TotalChi</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

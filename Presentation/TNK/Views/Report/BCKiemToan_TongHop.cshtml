@@ -1,0 +1,410 @@
+﻿@using System.Data;
+@{ 
+    double TongDauKyTotal = 0, TongCuoiKyTotal = 0, TangGiamTotal = 0, TongTangGiamTotal = 0;
+    double TONGCONG = 0;
+}
+<div id="tab_TH">
+    <div class="x_content">
+        <div class="table-responsive" id="BCKiemToan_TongHop_div" style="float:left">
+
+            <div class="col-md-6">
+            <table @*id="BCKiemToan_TongHop"*@ class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th colspan='7' class="tile">BẢNG SO SÁNH TÀI SẢN</th>
+                        </tr>
+                        <tr></tr>
+                        <tr class="headings">
+                            <th class="column-title">DIỄN GIẢI</th>
+                            <th class="column-title" colspan="3">BẢNG SO SÁNH</th>
+                            <th class="column-title">@ViewBag.From</th>
+                            <th class="column-title">@ViewBag.To</th>
+                            <th class="column-title">TĂNG/GIẢM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            double TongDauKy = 0, TongCuoiKy = 0, TangGiam = 0, TongTangGiam = 0;
+                            string dau = "", cuoi = "";
+                            DataView ViewTongHop = (Model as DataTable).DefaultView;
+                            foreach (DataRow row in ViewTongHop.ToTable().Rows)
+                            {
+                                dau = @row["Nhom"].ToString();
+                                TongDauKy += double.Parse(string.IsNullOrEmpty(@row["DauKy"].ToString()) ? "0" : (@row["DauKy"].ToString()));
+                                TongCuoiKy += double.Parse(string.IsNullOrEmpty(@row["CuoiKy"].ToString()) ? "0" : (@row["CuoiKy"].ToString()));
+                                TangGiam = double.Parse(string.IsNullOrEmpty(@row["CuoiKy"].ToString()) ? "0" : (@row["CuoiKy"].ToString())) - double.Parse(string.IsNullOrEmpty(@row["DauKy"].ToString()) ? "0" : (@row["DauKy"].ToString()));
+                                TongTangGiam += TangGiam;
+                                <tr class="even pointer">
+                                    <td group="@row["Nhom"]">@row["Nhom"]</td>
+                                    @if (@row["ID"].ToString().ToUpper() == "TỔNG CỘNG")
+                                    {
+                                        TongDauKyTotal += double.Parse(string.IsNullOrEmpty(@row["DauKy"].ToString()) ? "0" : (@row["DauKy"].ToString()));
+                                        TongCuoiKyTotal += double.Parse(string.IsNullOrEmpty(@row["CuoiKy"].ToString()) ? "0" : (@row["CuoiKy"].ToString()));
+                                        TangGiamTotal = double.Parse(string.IsNullOrEmpty(@row["CuoiKy"].ToString()) ? "0" : (@row["CuoiKy"].ToString())) - double.Parse(string.IsNullOrEmpty(@row["DauKy"].ToString()) ? "0" : (@row["DauKy"].ToString()));
+                                        TongTangGiamTotal += TangGiamTotal;
+
+                                        <td colspan="3" style="background-color:lightblue; color:red"><b>@row["ID"]</b></td>
+                                        <td class="number" style="background-color:lightblue; color:red">@row["DauKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number" style="background-color:lightblue; color:red">@row["CuoiKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number" style="background-color:lightblue; color:red">@TangGiam.ToString().Replace(",", ".")</td>
+                                    }
+                                    else
+                                    {
+                                        <td colspan="3">@row["ID"]</td>
+                                        <td class="number">@row["DauKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@row["CuoiKy"].ToString().Replace(",", ".")</td>
+                                        <td class="number">@TangGiam.ToString().Replace(",", ".")</td>
+                                    }
+                                </tr>
+                                TangGiam = 0; TongDauKy = 0; TongCuoiKy = 0; TongTangGiam = 0;
+                            }
+                        }
+                        <tr>
+                            <td colspan="4" style="background-color:lightblue; color:red"><b>Tổng Cộng</b></td>
+                            <td rowspan="2" class="number" style="background-color:lightblue; color:red">@TongDauKyTotal.ToString().Replace(",", ".")</td>
+                            <td rowspan="2" class="number" style="background-color:lightblue; color:red">@TongCuoiKyTotal.ToString().Replace(",", ".")</td>
+                            <td rowspan="2" class="number" style="background-color:lightblue; color:red">@TongTangGiamTotal.ToString().Replace(",", ".")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6" style="padding-left:6%">
+                <table @*id="BCKiemToan_TongHop"*@ class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th colspan='5' class="tile">CÂN ĐỐI KQKD</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.CanDoiKQKDTang.Rows.Count > 0)
+                        {
+                            <tr class="headings">
+                                <th colspan='5' style="text-align:center">PHÁT SINH TĂNG</th>
+                            </tr>
+                            double KQKDTang = 0, SoTienTotalTang = 0;
+                            string dau = "";
+                            foreach (DataRow row in ViewBag.CanDoiKQKDTang.Rows)
+                            {
+                                dau = @row["Nhom"].ToString();
+                                KQKDTang += double.Parse(string.IsNullOrEmpty(@row["SoTien"].ToString()) ? "0" : (@row["SoTien"].ToString()));
+                                TONGCONG += KQKDTang;
+                                <tr class="even pointer">
+                                    <td group="@row["Nhom"]">@row["Nhom"]</td>
+                                    @if (@row["HangMuc"].ToString().ToUpper() == "CỘNG")
+                                    {
+                                        SoTienTotalTang += double.Parse(string.IsNullOrEmpty(@row["SoTien"].ToString()) ? "0" : (@row["SoTien"].ToString()));
+
+                                        <td colspan="3" style="background-color:lightblue; color:red"><b>@row["HangMuc"]</b></td>
+                                        <td class="number" style="background-color:lightblue; color:red">@SoTienTotalTang.ToString().Replace(",", ".")</td>
+                                    }
+                                    else
+                                    {
+                                        <td colspan="3">@row["HangMuc"]</td>
+                                        <td class="number">@row["SoTien"].ToString().Replace(",", ".")</td>
+                                    }
+                                </tr>
+                                KQKDTang = 0; SoTienTotalTang = 0;
+                            }
+                        }
+                        
+                        @if (ViewBag.CanDoiKQKDGiam.Rows.Count > 0)
+                        {
+                            <tr class="headings">
+                                <th colspan='5' style="text-align:center">PHÁT SINH GIẢM</th>
+                            </tr>
+                            double KQKDGiam = 0, SoTienGiamTotal = 0;
+                            string dau = "";
+                            foreach (DataRow row in ViewBag.CanDoiKQKDGiam.Rows)
+                            {
+                                dau = @row["Nhom"].ToString();
+                                KQKDGiam += double.Parse(string.IsNullOrEmpty(@row["SoTien"].ToString()) ? "0" : (@row["SoTien"].ToString()));
+                                TONGCONG += KQKDGiam;
+                                <tr class="even pointer">
+                                    <td group="@row["Nhom"]">@row["Nhom"]</td>
+                                    @if (@row["HangMuc"].ToString().ToUpper() == "CỘNG")
+                                    {
+                                        SoTienGiamTotal += double.Parse(string.IsNullOrEmpty(@row["SoTien"].ToString()) ? "0" : (@row["SoTien"].ToString()));
+
+                                        <td colspan="3" style="background-color:lightblue; color:red"><b>@row["HangMuc"]</b></td>
+                                        <td class="number" style="background-color:lightblue; color:red">@SoTienGiamTotal.ToString().Replace(",", ".")</td>
+                                    }
+                                    else
+                                    {
+                                        <td colspan="3">@row["HangMuc"]</td>
+                                        <td class="number">@row["SoTien"].ToString().Replace(",", ".")</td>
+                                    }
+                                </tr>
+                                KQKDGiam = 0; SoTienGiamTotal = 0;
+                            }
+                        }
+                        <tr style="background-color:lightblue; color:red">
+                            <td colspan="4"><b>KQKD</b></td>
+                            <td class="number" rowspan="4">@TONGCONG.ToString().Replace(",", ".")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <br />
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr>
+                        <th>TÊN ĐỐI TÁC</th>
+                        <th>SỐ TIỀN GÓP</th>
+                        <th>SỐ TIỀN THỰC GÓP</th>
+                        <th>TỶ LỆ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(ViewBag.dtBangGopVon.Rows.Count > 0)
+                    {
+                        foreach(DataRow row in ViewBag.dtBangGopVon.Rows)
+                        {
+                            <tr>
+                                <td></td>
+                                <td>@row["TenDoiTac"]</td>
+                                <td class="number">@row["SoTienGop"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["ThucGop"].ToString().Replace(",", ".")</td>
+                                <td style="text-align: right;">@row["TyLe"]%</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <br />
+            <table class="table table-striped table-bordered table-condensed">
+                <thead></thead>
+                <tbody id="dtBangThanhToanNHapNH">
+                    @if (ViewBag.dtBangThanhToanNHapNH.Rows.Count > 0)
+                    {
+                        foreach (DataRow row in ViewBag.dtBangThanhToanNHapNH.Rows)
+                        {
+                            if (row["ID"].ToString() != "" && row["TenDoiTac"].ToString() != "")
+                            {
+                                <tr class="even pointer">
+                                    <td group="@row["ID"]">@row["ID"]</td>
+                                    <td group="@row["ID"]@row["TenDoiTac"]">@row["TenDoiTac"]</td>
+                                    <td hidden></td>
+                                    <td>@row["Ten"]</td>
+                                    @if (TNK.Core.Common.IsNumeric(@row["ThanhTien"]) == false)
+                                    {
+                                        <td>@row["ThanhTien"].ToString()</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="number">@row["ThanhTien"].ToString().Replace(",", ".")</td>
+                                    }
+                                </tr>
+                            }
+
+                        }
+                    }
+                </tbody>
+            </table>
+            <table class="table table-striped table-bordered table-condensed">
+                <tbody>
+                    @if (ViewBag.dtTHXuatBanXe.Rows.Count > 0)
+                    {
+                        <tr>
+                            <td rowspan="6">6</td>
+                            <td rowspan="6">XUẤT BÁN XE</td>
+                            <td>LẺ</td>
+                            <td>GÓP</td>
+                            <td>TRAO ĐỔI</td>
+                            <td>CỘNG</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td hidden></td>
+                            @if (ViewBag.dtTHXuatBanXe.Rows[0]["SoLuongXeLe"].ToString() == "")
+                            {
+                                <td style="text-align: right;">0</td>
+                            }
+                            else
+                            {
+                                <td style="text-align: right;">@Convert.ToDouble(ViewBag.dtTHXuatBanXe.Rows[0]["SoLuongXeLe"])</td>
+                            }
+                            @if (ViewBag.dtTHXuatBanXe.Rows[0]["SoLuongXeGop"].ToString() == "")
+                            {
+                                <td style="text-align: right;">0</td>
+                            }
+                            else
+                            {
+                                <td style="text-align: right;">@Convert.ToDouble(ViewBag.dtTHXuatBanXe.Rows[0]["SoLuongXeGop"])</td>
+                            }
+                            @if (ViewBag.dtTHXuatBanXe.Rows[0]["SoLuongXeTraoDoi"].ToString() == "")
+                            {
+                                <td style="text-align: right;">0</td>
+                            }
+                            else
+                            {
+                                <td style="text-align: right;">@Convert.ToDouble(ViewBag.dtTHXuatBanXe.Rows[0]["SoLuongXeTraoDoi"])</td>
+                            }
+                            <td style="text-align: right;">@Convert.ToDouble(ViewBag.dtTHXuatBanXe.Rows[0]["TongSoLuongXe"])</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td hidden></td>
+                            <td>GIÁ BÁN</td>
+                            <td>TIỀN MẶT + NH</td>
+                            <td>CHI CỌC</td>
+                            <td>NỢ GÓP</td>
+                            <td>NỢ</td>
+                        </tr>
+                        <tr>
+                            <td hidden></td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["TongGiaBan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["TongThanhToanTM_NH"].ToString().Replace(",", ".")</td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["TongChiCoc"].ToString().Replace(",", ".")</td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["NoGop"].ToString().Replace(",", ".")</td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["NoLe"].ToString().Replace(",", ".")</td>
+                        </tr>
+                        <tr>
+                            <td hidden></td>
+                            <td>THU CỌC</td>
+                            <td>THU NỢ</td>
+                            <td>GIẢI NGÂN</td>
+                            <td>GIÁ VỐN</td>
+                            <td>LỢI NHUẬN</td>
+                        </tr>
+                        <tr>
+                            <td hidden></td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["ThuCoc"].ToString().Replace(",", ".")</td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["ThuNO"].ToString().Replace(",", ".")</td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["GiaiNgan"].ToString().Replace(",", ".")</td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["GiaVon"].ToString().Replace(",", ".")</td>
+                            <td class="number">@ViewBag.dtTHXuatBanXe.Rows[0]["LoiNhuan"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <table  class="table table-striped table-bordered table-condensed">
+                <tbody>
+                    @if (ViewBag.dtTHLoiNhuanKho.Rows.Count > 0)
+                    {
+                        if (ViewBag.dtTHLoiNhuanKho.Rows.Count >= 1)
+                        {
+                            <tr>
+                                <td></td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[0]["STT"]</td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[0]["TenKho"]</td>
+                                <td>DOANH THU</td>
+                                <td>GIÁ VỐN</td>
+                                <td>LỢI NHUẬN</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[0]["DoanhThu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[0]["GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[0]["LoiNhuan"].ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+
+                        if (ViewBag.dtTHLoiNhuanKho.Rows.Count >= 2)
+                        {
+                            <tr>
+                                <td></td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[1]["STT"]</td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[1]["TenKho"]</td>
+                                <td>DOANH THU</td>
+                                <td>GIÁ VỐN</td>
+                                <td>LỢI NHUẬN</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[1]["DoanhThu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[1]["GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[1]["LoiNhuan"].ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+
+                        if (ViewBag.dtTHLoiNhuanKho.Rows.Count >= 3)
+                        {
+                            <tr>
+                                <td></td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[2]["STT"]</td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[2]["TenKho"]</td>
+                                <td>DOANH THU</td>
+                                <td>GIÁ VỐN</td>
+                                <td>LỢI NHUẬN</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[2]["DoanhThu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[2]["GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[2]["LoiNhuan"].ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+                        if (ViewBag.dtTHLoiNhuanKho.Rows.Count >= 4)
+                        {
+                            <tr>
+                                <td></td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[3]["STT"]</td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[3]["TenKho"]</td>
+                                <td>DOANH THU</td>
+                                <td>GIÁ VỐN</td>
+                                <td>LỢI NHUẬN</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[3]["DoanhThu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[3]["GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[3]["LoiNhuan"].ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+                        if (ViewBag.dtTHLoiNhuanKho.Rows.Count >= 5)
+                        {
+                            <tr>
+                                <td></td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[4]["STT"]</td>
+                                <td rowspan="2">@ViewBag.dtTHLoiNhuanKho.Rows[4]["TenKho"]</td>
+                                <td>DOANH THU</td>
+                                <td>GIÁ VỐN</td>
+                                <td>LỢI NHUẬN</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[4]["DoanhThu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[4]["GiaVon"].ToString().Replace(",", ".")</td>
+                                <td class="number">@ViewBag.dtTHLoiNhuanKho.Rows[4]["LoiNhuan"].ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <table class="table table-striped table-bordered table-condensed">
+                <tbody>
+                    @if (ViewBag.dtTHChiPhi.Rows.Count > 0)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>12</td>
+                            <td>@ViewBag.dtTHChiPhi.Rows[0]["Loai"]</td>
+                            <td class="number">@ViewBag.dtTHChiPhi.Rows[0]["ChiPhi"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                    @if (ViewBag.dtTHTheChuVao.Rows.Count > 0)
+                    {
+                        <tr>
+                            <td></td>
+                            <td>13</td>
+                            <td>THẺ CHƯA VÀO</td>
+                            <td class="number">@ViewBag.dtTHTheChuVao.Rows[0]["NGANHANG_TREO"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br />
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+    var val = $(this).html();
+    //val = val.replace(",", ".");
+    val = val.split(",").join("");
+    val = parseFloat(val);
+    $(this).html(val.toLocaleString('en-us'));
+})
+</script>

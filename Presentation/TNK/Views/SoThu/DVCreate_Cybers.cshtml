@@ -1,0 +1,2614 @@
+﻿@model TNK.Model.DichVuModelCyber
+@{
+    ViewBag.Title = "Phiếu dịch vụ";
+    double TongGiaBan = 0;
+    double TongGiamGia = 0;
+    double TongThucThu = 0;
+
+    double TongGiaBanVAT = 0;
+    double TongGiamGiaVAT = 0;
+    double TongThucThuVAT = 0;
+
+    double TongGiaBanSauVAT = 0;
+    double TongGiamGiaSauVAT = 0;
+    double TongThucThuSauVAT = 0;
+    var item = new TNK.Model.CTPDVTamCyber();
+    if (Model.lst.Count > 0)
+    {
+        item = Model.lst[0];
+        foreach (TNK.Model.CTPDVTamCyber i in Model.lst)
+        {
+
+            i.COST = Math.Round(i.COST, 0);
+            i.DISCOUNT = Math.Round(i.DISCOUNT, 0);
+            i.THUE = i.THUE * 100;
+
+            TongGiaBan += i.COST;
+            TongGiamGia += i.DISCOUNT;
+            TongThucThu += i.COST - i.DISCOUNT;
+
+
+            TongGiaBanVAT += Math.Round(i.THUE * i.COST);
+            TongGiamGiaVAT += Math.Round(i.THUE * i.DISCOUNT);
+            TongThucThuVAT += Math.Round(i.THUE * (i.COST - i.DISCOUNT));
+
+            TongGiaBanSauVAT += Math.Round((1 + i.THUE) * i.COST);
+            TongGiamGiaSauVAT += Math.Round((1 + i.THUE) * i.DISCOUNT);
+            TongThucThuSauVAT += Math.Round((1 + i.THUE) * (i.COST - i.DISCOUNT));
+        }
+    }
+
+    var readOnly = "";
+    //TongGiaBanVAT = Math.Round(0.1 * TongGiaBan);
+    //TongGiamGiaVAT = Math.Round(0.1 * TongGiamGia);
+    //TongThucThuVAT = Math.Round(0.1 * TongThucThu);
+
+    //TongGiaBanSauVAT = Math.Round(1.1 * TongGiaBan);
+    //TongGiamGiaSauVAT = Math.Round(1.1 * TongGiamGia);
+    //TongThucThuSauVAT = Math.Round(1.1 * TongThucThu);
+
+    string[] ptt = { "KEY PRODUCTS", "GP", "OIL", "CHEMICALS", "PART_GENUINE_OTHER", "ACC", "BODY PARTS", "Y" /*Cho phieu ban phu tung GENUINE = 'Y'*/ };
+    string[] ptn = { "PART_NON_GENUINE", "N" /*Cho phieu ban phu tung GENUINE = 'N'*/};
+
+    var suachuachung = Model.lst.Where(x => x.JOBTYPE == "SCC").ToList();
+    //var dongsonsonxe = Model.lst.Where(x => x.JOBTYPE != "SCC" && (x.NHOM1 == "07")).ToList();
+    var dongsonsonxe = Model.lst.Where(x => x.JOBTYPE == "DS").ToList();
+    var phutungtrong = Model.lst.Where(x => x.JOBTYPE != "SCC" && (x.NHOM1 == "01" || x.NHOM1 == "02" || x.NHOM1 == "03" || x.NHOM1 == "04")).ToList();
+    var phutungngoai = Model.lst.Where(x => x.JOBTYPE != "SCC" && (x.NHOM1 == "05")).ToList();
+    var phukiendichvu = Model.lst.Where(x => x.JOBTYPE != "SCC" && (x.NHOM1 == "06" || x.NHOM1 =="08")).ToList();
+    var congdong = Model.lst.Where(x => x.JOBTYPE == "CHUA DINH NGHIA").ToList();// chua co dinh nghia
+    var quatang = Model.lst.Where(x => x.JOBTYPE == "CHUA DINH NGHIA").ToList();// chua co dinh nghia
+                                                                                //var vattugtgt = Model.lst.Where(x => (x.ROTYPE != "GJ" || x.WTCODE != "J")
+                                                                                //               && !(x.ROTYPE == "BP" && (x.KPI_PART_TYPE == null))
+                                                                                //               && !ptt.Contains(x.KPI_PART_TYPE) && !ptn.Contains(x.KPI_PART_TYPE)).ToList();
+                                                                                //var vattungoai = Model.lst.Where(x => (x.ROTYPE != "GJ" || x.WTCODE != "J")
+                                                                                //                  && !(x.ROTYPE == "BP" && (x.KPI_PART_TYPE == null))
+                                                                                //                  && !ptt.Contains(x.KPI_PART_TYPE) && !ptn.Contains(x.KPI_PART_TYPE)).ToList();
+    var vattugtgt = Model.lst.Where(x => x.JOBTYPE == "CHUA DINH NGHIA").ToList();// chua co dinh nghia
+    var vattungoai = Model.lst.Where(x => x.JOBTYPE == "CHUA DINH NGHIA").ToList();//chua co dinh nghia
+
+    var noPhaiTra = Model.noPhaiTra;
+    var z = 0;
+    double tongcong = 0;
+    var KH_TT = Model.CTPT.Where(s => s.HinhThucThanhToan != "BH").ToList();
+    var BH_TT = Model.CTPT.Where(s => s.HinhThucThanhToan == "BH").FirstOrDefault();
+    }
+
+<form id="form-data" method="post">
+    @*<input type="hidden" name="obj.Flag" value="1" />*@
+    <input type="hidden" name="obj.SoTienThu" value="@Model.obj.SoTienThu" />
+    <input type="hidden" name="Id" value="@Model.obj.SoHopDong" />
+    <input type="hidden" name="obj.TongCong" value="@ViewBag.TongThucThuSauVAT" />
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Tạo mới @ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="form-horizontal form-label-left">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số quyết toán</label>
+                                        @Html.EditorFor(x => Model.obj.SoHopDong, new { htmlAttributes = new { @class = "form-control input-sm", @Value = ViewBag.SoPhieu , @readonly ="" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Ngày quyết toán</label>
+                                        <input type="text" class="form-control input-sm date" name="obj.NgayQuyetToan" value="@Model.obj.NgayQuyetToan.ToString("dd/MM/yyyy")" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Ngày thu tiền</label>
+                                        <input type="text" class="form-control input-sm date " name="obj.NgayHachToan" value="@Model.obj.NgayHachToan.ToString("dd/MM/yyyy")" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Biển số</label>
+                                        @Html.EditorFor(x => Model.obj.BienSo, new { htmlAttributes = new { @class = "form-control input-sm", @id = "txtBienSo" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số khung / Số máy</label>
+                                        @Html.EditorFor(x => Model.obj.SoKhung, new { htmlAttributes = new { @class = "form-control input-sm", @id = "txtSoKhung" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Tên khách hàng</label>
+                                        @Html.EditorFor(x => Model.obj.HoTen, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Loại xe</label>
+                                        @Html.EditorFor(x => Model.obj.MaXe, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Tên xe</label>
+                                        @Html.EditorFor(x => Model.obj.TenXe, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Điện thoại</label>
+                                        @Html.EditorFor(x => Model.obj.DienThoai, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Số hóa đơn</label>
+                                        @Html.EditorFor(x => Model.obj.SoHoaDon, new { htmlAttributes = new { @class = "form-control input-sm " } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Chứng từ liên quan</label>
+                                        @Html.EditorFor(x => Model.obj.SoChungTu, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-1 col-sm-1 col-xs-12">
+                                    <div class="form-group">
+                                        <label></label>
+                                        <label></label>
+                                        @if (Model.obj.LoaiBaoHiem == "XKG")
+                                        {
+                                            <input type="checkbox" class="form-control" checked="checked" id="LoaiBH" onclick="OnChecked()" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" class="form-control" id="LoaiBH" onclick="OnChecked()" />
+                                        }
+                                        @Html.EditorFor(x => Model.obj.LoaiBaoHiem, new { htmlAttributes = new { @class = "form-control input-sm hidden ", @id = "LoaiBaoHiem", @hidden = "" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label style="margin-top:30px">Xe ký gửi</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đối tác</label>
+                                        @Html.DropDownListFor(x => Model.obj.DoiTac, Model.DoiTac.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth", @id = "DoiTac" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>CVDV</label>
+                                        <input type="text" value="@Model.obj.NhanVienTuVan" class="form-control input-sm" name="obj.NhanVienTuVan" />
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Địa chỉ</label>
+                                        <input type="text" readonly value="@Model.obj.DiaChi" class="form-control input-sm" name="obj.DiaChi" />
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Yêu cầu KH</label>
+                                        <input type="text" readonly value="@Model.obj.YeuCauKH" class="form-control input-sm" name="obj.YeuCauKH" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Phần nhập liệu về sc,ds,ptt, ptn-->
+                            <!--SC-->
+                            <div class="col-md-12 ">
+                                @if (suachuachung.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    int count = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Sửa chữa chung:</label>
+                                            </div>
+                                            <div class="col-md-6 right">
+                                                @*  <i class="fa fa-plus-square" aria-hidden="true" style="cursor:pointer" onclick="showVAT(this,'trSC')" title="VAT"></i>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action" id="SUACHUACHUNG">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tên công việc</th>
+                                                        <th>Giá bán</th>
+                                                        <th>Giảm giá</th>
+                                                        <th>Thực thu</th>
+                                                        <th>Chi GCN</th>
+                                                        <th class="SUACHUACHUNG VAT">VAT</th>
+
+                                                        <th></th>
+                                                         <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="SuaChua">
+                                                    @for (int i = 0; i < suachuachung.Count; i++)
+                                                    {
+                                                        a += suachuachung[i].COST;
+                                                        if (suachuachung[i].DISCOUNT == null)
+                                                        {
+                                                            suachuachung[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)suachuachung[i].DISCOUNT;
+                                                        <tr id="trSC" class="animated fadeIn">
+                                                            <td>
+                                                                <input style="width:160px" name="ptdv1[@i].JOBSNAME" value="@suachuachung[i].JOBSNAME" class="form-control input-sm" />
+                                                                <input type="hidden" name="ptdv1[@i].JOBSNAME" value="@suachuachung[i].JOBSNAME" />
+                                                                @*<input type="hidden" name="ptdv1[@i].REPAIRORDERNO" value="@suachuachung[i].So" />*@
+                                                                @*<input type="hidden" name="ptdv1[@i].QUANTITY" value="@suachuachung[i]." />*@
+                                                                <input type="hidden" name="ptdv1[@i].ROTYPE" value="@suachuachung[i].ROTYPE" />
+                                                                <input type="hidden" name="ptdv1[@i].KPI_PART_TYPE" value="@suachuachung[i].KPI_PART_TYPE" />
+                                                                <input type="hidden" name="ptdv1[@i].WTCODE" value="@suachuachung[i].WTCODE" />
+                                                                <input type="hidden" name="ptdv1[@i].MaKho" class="MaKho" value="SUACHUA" />
+                                                                <input type="hidden" name="ptdv1[@i].PhanLoai" class="PhanLoai" value="SUACHUA" />
+                                                                <input type="hidden" name="ptdv1[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                            </td>
+                                                            <td><input style="width:80px" value="@suachuachung[i].COST" name="ptdv1[@i].COST" class="form-control input-sm number a_SCC" onchange="CalSCC()" maxlength="15" /></td>
+                                                            <td><input style="width:80px" value="@suachuachung[i].DISCOUNT" name="ptdv1[@i].DISCOUNT" class="form-control input-sm number b_SCC" id="ptdv1[@i]b" onchange="CalSCC()" maxlength="15" /></td>
+                                                            <td><input style="width:80px" value="@((suachuachung[i].COST-suachuachung[i].DISCOUNT))" class="form-control input-sm number" id="ptdv1[@i]" readonly /></td>
+                                                            <td><input style="width:80px" id="ptdv1[@i].GCN" name="ptdv1[@i].GCN" class="form-control input-sm number GCN" value="0" onchange="CalThanhToanGCN()" /></td>
+                                                            <td class="SUACHUACHUNG VAT"><input style="width:40px" value="@suachuachung[i].THUE" name="ptdv1[@i].VAT" class="form-control input-sm number b_VAT" id="ptdv1[@i]VAT" onchange="CalSCC()" /></td>
+                                                            <td><input style="width:70px" value="@suachuachung[i].GIAVON" name="ptdv1[@i].GiaVon" class="form-control input-sm number GiaVon" readonly  /></td>
+                                                            <td><i class="fa fa-remove" onclick="RemoveSCC(this)" style="cursor:pointer"></i></td>
+                                                        </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng</td>
+                                                        <td class="number TotalSCC_a">
+                                                            @a
+                                                        </td>
+                                                        <td class="number TotalSCC_b">@b</td>
+                                                        <td class="number TotalSCC_a_b">
+                                                            @(a - b)
+                                                        </td>
+                                                        <td class="number Total">0</td>
+                                                        <td class="SUACHUACHUNG VAT"></td>
+                                                        <td class="right"><i class="fa fa-plus addSCC" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+                                }
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Hoa hồng tài xế: </label>
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Số tiền</th>
+                                                    <th>Ký duyệt</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@Html.EditorFor(x => Model.obj.HoaHongTaiXe, new { htmlAttributes = new { @class = "form-control input-sm number", @maxlength = "15" } })</td>
+                                                    <td>@Html.EditorFor(x => Model.obj.NguoiDuyetHHTX, new { htmlAttributes = new { @class = "form-control input-sm" } })</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--CD-->
+                            <div class="col-md-12 ">
+                                @if (congdong.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Công đồng:</label>
+                                            </div>
+                                            <div class="col-md-6 right">
+                                                @*     <i class="fa fa-plus-square" aria-hidden="true" style="cursor:pointer" onclick="showVAT(this,'trCD')" title="VAT"></i>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action" id="CONGDONG">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Tên công việc</th>
+                                                        <th>Giá bán</th>
+                                                        <th>Giảm giá</th>
+                                                        <th>Thực thu</th>
+                                                        <th>Chi GCN</th>
+                                                        <th class="CONGDONG VAT">VAT</th>
+                                                        <th>Giá vốn</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="CongDong">
+                                                    @for (int i = 0; i < congdong.Count; i++)
+                                                    {
+                                                        a += congdong[i].COST;
+                                                        if (congdong[i].DISCOUNT == null)
+                                                        {
+                                                            congdong[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)congdong[i].DISCOUNT;
+                                                        <tr id="trCD" class="animated fadeIn">
+                                                            <td>
+                                                                <input style="width:160px" name="ptdv2[@i].JOBSNAME" value="@congdong[i].JOBSNAME" class="form-control input-sm" />
+                                                                <input type="hidden" name="ptdv2[@i].JOBSNAME" value="@congdong[i].JOBSNAME" />
+                                                                @*<input type="hidden" name="ptdv2[@i].REPAIRORDERNO" value="@congdong[i].REPAIRORDERNO" />
+        <input type="hidden" name="ptdv2[@i].QUANTITY" value="@congdong[i].QUANTITY" /*@>
+                                                                <input type="hidden" name="ptdv2[@i].ROTYPE" value="@congdong[i].ROTYPE" />
+                                                                <input type="hidden" name="ptdv2[@i].KPI_PART_TYPE" value="@congdong[i].KPI_PART_TYPE" />
+                                                                <input type="hidden" name="ptdv2[@i].WTCODE" value="@congdong[i].WTCODE" />
+                                                                <input type="hidden" name="ptdv2[@i].MaKho" class="MaKho" value="SUACHUA" />
+                                                                <input type="hidden" name="ptdv2[@i].PhanLoai" class="PhanLoai" value="CĐ" />
+                                                                <input type="hidden" name="ptdv2[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                            </td>
+                                                            <td><input style="width:80px" value="@congdong[i].COST" name="ptdv2[@i].COST" class="form-control input-sm number a_CD" onchange="CalCD()" maxlength="15" /></td>
+                                                            <td><input style="width:80px" value="@congdong[i].DISCOUNT" name="ptdv2[@i].DISCOUNT" class="form-control input-sm number b_CD" id="ptdv2[@i]b" onchange="CalCD()" maxlength="15" /></td>
+                                                            <td><input style="width:80px" value="@((congdong[i].COST-congdong[i].DISCOUNT))" class="form-control input-sm number" id="ptdv2[@i]" readonly /></td>
+                                                            <td><input style="width:80px" id="ptdv2[@i].GCN" name="ptdv2[@i].GCN" class="form-control input-sm number GCN" value="0" onchange="CalThanhToanGCN_OFCD()" /></td>
+                                                            <td class="CONGDONG VAT"><input style="width:40px" value="@congdong[i].THUE" name="ptdv2[@i].VAT" class="form-control input-sm number b_VAT" id="ptdv2[@i]VAT" onchange="CalCD()" /></td>
+                                                            <td><input style="width:70px" value="@congdong[i].GIAVON" name="ptdv2[@i].GiaVon" class="form-control input-sm number GiaVon" readonly /></td>
+                                                            <td><i class="fa fa-remove" onclick="RemoveCD(this)" style="cursor:pointer"></i></td>
+                                                        </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng</td>
+                                                        <td class="number TotalCD_a">
+                                                            @a
+                                                        </td>
+                                                        <td class="number TotalCD_b">@b</td>
+                                                        <td class="number TotalCD_a_b">
+                                                            @(a - b)
+                                                        </td>
+                                                        <td class="number Total">0</td>
+                                                        <td class="CONGDONG VAT"></td>
+                                                        <td></td>
+                                                        <td class="right"><i class="fa fa-plus addCD" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+
+                                }
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Cọc: </label>
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Phiếu cọc</th>
+                                                    <th>Số tiền có thể sử dụng</th>
+                                                    <th>Số tiền sử dụng</th>
+                                                    <th>Còn lại</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="DanhSachCoc">
+                                                @if (Model.Cocs != null)
+                                                {
+                                                    for (int j = 0; j < Model.Cocs.Count; j++)
+                                                    {
+                                                        var i = Model.Cocs[j];
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" name="coc[@j].SoThamChieu" value="@i.MaPhieuThu" />
+                                                                <label class="control-label">@i.HoTen+@i.NgayThu.ToString("dd/MM/yyyy")</label>
+                                                            </td>
+                                                            <td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="@i.ConLai" readonly /></td>
+                                                            <td><input type="text" name="coc[@j].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number" onchange="calCoc(this)" value="0" /></td>
+                                                            <td><input type="text" class="form-control input-sm SoTienConLai number" value="@i.ConLai" readonly /></td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--DTS-->
+                            <div class="col-md-12 ">
+                                @if (dongsonsonxe.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Doanh thu sơn:</label>
+                                            </div>
+                                            <div class="col-md-6 right">
+                                                @*    <i class="fa fa-plus-square" aria-hidden="true" style="cursor:pointer" onclick="showVAT(this,'trDS')" title="VAT"></i>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action" id="DONGSON">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th class="DONGSON VAT">VAT</th>
+                                                        <th></th>
+                                                        <th>Giá vốn</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="KHO_DS">
+                                                    @for (int i = 0; i < dongsonsonxe.Count; i++)
+                                                    {
+                                                        a += dongsonsonxe[i].COST;
+                                                        if (dongsonsonxe[i].DISCOUNT == null)
+                                                        {
+                                                            dongsonsonxe[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)dongsonsonxe[i].DISCOUNT;
+                                                        <tr id="trDS" class="animated fadeIn">
+                                                            <td>
+                                                                <input name="ptdv3[@i].JOBSNAME" value="@dongsonsonxe[i].JOBSNAME" class="form-control input-sm" />
+                                                                <input type="hidden" name="ptdv3[@i].JOBSNAME" value="@dongsonsonxe[i].JOBSNAME" />
+                                                                @*<input type="hidden" name="ptdv3[@i].REPAIRORDERNO" value="@dongsonsonxe[i].REPAIRORDERNO" />
+        <input type="hidden" name="ptdv3[@i].QUANTITY" value="@dongsonsonxe[i].QUANTITY" />*@
+                                                                <input type="hidden" name="ptdv3[@i].ROTYPE" value="@dongsonsonxe[i].ROTYPE" />
+                                                                <input type="hidden" name="ptdv3[@i].KPI_PART_TYPE" value="@dongsonsonxe[i].KPI_PART_TYPE" />
+                                                                <input type="hidden" name="ptdv3[@i].WTCODE" value="@dongsonsonxe[i].WTCODE" />
+                                                                <input type="hidden" name="ptdv3[@i].MaKho" class="MaKho" value="KHO_DS" />
+                                                                <input type="hidden" name="ptdv3[@i].PhanLoai" class="PhanLoai" value="KHO_DTS" />
+                                                                <input type="hidden" name="ptdv3[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                            </td>
+                                                            <td><input value="@dongsonsonxe[i].COST" name="ptdv3[@i].COST" class="form-control input-sm number DS_a" onchange="CalDS()" min="0" /></td>
+                                                            <td><input value="@dongsonsonxe[i].DISCOUNT" name="ptdv3[@i].DISCOUNT" class="form-control input-sm number DS_b" id="ptdv3[@i]b" min="0" onchange="CalDS()" /></td>
+                                                            <td><input value="@((dongsonsonxe[i].COST - dongsonsonxe[i].DISCOUNT))" class="form-control input-sm number" id="ptdv3[@i]" readonly /></td>
+                                                            <td class="DONGSON VAT"><input style="width:40px" value="@dongsonsonxe[i].THUE" name="ptdv3[@i].VAT" class="form-control input-sm number b_VAT" id="ptdv3[@i]VAT" onchange="CalDS()" /></td>
+                                                            <td><input type="hidden" id="ptdv3[@i].GCN" name="ptdv3[@i].GCN" class="form-control input-sm" value="" /></td>
+                                                            <td><input style="width:70px" value="@dongsonsonxe[i].GIAVON" name="ptdv3[@i].GiaVon" class="form-control input-sm number GiaVon" readonly /></td>
+                                                            <td><i class="fa fa-remove" onclick="RemoveDS(this)" style="cursor:pointer"></i></td>
+                                                        </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number TotalDS_a">@a</td><!--a-->
+                                                        <td class="number TotalDS_b">@b</td><!--b-->
+                                                        <td class="number TotalDS_a_b">@(a - b)</td><!--a - b-->
+                                                        <td></td>
+                                                        <td class="DONGSON VAT"></td>
+                                                        <td class="right"><i class="fa fa-plus addDS" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+
+                                }
+                                <!--Bảo dưỡng tiết kiệm NBDTK-->
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Bảo dưỡng tiết kiệm: </label>
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Ngày hết hạn</th>
+                                                    <th>Số tiền có thể sử dụng</th>
+                                                    <th>Số tiền sử dụng</th>
+                                                    <th>Còn lại</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="DanhSachNBDTK">
+                                                @if (Model.NBDTK != null)
+                                                {
+                                                    for (int j = 0; j < Model.NBDTK.Count; j++)
+                                                    {
+                                                        var i = Model.NBDTK[j];
+                                                        <tr>
+                                                            <td>
+                                                                <input type="hidden" name="nbdtk[@j].SoThamChieu" value="@i.MaPhieuThu" />
+                                                                @if (@i.HanSuDung != null)
+                                                                {
+                                                                    <label class="control-label">@(i.HanSuDung.Value.ToString("dd/MM/yyyy") + "(" + i.CapBDTK + ")")</label>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <label class="control-label"></label>
+                                                                }
+                                                            </td>
+                                                            <td><input type="text" class="form-control input-sm SoTienCoTheSuDung number" value="@i.ConLai" readonly /></td>
+                                                            <td><input type="text" name="bdtk[@j].SoTienSuDung" class="form-control input-sm SoTienThanhToan number" onchange="calNBDTK(this)" value="@i.SoTienSuDung" /></td>
+                                                            <td><input type="text" name="bdtk[@j].ConLai" class="form-control input-sm SoTienConLai number" value="@i.ConLai" readonly /></td>
+                                                            @*<td><input type="text" name="nbdtk[@j].SoTienSuDung" class="form-control input-sm SoTienThanhToan number" onchange="calNBDTK(this)" value="0" /></td>
+                                                                <td><input type="text" class="form-control input-sm SoTienConLai number" value="@i.ConLai" readonly /></td>*@
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--PTT-->
+                            <div class="col-md-12 ">
+                                @if (phutungtrong.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Phụ tùng trong:</label>
+                                            </div>
+                                            <div class="col-md-6 right">
+                                                @*      <i class="fa fa-plus-square" aria-hidden="true" style="cursor:pointer" onclick="showVAT(this,'trPTT')" title="VAT"></i>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action" id="PHUTUNGTRONG">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th class="PHUTUNGTRONG VAT">VAT</th>
+                                                        <th></th>
+                                                        <th>Giá vốn</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="KHO_PTT">
+                                                    @for (int i = 0; i < phutungtrong.Count; i++)
+                                                    {
+                                                        a += phutungtrong[i].COST;
+                                                        if (phutungtrong[i].DISCOUNT == null)
+                                                        {
+                                                            phutungtrong[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)phutungtrong[i].DISCOUNT;
+                                                    <tr id="trPTT" class="animated fadeIn">
+                                                        <td>
+                                                            <input name="ptdv4[@i].JOBSNAME" value="@phutungtrong[i].JOBSNAME" class="form-control input-sm" />
+                                                            <input type="hidden" name="ptdv4[@i].JOBSNAME" value="@phutungtrong[i].JOBSNAME" />
+                                                            @*<input type="hidden" name="ptdv4[@i].REPAIRORDERNO" value="@phutungtrong[i].REPAIRORDERNO" />
+        <input type="hidden" name="ptdv4[@i].QUANTITY" value="@phutungtrong[i].QUANTITY" />*@
+                                                            <input type="hidden" name="ptdv4[@i].ROTYPE" value="@phutungtrong[i].ROTYPE" />
+                                                            <input type="hidden" name="ptdv4[@i].KPI_PART_TYPE" value="@phutungtrong[i].KPI_PART_TYPE" />
+                                                            <input type="hidden" name="ptdv4[@i].WTCODE" value="@phutungtrong[i].WTCODE" />
+                                                            <input type="hidden" name="ptdv4[@i].MaKho" class="MaKho" value="KHO_PTT" />
+                                                            <input type="hidden" name="ptdv4[@i].PhanLoai" class="PhanLoai" value="KHO_PTT" />
+                                                            <input type="hidden" name="ptdv4[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                        </td>
+                                                        <td><input value="@phutungtrong[i].COST" name="ptdv4[@i].COST" class="form-control input-sm number PTT_a" onchange="CalPTT()" maxlength="15" /></td>
+                                                        <td><input value="@phutungtrong[i].DISCOUNT" name="ptdv4[@i].DISCOUNT" class="form-control input-sm number PTT_b" id="ptdv4[@i]b" onchange="CalPTT()" /></td>
+                                                        <td><input value="@((phutungtrong[i].COST - phutungtrong[i].DISCOUNT))" class="form-control input-sm number" id="ptdv4[@i]" readonly /></td>
+                                                        <td class="PHUTUNGTRONG VAT"><input style="width:40px" value="@phutungtrong[i].THUE" name="ptdv4[@i].VAT" class="form-control input-sm number b_VAT" id="ptdv4[@i]VAT" onchange="CalPTT()" /></td>
+                                                        <td><input type="hidden" id="ptdv4[@i].GCN" name="ptdv4[@i].GCN" class="form-control input-sm" value="" /></td>
+                                                        <td><input style="width:70px" value="@phutungtrong[i].GIAVON" name="ptdv4[@i].GiaVon" class="form-control input-sm number GiaVon" readonly /></td>
+                                                        <td><i class="fa fa-remove" onclick="RemovePTT(this)" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number TotalPTT_a">@a</td>
+                                                        <td class="number TotalPTT_b">@b</td>
+                                                        <td class="number TotalPTT_a_b">@(a - b)</td>
+                                                        <td class="PHUTUNGTRONG VAT"></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="right"><i class="fa fa-plus addPTT" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+                                }
+
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Bảo hiểm thanh toán:</label>
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Công ty bảo hiểm</th>
+                                                    <th>Số tiền</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="LuoiBaoHiem">
+                                                @{
+                                                    var lstThanhToanBH = Model.CTPT.Where(x => x.HinhThucThanhToan == "BH").ToList();
+                                                    var ctyBH = "";
+                                                    var soTienBH = 0.0;
+                                                    if (lstThanhToanBH.Count > 0)
+                                                    {
+                                                        ctyBH = lstThanhToanBH[0].MaNganHang;
+                                                        soTienBH = lstThanhToanBH[0].SoTienThanhToan;
+                                                    }
+                                                }
+
+                                                <tr>
+                                                    <td>
+                                                        @Html.DropDownList("ctbh.MaNganHang", Model.CTBH.Select(x => new SelectListItem { Text = x.TenDoiTac, Value = x.MaDoiTac }), "Chọn", new { @class = "select2 fullwidth ctybh" })
+                                                    </td>
+                                                    <td><input name="ctbh.SoTienThanhToan" value="@soTienBH" onchange="Cal()" type="text" class="form-control input-sm SoTienThanhToan BHTT number" value="0" maxlength="15" /></td>
+                                                </tr>
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--PKT-->
+                            <div class="col-md-12 ">
+                                @if (phutungngoai.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Phụ kiện trong:</label>
+                                            </div>
+                                            <div class="col-md-6 right">
+                                                @*    <i class="fa fa-plus-square" aria-hidden="true" style="cursor:pointer" onclick="showVAT(this,'trPTN')" title="VAT"></i>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action" id="PHUTUNGNGOAI">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th class="PHUTUNGNGOAI VAT">VAT</th>
+                                                        <th></th>
+                                                        <th>Giá vốn</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="KHO_PTN">
+                                                    @for (int i = 0; i < phutungngoai.Count; i++)
+                                                    {
+                                                        a += phutungngoai[i].COST;
+                                                        if (phutungngoai[i].DISCOUNT == null)
+                                                        {
+                                                            phutungngoai[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)phutungngoai[i].DISCOUNT;
+                                                    <tr id="trPTN" class="animated fadeIn">
+                                                        <td>
+                                                            <input name="ptdv5[@i].JOBSNAME" value="@phutungngoai[i].JOBSNAME" class="form-control input-sm" />
+                                                            <input type="hidden" name="ptdv5[@i].JOBSNAME" value="@phutungngoai[i].JOBSNAME" />
+                                                            @*<input type="hidden" name="ptdv5[@i].REPAIRORDERNO" value="@phutungngoai[i].REPAIRORDERNO" />
+        <input type="hidden" name="ptdv5[@i].QUANTITY" value="@phutungngoai[i].QUANTITY" />*@
+                                                            <input type="hidden" name="ptdv5[@i].ROTYPE" value="@phutungngoai[i].ROTYPE" />
+                                                            <input type="hidden" name="ptdv5[@i].KPI_PART_TYPE" value="@phutungngoai[i].KPI_PART_TYPE" />
+                                                            <input type="hidden" name="ptdv5[@i].WTCODE" value="@phutungngoai[i].WTCODE" />
+                                                            <input type="hidden" name="ptdv5[@i].MaKho" class="MaKho" value="KHO_PTT" />
+                                                            <input type="hidden" name="ptdv5[@i].PhanLoai" class="PhanLoai" value="KHO_PKT" />
+                                                            <input type="hidden" name="ptdv5[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                        </td>
+                                                        <td><input value="@phutungngoai[i].COST" name="ptdv5[@i].COST" class="form-control input-sm number PTN_a" onchange="CalPTN()" maxlength="15" /></td>
+                                                        <td><input value="@phutungngoai[i].DISCOUNT" name="ptdv5[@i].DISCOUNT" class="form-control input-sm number PTN_b" id="ptdv5[@i]b" onchange="CalPTN()" maxlength="15" /></td>
+                                                        <td><input value="@((phutungngoai[i].COST - @phutungngoai[i].DISCOUNT))" class="form-control input-sm number" id="ptdv5[@i]" readonly /></td>
+                                                        <td class="PHUTUNGNGOAI VAT"><input style="width:40px" value="@phutungngoai[i].THUE" name="ptdv5[@i].VAT" class="form-control input-sm number b_VAT" id="ptdv5[@i]VAT" onchange="CalPTN()" /></td>
+                                                        <td><input type="hidden" id="ptdv5[@i].GCN" name="ptdv5[@i].GCN" class="form-control input-sm" value="" /></td>
+                                                        <td><input style="width:70px" value="@phutungngoai[i].GIAVON" name="ptdv5[@i].GiaVon" class="form-control input-sm number GiaVon" readonly /></td>
+                                                        <td><i class="fa fa-remove" onclick="RemovePTN(this)" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                        z++;
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number TotalPTN_a">@a</td>
+                                                        <td class="number TotalPTN_b">@b</td>
+                                                        <td class="number TotalPTN_a_b">@(a - b)</td>
+                                                        <td class="PHUTUNGNGOAI VAT"></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="right"><i class="fa fa-plus addPTN" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+                                }
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Khách hàng thanh toán:</label>
+                                        <table class="table table-striped jambo_table bulk_action" id="ThanhToan">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:40%">Túi tiền</th>
+                                                    <th style="width:30%">Số tiền</th>
+                                                    <th style="width:30%">Số tham chiếu</th>
+                                                    <th>Treo</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody">
+                                                @if (Model.CTPT != null)
+                                                {
+                                                    var htttTien = Model.CTPT.Where(x => x.HinhThucThanhToan != "BH").ToList();
+                                                    for (int j = 0; j < htttTien.Count; j++)
+                                                    {
+                                                        if (htttTien[j].HinhThucThanhToan != "BH")
+                                                        {
+                                                        <tr id="tr" class="animated fadeIn">
+                                                            <td>
+                                                                <select class="select2 fullwidth Temp" name="httt[@j].Temp">
+                                                                    <option value="">Chọn</option>
+                                                                    @foreach (var i in Model.HTTT)
+                                                                    {
+                                                                        <option value="@i.GiaTri" @( htttTien[j].Temp == i.GiaTri ? "selected" : "" )>@i.HienThi</option>
+                                                                    }
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="text" name="httt[@j].SoTienThanhToan" value="@htttTien[j].SoTienThanhToan" class="form-control input-sm SoTienThanhToan number numberSTTT" onchange="Cal()" maxlength="15" /></td>
+                                                            <td><input name="httt[@j].SoThamChieu" value="@htttTien[j].SoThamChieu" class="form-control input-sm" /></td>
+                                                            <td>
+                                                                <input type="checkbox" class="chkTinhTrang" @( htttTien[j].TinhTrang ? "checked" : "" ) />
+                                                                <input type="hidden" class="TinhTrang" name="httt[@j].TinhTrang" value="@htttTien[j].TinhTrang" />
+                                                                <input type="hidden" class="IsDeleted" name="httt[@j].IsDeleted" value="false" />
+                                                            </td>
+                                                            <td><i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i></td>
+                                                        </tr>
+                                                        }
+                                                    }
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td>Tổng cộng</td>
+                                                    <td class="Total">0</td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td class="right"><i class="fa fa-plus addHTTT" style="cursor:pointer"></i></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                                <br />
+
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-md-3 col-sm-3">
+                                        <label style="margin-top:5px;">Công nợ Honda</label>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <input class="form-control input-sm number" name="CongNoHonda" value="0" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!--PKN-->
+                            <div class="col-md-12">
+                                @if (phukiendichvu.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Phụ kiện ngoài:</label>
+                                            </div>
+                                            <div class="col-md-6 right">
+                                                @*<i class="fa fa-plus-square" aria-hidden="true" style="cursor:pointer" onclick="showVAT(this,'trPKDV')" title="VAT"></i>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action" id="PKDV">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th class="PKDV VAT">VAT</th>
+                                                        <th></th>
+                                                        <th>Giá vốn</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="KHO_PKDV">
+                                                    @for (int i = 0; i < phukiendichvu.Count; i++)
+                                                    {
+                                                        a += phukiendichvu[i].COST;
+                                                        if (phukiendichvu[i].DISCOUNT == null)
+                                                        {
+                                                            phukiendichvu[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)phukiendichvu[i].DISCOUNT;
+                                                    <tr id="trPKDV" class="animated fadeIn">
+                                                        <td>
+                                                            <input name="ptdv6[@i].JOBSNAME" value="@phukiendichvu[i].JOBSNAME" class="form-control input-sm" />
+                                                            <input type="hidden" name="ptdv6[@i].JOBSNAME" value="@phukiendichvu[i].JOBSNAME" />
+                                                            @*<input type="hidden" name="ptdv6[@i].REPAIRORDERNO" value="@phukiendichvu[i].REPAIRORDERNO" />
+        <input type="hidden" name="ptdv6[@i].QUANTITY" value="@phukiendichvu[i].QUANTITY" />*@
+                                                            <input type="hidden" name="ptdv6[@i].ROTYPE" value="@phukiendichvu[i].ROTYPE" />
+                                                            <input type="hidden" name="ptdv6[@i].KPI_PART_TYPE" value="@phukiendichvu[i].KPI_PART_TYPE" />
+                                                            <input type="hidden" name="ptdv6[@i].WTCODE" value="@phukiendichvu[i].WTCODE" />
+                                                            <input type="hidden" name="ptdv6[@i].MaKho" class="MaKho" value="KHO_PKIEN" />
+                                                            <input type="hidden" name="ptdv6[@i].PhanLoai" class="PhanLoai" value="KHO_PKN" />
+                                                            <input type="hidden" name="ptdv6[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                        </td>
+                                                        <td><input value="@phukiendichvu[i].COST" name="ptdv6[@i].COST" class="form-control input-sm number PKDV_a" onchange="CalPKDV()" maxlength="15" /></td>
+                                                        <td><input value="@phukiendichvu[i].DISCOUNT" name="ptdv6[@i].DISCOUNT" class="form-control input-sm number PKDV_b" id="ptdv6[@i]b" onchange="CalPKDV()" /></td>
+                                                        <td><input value="@((phukiendichvu[i].COST - phukiendichvu[i].DISCOUNT))" class="form-control input-sm number" id="ptdv6[@i]" readonly /></td>
+                                                        <td class="PKDV VAT"><input style="width:40px" value="@phukiendichvu[i].THUE" name="ptdv6[@i].VAT" class="form-control input-sm number b_VAT" id="ptdv6[@i]VAT" onchange="CalPKDV()" /></td>
+                                                        <td><input type="hidden" id="ptdv6[@i].GCN" name="ptdv6[@i].GCN" class="form-control input-sm" value="" /></td>
+                                                        <td><input style="width:70px" value="@phukiendichvu[i].GIAVON" name="ptdv6[@i].GiaVon" class="form-control input-sm number GiaVon" readonly /></td>
+                                                        <td><i class="fa fa-remove" onclick="RemovePKDV(this)" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number TotalPKDV_a">@a</td>
+                                                        <td class="number TotalPKDV_b">@b</td>
+                                                        <td class="number TotalPKDV_a_b">@(a - b)</td>
+                                                        <td class="PKDV VAT"></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="right"><i class="fa fa-plus addPKDV" style="cursor:pointer"></i></td>
+                                                    </tr>
+
+                                                </tfoot>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+                                }
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group table-responsive">
+                                        <label>Nợ:</label>
+
+                                        <table class="table table-striped jambo_table bulk_action">
+                                            <thead>
+                                                <tr>
+                                                    <th>Còn nợ</th>
+                                                    <th>Bảo lãnh</th>
+                                                    <th>Đã trả</th>
+                                                    <th>Còn lại</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td id="Total"></td>
+                                                    <td>
+                                                        <input type="hidden" name="NPT.SoTienNo" id="NPT_SoTienNo" />
+                                                        <input id="NguoiBaoLanh" name="NPT.NguoiBaoLanh" type="text" class="form-control input-sm" />
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--VTN-->
+                            <div class="col-md-12">
+                                @if (vattungoai.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Vật tư ngoài:</label>
+                                            </div>
+                                            <div class="col-md-6 right">
+                                                @*  <i class="fa fa-plus-square" aria-hidden="true" style="cursor:pointer" onclick="showVAT(this,'trVTN')" title="VAT"></i>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action" id="VTN">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th class="VTN VAT">VAT</th>
+                                                        <th></th>
+                                                        <th>Giá vốn</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="KHO_VTN">
+                                                    @for (int i = 0; i < vattungoai.Count; i++)
+                                                    {
+                                                        a += vattungoai[i].COST;
+                                                        if (vattungoai[i].DISCOUNT == null)
+                                                        {
+                                                            vattungoai[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)vattungoai[i].DISCOUNT;
+                                                    <tr id="trVTN" class="animated fadeIn">
+                                                        <td>
+                                                            <input name="ptdv7[@i].JOBSNAME" value="@vattungoai[i].JOBSNAME" class="form-control input-sm" />
+                                                            <input type="hidden" name="ptdv7[@i].JOBSNAME" value="@vattungoai[i].JOBSNAME" />
+                                                            @*<input type="hidden" name="ptdv7[@i].REPAIRORDERNO" value="@vattungoai[i].REPAIRORDERNO" />
+        <input type="hidden" name="ptdv7[@i].QUANTITY" value="@vattungoai[i].QUANTITY" />*@
+                                                            <input type="hidden" name="ptdv7[@i].ROTYPE" value="@vattungoai[i].ROTYPE" />
+                                                            <input type="hidden" name="ptdv7[@i].KPI_PART_TYPE" value="@vattungoai[i].KPI_PART_TYPE" />
+                                                            <input type="hidden" name="ptdv7[@i].WTCODE" value="@vattungoai[i].WTCODE" />
+                                                            <input type="hidden" name="ptdv7[@i].MaKho" class="MaKho" value="KHO_PKIEN" />
+                                                            <input type="hidden" name="ptdv7[@i].PhanLoai" class="PhanLoai" value="KHO_VTN" />
+                                                            <input type="hidden" name="ptdv7[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                        </td>
+                                                        <td><input value="@vattungoai[i].COST" name="ptdv7[@i].COST" class="form-control input-sm number VTN_a" onchange="CalVTN()" maxlength="15" /></td>
+                                                        <td><input value="@vattungoai[i].DISCOUNT" name="ptdv7[@i].DISCOUNT" class="form-control input-sm number VTN_b" id="ptdv7[@i]b" onchange="CalVTN()" /></td>
+                                                        <td><input value="@((vattungoai[i].COST - vattungoai[i].DISCOUNT))" class="form-control input-sm number" id="ptdv7[@i]" readonly /></td>
+                                                        <td class="VTN VAT"><input style="width:40px" value="@vattungoai[i].THUE" name="ptdv7[@i].VAT" class="form-control input-sm number b_VAT" id="ptdv7[@i]VAT" onchange="CalVTN()" /></td>
+                                                        <td><input type="hidden" id="ptdv7[@i].GCN" name="ptdv7[@i].GCN" class="form-control input-sm" value="" /></td>
+                                                        <td><input style="width:70px" value="@vattungoai[i].GIAVON" name="ptdv7[@i].GiaVon" class="form-control input-sm number GiaVon" readonly /></td>
+                                                        <td><i class="fa fa-remove" onclick="RemoveVTN(this)" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number TotalVTN_a">@a</td>
+                                                        <td class="number TotalVTN_b">@b</td>
+                                                        <td class="number TotalVTN_a_b">@(a - b)</td>
+                                                        <td class="VTN VAT"></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="right"><i class="fa fa-plus addVTN" style="cursor:pointer"></i></td>
+                                                    </tr>
+
+                                                </tfoot>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+                                }
+                            </div>
+                            <!--VTGTGT-->
+                            <div class="col-md-12">
+                                @if (vattugtgt.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Vật tư giá trị gia tăng:</label>
+                                            </div>
+                                            <div class="col-md-6 right">
+                                                @* <i class="fa fa-plus-square" aria-hidden="true" style="cursor:pointer" onclick="showVAT(this,'trVTGTGT')" title="VAT"></i>*@
+                                            </div>
+                                        </div>
+                                        <div class="form-group table-responsive">
+                                            <table class="table table-striped jambo_table bulk_action" id="VTGTGT">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th class="VTGTGT VAT">VAT</th>
+                                                        <th></th>
+                                                        <th>Giá vốn</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="KHO_VTGTGT">
+                                                    @for (int i = 0; i < vattugtgt.Count; i++)
+                                                    {
+                                                        a += vattugtgt[i].COST;
+                                                        if (vattugtgt[i].DISCOUNT == null)
+                                                        {
+                                                            vattugtgt[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)vattugtgt[i].DISCOUNT;
+                                                    <tr id="trVTGTGT" class="animated fadeIn">
+                                                        <td>
+                                                            <input name="ptdv8[@i].JOBSNAME" value="@vattugtgt[i].JOBSNAME" class="form-control input-sm" />
+                                                            <input type="hidden" name="ptdv8[@i].JOBSNAME" value="@vattugtgt[i].JOBSNAME" />
+                                                            @*<input type="hidden" name="ptdv8[@i].REPAIRORDERNO" value="@vattugtgt[i].REPAIRORDERNO" />
+        <input type="hidden" name="ptdv8[@i].QUANTITY" value="@vattugtgt[i].QUANTITY" />*@
+                                                            <input type="hidden" name="ptdv8[@i].ROTYPE" value="@vattugtgt[i].ROTYPE" />
+                                                            <input type="hidden" name="ptdv8[@i].KPI_PART_TYPE" value="@vattugtgt[i].KPI_PART_TYPE" />
+                                                            <input type="hidden" name="ptdv8[@i].WTCODE" value="@vattugtgt[i].WTCODE" />
+                                                            <input type="hidden" name="ptdv8[@i].MaKho" class="MaKho" value="KHO_PKIEN" />
+                                                            <input type="hidden" name="ptdv8[@i].PhanLoai" class="PhanLoai" value="KHO_VTGTGT" />
+                                                            <input type="hidden" name="ptdv8[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                        </td>
+                                                        <td><input value="@vattugtgt[i].COST" name="ptdv8[@i].COST" class="form-control input-sm number VTGTGT_a" onchange="CalVTGTGT()" maxlength="15" /></td>
+                                                        <td><input value="@vattugtgt[i].DISCOUNT" name="ptdv8[@i].DISCOUNT" class="form-control input-sm number VTGTGT_b" id="ptdv8[@i]b" onchange="CalVTGTGT()" /></td>
+                                                        <td><input value="@((vattugtgt[i].COST - vattugtgt[i].DISCOUNT))" class="form-control input-sm number" id="ptdv8[@i]" readonly /></td>
+                                                        <td class="VTGTGT VAT"><input style="width:40px" value="@vattugtgt[i].THUE" name="ptdv8[@i].VAT" class="form-control input-sm number b_VAT" id="ptdv8[@i]VAT" onchange="CalVTGTGT()" /></td>
+                                                        <td><input type="hidden" id="ptdv8[@i].GCN" name="ptdv8[@i].GCN" class="form-control input-sm" value="" /></td>
+                                                        <td><input style="width:70px" value="@vattugtgt[i].GIAVON" name="ptdv8[@i].GiaVon" class="form-control input-sm number GiaVon" readonly /></td>
+                                                        <td><i class="fa fa-remove" onclick="RemoveVTGTGT(this)" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number TotalVTGTGT_a">@a</td>
+                                                        <td class="number TotalVTGTGT_b">@b</td>
+                                                        <td class="number TotalVTGTGT_a_b">@(a - b)</td>
+                                                        <td class="VTGTGT VAT"></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="right"><i class="fa fa-plus addVTGTGT" style="cursor:pointer"></i></td>
+                                                    </tr>
+
+                                                </tfoot>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+                                }
+                            </div>
+                            <!--QT-->
+                            <div class="col-md-12">
+                                @if (quatang.Count >= 0)
+                                {
+                                    double a = 0;
+                                    double b = 0;
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group table-responsive">
+                                            <label>Quà tặng:</label>
+                                            <table class="table table-striped jambo_table bulk_action" id="QT">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width:40%">Tên công việc</th>
+                                                        <th style="width:20%">Giá bán</th>
+                                                        <th style="width:20%">Giảm giá</th>
+                                                        <th style="width:20%">Thực thu</th>
+                                                        <th></th>
+                                                        <th>Giá vốn</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="KHO_QT">
+                                                    @for (int i = 0; i < quatang.Count; i++)
+                                                    {
+                                                        a += quatang[i].COST;
+                                                        if (quatang[i].DISCOUNT == null)
+                                                        {
+                                                            quatang[i].DISCOUNT = 0;
+                                                        }
+                                                        b += (double)quatang[i].DISCOUNT;
+                                                    <tr id="trQT" class="animated fadeIn">
+                                                        <td>
+                                                            <input name="ptdv9[@i].JOBSNAME" class="form-control input-sm" />
+                                                            <input type="hidden" name="ptdv9[@i].JOBSNAME" value="@quatang[i].JOBSNAME" />
+                                                            @*<input type="hidden" name="ptdv9[@i].REPAIRORDERNO" value="@quatang[i].REPAIRORDERNO" />
+        <input type="hidden" name="ptdv9[@i].QUANTITY" value="@quatang[i].QUANTITY" />*@
+                                                            <input type="hidden" name="ptdv9[@i].ROTYPE" value="@quatang[i].ROTYPE" />
+                                                            <input type="hidden" name="ptdv9[@i].KPI_PART_TYPE" value="@quatang[i].KPI_PART_TYPE" />
+                                                            <input type="hidden" name="ptdv9[@i].WTCODE" value="@quatang[i].WTCODE" />
+                                                            <input type="hidden" name="ptdv9[@i].MaKho" class="MaKho" value="KHO_QTKM" />
+                                                            <input type="hidden" name="ptdv9[@i].PhanLoai" class="PhanLoai" value="KHO_QTKM" />
+                                                            <input type="hidden" name="ptdv9[@i].IsDeleted" class="IsDeleted" value="false" />
+                                                        </td>
+                                                        <td><input value="@quatang[i].COST" name="ptdv9[@i].COST" class="form-control input-sm number QT_a" onchange="CalQT()" maxlength="15" /></td>
+                                                        <td><input value="@quatang[i].DISCOUNT" name="ptdv9[@i].DISCOUNT" class="form-control input-sm number QT_b" id="ptdv9[@i]b" onchange="CalQT()" /></td>
+                                                        <td><input value="@((quatang[i].COST - quatang[i].DISCOUNT))" class="form-control input-sm number" id="ptdv9[@i]" readonly /></td>
+                                                        <td><input type="hidden" id="ptdv9[@i].GCN" name="ptdv9[@i].GCN" class="form-control input-sm" value="" /></td>
+                                                        <td><input style="width:70px" value="@quatang[i].GIAVON" name="ptdv9[@i].GiaVon" class="form-control input-sm number GiaVon" readonly /></td>
+                                                        <td><i class="fa fa-remove" onclick="RemoveQT(this)" style="cursor:pointer"></i></td>
+                                                    </tr>
+                                                    }
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td>Tổng cộng:</td>
+                                                        <td class="number TotalQT_a">@a</td>
+                                                        <td class="number TotalQT_b">@b</td>
+                                                        <td class="number TotalQT_a_b">@(a - b)</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td class="right"><i class="fa fa-plus addQT" style="cursor:pointer"></i></td>
+                                                    </tr>
+
+                                                </tfoot>
+                                            </table>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <table class="table table-striped jambo_table bulk_action" style="width:100%;font-weight:bold">
+                                                <tfoot>
+                                                    <tr>
+                                                        <td style="width:40%">Tổng cộng:</td>
+                                                        <td style="width:20%" class="number" id="TongGiaBan">@ViewBag.TongGiaBan</td>
+                                                        <td style="width:20%" class="number" id="TongGiamGia">@ViewBag.TongGiaBan</td>
+                                                        <td style="width:20%" class="number" id="TongThucThu">@ViewBag.TongThucThu</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:40%">VAT:</td>
+                                                        <td style="width:20%" class="number" id="TongGiaBanVAT">@ViewBag.TongGiaBanVAT</td>
+                                                        <td style="width:20%" class="number" id="TongGiamGiaVAT">@ViewBag.TongGiamGiaVAT</td>
+                                                        <td style="width:20%" class="number" id="TongThucThuVAT">@ViewBag.TongThucThuVAT</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:40%">Tổng cộng(VAT):</td>
+
+                                                        <td style="width:20%" class="number" id="TongGiaBanSauVAT">@ViewBag.TongGiaBanSauVAT</td>
+                                                        <td style="width:20%" class="number" id="TongGiamGiaSauVAT">@ViewBag.TongGiamGiaSauVAT</td>
+                                                        <td style="width:20%" class="number" id="TongThucThuSauVAT">@ViewBag.TongThucThuSauVAT</td>
+
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    tongcong += (a - b);
+                                }
+
+                                @*<div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group table-responsive">
+                                            <label>Nợ:</label>
+
+                                            <table class="table table-striped jambo_table bulk_action">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Còn nợ</th>
+                                                        <th>Bảo lãnh</th>
+                                                        <th>Đã trả</th>
+                                                        <th>Còn lại</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td id="Total"></td>
+                                                        <td>
+                                                            <input type="hidden" name="NPT.SoTienNo" id="NPT_SoTienNo" />
+                                                            <input id="NguoiBaoLanh" name="NPT.NguoiBaoLanh" type="text" class="form-control input-sm" />
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>*@
+                            </div>
+
+
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Ghi chú</label>
+                                        @if (Model.obj != null)
+                                        {
+                                            @Html.TextAreaFor(x => Model.obj.GhiChu, new { @class = "form-control input-sm" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextAreaFor(x => "", new { @class = "form-control input-sm" })
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Kế toán trưởng</label>
+                                        @Html.DropDownListFor(x => Model.obj.KeToanTruong, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Người lập phiếu</label>
+                                        @Html.DropDownListFor(x => Model.obj.NguoiLapPhieu, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Người nộp tiền</label>
+                                        @Html.DropDownListFor(x => Model.obj.NguoiNopTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Người thu tiền (*)</label>
+                                        @Html.DropDownListFor(x => Model.obj.NguoiThuTien, Model.Users.Select(x => new SelectListItem { Text = x.UserName, Value = x.UserId.ToString() }), "Chọn", new { @class = "select2 fullwidth" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="position:fixed;bottom:0;left:50%">
+        <input type="hidden" name="submitType" id="submitType" value="New" />
+        <input type="submit" value="Lưu" onClick="SetSubmitType('Save');" class="btn btn-success Save" />
+        @*<input type="submit" onclick="return false;" value="In" class="btn btn-success" />*@
+        <input type="submit" name="submit" id="New" value="Lưu và thêm mới" onClick="SetSubmitType('New');" class="btn btn-success New" />
+    </div>
+</form>
+<div class="modal fade" id="Modal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Chuyển loại</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <select class="form-control input-sm" id="selectType">
+                            <option value="">Chọn</option>
+                            <option value="SuaChua">Sửa chữa chung</option>
+                            <option value="KHO_DS">Đồng sơn - sơn xe</option>
+                            <option value="KHO_PTT">Phụ tùng trong</option>
+                            <option value="KHO_PTN">Phụ tùng ngoài</option>
+                            <option value="KHO_PKDV">Phụ kiện dịch vụ</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-success" id="ChangeType" data-dismiss="modal">Thay đổi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="context-menu2">
+    <ul class="dropdown-menu pull-left" role="menu">
+        <li>
+            <a onclick="ChangeType('SuaChua')" href="javascript:;">
+                Sửa chữa chung
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('CongDong')" href="javascript:;">
+                Công đồng
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_DS')" href="javascript:;">
+                Doanh thu sơn
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_PTT')" href="javascript:;">
+                Phụ tùng trong
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_PTN')" href="javascript:;">
+                Phụ kiện trong
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_PKDV')" href="javascript:;">
+                Phụ kiện ngoài
+            </a>
+        </li>
+        <li>
+            <a onclick="ChangeType('KHO_QT')" href="javascript:;">
+                Quàn tặng
+            </a>
+        </li>
+    </ul>
+</div>
+<a href="/SoThu/DVIndex" class="Back">Quay lại</a>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/SoThuDVNewCommon.js"></script>
+    <style>
+        .changeType {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            // Your code here
+            CalSCC();
+            CalThanhToanGCN();
+            CalCD();
+            CalThanhToanGCN_OFCD();
+            CalDS();
+            CalPTT();
+            CalPTN();
+            CalPKDV();
+            CalVTN();
+            CalVTGTGT();
+            CalQT();
+            Cal();
+        });
+        $("#txtBienSo").focusout(function () {
+            debugger;
+            var val = $("#txtBienSo").val();
+            if(val != "")
+            {
+                ChangNumber(val);
+            }
+        })
+
+        $("#txtSoKhung").focusout(function () {
+            debugger;
+            LoadNBDTK();
+        })
+        function SetSubmitType(value) {
+
+            $("#submitType").val(value);
+        }
+        function OnChecked() {
+            var LBH = $("#LoaiBH").prop('checked') == true ? "XKG" : "";
+            $("#LoaiBaoHiem").val(LBH);
+        }
+        $("#form-data").submit(function () {
+            debugger;
+            Cal();
+            let flag = true;
+            $("#tbody").find("tr").map(function (key, val) {
+                if ($(val).is(":visible")) {
+                    var tuitien = $(val).find(".Temp").select2('val');
+                    var sotien = $(val).find(".number").val().split(",").join("");
+                    tuitien = tuitien == "Chọn" ? "" : tuitien;
+                    sotien = sotien == "" ? 0 : parseInt(sotien);
+                    if (tuitien != "" && sotien === 0) {
+                        toastWarning("Vui lòng nhập số tiền");
+                        $(val).find(".number").focus();
+                        flag = false;
+                        return;
+                    }
+                    if (tuitien == "" && sotien != 0) {
+                        toastWarning("Vui lòng nhập túi tiền");
+                        $(val).find(".Temp").focus();
+                        flag = false;
+                        return;
+                    }
+                }
+            })
+            if (!flag) {
+                return false;
+            }
+            if (CheckValidatePhieuDichVu() == false)
+                return false;
+            if (CheckValidateThongTinNguoiThanhToan_PhieuThu() == false)
+                return false;
+            var lst = $(".number");
+            lst.map(function (key, val) {
+                $(val).val($(val).val().split(",").join(""));
+            });
+        })
+        var trSC = $("#trSC").html();
+        var trCD = $("#trCD").html();
+        var trDS = $("#trDS").html();
+        var trPTT = $("#trPTT").html();
+        var trPTN = $("#trPTN").html();
+        var trPKDV = $("#trPKDV").html();
+        var trVTN = $("#trVTN").html();
+        var trVTGTGT = $("#trVTGTGT").html();
+        var trQT = $("#trQT").html();
+        i = '@Model.CTPT.Count';
+        $(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if(Model.CTPT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+        j = '@suachuachung.Count';
+        $(".addSCC").click(function () {
+            debugger;
+            var htmlSCC = trSC.split("ptdv1[0]").join("ptdv1[" + j + "]");
+            @if(suachuachung.Count>0)
+            {
+            }
+            $("#SuaChua").append("<tr>" + htmlSCC + "</tr>");
+            j++;
+        })
+        cd = '@congdong.Count';
+        $(".addCD").click(function () {
+            debugger;
+            var htmlCD = trCD.split("ptdv2[0]").join("ptdv2[" + cd + "]");
+            @if(congdong.Count>0)
+            {
+            }
+            $("#CongDong").append("<tr>" + htmlCD + "</tr>");
+            cd++;
+        })
+        z = '@dongsonsonxe.Count';
+        $(".addDS").click(function () {
+            var htmlDS = trDS.split("ptdv3[0]").join("ptdv3[" + z + "]");
+            @if(dongsonsonxe.Count>0)
+            {
+            }
+            $("#KHO_DS").append("<tr>" + htmlDS + "</tr>");
+            z++;
+        })
+        x = '@phutungtrong.Count';
+        $(".addPTT").click(function () {
+            var htmlPTT = trPTT.split("ptdv4[0]").join("ptdv4[" + x + "]");
+            @if(phutungtrong.Count>0)
+            {
+            }
+            $("#KHO_PTT").append("<tr>" + htmlPTT + "</tr>");
+            x++;
+        })
+        y = '@phutungngoai.Count';
+        $(".addPTN").click(function () {
+            var htmlPTN = trPTN.split("ptdv5[0]").join("ptdv5[" + y + "]");
+            @if(phutungngoai.Count>0)
+            {
+            }
+            $("#KHO_PTN").append("<tr>" + htmlPTN + "</tr>");
+            y++;
+        })
+        w = '@phukiendichvu.Count';
+        $(".addPKDV").click(function () {
+            var htmlPKDV = trPKDV.split("ptdv6[0]").join("ptdv6[" + w + "]");
+            @if(phukiendichvu.Count>0)
+            {
+                 @*@Html.Raw("htmlPTDV=htmlPTDV.replace('" + ptdv[0].REPAIRORDERNO + "','');")
+                 @Html.Raw("htmlPTDV=htmlPTDV.replace('" + ptdv[0].COST + "','');")
+                 @Html.Raw("htmlPTDV=htmlPTDV.replace('" + ptdv[0].DISCOUNT + "','');")
+                 @Html.Raw("htmlPTDV=htmlPTDV.replace('','');")*@
+            }
+            $("#KHO_PKDV").append("<tr>" + htmlPKDV + "</tr>");
+            w++;
+        })
+        vtn = '@vattungoai.Count';
+        $(".addVTN").click(function () {
+            debugger;
+            var htmlVTN = trVTN.split("ptdv7[0]").join("ptdv7[" + vtn + "]");
+            @if(vattungoai.Count>0)
+            {
+            }
+            $("#KHO_VTN").append("<tr>" + htmlVTN + "</tr>");
+            vtn++;
+        })
+        vtgtgt = '@vattugtgt.Count';
+        $(".addVTGTGT").click(function () {
+            var htmlVTGTGT = trVTGTGT.split("ptdv8[0]").join("ptdv8[" + vtgtgt + "]");
+            @if(vattugtgt.Count>0)
+            {
+            }
+            $("#KHO_VTGTGT").append("<tr>" + htmlVTGTGT + "</tr>");
+            vtgtgt++;
+        })
+        qt = '@quatang.Count';
+        $(".addQT").click(function () {
+            var htmlQT = trQT.split("ptdv9[0]").join("ptdv9[" + qt + "]");
+            @if(quatang.Count>0)
+            {
+                 @*@Html.Raw("htmlPTDV=htmlPTDV.replace('" + ptdv[0].REPAIRORDERNO + "','');")
+                 @Html.Raw("htmlPTDV=htmlPTDV.replace('" + ptdv[0].COST + "','');")
+                 @Html.Raw("htmlPTDV=htmlPTDV.replace('" + ptdv[0].DISCOUNT + "','');")
+                 @Html.Raw("htmlPTDV=htmlPTDV.replace('','');")*@
+                 }
+            $("#KHO_QT").append("<tr>" + htmlQT + "</tr>");
+            qt++;
+        })
+        function Remove(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            Cal();
+        }
+        function RemoveSCC(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalSCC();
+            CalThanhToanGCN();
+            Cal();
+        }
+        function RemoveCD(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalCD();
+            CalThanhToanGCN_OFCD();
+            Cal();
+        }
+        function RemoveDS(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalDS();
+            Cal();
+        }
+        function RemovePTT(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalPTT();
+            Cal();
+        }
+        function RemovePTN(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalPTN();
+            Cal();
+        }
+        function RemovePKDV(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalPKDV();
+            Cal();
+        }
+        function RemoveVTN(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalVTN();
+            Cal();
+        }
+        function RemoveVTGTGT(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalVTGTGT();
+            Cal();
+        }
+        function RemoveQT(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.html(tr.html().split("required").join(""));
+            tr.hide();
+            CalQT();
+            Cal();
+        }
+        //phan new cac loai
+        var total = 0;
+        var totalGG = 0;
+        var totalSCC = 0,totalCD = 0 ,totalDS = 0, totalPTT = 0, totalPTN = 0, totalPKDV = 0, totalVTN = 0, totalVTGTGT =0 ,totalQT = 0;
+        var GGSCC = 0, GGCD = 0, GGDS = 0, GGPTT = 0, GGPTN = 0, GGPKDV = 0, GGVTN = 0, GGVTGTGT = 0, GGQT = 0;
+        var totalSCC_VAT = 0, totalCD_VAT = 0, totalDS_VAT = 0, totalPTT_VAT = 0, totalPTN_VAT = 0, totalPKDV_VAT = 0, totalVTN_VAT = 0, totalVTGTGT_VAT = 0, totalQT_VAT = 0;
+        var totalSCC_VAT_DC = 0, totalCD_VAT_DC = 0, totalDS_VAT_DC = 0, totalPTT_VAT_DC = 0, totalPTN_VAT_DC = 0, totalPKDV_VAT_DC = 0, totalVTN_VAT_DC = 0, totalVTGTGT_VAT_DC = 0, totalQT_VAT_DC = 0;
+        function CalSCC() {
+            setTimeout(function () {
+                debugger;
+                var soTienNo = 0;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                var total_vat = 0;
+                var total_vatDC = 0;
+                $("#SuaChua").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".a_SCC").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".b_SCC").val().split(",").join(""));
+                            var vat = parseInt($(val).find(".b_VAT").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b)
+                            {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#SuaChua").find("#ptdv1\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cSCC = sotien_a - sotien_b;
+                            $("#SuaChua").find("#ptdv1\\[" + i + "\\]").val(cSCC.toLocaleString('en-us'));
+                            if (vat != 0) {
+                                total_vat += (sotien_a * (vat / 100));
+                                total_vatDC += (sotien_b * (vat / 100));
+                            }
+                            i++;
+                        }
+                    }
+                });
+                //$("#SuaChua").find("tr").map(function (key, val) {
+                //    if ($(val).is(":visible")) {
+                //        var isDeleted = $(val).find(".IsDeleted").val();
+                //        if (isDeleted != "true") {
+                //            var sotien_b = parseInt($(val).find(".b_SCC").val().split(",").join(""));
+                //            if (isNaN(sotien_b))
+                //                sotien_b = 0;
+                //            giamgia += sotien_b;
+                //        }
+                //    }
+                //});
+                var thucthu = 0;
+                thucthu = giaban - giamgia;
+                totalSCC = thucthu;
+                GGSCC = giamgia;
+                totalSCC_VAT = total_vat;
+                totalSCC_VAT_DC = total_vatDC;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#SUACHUACHUNG").find(".TotalSCC_a").html(giaban.toLocaleString('en-us'));
+                $("#SUACHUACHUNG").find(".TotalSCC_b").html(giamgia.toLocaleString('en-us'));
+                $("#SUACHUACHUNG").find(".TotalSCC_a_b").html(thucthu.toLocaleString('en-us'));
+                //i++;
+            }, 100);
+        }
+        function CalCD() {
+            setTimeout(function () {
+                debugger;
+                var soTienNo = 0;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                var total_vat = 0;
+                var total_vatDC = 0;
+                $("#CongDong").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".a_CD").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".b_CD").val().split(",").join(""));
+                            var vat = parseInt($(val).find(".b_VAT").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b) {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#CongDong").find("#ptdv2\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cSCC = sotien_a - sotien_b;
+                            $("#CongDong").find("#ptdv2\\[" + i + "\\]").val(cSCC.toLocaleString('en-us'));
+                            if (vat != 0) {
+                                total_vat += (sotien_a * (vat / 100));
+                                total_vatDC += (sotien_b * (vat / 100));
+                            }
+                            i++;
+                        }
+                    }
+                });
+                var thucthu = 0;
+                thucthu = giaban - giamgia;
+                totalCD = thucthu;
+                GGCD = giamgia;
+                totalCD_VAT = total_vat;
+                totalCD_VAT_DC = total_vatDC;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#CONGDONG").find(".TotalCD_a").html(giaban.toLocaleString('en-us'));
+                $("#CONGDONG").find(".TotalCD_b").html(giamgia.toLocaleString('en-us'));
+                $("#CONGDONG").find(".TotalCD_a_b").html(thucthu.toLocaleString('en-us'));
+            }, 100);
+        }
+        function CalDS() {
+            setTimeout(function () {
+                debugger;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                var total_vat = 0;
+                var total_vatDC = 0;
+                $("#KHO_DS").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".DS_a").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".DS_b").val().split(",").join(""));
+                            var vat = parseInt($(val).find(".b_VAT").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b) {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#KHO_DS").find("#ptdv3\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cDS = sotien_a - sotien_b;
+                            $("#KHO_DS").find("#ptdv3\\[" + i + "\\]").val(cDS.toLocaleString('en-us'));
+                            if (vat != 0) {
+                                total_vat += (sotien_a * (vat / 100));
+                                total_vatDC += (sotien_b * (vat / 100));
+                            }
+                            i++;
+                        }
+                    }
+                });
+                //$("#KHO_DS").find("tr").map(function (key, val) {
+                //    if ($(val).is(":visible")) {
+                //        var isDeleted = $(val).find(".IsDeleted").val();
+                //        if (isDeleted != "true") {
+                //            var sotien_b = parseInt($(val).find(".DS_b").val().split(",").join(""));
+                //            if (isNaN(sotien_b))
+                //                sotien_b = 0;
+                //            giamgia += sotien_b;
+                //        }
+                //    }
+                //});
+                var thucthu = 0;
+                //if (giaban < giamgia) {
+                //    toastWarning("Số tiền giảm giá không được lớn hơn giảm giá.Vui lòng nhập lại.");
+                //    return false;
+                //}
+                //else {
+                thucthu = giaban - giamgia;
+                //}
+                totalDS = thucthu;
+                GGDS = giamgia;
+                totalDS_VAT = total_vat;
+                totalDS_VAT_DC = total_vatDC;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#DONGSON").find(".TotalDS_a").html(giaban.toLocaleString('en-us'));
+                $("#DONGSON").find(".TotalDS_b").html(giamgia.toLocaleString('en-us'));
+                $("#DONGSON").find(".TotalDS_a_b").html(thucthu.toLocaleString('en-us'));
+
+            }, 100);
+        }
+        function CalPTT() {
+            setTimeout(function () {
+                debugger;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                var total_vat = 0;
+                var total_vatDC = 0;
+                $("#KHO_PTT").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".PTT_a").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".PTT_b").val().split(",").join(""));
+                            var vat = parseInt($(val).find(".b_VAT").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b) {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#KHO_PTT").find("#ptdv4\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cPTT = sotien_a - sotien_b;
+                            $("#KHO_PTT").find("#ptdv4\\[" + i + "\\]").val(cPTT.toLocaleString('en-us'));
+                            if (vat != 0) {
+                                total_vat += (sotien_a * (vat / 100));
+                                total_vatDC += (sotien_b * (vat / 100));
+                            }
+                            i++;
+                        }
+                    }
+                });
+                //$("#KHO_PTT").find("tr").map(function (key, val) {
+                //    if ($(val).is(":visible")) {
+                //        var isDeleted = $(val).find(".IsDeleted").val();
+                //        if (isDeleted != "true") {
+                //            var sotien_b = parseInt($(val).find(".PTT_b").val().split(",").join(""));
+                //            if (isNaN(sotien_b))
+                //                sotien_b = 0;
+                //            giamgia += sotien_b;
+                //        }
+                //    }
+                //});
+                var thucthu = 0;
+                //if (giaban < giamgia) {
+                //    toastWarning("Số tiền giảm giá không được lớn hơn giảm giá.Vui lòng nhập lại.");
+                //    return false;
+                //}
+                //else {
+                thucthu = giaban - giamgia;
+                //}
+                totalPTT = thucthu;
+                GGPTT = giamgia;
+                totalPTT_VAT = total_vat;
+                totalPTT_VAT_DC = total_vatDC;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#PHUTUNGTRONG").find(".TotalPTT_a").html(giaban.toLocaleString('en-us'));
+                $("#PHUTUNGTRONG").find(".TotalPTT_b").html(giamgia.toLocaleString('en-us'));
+                $("#PHUTUNGTRONG").find(".TotalPTT_a_b").html(thucthu.toLocaleString('en-us'));
+
+            }, 100);
+        }
+        function CalPTN() {
+            setTimeout(function () {
+                debugger;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                var total_vat = 0;
+                var total_vatDC = 0;
+                $("#KHO_PTN").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".PTN_a").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".PTN_b").val().split(",").join(""));
+                            var vat = parseInt($(val).find(".b_VAT").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b) {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#KHO_PTN").find("#ptdv5\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cPTT = sotien_a - sotien_b;
+                            $("#KHO_PTN").find("#ptdv5\\[" + i + "\\]").val(cPTT.toLocaleString('en-us'));
+                            if (vat != 0) {
+                                total_vat += (sotien_a * (vat / 100));
+                                total_vatDC += (sotien_b * (vat / 100));
+                            }
+                            i++;
+                        }
+                    }
+                });
+
+                var thucthu = 0;
+                //if (giaban < giamgia) {
+                //    toastWarning("Số tiền giảm giá không được lớn hơn giảm giá.Vui lòng nhập lại.");
+                //    return false;
+                //}
+                //else {
+                thucthu = giaban - giamgia;
+                //}
+                totalPTN = thucthu;
+                GGPTN = giamgia;
+                totalPTN_VAT = total_vat;
+                totalPTN_VAT_DC = total_vatDC;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#PHUTUNGNGOAI").find(".TotalPTN_a").html(giaban.toLocaleString('en-us'));
+                $("#PHUTUNGNGOAI").find(".TotalPTN_b").html(giamgia.toLocaleString('en-us'));
+                $("#PHUTUNGNGOAI").find(".TotalPTN_a_b").html(thucthu.toLocaleString('en-us'));
+
+            }, 100);
+        }
+        function CalPKDV() {
+            setTimeout(function () {
+                debugger;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                var total_vat = 0;
+                var total_vatDC = 0;
+                $("#KHO_PKDV").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".PKDV_a").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".PKDV_b").val().split(",").join(""));
+                            var vat = parseInt($(val).find(".b_VAT").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b) {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#KHO_PKDV").find("#ptdv6\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cPTT = sotien_a - sotien_b;
+                            $("#KHO_PKDV").find("#ptdv6\\[" + i + "\\]").val(cPTT.toLocaleString('en-us'));
+                            if (vat != 0) {
+                                total_vat += (sotien_a * (vat / 100));
+                                total_vatDC += (sotien_b * (vat / 100));
+                            }
+                            i++;
+                        }
+                    }
+                });
+                //$("#KHO_PKDV").find("tr").map(function (key, val) {
+                //    if ($(val).is(":visible")) {
+                //        var isDeleted = $(val).find(".IsDeleted").val();
+                //        if (isDeleted != "true") {
+                //            var sotien_b = parseInt($(val).find(".PKDV_b").val().split(",").join(""));
+                //            if (isNaN(sotien_b))
+                //                sotien_b = 0;
+                //            giamgia += sotien_b;
+                //        }
+                //    }
+                //});
+                var thucthu = 0;
+                thucthu = giaban - giamgia;
+                totalPKDV = thucthu;
+                GGPKDV = giamgia;
+                totalPKDV_VAT = total_vat;
+                totalPKDV_VAT_DC = total_vatDC;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#PKDV").find(".TotalPKDV_a").html(giaban.toLocaleString('en-us'));
+                $("#PKDV").find(".TotalPKDV_b").html(giamgia.toLocaleString('en-us'));
+                $("#PKDV").find(".TotalPKDV_a_b").html(thucthu.toLocaleString('en-us'));
+
+            }, 100);
+        }
+        function CalVTN() {
+            setTimeout(function () {
+                debugger;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                var total_vat = 0;
+                var total_vatDC = 0;
+                $("#KHO_VTN").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".VTN_a").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".VTN_b").val().split(",").join(""));
+                            var vat = parseInt($(val).find(".b_VAT").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b) {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#KHO_VTN").find("#ptdv7\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cPTT = sotien_a - sotien_b;
+                            $("#KHO_VTN").find("#ptdv7\\[" + i + "\\]").val(cPTT.toLocaleString('en-us'));
+                            if (vat != 0) {
+                                total_vat += (sotien_a * (vat / 100));
+                                total_vatDC += (sotien_b * (vat / 100));
+                            }
+                            i++;
+                        }
+                    }
+                });
+                var thucthu = 0;
+                thucthu = giaban - giamgia;
+                totalVTN = thucthu;
+                GGVTN = giamgia;
+                totalVTN_VAT = total_vat;
+                totalVTN_VAT_DC = total_vatDC;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#VTN").find(".TotalVTN_a").html(giaban.toLocaleString('en-us'));
+                $("#VTN").find(".TotalVTN_b").html(giamgia.toLocaleString('en-us'));
+                $("#VTN").find(".TotalVTN_a_b").html(thucthu.toLocaleString('en-us'));
+
+            }, 100);
+        }
+        function CalVTGTGT() {
+            setTimeout(function () {
+                debugger;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                var total_vat = 0;
+                var total_vatDC = 0;
+                $("#KHO_VTGTGT").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".VTGTGT_a").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".VTGTGT_b").val().split(",").join(""));
+                            var vat = parseInt($(val).find(".b_VAT").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b) {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#KHO_VTGTGT").find("#ptdv8\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cPTT = sotien_a - sotien_b;
+                            $("#KHO_VTGTGT").find("#ptdv8\\[" + i + "\\]").val(cPTT.toLocaleString('en-us'));
+                            if (vat != 0) {
+                                total_vat += (sotien_a * (vat / 100));
+                                total_vatDC += (sotien_b * (vat / 100));
+                            }
+                            i++;
+                        }
+                    }
+                });
+                var thucthu = 0;
+                thucthu = giaban - giamgia;
+                totalVTGTGT = thucthu;
+                GGVTGTGT = giamgia;
+                totalVTGTGT_VAT = total_vat;
+                totalVTGTGT_VAT_DC = total_vatDC;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#VTGTGT").find(".TotalVTGTGT_a").html(giaban.toLocaleString('en-us'));
+                $("#VTGTGT").find(".TotalVTGTGT_b").html(giamgia.toLocaleString('en-us'));
+                $("#VTGTGT").find(".TotalVTGTGT_a_b").html(thucthu.toLocaleString('en-us'));
+
+            }, 100);
+        }
+        function CalQT() {
+            setTimeout(function () {
+                debugger;
+                var soTienNo = 0;
+                var giaban = 0;
+                var giamgia = 0;
+                var i = 0;
+                $("#KHO_QT").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien_a = parseInt($(val).find(".QT_a").val().split(",").join(""));
+                            var sotien_b = parseInt($(val).find(".QT_b").val().split(",").join(""));
+                            if (isNaN(sotien_a))
+                                sotien_a = 0;
+                            giaban += sotien_a;
+                            if (isNaN(sotien_b))
+                                sotien_b = 0;
+                            if (sotien_a < sotien_b) {
+                                sotien_b = 0;
+                                toastWarning("Số tiền giảm giá không được lớn hơn giá bán.Vui lòng nhập lại.");
+                                $("#KHO_QT").find("#ptdv9\\[" + i + "\\]b").val(sotien_b.toLocaleString('en-us'));
+                            }
+                            giamgia += sotien_b;
+                            var cQT = sotien_a - sotien_b;
+                            $("#KHO_QT").find("#ptdv9\\[" + i + "\\]").val(cQT.toLocaleString('en-us'));
+                            i++;
+                        }
+                    }
+                });
+                var thucthu = 0;
+                thucthu = giaban - giamgia;
+                totalQT = thucthu;
+                GGQT = giamgia;
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#QT").find(".TotalQT_a").html(giaban.toLocaleString('en-us'));
+                $("#QT").find(".TotalQT_b").html(giamgia.toLocaleString('en-us'));
+                $("#QT").find(".TotalQT_a_b").html(thucthu.toLocaleString('en-us'));
+                //i++;
+            }, 100);
+        }
+        //var tongTienPhaiThuDaCoVAT = parseInt('@(ViewBag.TongThucThuSauVAT)');
+        var totalresult = 0;
+        Cal();
+        //tinh toan lai so tien con no
+        function Cal() {
+            setTimeout(function () {
+                debugger;
+                var soTienNo = 0,soTienNoCVAT = 0;
+                var soTienGiamGia = 0, soTienGiamGiaCVAT = 0;
+                var VATTienNo = 0, VATTienGiamGia = 0;
+                var tongtienTT = 0;
+                var tienThanhToan = 0;
+                $("#tbody").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien = parseInt($(val).find(".number").val().split(",").join(""));
+                            if (isNaN(sotien))
+                                sotien = 0;
+                            tienThanhToan += sotien;
+                        }
+                    }
+                });
+                //tien nợ chưa vat
+                soTienNo = total + totalSCC + totalCD + totalDS + totalPTT + totalPTN + totalPKDV + totalVTN + totalVTGTGT + totalQT;
+                var totalVAT = Math.round(totalSCC_VAT + totalCD_VAT + totalDS_VAT + totalPTT_VAT + totalPTN_VAT + totalPKDV_VAT + totalVTN_VAT + totalVTGTGT_VAT + totalQT_VAT);
+                var totalVAT_DC = Math.round(totalSCC_VAT_DC + totalCD_VAT_DC + totalDS_VAT_DC + totalPTT_VAT_DC + totalPTN_VAT_DC + totalPKDV_VAT_DC + totalVTN_VAT_DC + totalVTGTGT_VAT_DC + totalQT_VAT_DC);
+                soTienNoCVAT = soTienNo;
+                tongtienTT = soTienNo;
+                //vat tien no
+                VATTienNo = soTienNoCVAT / 10;
+                //tien no có vat
+                soTienNo = soTienNo + (totalVAT - totalVAT_DC);
+                //tien giam gia chưa vat
+                soTienGiamGiaCVAT = totalGG + GGSCC + GGCD + GGDS + GGPTT + GGPTN + GGPKDV + GGVTN + GGVTGTGT + GGQT;
+                //tien giam gia có vat
+                soTienGiamGia = soTienGiamGiaCVAT * 1.1;
+                //vat cho giam gia
+                VATTienGiamGia = soTienGiamGiaCVAT
+
+                //tru di so tien thanh toan tu bao hiem, coc, thanh toan ngan hang
+                $(".SoTienThanhToan").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        let number = $(this).val();
+                        if (number != "") {
+                            var num = $(val).val().split(",").join("");
+                            if (num != "") {
+                                num = parseInt(num);
+                                if (isNaN(num))
+                                    num = 0;
+                                soTienNo = soTienNo - num;
+                            }
+                        }
+                    }
+                });
+                //soTienNo = Math.ceil(soTienNo);
+                soTienNo = Math.round(soTienNo);
+                //set so tien thanh toan vao tong cong thanh toan
+                $("#ThanhToan").find(".Total").html(tienThanhToan.toLocaleString('en-us'));
+                //set so tien con no tren form
+                $("#Total").html(soTienNo.toLocaleString('en-us'));
+                //set so tien con no vao hidden truyen len action
+                $("#NPT_SoTienNo").val(soTienNo);
+                //phan ve Tong Cong
+                //TongGiaBan
+                $("#TongGiaBan").html((tongtienTT + soTienGiamGiaCVAT).toLocaleString('en-us'));
+                $("#TongGiamGia").html(soTienGiamGiaCVAT.toLocaleString('en-us'));
+                var TongThucThu = (tongtienTT + soTienGiamGiaCVAT) - soTienGiamGiaCVAT;
+                $("#TongThucThu").html(TongThucThu.toLocaleString('en-us'));
+
+                $("#TongGiaBanVAT").html(totalVAT.toLocaleString('en-us'));
+                $("#TongGiamGiaVAT").html(totalVAT_DC.toLocaleString('en-us'));
+                $("#TongThucThuVAT").html((totalVAT - totalVAT_DC).toLocaleString('en-us'));
+
+                $("#TongGiaBanSauVAT").html(((tongtienTT + soTienGiamGiaCVAT) + totalVAT).toLocaleString('en-us'));
+                $("#TongGiamGiaSauVAT").html((soTienGiamGiaCVAT + totalVAT_DC).toLocaleString('en-us'));
+                $("#TongThucThuSauVAT").html((TongThucThu + (totalVAT - totalVAT_DC)).toLocaleString('en-us'));
+
+
+            }, 100);
+        }
+
+
+
+        $("td.number").map(function (key, val) {
+            var val = $(this).html();
+            val = val.split(",").join("");
+            val = parseInt(val);
+            $(this).html(val.toLocaleString('en-us'));
+        })
+        $(document).on("change", ".number", function () {
+            var val = $(this).val();
+            if (val != "") {
+                val = val.split(",").join("");
+                val = parseInt(val);
+                $(this).val(val.toLocaleString('en-us'));
+            }
+            else {
+                $(this).val(0);
+            }
+            //let total = 0;  //thang moi bo o day
+            Cal();
+        });
+        function calCoc(a) {
+            //var num = $(a).val().split(",").join("");
+            //var tot = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+            //$(a).closest("tr").find(".SoTienConLai").val((tot - num).toLocaleString('en-us'));
+            //Cal();
+            setTimeout(function () {
+                var stsd = $(a).val();
+                stsd = stsd.split(",").join("");
+                var stctsd = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+                if (stctsd - stsd < 0) {
+                    toastError("Số tiền sử dụng bảo dưỡng tiết kiệm không được lớn hơn số tiền có thể sử dụng.Vui lòng nhập lại.");
+                    $(a).focus();
+                    $(a).val(0);
+                    $(a).closest("tr").find(".SoTienConLai").val(stctsd);
+                }
+                else
+                    $(a).closest("tr").find(".SoTienConLai").val((stctsd - stsd).toLocaleString('en-us'));
+            }, 100);
+            Cal();
+        }
+
+        function calNBDTK(a) {
+            //var num = $(a).val().split(",").join("");
+            //var tot = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+            //$(a).closest("tr").find(".SoTienConLai").val((tot - num).toLocaleString('en-us'));
+            //Cal();
+            setTimeout(function () {
+                var stsd = $(a).val();
+                stsd = stsd.split(",").join("");
+                var stctsd = $(a).closest("tr").find(".SoTienCoTheSuDung").val().split(",").join("");
+                if (stctsd - stsd < 0) {
+                    toastError("Số tiền sử dụng cọc không được lớn hơn số tiền có thể sử dụng.Vui lòng nhập lại.");
+                    $(a).focus();
+                    $(a).val(0);
+                    $(a).closest("tr").find(".SoTienConLai").val(stctsd);
+                }
+                else
+                    $(a).closest("tr").find(".SoTienConLai").val((stctsd - stsd).toLocaleString('en-us'));
+            }, 100);
+            Cal();
+        }
+        var selected = {};
+        var a;
+        $.contextMenu({
+            selector: '.changeType',
+            callback: function (key, options) {
+                selected = $(this);
+                if (key != "SuaChua") {
+                    $(selected).find(".numberGCN").hide();
+                }
+                else {
+                    $(selected).find(".numberGCN").show();
+                }
+                $(selected).find(".PhanLoai").val(key);
+                var html = "<tr class='changeType'>" + $(selected).html() + "</tr>";
+                $("." + key).append(html);
+                $(selected).remove();
+                CalChange();
+            },
+            items: {
+                "SuaChua": { name: "Sửa chữa chung" },
+                "KHO_DS": { name: "Đồng sơn - sơn xe" },
+                "KHO_PTT": { name: "Phụ tùng trong" },
+                "KHO_PTN": { name: "Phụ tùng ngoài" },
+                "KHO_PKDV": { name: "Phụ kiện dịch vụ" },
+                "KHO_QT": { name: "Quà tặng" },
+            }
+        });
+
+        function GetInfoTicket() {
+            var strTicket = $("#txtSoPhieu").val().trim();
+            if (strTicket.length > 0) {
+                $.ajax({
+                    url: "/SoThu/GetInfoTicketDV",
+                    type: "POST",
+                    data: { "strSoPhieu": strTicket },
+                    success: function (result) {
+                        if (!result.IsError) {
+                            window.location.href = "/SoThu/" + result.Message;
+                        }
+                        else {
+                            toastWarning(result.Message);
+                        }
+                    },
+                    error: function (result) {
+                        $("#txtSoPhieu").focus();
+                        toastWarning("Lỗi: Tìm kiếm số phiếu.");
+                    }
+                });
+            }
+            else {
+                toastWarning("Vui lòng nhập số phiếu dịch vụ.");
+            }
+        }
+
+        function ChangeType(result) {
+            debugger;
+            if (result == "SuaChua" && selected.find(".numberGCN").prop('readOnly', true)) {
+                return;
+            }
+            if (result != "SuaChua") {
+                selected.find(".numberGCN").hide();
+            }
+            else {
+                selected.find(".numberGCN").show();
+            }
+
+            selected.find(".PhanLoai").val(result);
+            var html = "<tr class='changeType'>" + selected.html() + "</tr>";
+            $("." + result).append(html);
+            selected.remove();
+            CalChange();
+        }
+        $(document).on("click", "#ChangeType", function () {
+
+            var result = $("#selectType").val();
+            //alert(result);
+            if (result != "SuaChua") {
+                selected.find(".numberGCN").hide();
+            }
+            else {
+                selected.find(".numberGCN").show();
+            }
+            selected.find(".PhanLoai").val(result);
+            var html = "<tr class='changeType'>" + selected.html() + "</tr>";
+            $("." + result).append(html);
+            selected.remove();
+            CalChange();
+        })
+
+        function CalThanhToanGCN() {
+            debugger;
+            setTimeout(function () {
+                var table = $(".SuaChua").closest("table");
+                result = 0;
+                $(table).find(".numberGCN").map(function (key, val) {
+                    result += parseInt($(val).val().split(",").join(""));
+                })
+                $(table).find(".Total").html(result.toLocaleString('en-us'));
+                $(table).find(".Total").val(result.toLocaleString('en-us'));
+            }, 300);
+
+        }
+        function CalThanhToanGCN_OFCD() {
+            setTimeout(function () {
+                var tableCD = $(".CongDong").closest("table");
+                result = 0;
+                $(tableCD).find(".numberGCN").map(function (key, val) {
+                    result += parseInt($(val).val().split(",").join(""));
+                })
+                $(tableCD).find(".Total").html(result.toLocaleString('en-us'));
+                $(tableCD).find(".Total").val(result.toLocaleString('en-us'));
+            }, 300);
+        }
+        var arr = "SuaChua,KHO_DS,KHO_PTT,KHO_PTN,KHO_PKDV,KHO_QT".split(",");
+        function CalChange() {
+            arr.map(function (val, key) {
+                giaban = 0;
+                giamgia = 0;
+                thucthu = 0;
+                $("." + val).find("tr").map(function (key, val) {
+                    var number = $(val).find("td.number");
+                    giaban += parseInt($(number[0]).html().split(",").join(""));
+                    giamgia += parseInt($(number[1]).html().split(",").join(""));
+                    thucthu += parseInt($(number[2]).html().split(",").join(""));
+                })
+                var result = $("." + val).closest("table").find("tfoot").find("td.number");
+                $(result[0]).html(giaban.toLocaleString('en-us'))
+                $(result[1]).html(giamgia.toLocaleString('en-us'))
+                $(result[2]).html(thucthu.toLocaleString('en-us'))
+            })
+            CalThanhToanGCN();
+            CalThanhToanGCN_OFCD();
+        }
+        function ChangNumber(BienSo)
+        {
+            debugger;
+           // var BienSo = $("#txtBienSo").val();
+           // var SoKhung = $("#txtSoKhung").val();
+            $.ajax({
+                url: "/SoThu/LoadBienSo",
+                type: "POST",
+                dataType:"json",
+                data: { BienSo: BienSo },
+                success: function (coc) {
+                    if(coc != "")
+                    {
+                        var html = "";
+                        for(var i = 0; i < coc.length;i++)
+                        {
+                            var a = coc[i].TongCong - coc[i].SoTienThu;
+                            $("#DanhSachCoc").empty();
+                            html+="<tr>";
+                            html+="<td>";
+                            html += "<input type='text' class='form-control input-sm' name='coc["+i+"].SoThamChieu' readonly value='" + coc[i].MaPhieuThu + "' />";
+                            html+="</td>";
+                            html += "<td><input type='text' class='form-control input-sm SoTienCoTheSuDung number' value='" + coc[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                            html += "<td><input type='text' name='coc[" + i + "].SoTienThanhToan' class='form-control input-sm SoTienThanhToan number' onchange='calCoc(this)' value='0' /></td>";
+                            html += "<td><input type='text' class='form-control input-sm SoTienConLai number' value='" + coc[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                            html+="</tr>";
+                        }
+                        $("#DanhSachCoc").append(html);
+                    }
+                }
+            });
+            LoadNBDTK();
+        }
+        function LoadNBDTK() {
+            debugger;
+            var BienSo = $("#txtBienSo").val();
+            var SoKhung = $("#txtSoKhung").val();
+            $.ajax({
+                url: "/SoThu/LoadNBDTK",
+                type: "POST",
+                dataType: "json",
+                data: { BienSo: BienSo, SoKhung: SoKhung, IsForInsert: true },
+                success: function (nbdtk) {
+                    if (nbdtk != "") {
+                        var html = "";
+                        for (var i = 0; i < nbdtk.length; i++) {
+                            var date = nbdtk[i].HanSuDung == null ? '' : formatDateToString(convertJsonDateTimeToJs(nbdtk[i].HanSuDung), "dd/MM/yyyy");
+                            var date1 = nbdtk[i].HanSuDung == null ? '' : formatDateToString(convertJsonDateTimeToJs(nbdtk[i].HanSuDung), "yyyy/MM/dd");
+                            var capBDTK = nbdtk[i].CapBDTK == null ? '' : nbdtk[i].CapBDTK;
+                            var start = new Date(date1),
+                                end = new Date(),
+                                diff = new Date(end - start),
+                                days = diff / 1000 / 60 / 60 / 24;
+                            var a = nbdtk[i].TongCong - nbdtk[i].SoTienThu;
+                            $("#DanhSachNBDTK").empty();
+                            if (days > 0) {
+                                html += "<tr>";
+                                html += "<td>";
+                                html += "<input type='hidden' disable name='nbdtk[" + i + "].SoThamChieu' value='" + nbdtk[i].MaPhieuThu + "' />";
+                                html += "<input type='hidden' disable name='bdtk[" + i + "].MaBDTK' value='" + nbdtk[i].MaBDTK + "' />";
+                                html += "<input type='hidden' disable name='bdtk[" + i + "].MaPhieuThu' value='" + nbdtk[i].MaPhieuThu + "' />";
+                                html += "<input type='text' disable class='form-control input-sm'  readonly value='" + date + '(' + capBDTK + ')' + "' />";
+                                html += "</td>";
+                                html += "<td><input type='text' disable class='form-control input-sm SoTienCoTheSuDung number' value='" + nbdtk[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                                html += "<td><input type='text' disable name='bdtk[" + i + "].SoTienSuDung' class='form-control input-sm SoTienThanhToan number' onchange='calNBDTK(this)' value='0' /></td>";
+                                html += "<td><input type='text' disable name='bdtk[" + i + "].ConLai' class='form-control input-sm SoTienConLai number' value='" + nbdtk[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                                html += "</tr>";
+                            }
+                            else {
+                                html += "<tr>";
+                                html += "<td>";
+                                html += "<input type='hidden' name='nbdtk[" + i + "].SoThamChieu' value='" + nbdtk[i].MaPhieuThu + "' />";
+                                html += "<input type='hidden'  name='bdtk[" + i + "].MaBDTK' value='" + nbdtk[i].MaBDTK + "' />";
+                                html += "<input type='hidden'  name='bdtk[" + i + "].MaPhieuThu' value='" + nbdtk[i].MaPhieuThu + "' />";
+                                html += "<input type='text' class='form-control input-sm'  readonly value='" + date + '(' + capBDTK + ')'  + "' />";
+                                html += "</td>";
+                                html += "<td><input type='text' class='form-control input-sm SoTienCoTheSuDung number' value='" + nbdtk[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                                html += "<td><input type='text' name='bdtk[" + i + "].SoTienSuDung' class='form-control input-sm SoTienThanhToan number' onchange='calNBDTK(this)' value='0' /></td>";
+                                html += "<td><input type='text' name='bdtk[" + i + "].ConLai' class='form-control input-sm SoTienConLai number' value='" + nbdtk[i].ConLai.toLocaleString('en-us') + "' readonly /></td>";
+                                html += "</tr>";
+                            }
+                        }
+                        $("#DanhSachNBDTK").append(html);
+                    }
+                }
+            });
+        }
+        function CalThanhToanGCN() {
+            setTimeout(function () {
+                debugger;
+                var GCN = 0;
+                var i = 0;
+                $("#SuaChua").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien = parseInt($(val).find(".GCN").val().split(",").join(""));
+                            if (isNaN(sotien))
+                                sotien = 0;
+                            GCN += sotien;
+                            i++;
+                        }
+                    }
+                });
+                $("#SUACHUACHUNG").find(".Total").html(GCN.toLocaleString('en-us'));
+            }, 100);
+        }
+        function CalThanhToanGCN_OFCD() {
+            setTimeout(function () {
+                debugger;
+                var GCN = 0;
+                var i = 0;
+                $("#CongDong").find("tr").map(function (key, val) {
+                    if ($(val).is(":visible")) {
+                        var isDeleted = $(val).find(".IsDeleted").val();
+                        if (isDeleted != "true") {
+                            var sotien = parseInt($(val).find(".GCN").val().split(",").join(""));
+                            if (isNaN(sotien))
+                                sotien = 0;
+                            GCN += sotien;
+                            i++;
+                        }
+                    }
+                });
+                $("#CONGDONG").find(".Total").html(GCN.toLocaleString('en-us'));
+            }, 100);
+        }
+        function showVAT(e, tr) {
+            var table = $(e).closest('.row').parent().find('.table');
+            var column = "." + $(table).attr("id") + ".VAT";
+            var columns = $(column);
+            let result = '';
+            switch (tr) {
+                case 'trSC':
+                    trSC = replaceTrVAT(trSC);
+                    break;
+                case 'trCD':
+                    trCD = replaceTrVAT(trCD);
+                    break;
+                case 'trDS':
+                    trDS = replaceTrVAT(trDS);
+                    break;
+                    break;
+                case 'trPTT':
+                    trPTT = replaceTrVAT(trPTT);
+                    break;
+                case 'trPTN':
+                    trPTN = replaceTrVAT(trPTN);
+                    break;
+                case 'trPKDV':
+                    trPKDV = replaceTrVAT(trPKDV);
+                    break;
+                case 'trVTN':
+                    trVTN = replaceTrVAT(trVTN);
+                    break;
+                case 'trVTGTGT':
+                    trVTGTGT = replaceTrVAT(trVTGTGT);
+                    break;
+                default:
+                // code block
+            }
+            $(columns).toggle();
+        }
+        function replaceTrVAT(data) {
+            if (data.includes("display: none;") == true)
+                data = data.replace(/display: none;/g, '');
+            else
+                data = data.replace(/style=""/g, 'style="display: none;"');
+            return data;
+        }
+    </script>
+    <style>
+        .table th:first-child {
+            position: sticky;
+            left: 0; /**/
+            background-color: #405467;
+            /*color: #373737;*/
+        }
+
+        .table td:first-child {
+            position: sticky;
+            left: 0; /**/
+            background-color: white;
+            /*color: #373737;*/
+        }
+
+        .table th:last-child {
+            position: sticky;
+            right: 0; /**/
+            background-color: #405467;
+            /*color: #373737;*/
+        }
+
+        .table td:last-child {
+            position: sticky;
+            right: 0; /**/
+            background-color: white;
+            /*color: #373737;*/
+        }
+    </style>
+}

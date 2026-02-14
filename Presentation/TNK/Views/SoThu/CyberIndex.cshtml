@@ -1,0 +1,789 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuThuCyber>
+@{
+    int i = 1;
+    var flag = ViewBag.Type == "NBHDV" || ViewBag.Type == "NHHBH";
+    var count = Model.Count;
+    //var ModelGiaiTrinh = ViewBag.ModelGiaiTrinh;
+    var activeSearch = ViewBag.Submit == "Search" ? "active" : "";
+    var activeGiaiTrinh = ViewBag.Submit == "SearchGiaiTrinh" ? "active" : "";
+}
+<link href="~/Content/test.css" rel="stylesheet" />
+<link href="~/assests/css/loading.css" rel="stylesheet" />
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <div class="x_panel">
+                <div class="x_content">
+                    <form method="get" class="row">
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                            <div class="form-group">
+                                <label>Từ ngày thu</label>
+                                <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" id="FromDate" />
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                            <div class="form-group">
+                                <label>Đến ngày thu</label>
+                                <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="ToDate" />
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                            <div class="form-group">
+                                <label>Loại thu</label><br />
+                                <select style="height: 30px;" class="form-control" name="typeSearch" id="typeSearch">
+                                    <option value="">Chọn</option>
+                                    @*<option value="TDIVU" @(ViewBag.TypeSearch == "TDIVU" ? "selected" : "")>Thu dịch vụ</option>*@
+                                    <option value="TCODV" @(ViewBag.TypeSearch == "TCODV" ? "selected" : "")>Thu cọc dịch vụ</option>
+                                    <option value="TCOBX" @(ViewBag.TypeSearch == "TCOBX" ? "selected" : "")>Thu cọc bán xe</option>
+                                    @*<option value="TPHKI" @(ViewBag.TypeSearch == "TPHKI" ? "selected" : "")>Thu phụ kiện</option>*@
+                                    @*<option value="TBAXE" @(ViewBag.TypeSearch == "TBAXE" ? "selected" : "")>Thu bán xe</option>
+                                    <option value="TBAHI" @(ViewBag.TypeSearch == "TBAHI" ? "selected" : "")>Thu bảo hiểm</option*@>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 col-sm-5 col-xs-12">
+                            <div class="form-group">
+                                <label>Từ khóa</label>
+                                <input autocomplete="off" type="text" title="@ViewBag.SearchHolder" placeholder="@ViewBag.SearchHolder" class="form-control input-sm " value="@ViewBag.Query" name="query" id="query" />
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <br />
+                                <input type="submit" value="Tìm kiếm" id="submit" title="Tìm kiếm phiếu thu Cyber" class="btn btn-success" />
+                                <input type="button" value="Xuất excel" class="btn btn-info" id="exportExcel" />
+                                @*<input style="width:50%" onclick="ImportData_HoaDon()" id="btnimportData" title="Import hóa đơn" value="Import hóa đơn" class="btn btn-primary" />
+                <div style="display:none"><input type="file" id="txtUploadFile" /></div>*@
+                            </div>
+                        </div>
+                    </form>
+                    <div class="table-responsive" id="@ViewBag.Type">
+                        @*ImportData_HoaDon*@
+                        <div class="right" style="margin-bottom: 10px">
+                            <select id="type" class="select2-active" style="height: 25px">
+                                <option value="">Chọn loại phiếu</option>
+                                @*<option value="TDIVU" @(ViewBag.TypeSearch == "TDIVU" ? "selected" : "")>Thu dịch vụ</option>*@
+                                <option value="TCODV" @(ViewBag.TypeSearch == "TCODV" ? "selected" : "")>Thu cọc dịch vụ</option>
+                                <option value="TCOBX" @(ViewBag.TypeSearch == "TCOBX" ? "selected" : "")>Thu cọc bán xe</option>
+                                @*<option value="TPHKI" @(ViewBag.TypeSearch == "TPHKI" ? "selected" : "")>Thu phụ kiện</option>
+                                <option value="TBAXE" @(ViewBag.TypeSearch == "TBAXE" ? "selected" : "")>Thu bán xe</option>
+                                <option value="TBAHI" @(ViewBag.TypeSearch == "TBAHI" ? "selected" : "")>Thu bảo hiểm</option>*@
+                            </select>
+                            <i class="fa fa-plus" style="cursor:pointer" id="ThemMoi"></i>
+                        </div>
+                        <div id="tbody">
+                            <table class="table">
+                                <thead>
+                                    <tr class="success">
+                                        <th>STT</th>
+                                        <th>
+                                            <input type="checkbox" id="CHKALL" />
+                                        </th>
+                                        <th>Ngày thu</th>
+                                        <th>Mã loại thu</th>
+                                        <th>Loại thu</th>
+                                        <th>Số chứng từ</th>
+                                        <th>Khách hàng</th>
+                                        <th>Số hợp đồng</th>
+                                        <th>Số khung</th>
+                                        <th>Biển số</th>
+                                        <th>Nội dung</th>
+                                        <th>Tổng cộng</th>
+                                        <th>Chi tiết thanh toán</th>
+                                        <th>Mã tài khoản đích</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                            <td>
+                                                <input type="checkbox" id="chk_@item.SttRec" value="@item.SttRec" class="checkbox" />
+                                            </td>
+                                            <td class="NgayNo_@item.NgayThu">@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.Ma_LoaiThu</td>
+                                            <td>@item.Ten_LoaiThu</td>
+                                            <td>@item.SoChungTu</td>
+                                            <td>@item.HoTen</td>
+                                            <td>@item.SohopDong</td>
+                                            <td>@item.So_Khung</td>
+                                            <td>@item.BienSo</td>
+                                            <td>@item.NoiDung</td>
+                                            <td>@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>
+                                            <td>@item.ThanhToan</td>
+                                            <td>@item.MaTaiKhoan</td>
+                                        </tr>
+                                        //i++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="right">
+                            @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<div id="CalenderModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:30%">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <div class="modal-content">
+            <div class="modal-body" id="tsts">
+                <div class="row">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" hidden>×</button>
+                    <div class="col-md-12 col-sm-12 col-xs-12" style="background-color:lightseagreen;border-radius:12px">
+                        <h2 style="text-align:center; color:white" id="lblPopup">XÁC NHẬN ĐỒNG BỘ</h2>
+                        <h4 style="text-align:center; color:white" id="loaiphieu"></h4>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <hr style="border-top: 1px dotted" />
+                    </div>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" hidden style="margin-top: 10px" id="TaiTuc">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label"><I><U>Tái Tục</U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optTT">
+                                        <option value="">Chọn</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" hidden style=" margin-top: 10px" id="CTBH">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label" id="lbdoitac"><I><U>Công ty bảo hiểm:</U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optCTBH">
+                                        <option value="">- Chọn - </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" hidden id="DoiTac">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label"><I><U>Đối tác: </U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optDT">
+                                        <option value="">- Chọn - </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" style="margin-top: 10px" id="Loai" hidden>
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label"><I><U>Loại thu khác:</U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optLoai">
+                                        <option value="">- Chọn - </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" style="margin-top: 10px" id="MLX" hidden>
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label"><I><U>Mã loại xe:</U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optMLX">
+                                        <option value="">- Chọn - </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" hidden style=" margin-top: 10px" id="MX">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label" id="lbdoitac"><I><U>Mã xe:</U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optMX">
+                                        <option value="">- Chọn - </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" hidden style=" margin-top: 10px" id="MauXe">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label" id="lbdoitac"><I><U>Màu xe:</U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optMauXe">
+                                        <option value="">- Chọn - </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" hidden id="DVCV">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label"><I><U>Đơn vị cho vay: </U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optDVCV">
+                                        <option value="">- Chọn - </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 chi" hidden id="DTTL">
+                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                    <label class="control-label"><I><U>Đối tác trả lãi: </U></I></label>
+                                </div>
+                                <div class="col-md-9 col-sm-9 col-xs-9">
+                                    <select class="select2 fullwidth" style="height:25px;" id="optDTTL">
+                                        <option value="">- Chọn - </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    @*Button*@
+                    <div class="col-md-12 col-sm-12 col-xs-12 center" style="margin-top:30px;">
+                        <label class="control-label"><I><U>(Chọn thêm giá trị nếu cần thiết) </U></I></label>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 center" style="margin-top:30px;">
+                            <div id="id1">
+                                <button class="btn btn-primary" onclick="DongBoPhieuThuCyber()" type="button" value="1">Lưu</button>
+                                <button class="btn btn-danger" onclick="closepop()" type="button">Hủy</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+<div id="fc_popup" data-toggle="modal" data-target="#CalenderModal"></div>
+@section scripts
+{
+    <script src="~/Scripts/SoThuCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script>
+        //$(document).ready(function () {
+        //    $('#SearchGiaiTrinh').trigger('click');
+        //})
+        $("#CHKALL").change(function () {
+            debugger;
+            $("input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+        var chk = "";
+        var flag = true;
+        $(".checkbox").change(function () {
+            debugger;
+            chk = "";
+            $(".checkbox").map(function (key, val) {
+                flag = true;
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    if (chk == "") {
+                        chk = a;
+                    }
+
+                }
+            })
+
+        })
+        function setCookie(cname, cvalue) {
+            document.cookie = cname + "=" + cvalue + ";path=/SoThu/DongBoPhieuThuCyber";
+        }
+
+        $("#ThemMoi").click(function () {
+            debugger;
+            var result = "";
+            var flag = true;
+            var ctbh = "";
+            var soLuong = 0;
+            $(".checkbox").map(function (key, val) {
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    @*if (ctbh == "") {
+                        ctbh = a;
+                    }
+                    if (a != ctbh) {
+                        if (flag) {
+                            toastError("Chỉ được chọn các phiếu nợ của cùng 1 " + '@ViewBag.KhachHangNoTitle.ToLower()');
+                        }
+                        flag = false;
+                        return;
+                    }*@
+                    result += $(val).val() + ",";
+                    soLuong++;
+
+                }
+            })
+            if (result != "") {
+                result = result.substring(0, result.length - 1);
+            }
+            else {
+                toastWarning("Vui lòng chọn phiếu đông bộ.");
+                return;
+            }
+            var type = $("#type").val()
+            if (type == "") {
+
+                toastWarning("Vui lòng chọn loại phiếu đông bộ.");
+                return;
+            }
+            var loaphieu = '';
+            switch (type) {
+                case "TBAHI":
+                    loaphieu = "Thu Bảo Hiểm";
+                    break;
+                case "TKHAC":
+                    loaphieu = "Thu Khác";
+                    break;
+                case "TCOBX":
+                    loaphieu = "Thu Cọc Bán Xe";
+                    break;
+                case "TCODV":
+                    loaphieu = "Thu Cọc Dịch Vụ";
+                    break;
+                case "THHHB":
+                    loaphieu = "Thu Hoa Hồng Holdback";
+                    break;
+                case "TCONO":
+                    loaphieu = "Thu Công Nợ BHDV";
+                    break;
+                case "T2THK":
+                    loaphieu = "Thu Hộ Khác";
+                    break;
+                case "TBHXH":
+                    loaphieu = "Thu Hộ BHXH";
+                    break;
+                case "T2GTX":
+                    loaphieu = "Thu Hộ Giấy Tờ Xe";
+                    break;
+                case "TVAMU":
+                    loaphieu = "Thu Vay Mượn";
+                    break;
+                case "TLADT":
+                    loaphieu = "Thu Lãi Đầu Tư";
+                    break;
+
+            }
+            $("#loaiphieu").text("Bạn đang chọn import Phiếu " + loaphieu + ". Số lượng: " + soLuong + " phiếu.");
+            $('select').select2("val", null);
+            $.ajax({
+                url: "/SoThu/GetModelPhieuThuCyber",
+                type: "POST",
+                data: {
+                    Type: type
+                },
+                success: function (result) {
+                    if (!result.IsError) {
+                        //Tái tục -Thu bảo hiểm
+                        if (result.model.ListItem != null) {
+                            html = "<option value=''>- Chọn - </option>"
+                            for (var i = 0; i < result.model.ListItem.length; i++) {
+                                html += "<option value='" + result.model.ListItem[i].Value + "'>" + result.model.ListItem[i].Text + "</option>";
+                            }
+                            $("#optTT").empty();
+                            $("#optTT").append(html);
+                        }
+                        //Công ty bảo hiểm - Đối tác - Đơn vị cho vay - đối tác trả lãi
+                        if (result.model.DoiTac != null) {
+                            html = "<option value=''>- Chọn - </option>"
+                            var html2 = "<option value=''>- Chọn - </option>"
+                            var html3 = "<option value=''>- Chọn - </option>"
+                            var html4 = "<option value=''>- Chọn - </option>"
+                            for (var i = 0; i < result.model.DoiTac.length; i++) {
+                                html += "<option value='" + result.model.DoiTac[i].MaDoiTac + "'>" + result.model.DoiTac[i].TenDoiTac + "</option>";
+                                html2 += "<option value='" + result.model.DoiTac[i].MaDoiTac + "'>" + result.model.DoiTac[i].TenDoiTac + "</option>";
+                                html3 += "<option value='" + result.model.DoiTac[i].MaDoiTac + "'>" + result.model.DoiTac[i].TenDoiTac + "</option>";
+                                html4 += "<option value='" + result.model.DoiTac[i].MaDoiTac + "'>" + result.model.DoiTac[i].TenDoiTac + "</option>";
+                            }
+                            //Option công ty bảo hiểm
+                            $("#optCTBH").empty();
+                            $("#optCTBH").append(html);
+                            //Option đối tác
+                            $("#optDT").empty();
+                            $("#optDT").append(html2);
+                            //Option đđơn vị cho vây
+                            $("#optDVCV").empty();
+                            $("#optDVCV").append(html3);
+                            //Option đối tác trả lãi
+                            $("#optDTTL").empty();
+                            $("#optDTTL").append(html4);
+                        }
+                        //Loại - thu khác
+                        if (result.model.LoaiBH != null) {
+                            html = "<option value=''>- Chọn - </option>"
+                            for (var i = 0; i < result.model.LoaiBH.length; i++) {
+                                html += "<option value='" + result.model.LoaiBH[i].Value + "'>" + result.model.LoaiBH[i].Text + "</option>";
+                            }
+                            //Option loại thu khác
+                            $("#optLoai").empty();
+                            $("#optLoai").append(html);
+                        }
+                        //Mã loại xe - Thu cọc bán xe
+                        if (result.model.MaLoaiXe != null) {
+                            html = "<option value=''>- Chọn - </option>"
+                            for (var i = 0; i < result.model.MaLoaiXe.length; i++) {
+                                var text = result.model.MaLoaiXe[i].TenModel + "-" + result.model.MaLoaiXe[i].TenMau + "-" + result.model.MaLoaiXe[i].XuatXu + "-" + result.model.MaLoaiXe[i].TenDoiXe + "-" + result.model.MaLoaiXe[i].CodeGrad
+                                html += "<option value='" + result.model.MaLoaiXe[i].MaLoaiXe + "'>" + text + "</option>";
+                            }
+                             //Option mã loại xe
+                            $("#optMLX").empty();
+                            $("#optMLX").append(html);
+                        }
+                      //  Mã xe - Thu cọc dịch vụ
+                        if (result.model.MaXe != null) {
+                            html = "<option value=''>- Chọn - </option>"
+                            for (var i = 0; i < result.model.MaXe.length; i++) {
+                                var text = result.model.MaXe[i].Code + "-" + result.model.MaXe[i].Name;
+                                html += "<option value='" + result.model.MaXe[i].Code + "'>" + text + "</option>";
+                            }
+                            //Option mã xe
+                            $("#optMX").empty();
+                            $("#optMX").append(html);
+                        }
+                      //  Màu xe - Thu cọc dịch vụ
+                        if (result.model.MauXe != null) {
+                            html = "<option value=''>- Chọn - </option>"
+                            for (var i = 0; i < result.model.MauXe.length; i++) {
+                                var text = result.model.MauXe[i].Code + "-" + result.model.MauXe[i].Name;
+                                html += "<option value='" + result.model.MauXe[i].Code + "'>" + text + "</option>";
+                            }
+                            //Option màu xe
+                            $("#optMauXe").empty();
+                            $("#optMauXe").append(html);
+                        }
+
+                        $("#fc_popup").click();
+                       //Thu bảo hiểm
+                        if (type == "TBAHI") {
+                            $("#TaiTuc").attr("hidden", false);
+                            $("#CTBH").attr("hidden", false);
+                        }
+                        //Thu khác
+                        if (type == "TKHAC") {
+                            $("#Loai").attr("hidden", false);
+                        }
+                        //Thu cọc bán xe
+                        if (type == "TCOBX") {
+                            $("#MLX").attr("hidden", false);
+                        }
+                        //Thu cọc dịch vu
+                        if (type == "TCODV") {
+                            $("#MX").attr("hidden", false);
+                            $("#MauXe").attr("hidden", false);
+                        }
+                        // Thu khác - Hoa hồng HB - Công nọ BHDV - Thu hộ khác - Thu hộ BHXH - Thu hộ giấy tờ xe
+                        if (type == "TKHAC" || type == "THHHB" || type == "TCONO" || type == "T2THK" || type == "TBHXH" || type == "T2GTX") {
+                            $("#DoiTac").attr("hidden", false);
+                        }
+                        //Thu vay mượn
+                        if (type == "TVAMU") {
+                            $("#DVCV").attr("hidden", false);
+                        }
+                        //Thu lãi đầu tư
+                        if (type == "TLADT") {
+                            $("#DTTL").attr("hidden", false);
+                        }
+                    }
+                    else {
+                        toastWarning(result.Message);
+                    }
+                },
+                error: function (result) {
+                }
+            });
+
+        })
+
+        function DongBoPhieuThuCyber() {
+            debugger;
+            var result = "";
+            var flag = true;
+            var ctbh = "";
+            $(".checkbox").map(function (key, val) {
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+
+                    result += $(val).val() + ",";
+                }
+            })
+            if (result != "") {
+                result = result.substring(0, result.length - 1);
+            }
+            var type = $("#type").val()
+            if (type == "") {
+                toastWarning("Vui lòng chọn loại phiếu đông bộ.");
+                return;
+            }
+            var taituc = '', doitac = '', loai = '', maloaixe = '', mauxe = ''; 
+            var isConfirm = true; //can hien popup confirm lại không
+            switch (type) {
+                case "TBAHI":
+                    taituc = $("#optTT").val();
+                    doitac = $("#optCTBH").val();
+                    loaiphieu = "Thu Bảo Hiểm";
+                    break;
+                case "TKHAC":
+                    loai = $("#optLoai").val();
+                    if ($("#optDT").val() == "") {
+                        toastWarning("Vui lòng chọn đối tác.");
+                        return;
+                    }
+                    doitac = $("#optDT").val();
+                    loaiphieu = "Thu Khác";
+                    break;
+                case "TCOBX":
+                    maloaixe  = $("#optMLX").val();
+                    loaiphieu = "Thu Cọc Bán Xe";
+                    break;
+                case "TCODV":
+                    maloaixe = $("#optMX").val();
+                    mauxe = $("#optMauXe").val();
+                    loaiphieu = "Thu Cọc Dịch Vụ";
+                    isConfirm = false;
+                    break;
+                case "THHHB":
+                    if ($("#optDT").val() == "") {
+                        toastWarning("Vui lòng chọn đối tác.");
+                        return;
+                    }
+                    doitac = $("#optDT").val();
+                    loaiphieu = "Thu Hoa Hồng Holdback";
+                    break;
+                case "TCONO":
+                    if ($("#optDT").val() == "") {
+                        toastWarning("Vui lòng chọn đối tác.");
+                        return;
+                    }
+                    doitac = $("#optDT").val();
+                    loaiphieu = "Thu Công Nợ BHDV";
+                    break;
+                case "T2THK":
+                    doitac = $("#optDT").val();
+                    loaiphieu = "Thu Hộ Khác";
+                    break;
+                case "TBHXH":
+                    doitac = $("#optDT").val();
+                    loaiphieu = "Thu Hộ BHXH";
+                    break;
+                case "T2GTX":
+                    doitac = $("#optDT").val();
+                    loaiphieu = "Thu Hộ Giấy Tờ Xe";
+                    break;
+                case "TVAMU":
+                    doitac = $("#optDVCV").val();
+                    loaiphieu = "Thu Vay Mượn";
+                    break;
+                case "TLADT":
+                    doitac = $("#optDTTL").val();
+                    loaiphieu = "Thu Lãi Đầu Tư";
+                    break;
+
+            }
+            if (result != "") {
+                if (confirm("Bạn có muốn đồng bộ thành phiếu " + loaiphieu + "?")) {
+                //var isAccept = false; //mặc định nếu không cần hiện popup confirm thi
+                //if (isConfirm == true) //neu loai phieu nay can hien popup confirm thi hien lên để chọn có accept đồng bộ không
+                //    isAccept = confirm("Bạn có muốn đồng bộ thành phiếu " + loaiphieu + "?");
+                //if (isAccept) {
+                    $(".lds-hourglass").attr("hidden", false);
+                    setCookie("link", result);
+                    $("#id1").hide();
+                    $.ajax({
+                        url: "/SoThu/DongBoPhieuThuCyber",
+                        type: "POST",
+                        data: {
+                            Type: type,
+                            TaiTuc: taituc,
+                            DoiTac: doitac,
+                            Loai: loai,
+                            MaLoaiXe: maloaixe,
+                            MauXe: mauxe,
+                            From: $("#FromDate").val(),
+                            To: $("#ToDate").val(),
+                            query: $("#query").val()
+                        },
+                        success: function (result) {
+                            if (!result.IsError) {
+                                toastSuccess(result.Message);
+                                closepop();
+                                $("#submit").click();
+                                $("#id1").show();
+                                $(".lds-hourglass").attr("hidden", true);
+                            }
+                            else {
+                                toastWarning(result.Message);
+                                $("#id1").show();
+                                $(".lds-hourglass").attr("hidden", true);
+                            }
+                        },
+                        error: function (result) {
+                            toastWarning("Lỗi cập nhật giải trình.");
+                            $("#id1").show();
+                            $(".lds-hourglass").attr("hidden", true);
+                        }
+                    });
+                }
+            }
+
+        }
+        function closepop() {
+            $(".close").click();
+        }
+        var type = '@ViewBag.Type';
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+            var pageSizes = document.getElementById("pageSizeThuNoComplete");
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            $.get("/SoThu/ThuNoComplete?id=" + type + "&query=" + query + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tbody").html(response);
+                $("#tbody").find(".number2").map(function (key, val) {
+                    var val = $(this).html();
+                    if (val != "") {
+                        val = val.split(",").join("");
+                        val = parseInt(val);
+                        $(this).html(val.toLocaleString());
+                    }
+                })
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+
+            })
+        }
+
+
+
+        //kiem tra du lieu ngay thang theo dinh dang dd/MM/yyyy
+        function isDate(ExpiryDate) {
+            var objDate,  // date object initialized from the ExpiryDate string
+                mSeconds, // ExpiryDate in milliseconds
+                day,      // day
+                month,    // month
+                year;     // year
+            // date length should be 10 characters (no more no less)
+            if (ExpiryDate.length < 8) {
+                return false;
+            }
+
+            if (ExpiryDate.length !== 10) {
+                return false;
+            }
+            // third and sixth character should be '/'
+            if (ExpiryDate.substring(2, 3) !== '/' || ExpiryDate.substring(5, 6) !== '/') {
+                return false;
+            }
+            // extract month, day and year from the ExpiryDate (expected format is mm/dd/yyyy)
+            // subtraction will cast variables to integer implicitly (needed
+            // for !== comparing)
+            day = ExpiryDate.substring(0, 2) - 0; // because months in JS start from 0
+            month = ExpiryDate.substring(3, 5) - 1;
+            year = ExpiryDate.substring(6, 10) - 0;
+            // test year range
+            if (year < 1000 || year > 3000) {
+                return false;
+            }
+            // convert ExpiryDate to milliseconds
+            mSeconds = (new Date(year, month, day)).getTime();
+            // initialize Date() object from calculated milliseconds
+            objDate = new Date();
+            objDate.setTime(mSeconds);
+            // compare input date and parts from Date() object
+            // if difference exists then date isn't valid
+            if (objDate.getFullYear() !== year ||
+                objDate.getMonth() !== month ||
+                objDate.getDate() !== day) {
+                return false;
+            }
+            // otherwise return true
+            return true;
+        }
+        function toDate(ExpiryDate) {
+            // date length should be 10 characters (no more no less)
+            if (ExpiryDate.length !== 10) {
+                return null;
+            }
+            // third and sixth character should be '/'
+            if (ExpiryDate.substring(2, 3) !== '/' || ExpiryDate.substring(5, 6) !== '/') {
+                return null;
+            }
+            // extract month, day and year from the ExpiryDate (expected format is mm/dd/yyyy)
+            // subtraction will cast variables to integer implicitly (needed
+            // for !== comparing)
+            day = ExpiryDate.substring(0, 2) - 0; // because months in JS start from 0
+            month = ExpiryDate.substring(3, 5) - 1;
+            year = ExpiryDate.substring(6, 10) - 0;
+            return new Date(year, month, day);
+        }
+
+        //$("#query1").on('change', function (e) {
+        //    alert("Handler for .change() called.");
+        //});
+        function ShowTitle(obj) {
+            $(obj).attr('title', $(obj).val());
+        }
+
+        $("#exportExcel").click(function () {
+            debugger;
+            if ($($("#tab_data li.unactive")[0]).attr("data-url") != "") {
+                var dt = new Date();
+                var day = dt.getDate();
+                var month = dt.getMonth() + 1;
+                var year = dt.getFullYear();
+                var hour = dt.getHours();
+                var mins = dt.getMinutes();
+                var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+                var idtable = "#tbody";
+                var result = $(idtable).html();
+                result = result.replace('class="table"', 'class="table" border="1"');
+                //alert(result)
+                tableToExcel(result, 'DanhSachPhieuThuCyber_' + postfix + '.xls');
+            }
+            else {
+                window.location = `/SoThu/CyberIndex?from=${$("#FromDate").val()}&to=${$("#ToDate").val()}&export=Excel`;
+            }
+            return false;
+        })
+        var tableToExcel = (function () {
+            debugger;
+            var uri = 'data:application/vnd.ms-excel;base64,'
+            , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+            , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+            , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            return function (table, name) {
+                //if (!table.nodeType) table = document.getElementById(table)
+                var ctx = { worksheet: name || 'Worksheet', table: table }
+                var link = document.createElement("A");
+                link.href = uri + base64(format(template, ctx));
+                link.download = name || 'Baocao.xls';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        })()
+    </script>
+}

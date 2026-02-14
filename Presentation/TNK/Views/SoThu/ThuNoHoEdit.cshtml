@@ -1,0 +1,287 @@
+﻿@model TNK.Model.SoThuModel
+@{
+        var item = Model.NDT;
+        var flag = false;
+        int dem = 0;
+        string tieude = "";
+        switch(item.LoaiPhieuNo)
+        {
+            case "H1GHB":
+                tieude = "gia hạn bảo hành";
+                break;
+            default :
+                break;
+
+        }
+    }
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>Cập nhật @tieude</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b>Thông tin</b></h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <form id="form-data" method="post" class="form-horizontal form-label-left">
+                    <input type="hidden" name="item.MaLoaiPhieu" value="@item.LoaiPhieuNo" />
+                    <input type="hidden" name="item.MaPhieuLienQuan" value="@item.MaPhieuNo" />
+                    <input type="hidden" name="item.MaPhieuThu" value="@item.SoPhieuQuyetToan" />
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Số chứng từ</label>
+                                <input type="text" name="item.SoChungTu" class="form-control input-sm" maxlength="20" value="@item.ChungTuThu" required />
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Ngày thu</label>
+                                <input type="text" name="item.NgayThu" class="form-control input-sm date" maxlength="20" value="@item.NgayThu.Value.ToString("dd/MM/yyyy")" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Thông tin khách hàng </label>
+                                <textarea class="form-control input-sm" rows="3" readonly>@Html.Raw(item.TenDoiTac)</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Nội dung</label>
+                                <textarea name="item.NoiDung" class="form-control input-sm">@item.NoiDung</textarea>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Số tiền nợ</label>
+                                    <input type="text" class="form-control input-sm number" readonly value="@(Math.Round(item.SoTienNo))" />
+                                </div>
+                            </div>
+                            @*@if (item.HoaHong != null)
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Hoa hồng</label>
+                                        @Html.Editor("item.HoaHong", new { htmlAttributes = new { @class = "form-control input-sm" }  })
+                                        <input type="text" class="form-control input-sm number" readonly value="@item.HoaHong.Value" />
+
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Hoa hồng</label>
+                                        @Html.Editor("item.HoaHong", new { htmlAttributes = new { @class = "form-control input-sm" }  })
+                                        <input type="text" class="form-control input-sm number" readonly value="0" />
+
+                                    </div>
+                                </div>
+                            }*@
+                        </div>
+
+                        <div class="row">
+                            @*style="display:@(!flag ?"block":"none")">*@
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="form-group">
+                                    <label>Còn nợ</label>
+                                    <input type="text" class="form-control input-sm number" readonly value="@Math.Round(item.SoTienNo - item.SoTienThanhToan)" />
+                                </div>
+                            </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            @Html.Partial("~/Views/Shared/_ThanhToan_1.cshtml", null, new ViewDataDictionary { { "CTPT", Model.CTPT }, { "HTTT", Model.HTTT } })
+                        </div>
+                    </div>
+                    <div class="row" style="display:@(!flag ?"block":"none")">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="form-group">
+                                <label>Còn lại</label>
+                                <input type="text" class="form-control input-sm number" readonly value="@item.SoTienConLai" id="ConLai" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label>Ghi chú</label>
+                                @Html.TextAreaFor(x => item.GhiChu, new { @class = "form-control input-sm" })
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Kế toán trưởng</label>
+                                <select class="select2 fullwidth" name="item.KeToanTruong" required>
+                                    <option value=""> Chọn</option>
+                                    @foreach (var i in Model.Users)
+                                    {
+                                        <option value="@i.UserId" @(i.UserId.Equals(item.KeToanTruong) ? "selected" : "")>@i.UserName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người lập phiếu</label>
+                                <select class="select2 fullwidth" name="item.NguoiLapPhieu" required>
+                                    <option value=""> Chọn</option>
+                                    @foreach (var i in Model.Users)
+                                    {
+                                        <option value="@i.UserId" @(i.UserId.Equals(item.NguoiLapPhieu) ? "selected" : "")>@i.UserName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người nộp tiền</label>
+                                <select class="select2 fullwidth" name="item.NguoiNopTien" required>
+                                    <option value=""> Chọn</option>
+                                    @foreach (var i in Model.Users)
+                                    {
+                                        <option value="@i.UserId" @(i.UserId.Equals(item.NguoiNopTien) ? "selected" : "")>@i.UserName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+                            <div class="form-group">
+                                <label>Người thu tiền(*)</label>
+                                <select class="select2 fullwidth" name="item.NguoiThuTien" required>
+                                    <option value=""> Chọn</option>
+                                    @foreach (var i in Model.Users)
+                                    {
+                                        <option value="@i.UserId" @(i.UserId.Equals(item.NguoiThuTien) ? "selected" : "")>@i.UserName</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group center">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        </div>
+                    </div>
+                    <div class="ln_solid"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="/SoThu/ThuNo/@item.LoaiPhieuNo" class="Back">Quay lại</a>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/SoThuCommon.js"></script>
+    <script>
+        i = '@Model.CTPT.Count';
+        $(".addHTTT").click(function () {
+            var html = tr.split("httt[0]").join("httt[" + i + "]");
+            @if(Model.CTPT.Count>0)
+            {
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].Id+"','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoTienThanhToan+"','');")
+             @Html.Raw("html=html.replace('selected','');")
+             @Html.Raw("html=html.replace('" + Model.CTPT[0].SoThamChieu + "','');")
+            }
+            $("#tbody").append("<tr>" + html + "</tr>");
+            i++;
+            setTimeout(function () {
+                $('.select2').select2({
+                    placeholder: "Select an option",
+                    allowClear: true
+                });
+                removeSelect();
+            }, 200);
+        })
+        $("#form-data").submit(function () {
+            let flag = true;
+
+            $("#tbody").find("tr").map(function (key, val) {
+                if ($(val).is(":visible")) {
+
+                    var tuitien = $(val).find(".Temp").select2('val');
+                    var sotien = $(val).find(".number").val().split(",").join("");
+                    tuitien = tuitien == "Chọn" ? "" : tuitien;
+                    sotien = sotien == "" ? 0 : parseInt(sotien);
+                    if (tuitien != "" && sotien === 0) {
+                        toastWarning("Vui lòng nhập số tiền");
+                        $(val).find(".number").focus();
+                        flag = false;
+                        return;
+                    }
+                    if (tuitien == "" && sotien != 0) {
+                        toastWarning("Vui lòng nhập túi tiền");
+                        $(val).find(".Temp").focus();
+                        flag = false;
+                        return;
+                    }
+                }
+            })
+            if (!flag) {
+                return false;
+            }
+            let number = parseInt($("#ConLai").val().split(",").join(""));
+            if (number < 0) {
+                toastError("Số tiền thanh toán không được lớn hơn số tiền còn nợ");
+                return false;
+            }
+            var lst = $(".number");
+            lst.map(function (key, val) {
+                $(val).val($(val).val().split(",").join(""));
+            });
+        })
+        function Cal()
+        {
+            var result = conno;
+            $("table").find(".number").map(function (key, val) {
+                var isDeleted = $(val).find(".IsDeleted").val();
+                if (isDeleted != "true") {
+                    var num = $(val).val().split(",").join("");
+                    result = result - num;
+                }
+            });
+            $("#ConLai").val(result.toLocaleString('en-us'));
+        }
+        var conno = '@item.SoTienNo';
+        $(document).on("change", ".number", function () {
+            setTimeout(function () {
+                Cal();
+            }, 100);
+        });
+        $(document).ready(function () {
+            var TongTienThu = 0;
+            for(var i = 0; i < @dem;i++)
+            {
+                var tien = parseInt($("#CongNo\\["+i+"\\]TT").val().split(",").join(""));
+                if(tien == undefined || tien == "NaN")
+                    tien = 0;
+                TongTienThu += tien;
+            }
+            $("#TongCongThanhToanCoc").html(TongTienThu.toLocaleString('en-us'));
+            $("#TongCongThanhToanCoc").val(TongTienThu.toLocaleString('en-us'));
+        });
+    </script>
+}

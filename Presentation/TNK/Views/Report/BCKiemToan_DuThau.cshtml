@@ -1,0 +1,76 @@
+﻿@using System.Data 
+<div id="tab_DuThau">
+    <div class="x_content">
+        <div id="BCKiemToan_DuThau_div" class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='8' class="tile">DANH SÁCH CHI DỰ THẦU</th>
+                    </tr>
+                    <tr>
+                        <th colspan='8' class="tile">@ViewBag.TuNgayDenNgay</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">STT</th>
+                        @*<th class="column-title">Mã phiếu chi</th>*@
+                        <th class="column-title">Ngày Chi</th>
+                        <th class="column-title">Đơn vị dự thầu</th>
+                        <th class="column-title">Người tạm ứng</th>
+                        <th class="column-title">Số tiền dự thầu</th>
+                        <th class="column-title">Số tiền sử dụng/Hoàn đặt đọc</th>
+                        <th class="column-title">Còn lại</th>
+                        <th class="column-title">Ngày sử dụng/Hoàn đặt cọc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        double TongSoTien = 0, TongThanhToan = 0, TongConLai=0;
+                        int intCount = 0;
+                        foreach (DataRow row in (Model as DataTable).Rows)
+                        {
+                            TongSoTien += row["TongCong"].ToString() == "" ? 0 : Convert.ToDouble(row["TongCong"]);
+                            TongThanhToan += row["SuDungCoc"].ToString() == "" ? 0 : Convert.ToDouble(row["SuDungCoc"]);
+                            TongConLai += row["ConLai"].ToString() == "" ? 0 : Convert.ToDouble(row["ConLai"]);
+                            <tr class="even pointer">
+                                <td>@(++intCount)</td>
+                                <td>@row["NgayChi"].ToString()</td>
+                                <td>@row["GhiChu"].ToString()</td>
+                                <td>@row["Hoten"].ToString()</td>
+                                <td class="number">@row["TongCong"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["SuDungCoc"].ToString()</td>
+                                <td class="number">@row["ConLai"].ToString()</td>
+                                <td>@row["NgaySuDungCoc"].ToString()</td>
+                            </tr>
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                            <td colspan="4"><b>TỔNG CỘNG :</b></td>
+                            <td class="number">@TongSoTien.ToString().Replace(",", ".")</td>
+                            <td class="number">@TongThanhToan.ToString().Replace(",", ".")</td>
+                            <td  class="number">@TongConLai.ToString().Replace(",", ".")</td>
+                            <td></td>
+                           
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+

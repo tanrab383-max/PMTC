@@ -1,0 +1,131 @@
+﻿@{
+    var DT = ViewBag.DoiTac;
+    var List = ViewBag.List;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đối tác</label>
+                            <select class="select2" name="dvgv" style="height:29px">
+                                <option value="">Chọn</option>
+                                @foreach (var dt in DT)
+                                {
+                                    <option value="@dt.madoitac">@dt.TenDoiTac</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="Số chứng từ" placeholder="Số chứng từ" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-1 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                        </div>
+                    </div>
+                </form>
+                <div class="x_content">
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>STT</th>
+                                    <th>Số chứng từ</th>
+                                    <th>Ngày thu</th>
+                                    <th>Số tiền</th>
+                                    <th>Đợt góp vốn</th>
+                                    <th>Đối tác</th>
+                                    <th>Ghi chú</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{if (List != null)
+                                    {
+                                        int i = 1;
+                                        for (var j = 0; j < List.Rows.Count; j++)
+                                        {
+                                            <tr>
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                <td>@List.Rows[j]["SoChungTu"] </td>
+                                                <td>@List.Rows[j]["NgayThu"]</td>
+                                                <td>@List.Rows[j]["TongCong"]</td>
+                                                <td>@List.Rows[j]["TenKhoiTao"]</td>
+                                                <td>@List.Rows[j]["TenDoiTac"]</td>
+                                                <td>@List.Rows[j]["GhiChu"]</td>
+                                                <td><a href="" onclick="DeletePTGopVon('@List.Rows[j]["MaPhieuThu"]');"><i class="fa fa-remove"></i></a></td>
+                                            </tr>
+                                        }
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        var DeletePTGopVon = function (MaPhieuThu) {
+            debugger;
+            var result = confirm("Bạn chắc chắn muốn xóa");
+            if (result == true) {
+                $.ajax({
+                    url: "/GopVon/DeletePTGopVon/" + MaPhieuThu,
+                    type: 'post',
+                    success: function (result) {
+                        if (result == "True") {
+                            window.location.reload();
+                        }
+                        else
+                            toastr.error("Xóa không thành công");
+                    }
+                });
+            }
+
+        }
+        //$(".date").datepicker({
+        //    orientation: "left",
+        //    autoclose: true
+        //});
+        
+    </script>
+}
+
+

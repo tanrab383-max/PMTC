@@ -1,0 +1,158 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TNK.Core.Domain;
+using TNK.Core.Domain.Report;
+
+namespace TNK.Services.Report
+{
+    public interface ITKKNService
+    {
+        DataTable BCNgayTienMat(string ConnectionString,DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayTienMatTU(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayTienMatGCN(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayTienMatTienTaiKet(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayNganHang(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayNganHang_DanhSachNoVayNH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayXe_KMPKXeChuaGiao(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayXe_NoCoc(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiTietPhieuDichVu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiTietPhieuDichVu_V2(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiTietPhieuDichVu_LT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiTietPhieuDichVu_NoCoc(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiTietPhieuDichVu_NoCoc_LT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayDoanhThuDichVu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhiTM(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhiNH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhiQuyPhu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhiChiTren5Trieu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhiChiTamUngBienNhan(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhiChiTamUng(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhi_NhaCungCap(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhi_KhauHao(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhi_GoiBDTK(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayXNT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayXNTTong(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayXNT_XECU(DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayTongCocXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayKHBoCocXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayThuChiCocXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayGiaiNgan(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayNoBanXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayNoDichVu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayNoDichVu_LT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayTongCocPT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayThuChiCocPT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayCocPT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayCocXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+
+        DataTable BCNoTHBH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoBHKM(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoHHBH(string ConnectionString, DateTime FromDate, DateTime ToDate, string type);
+
+        DataTable BCNoGHBN(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoGHBHK(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoHHGHBH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+
+        DataTable TheoDoiChiTietCocXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable CTCocPT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable CocPT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable CocXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        List<ReportCongNo> GetReportCongNo(DateTime from, DateTime to, int p, ref int total, int pageSize);
+        //phan truc them
+        DataTable dtbBCKhoXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable dtbChiTraCoc(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable dtbThuno(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable dtbThuGiaiNgan(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable TongChiPhi(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        // phan bao cao kiem toan
+        DataTable ReportTongHop(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportBCKTTamUng(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportBCKTCongNoDVBH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportBCKTXNT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportChiTiet(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportBCKTCanDoi(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportKQKD(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiTamUng(string ConnectionString, DateTime FromDate, DateTime ToDate);//
+        DataTable BCNgayGiayToXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayThuHoXang(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoMuaPTPK(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCDoanhThuBHTH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCButToanLui(string ConnectionString, DateTime FromDate,DateTime ToDate);
+        DataTable BCKhoPhuTungNgay(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCKhoPhuTungNgayV2(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCXeTon(string ConnectionString, DateTime ToDate);
+        DataTable ReportCanDoiKQKD(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportBangGopVon(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportThanhToanNhapNH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportTHXuatBanXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportTHLoiNhuanKho(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportTHChiPhi(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportTHThueChuaVao(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportDuThau(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable ReportBCKiemToan_Thang(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BC_MMTB_CCDC(string ConnectionString, DateTime ToDate);
+        DataTable BCDuThau(string ConnectionString, DateTime ToDate);
+        DataTable BC_XDSC_Driver(string ConnectionString, DateTime ToDate);
+        DataTable BC_XDSC(string ConnectionString, DateTime ToDate);
+        DataTable BCCongNoKhac(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoThuHHHB(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNPTraKhac(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCCNPTKhac(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCHTD_XNT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCChiTietCoc(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCTienDauTu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCKhoTaiSan(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCTongNoBHDV(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoHHBanXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoHHTaiXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoGCN(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataSet BCBPTC_CNBHDVChiTiet(string ConnectionString, DateTime ToDate);
+        DataTable BCBPTC_CNBHDVTheoDoiTac(string ConnectionString, DateTime ToDate);
+        DataTable BCBPTC_CNBHDVTheoLyDoQuaHan(string ConnectionString, DateTime ToDate);
+        DataSet BCBPTC_VLD_ThuChi(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataSet BCBPTC_VLD_Data(string ConnectionString, DateTime FromDate, DateTime ToDate);
+
+        DataSet BCBPTC_CanDoiKho(DateTime FromDate, DateTime ToDate);
+        DataTable BCBPTC_SoatXetChungTu(string ConnectionString,DateTime FromDate, DateTime ToDate);
+        DataTable BCBPTC_SoatXetChungTuChiTiet(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCBPTC_CTBanXe(DateTime FromDate, DateTime ToDate);
+        DataTable BCBPTC_THBanXe(DateTime FromDate, DateTime ToDate);
+        DataTable BCHHBHTH(DateTime FromDate, DateTime ToDate, string Type);
+        DataTable BCDoanhThuGHBH(DateTime FromDate, DateTime ToDate);
+        DataTable BCChiTietTGHBH(DateTime FromDate, DateTime ToDate);
+        DataTable BCChiTietHHGHBH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        List<ReportList> GetReportLists(string connectionString, Guid userId);
+        DataTable BC_NHHGP(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BC_NHHGP_TH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BC_DTGiayToXe(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BC_DTThuHoKhac(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BC_DTBaoDuongTietKiem(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTableCollection BC_NNHHGP(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayChiPhiChiTiet(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayXeLoiNhuan(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCQuanLyXePTC(DateTime ToDate);
+        DataTableCollection BCNoChiPhi_XeCu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTableCollection BCPBChiPhi_XeCu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNoCPXC(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTableCollection BCKM_HuaTang(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCKM_HuaTang_XE(DateTime FromDate, DateTime ToDate);
+        DataTable BCTienDauTu(DateTime FromDate, DateTime ToDate);
+        DataTable BCKhoTaiSan(DateTime FromDate, DateTime ToDate);
+        DataTable BCDauTuDuAn(DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayPhanBoChiPhi(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCPhieuThu(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNPTraKhac_NBDTK(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCCNPTKhac_TTBH(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgayCNO(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTableCollection BCNgayThuChiHo(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgay_ChiTietChiPhiHHTX(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCNgay_KTNB_TongTaiSan(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCKHCDT(string ConnectionString, DateTime FromDate, DateTime ToDate);
+        DataTable BCLoiNhuanPTC(string ConnectionString, DateTime FromDate, DateTime ToDate);
+    }
+}

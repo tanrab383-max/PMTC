@@ -1,0 +1,664 @@
+﻿@model List<TNK.Model.PhieuDVTamCyber>
+@{
+    ViewBag.Title = "Phiếu dịch vụ";
+}
+<style>
+  
+        .toast .copy-button {
+            /*position: absolute;*/
+            right: 10px;
+            top: 50%;
+            /*/transform: translateY(-50%);*/
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+</style>
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+    <div class="title_right" style="margin-left:78%">
+        <!--<a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu Tiền Giang(*.xlxs)</span></a>-->
+        @*<a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMauQ2">Lấy file mẫu Tiền Giang(*.xlxs)</span></a>*@
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                @if (ViewBag.Tab == 1)
+                {
+                    <li class="active">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Phiếu tạm
+                        </a>
+                    </li>
+                    <li class="">
+                        <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                            Phiếu hoàn thành
+                        </a>
+                    </li>
+                }
+                else if (ViewBag.Tab == 2)
+                {
+                    <li class="">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="false">
+                            Phiếu tạm
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="true">
+                            Phiếu hoàn thành
+                        </a>
+                    </li>
+                }
+            </ul>
+            @if (ViewBag.Tab == 1)
+            {
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_0">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                @*<div class="title_right" style="margin-left:78%">
+                                    <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu DV Cyber(*.xlxs)</span></a>
+                                </div>*@
+                                <div class="title_right" style="margin-left:78%">
+                                    <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileExportCyber">Export cyber(*.xlsx)</span></a>
+                                </div>
+                                <form id="formSearch" method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" title="Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" placeholder="Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" id="btnSearchTemp" />
+                                            <input style="width:45%" onclick="ImportData()" title="Import dữ liệu" id="btnImportCyber" value="Import Cyber" class="btn btn-primary" />
+                                            <a href="/SoThu/DVCreate" class="btn btn-success"> <i class="fa fa-plus addNew" style="cursor:pointer"> Thêm</i></a>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="right">
+                                    <a href="" class="btn btn-dark" id="ThemMoi"> <i class="" style="cursor:pointer"></i>Đồng bộ</a>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>
+                                                    <input type="checkbox" id="CHKALL" />
+                                                </th>
+                                                <th>Số phiếu</th>
+                                                <th>Biển số</th>
+                                                <th>Khách hàng</th>
+                                                <th>Số điện thoại</th>
+                                                <th>SK/SM</th>
+                                                <th>Loại xe</th>
+                                                <th>Ngày sửa</th>
+                                                <th>Ngày thu</th>
+                                                <th>Tổng cộng</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @{
+                                                int i = 1;
+                                                foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                        <td>
+                                                            <input type="checkbox" id="chk_@item.REPAIRORDERNO" value="@item.REPAIRORDERNO" class="checkbox" />
+                                                        </td>
+                                                        <td>@item.REPAIRORDERNO</td>
+                                                        <td>@item.REGISTERNO</td>
+                                                        <td>@item.CAROWNERNAME</td>
+                                                        <td>@item.CAROWNERTEL</td>
+                                                        <td>@item.FRAMENO</td>
+                                                        <td>@item.CM_NAME</td>
+                                                        <td>@item.RO_DATE.ToString(ViewBag.DateFormat)</td>
+                                                        <td>@item.NgayThu.ToString(ViewBag.DateFormat)</td>
+                                                        <td class="number2">@item.TongCong</td>
+                                                        <td style="width:5%" class="center">
+                                                            <a href="/SoThu/DVCreate_Cybers_V2/@TNK.Core.Common.EncodeHtmlUrl(item.REPAIRORDERNO)"><i title="Edit" class="fa fa-edit"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div class="right">
+                                        @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_1">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <div class="title_right" style="margin-left:78%">
+                                    <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMauQ2">Lấy file mẫu(*.xlxs)</span></a>
+                                </div>
+                                <div method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" id="query" title="Id, Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" placeholder="Id, Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" id="Search" class="btn btn-success " />
+                                            <input style="width:25%" onclick="ImportData_New()" title="Import dữ liệu" value="Import Excel" class="btn btn-primary" />
+                                            <input style="width:30%" onclick="DeleteAll()" title="Xóa tất cả" value="Xóa Tất Cả" class="btn btn-info" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive" id="tbody">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (ViewBag.Tab == 2)
+            {
+                <div class="tab-content">
+                    <div class="tab-pane" id="tab_0">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <div class="title_right" style="margin-left:78%">
+                                    <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu DV Cyber(*.xlxs)</span></a>
+                                </div>
+                                <form id="formSearch" method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" title="Id, Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" placeholder="Id, Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="right">
+                                    <a href="/SoThu/DVCreate"> <i class="fa fa-plus addNew" style="cursor:pointer" id="ThemMoi"></i></a>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr class="success">
+                                                <th>STT</th>
+                                                <th>Số phiếu</th>
+                                                <th>Biển số</th>
+                                                <th>Khách hàng</th>
+                                                <th>Số điện thoại</th>
+                                                <th>SK/SM</th>
+                                                <th>Loại xe</th>
+                                                <th>Ngày sửa</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @{
+                                                int i = 1;
+                                                foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                        <td>@item.REPAIRORDERNO</td>
+                                                        <td>@item.REGISTERNO</td>
+                                                        <td>@item.CAROWNERNAME</td>
+                                                        <td>@item.CAROWNERTEL</td>
+                                                        <td>@item.FRAMENO</td>
+                                                        <td>@item.CM_NAME</td>
+                                                        <td>@item.RO_DATE.ToString(ViewBag.DateFormat)</td>
+                                                        <td style="width:5%" class="center">
+                                                            <a href="/SoThu/DVCreate/@HttpUtility.UrlEncode(item.REPAIRORDERNO)"><i title="Edit" class="fa fa-edit"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div class="right">
+                                        @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane active" id="tab_1">
+                        <div class="x_panel">
+                            <div class="x_content">
+                                <div class="title_right" style="margin-left:78%">
+                                    <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMauQ2">Lấy file mẫu(*.xlsx)</span></a>
+                                </div>
+                                
+                                <div method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày thu</label>
+                                            <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày thu</label>
+                                            <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" id="query" title="Id, Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" placeholder="Id, Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" id="Search" class="btn btn-success " />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive" id="tbody">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+    <div style="display:none"><input type="file" id="txtUploadFile_New" /></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        $("#CHKALL").change(function () {
+            debugger;
+            $("input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+        var chk = "";
+        var flag = true;
+        $(".checkbox").change(function () {
+            debugger;
+            chk = "";
+            $(".checkbox").map(function (key, val) {
+                flag = true;
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    if (chk == "") {
+                        chk = a;
+                    }
+
+                }
+            })
+
+        })
+        $("#ThemMoi").click(function () {
+            debugger;
+            var result = "";
+            var flag = true;
+            var ctbh = "";
+            $(".checkbox").map(function (key, val) {
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    result += $(val).val() + ",";
+                }
+            })
+            if (result != "") {
+                result = result.substring(0, result.length - 1);
+            }
+
+            if (result != "") {
+                if (confirm("Bạn có muốn đồng bộ thành phiếu thu dịch vụ?")) {
+                    setCookie("link", result);
+                    $.ajax({
+                        url: "/SoThu/DongBoPhieuThuDVuCyber",
+                        type: "POST",
+                        data: { ids: result },
+                        success: function (result) {
+                            if (!result.IsError) {
+                                toastSuccess(result.Message);
+                            }
+                            else {
+                                toastWarning(result.Message);
+                            }
+                        },
+                        error: function (result) {
+                            toastWarning("Lỗi cập nhật giải trình.");
+                        }
+                    });
+                }
+            }
+
+        })
+
+        function setCookie(cname, cvalue) {
+            document.cookie = cname + "=" + cvalue + ";path=/SoThu/DongBoPhieuThuDVuCyber";
+        }
+        var p = 1;
+        $(document).ready(function () {
+            debugger;
+            /* $('#Search').trigger('click');*/
+        });
+        $("#Search").click(function () {
+            debugger;
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            debugger;
+            p = 1;
+        }
+        function Search(obj) {
+            debugger;
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+            $.get("/SoThu/DvComplete?query=" + query + "&from=" + from + "&to=" + to + "&p=" + p).success(function (response) {
+                $("#tbody").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            a = $(this).attr("href");
+            var b = a.split("&");
+            p = b[3].split("=")[1];
+            Search();
+            return false;
+        })
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'DV' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        $("#FileMau").click(function () {
+           // alert(1);
+            debugger;
+            $.fileDownload("/SoThu/ExportFile_DV", {
+                httpMethod: "POST",
+                data: {},
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+        $("#FileMauQ2").click(function () {
+          //  alert(1);
+            debugger;
+            $.fileDownload("/SoThu/ExportFile_DVQ2", {
+                httpMethod: "POST",
+                data: {},
+               // failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+        $("#FileExportCyber").click(function () {
+          //  alert(1);
+            debugger;
+            var text = $(this).text();
+            $(this).text("Loading...");
+           // $(this).prop('disabled', true);
+            
+            var f = $("#from").val();
+            var t = $("#to").val();
+            var q = $("#query").val();
+            $.fileDownload("/SoThu/ExportDataCyber", {
+                httpMethod: "POST",
+                data: { from: f, to: t, query: q },
+                successCallback: function (responseHtml, url) {
+                    //if (responseHtml != null)
+                    //    toastWarning(responseHtml);
+                    //else
+                    toastSuccess('Đã download file');
+                    $("#FileExportCyber").text(text);
+                },
+                failCallback: function (responseHtml, url) {
+
+                    toastError('Lỗi download file');
+                    //toastError(responseHtml);
+                    $("#FileExportCyber").text(text);
+                }
+                //,
+                //failMessageHtml: "Có lỗi trong khi tải file excel."
+                
+            });
+            return false;
+        });
+        var datafile = new FormData();
+        function ImportData() {
+            $("#txtUploadFile").trigger('click');
+        }
+        $('#txtUploadFile').on('change', function (e) {
+
+            //alert(("#txtUploadFile").val());
+            var text = $("#btnImportCyber").text();
+            $("#btnImportCyber").text("Đang import");
+            if (document.getElementById("txtUploadFile").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_DVCyber",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        $("#btnImportCyber").text("Đang import");
+                        $("#btnImportCyber").prop('disabled', true);
+                        $("#btnSearchTemp").prop('disabled', true);
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile").value = "";
+                        datafile.delete('file');
+                       
+                       
+                    },
+                    success: function (result) {
+                        if (result.IsError) {                           
+                         //   toastr.error(result.Message);
+                            // Toastr configuration
+                            toastr.options = {
+                                "closeButton": true,
+                                "debug": false,
+                                "newestOnTop": false,
+                                "progressBar": true,
+                                "positionClass": "toast-top-right",
+                                "preventDuplicates": false,
+                                "onclick": null,
+                                "showDuration": "300",
+                                "hideDuration": "1000",
+                                "timeOut": "15000",  // 1 minute
+                                "extendedTimeOut": "1000",
+                                "showEasing": "swing",
+                                "hideEasing": "linear",
+                                "showMethod": "fadeIn",
+                                "hideMethod": "fadeOut"
+                            };
+
+                            // Display error toast with a copy button
+                            toastr.error(`
+                <div style="position: relative;">
+                    <div>
+                    <span>
+                        <button class="copy-button" onclick="copyToClipboard(` + `)">Copy</button>
+                    </span>
+                    <span><ul><li id='divErrorMessage'> ` + result.Message + `</li></ul></span>
+                    </div>                    
+                   
+                   
+                </div>`, 'Error', {
+                                closeButton: true,
+                                tapToDismiss: false,
+                                disableTimeOut: true
+                            });
+
+                            // Function to copy text to clipboard
+                            window.copyToClipboard = function () {
+                                var text = document.getElementById("divErrorMessage").innerHTML;
+                                var textarea = document.createElement('textarea');
+                                textarea.value = text;
+                                document.body.appendChild(textarea);
+                                textarea.select();
+                                document.execCommand('copy');
+                                document.body.removeChild(textarea);
+                               // toastr.info('Đã copy');
+
+                            };
+                            $("#btnImportCyber").text(text);
+                            $("#btnImportCyber").prop('disabled', false);
+                            $("#btnSearchTemp").prop('disabled', false);
+                        }
+                        else {
+                            toastSuccess("Import thành công");
+                            $("#btnImportCyber").text(text);
+                            $("#btnImportCyber").prop('disabled', false);
+                            $("#btnSearchTemp").prop('disabled', false);
+                            $("#btnSearchTemp").trigger('click');
+                            //window.location.reload();
+                        }
+                        $("#btnImportCyber").text(text);
+                        $("#btnImportCyber").prop('disabled', false);
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        toastError("Lỗi: Import file excel.");
+                        $("#btnImportCyber").text(text);
+                        $("#btnImportCyber").prop('disabled', false);
+
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+
+        function ImportData_New() {
+            $("#txtUploadFile_New").trigger('click');
+        }
+        $('#txtUploadFile_New').on('change', function (e) {
+            //alert(("#txtUploadFile").val());
+            if (document.getElementById("txtUploadFile_New").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoThu/ImportData_DVCyber",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile_New").value = "";
+                        datafile.delete('file');
+                    },
+                    success: function (result) {
+                        if (result.IsError)
+                            toastError(result.Message);
+                        else {
+                            toastSuccess("Import thành công");
+                            //window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        toastError("Lỗi: Import file excel.");
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+    </script>
+}

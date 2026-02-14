@@ -1,0 +1,125 @@
+﻿@model IEnumerable<TNK.Core.Domain.User>
+
+@{
+    ViewBag.Title = "Quản lý user";
+}
+
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b></b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        @if (ViewBag.Create)
+                        {
+                            <li>
+                                <a href="/User/Create"><i class="fa fa-plus"></i></a>
+                            </li>
+                        }
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    User Name
+                                </th>
+                                <th>Role</th>
+                                @if (ViewBag.Edit)
+                                {
+                                    <th>Edit</th>
+                                }
+                                @if (ViewBag.Details)
+                                {
+                                    <th>Details</th>
+                                }
+                                @if (ViewBag.Edit)
+                                {
+                                    <th>Reset</th>
+                                }
+                                @if (ViewBag.Delete)
+                                {
+                                    <th>Delete</th>
+                                }
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                <td style="width:80%">
+                                    @Html.DisplayFor(modelItem => item.UserName)
+                                </td>
+                                <td style="width:5%" class="center">
+                                    <a href="/User/Role/@item.UserId"><i title="Manager Role" class="fa fa-cogs"></i></a>
+                                </td>
+                                @if (ViewBag.Edit)
+                                {
+                                    <td style="width:5%" class="center">
+                                        <a href="/User/Edit/@item.Id"><i title="Edit" class="fa fa-edit"></i></a>
+                                    </td>
+                                }
+                                @if (ViewBag.Details)
+                                {
+                                    <td style="width:5%" class="center">
+                                        <a href="/User/Details/@item.Id"><i title="Details" class="fa fa-building-o"></i></a>
+                                    </td>
+                                    <td style="width:5%" class="center">
+                                        <a href="#" onclick="ResetPass('@item.Id');"><i title="Reset" class="fa fa-key"></i></a>
+                                    </td>
+                                }
+                                @if (ViewBag.Delete)
+                                {
+                                    <td style="width:5%" class="center">
+                                        <a href="/User/Delete/@item.Id"><i title="Delete" class="fa fa-close"></i></a>
+                                    </td>
+                                }
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<script>
+
+    function ResetPass(id) {
+        debugger;
+        if (confirm('Bạn thật sự muốn đổi lại mật khẩu cho user này?')) {
+            $.ajax({
+                url: "/User/Reset",
+                type: "POST",
+                data: { "id": id },
+                success: function (result) {
+                    if (!result.IsError) {
+                        toastSuccess(result.Message)
+                    }
+                    else {
+                        toastWarning("Lỗi khi thay đổi mật khẩu");
+                    }
+                }
+            });
+        }
+    }
+</script>

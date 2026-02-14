@@ -1,0 +1,287 @@
+﻿@using System.Data;
+
+<div id="BCTienMat">
+    <div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='8' class="tile">BÁO CÁO TIỀN MẶT @ViewBag.ShowRoom</th>
+                    </tr>
+                    <tr>
+                        <th colspan='8' class="tile">@ViewBag.TuNgayDenNgay</th>
+                    </tr>
+                    <tr>
+                        <td colspan="8" @*style="vertical-align:right"*@>
+                            <table style="text-align:left;width:60% " class="table-bordered table-striped table">
+                                <tr>
+                                    <th>Tồn đầu TM(Q.chính):</th>
+                                    <td class="number" align="right">@ViewBag.TonDauTienMat.ToString().Replace(",", ".")</td>
+                                
+                                    <th >Tồn cuối TM(Q.chính):</th>
+                                    <td class="number" align="right">@ViewBag.TonCuoiTienMat.ToString().Replace(",", ".")</td>
+                                </tr>
+                                <tr>
+                                    <th>Tồn đầu Quỹ phụ:</th>
+                                    <td class="number" align="right">@ViewBag.TonDauQuyPhu.ToString().Replace(",", ".")</td>
+                               
+                                    <th>Tồn cuối Quỹ phụ:</th>
+                                    <td class="number" align="right">@ViewBag.TonCuoiQuyPhu.ToString().Replace(",", ".")</td>
+                                </tr>
+                                <tr>
+                                    <th>Tạm ứng biên nhận tay:</th>
+                                    <td class="number" align="right">@ViewBag.TamUngBienNhanTay.ToString().Replace(",", ".")</td>
+                               
+                                    <th>Tiền mặt tại két:</th>
+                                    <td class="number" align="right">@ViewBag.TienMatTaiKet.ToString().Replace(",", ".")</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr></tr>
+                    <tr class="headings">
+                        @*<th class="column-title" rowspan="2">NGÀY PHÁT SINH</th>*@
+                        <th class="column-title" rowspan="2">DIỄN GIẢI</th>
+                        <th class="column-title" colspan="3">THU</th>
+                        <th class="column-title" colspan="3">CHI</th>
+                        <th class="column-title" rowspan="2">GHI CHÚ</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">TIỀN MẶT</th>
+                        <th class="column-title">CỌC</th>
+                        <th class="column-title">NỢ</th>
+                        <th class="column-title">CTY</th>
+                        <th class="column-title">MUA PT/VT</th>
+                        <th class="column-title">TRẢ KHÁCH HÀNG</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        double TienMat = 0, Coc = 0, No = 0, CongTy = 0, MuaPTVT = 0, TraKH = 0;
+                        DataView vwThuChi = (Model as DataTable).DefaultView;
+                        vwThuChi.RowFilter = "PhanLoai='ThuChi'";
+                        foreach (DataRow row in vwThuChi.ToTable().Rows)
+                        {
+                            TienMat += double.Parse(string.IsNullOrEmpty(@row["TienMat"].ToString()) ? "0" : (@row["TienMat"].ToString()));
+                            Coc += double.Parse(string.IsNullOrEmpty(@row["Coc"].ToString()) ? "0" : (@row["Coc"].ToString()));
+                            No += double.Parse(string.IsNullOrEmpty(@row["No"].ToString()) ? "0" : (@row["No"].ToString()));
+                            CongTy += double.Parse(string.IsNullOrEmpty(@row["CongTy"].ToString()) ? "0" : (@row["CongTy"].ToString()));
+                            MuaPTVT += double.Parse(string.IsNullOrEmpty(@row["MuaPTVT"].ToString()) ? "0" : (@row["MuaPTVT"].ToString()));
+                            TraKH += double.Parse(string.IsNullOrEmpty(@row["TraKH"].ToString()) ? "0" : (@row["TraKH"].ToString()));
+
+                            <tr class="even pointer">
+                    @*<td>@row["NgayPhatSinh"]</td>*@
+                    <td>@row["DienGiai"]</td>
+                    <td class="number">@row["TienMat"].ToString().Replace(",", ".")</td>
+                    <td class="number">@row["Coc"].ToString().Replace(",", ".")</td>
+                    <td class="number">@row["No"].ToString().Replace(",", ".")</td>
+                    <td class="number">@row["CongTy"].ToString().Replace(",", ".")</td>
+                    <td class="number">@row["MuaPTVT"].ToString().Replace(",", ".")</td>
+                    <td class="number">@row["TraKH"].ToString().Replace(",", ".")</td>
+                    <td>@row["GhiChu"]</td>
+                </tr>
+                
+
+                        }
+
+                        vwThuChi.RowFilter = "PhanLoai='ThuKhac'";
+                        if (vwThuChi.ToTable().Rows.Count > 0)
+                        {
+                            <tr class="even pointer">
+                                @*<td></td>*@
+                                <td style="color:red">Thu khác</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            foreach (DataRow row in vwThuChi.ToTable().Rows)
+                            {
+                                TienMat += double.Parse(string.IsNullOrEmpty(@row["TienMat"].ToString()) ? "0" : (@row["TienMat"].ToString()));
+                                Coc += double.Parse(string.IsNullOrEmpty(@row["Coc"].ToString()) ? "0" : (@row["Coc"].ToString()));
+                                No += double.Parse(string.IsNullOrEmpty(@row["No"].ToString()) ? "0" : (@row["No"].ToString()));
+                                CongTy += double.Parse(string.IsNullOrEmpty(@row["CongTy"].ToString()) ? "0" : (@row["CongTy"].ToString()));
+                                MuaPTVT += double.Parse(string.IsNullOrEmpty(@row["MuaPTVT"].ToString()) ? "0" : (@row["MuaPTVT"].ToString()));
+                                TraKH += double.Parse(string.IsNullOrEmpty(@row["TraKH"].ToString()) ? "0" : (@row["TraKH"].ToString()));
+                            <tr class="even pointer">
+                                @*<td>@row["NgayPhatSinh"]</td>*@
+                                <td>@row["DienGiai"]</td>
+                                <td class="number">@row["TienMat"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["Coc"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["No"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CongTy"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["MuaPTVT"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TraKH"].ToString().Replace(",", ".")</td>
+                                <td>@row["GhiChu"]</td>
+                            </tr>
+                            }
+                        }
+                        vwThuChi.RowFilter = "PhanLoai='ChiKhac'";
+                        if (vwThuChi.ToTable().Rows.Count > 0)
+                        {
+                        <tr class="even pointer">
+                            @*<td></td>*@
+                            <td style="color:red">Chi khác</td>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td ></td>
+                            <td></td>
+                        </tr>
+
+                            foreach (DataRow row in vwThuChi.ToTable().Rows)
+                            {
+                                TienMat += double.Parse(string.IsNullOrEmpty(@row["TienMat"].ToString()) ? "0" : (@row["TienMat"].ToString()));
+                                Coc += double.Parse(string.IsNullOrEmpty(@row["Coc"].ToString()) ? "0" : (@row["Coc"].ToString()));
+                                No += double.Parse(string.IsNullOrEmpty(@row["No"].ToString()) ? "0" : (@row["No"].ToString()));
+                                CongTy += double.Parse(string.IsNullOrEmpty(@row["CongTy"].ToString()) ? "0" : (@row["CongTy"].ToString()));
+                                MuaPTVT += double.Parse(string.IsNullOrEmpty(@row["MuaPTVT"].ToString()) ? "0" : (@row["MuaPTVT"].ToString()));
+                                TraKH += double.Parse(string.IsNullOrEmpty(@row["TraKH"].ToString()) ? "0" : (@row["TraKH"].ToString()));
+                            <tr class="even pointer">
+                                @*<td>@row["NgayPhatSinh"]</td>*@
+                                <td>@row["DienGiai"]</td>
+                                <td class="number">@row["TienMat"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["Coc"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["No"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CongTy"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["MuaPTVT"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TraKH"].ToString().Replace(",", ".")</td>
+                                <td>@row["GhiChu"]</td>
+                            </tr>
+                            }
+                        }
+                        <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                           
+                            <td >TỔNG CỘNG</td>
+                            <td class="number">@TienMat.ToString().Replace(",", ".")</td>
+                            <td class="number">@Coc.ToString().Replace(",", ".")</td>
+                            <td class="number">@No.ToString().Replace(",", ".")</td>
+                            <td class="number">@CongTy.ToString().Replace(",", ".")</td>
+                            <td class="number">@MuaPTVT.ToString().Replace(",", ".")</td>
+                            <td class="number">@TraKH.ToString().Replace(",", ".")</td>
+                            <td></td>
+                        </tr>
+                        vwThuChi.RowFilter = "PhanLoai='TuiTien'";
+                        foreach (DataRow row in vwThuChi.ToTable().Rows)
+                        {                            
+                            <tr class="even pointer">
+                                @*<td>@row["NgayPhatSinh"]</td>*@
+                                <td>@row["DienGiai"]</td>
+                                <td class="number">@row["TienMat"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["Coc"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["No"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["CongTy"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["MuaPTVT"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["TraKH"].ToString().Replace(",", ".")</td>
+                                <td>@row["GhiChu"]</td>
+                            </tr>
+                        }
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <br />
+    <div class="x_content">
+        <div class="table-responsive">
+            @*<table class="table table-striped jambo_table bulk_action">*@
+            <div class="col-md-6">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th class="column-title" colspan="4">CÁC KHOẢN CHI TẠM ỨNG </th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title">NGÀY PHÁT SINH</th>
+                            <th class="column-title">DIỄN GIẢI</th>
+                            <th class="column-title">THU</th>
+                            <th class="column-title">CHI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.ListExpenditure != null)
+                        {
+                            double thuTamUng = 0, chiTamUng = 0;
+                            foreach (DataRow row in (ViewBag.ListExpenditure as DataTable).Rows)
+                            {
+                                thuTamUng += double.Parse(row["Thu"].ToString());
+                                chiTamUng += double.Parse(row["Chi"].ToString());
+                            <tr class="even pointer">
+                                <td>@row["NgayPhatSinh"]</td>
+                                <td>@row["DienGiai"]</td>
+                                <td class="number">@row["Thu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                            </tr>
+                            }
+
+                            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                <td></td>
+                                <td>TỔNG CỘNG</td>
+                                <td class="number">@thuTamUng.ToString().Replace(",", ".")</td>
+                                <td class="number">@chiTamUng.ToString().Replace(",", ".")</td>                               
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table table-striped table-bordered table-condensed">
+                    <thead>
+                        <tr class="headings">
+                            <th class="column-title" colspan="4">CÁC KHOẢN CHI GIA CÔNG NGOÀI</th>
+                        </tr>
+                        <tr class="headings">
+                            <th class="column-title">NGÀY PHÁT SINH</th>
+                            <th class="column-title">DIỄN GIẢI</th>
+                            <th class="column-title">THU</th>
+                            <th class="column-title">CHI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.ListOutSource != null)
+                        {
+                            double thuGCN = 0, chiGCN = 0;
+                            foreach (DataRow row in (ViewBag.ListOutSource as DataTable).Rows)
+                            {
+                            <tr class="even pointer">
+                                <td>@row["NgayPhatSinh"]</td>
+                                <td>@row["DienGiai"]</td>
+                                <td class="number">@row["Thu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["Chi"].ToString().Replace(",", ".")</td>
+                            </tr>
+                                thuGCN += double.Parse(row["Thu"].ToString());
+                                chiGCN += double.Parse(row["Chi"].ToString());
+                            }
+                            <tr class="even pointer" style="background-color:lightblue;font-weight:bold">
+                                <td></td>
+                                <td>TỔNG CỘNG</td>
+                                <td class="number">@thuGCN.ToString().Replace(",", ".")</td>
+                                <td class="number">@chiGCN.ToString().Replace(",", ".")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>

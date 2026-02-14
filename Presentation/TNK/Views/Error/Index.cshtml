@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "Thông báo lỗi";
+}
+@if (ViewBag.ErrorMesage != "")
+{
+<h2>Đã có lỗi phát sinh khi xử lý dữ liệu. Vui lòng liên hệ IT quản trị. Xin cảm ơn.</h2>
+<p>@ViewBag.ErrorMessage</p>
+}
+

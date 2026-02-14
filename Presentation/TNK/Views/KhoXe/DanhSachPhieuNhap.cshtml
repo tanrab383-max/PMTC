@@ -1,0 +1,196 @@
+﻿@{ 
+    ViewBag.Title = "Danh sách phiếu nhập";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày nhập</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" id="FromDate" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày nhập</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="ToDate" />
+                                    </div>
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="Số khung,Người nhập" placeholder="Số khung,Người nhập" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-5 col-sm-5 col-xs-12">
+                                    <div class="form-group">
+                                        @Html.RadioButton("TinhTrang", "HTD", true, new { id = "HTD" }) Hàng trên đường
+                                        @Html.RadioButton("TinhTrang", "CMXTT", false, new { id = "CMXTT" }) Chi mua xe thực tế
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Ngày nhập</th>
+                                            <th>Loại phiếu nhập</th>
+                                            <th>Người nhập</th>
+                                            <th>Số khung</th>
+                                            <th>Giá vốn</th>
+                                            <th>Giá hóa đơn</th>
+                                            <th>Số tiền thanh toán từ HTD</th>
+                                            <th>Số tiền thanh toán từ KMTMV</th>
+                                            <th>Hoa hồng HB</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{if (ViewBag.Data != null)
+                                            {
+                                                int i = 1;
+                                                for (var j = 0; j < ViewBag.Data.Rows.Count; j++)
+                                                {
+                                                    <tr>
+                                                        <td>@i</td>
+                                                        <td>@ViewBag.Data.Rows[j]["NgayNhap"] </td>
+                                                        <td>@ViewBag.Data.Rows[j]["LoaiPhieuNhap"]</td>
+                                                        <td>@ViewBag.Data.Rows[j]["NguoiNhap"]</td>
+                                                        <td>@ViewBag.Data.Rows[j]["SoKhung"]</td>
+                                                        <td> @TNK.Core.Common.ToCurrencyString(ViewBag.Data.Rows[j]["GiaVon"]) </td>
+                                                        @if (ViewBag.Data.Rows[j]["GiaHoaDon"] != 0)
+                                                        {
+                                                            <td>@TNK.Core.Common.ToCurrencyString(ViewBag.Data.Rows[j]["GiaHoaDon"])</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@ViewBag.Data.Rows[j]["GiaHoaDon"]</td>
+                                                        }
+                                                        @if (ViewBag.Data.Rows[j]["SoTienHTD"] != 0)
+                                                        {
+                                                            <td>@TNK.Core.Common.ToCurrencyString(ViewBag.Data.Rows[j]["SoTienHTD"])</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@ViewBag.Data.Rows[j]["SoTienHTD"]</td>
+                                                        }
+
+                                                        @if (ViewBag.Data.Rows[j]["SoTienKMTMV"] != 0)
+                                                        {
+                                                            <td>@TNK.Core.Common.ToCurrencyString(ViewBag.Data.Rows[j]["SoTienKMTMV"])</td>
+
+                                                        }
+                                                        else
+                                                        {
+                                                        <td>@ViewBag.Data.Rows[j]["SoTienKMTMV"]</td>
+                                                        }
+                                                        <td>@TNK.Core.Common.ToCurrencyString(ViewBag.Data.Rows[j]["HoaHongHB"])</td>
+                                                    </tr>
+                                                    i++;
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+
+            $.get("/SoThu/TBAXEComplete?query=" + query + "&from=" + from + "&to=" + to + "&p=" + p).success(function (response) {
+                $("#tbody").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            a = $(this).attr("href");
+            var b = a.split("&");
+            p = b[2].split("=")[1];
+            console.log(p);
+            Search();
+            return false;
+        })
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'TBAXE' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        $("#btnExportExcel").click(function () {
+            $.fileDownload("/SoThu/Export_Excel", {
+                httpMethod: "POST",
+                data: {
+                    FromDate: $("#FromDate").val(),
+                    ToDate: $("#ToDate").val(),
+                    MaLoaiPhieu: $("#maLoaiPhieu").val()
+                },
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+    </script>
+}

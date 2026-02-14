@@ -1,0 +1,29 @@
+﻿@model List<TNK.Core.Domain.RoleInMenus>
+@{
+    Layout = null;
+    int tab = ViewBag.Tab;
+}
+@if (Model != null)
+{
+    int tabchild = tab + 1;
+    foreach (var item in Model)
+    {
+        <tr>
+            <td >
+                @for (int i = 0; i < tab; i++)
+                {
+                    @Html.Raw("-- ");
+                }
+                @item.Name
+            </td>
+            <td>
+                @Html.CheckBoxFor(x => item.Active, htmlAttributes: new { @class = " MenuActive" })
+                @Html.HiddenFor(x=>item.mid, htmlAttributes: new { @class = "mid" })
+            </td>
+            <td>
+                @Html.Action("GetMenuType", "Role", new { id = ViewBag.Id, mid = item.mid })
+            </td>
+        </tr>
+        @Html.Action("GetMenuChild", "Role", new { id = ViewBag.Id, parent = item.id, tab = tabchild })
+    }
+}

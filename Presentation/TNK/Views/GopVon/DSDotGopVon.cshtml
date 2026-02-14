@@ -1,0 +1,108 @@
+﻿@{
+    var listItem = ViewBag.List;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_content">
+                <form id="formSearch" method="get" class="row">
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                        </div>
+                    </div>
+                </form>
+                <div class="right">
+                    <a href="/GopVon/KhoiTaoGopVon"> <i class="fa fa-plus addNew" style="cursor:pointer" id="ThemMoi"></i></a>
+                </div>
+                <div class="x_content">
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="success">
+                                    <th>STT</th>
+                                    <th>Mã đợt</th>
+                                    <th>Ghi chú</th>
+                                    <th>Xem</th>
+                                    <th>Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                        int i = 1;
+                                        foreach (var a in listItem)
+                                        {
+                                            <tr>
+                                                <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                <td>@a.MaKhoiTao</td>
+                                                <td>@a.TenKhoiTao</td>
+                                                <td><a href="/GopVon/XemCTGV/@a.MaKhoiTao">Xem</a></td>
+                                                <td><a href="#" onclick="Delete('@a.MaKhoiTao');">Xóa</a></td>
+                                            </tr>
+                                        }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript">
+        var Delete = function (MaKhoiTao) {
+            debugger;
+            var result = confirm("Bạn chắc chắn muốn xóa");
+            if (result == true)
+            {
+                $.ajax({
+                    url: "/GopVon/DeleteGopVon/" + MaKhoiTao,
+                    type: 'post',
+                    success: function (result) {
+                        if (result == "True") {
+                            window.location.reload();
+                        }
+                        else
+                            toastr.error("Xóa không thành công");
+                    }
+                });
+            }
+            
+        }
+        $(".date").datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+    </script>
+}
+
+
+
+

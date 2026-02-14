@@ -1,0 +1,292 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuThu>
+@{
+    ViewBag.Title = "Danh sách phiếu thu";
+    TNK.Model.SoThuModel Item = new TNK.Model.SoThuModel();
+    var LoaiPhieuThu = new List<TNK.Core.Domain.DanhMucDienGiai>();
+    LoaiPhieuThu = ViewBag.LoaiPhieuThu;
+}
+<style>
+    .overflow {
+        width: 10em;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .ellipsis {
+        text-overflow: "...";
+    }
+</style>
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" id="FromDate" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="ToDate" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Loại phiếu thu</label>
+                                        @Html.DropDownList("maLoaiPhieu", LoaiPhieuThu.Select(x => new SelectListItem { Text = x.Ten.ToString(), Value = x.MaVietTat.ToString() }), "Tất cả", new { @class = "select2 fullwidth", @style = "height:29px",@id= "maLoaiPhieu" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="Số hợp đồng, Khách hàng, Số điện thoại" placeholder="Số hợp đồng, Khách hàng, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" id="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                                        <input type="button" id="btnExportExcel" value="Xuất excel" class="btn btn-info export" />
+                                        <input type="button" id="btnExportExcelReceipted" value="Xuất excel phiếu đã thu nợ" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Ngày thu</th>
+                                            <th>Mã phiếu thu</th>
+                                            <th>Loại phiếu thu</th>
+                                            <th>Số hợp đồng/ Số chứng từ</th>
+                                            <th>Số tham chiếu</th>
+                                            <th>Khách hàng</th>
+                                            <th>Nội dung</th>
+                                            <th>Tổng phải thu</th>
+                                            <th>Ngân Hàng</th>
+                                            <th>Tiền ngân Hàng</th>
+                                            <th>Tiền mặt</th>
+                                            <th>Tiền bảo lãnh</th>
+                                            <th>Tiền dụng cọc</th>
+                                            <th>Còn lại</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int i = 1;
+                                            foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                    <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                                    <td>@item.MaPhieuThu</td>
+                                                    <td>@item.MaLoaiPhieu</td>
+                                                    @if ((item.SoHopDong == "" || item.SoHopDong == null) &&
+                                                        (item.MaLoaiPhieu == "TVAMU" || item.MaLoaiPhieu == "NBATS"
+                                                        || item.MaLoaiPhieu == "THHHB" || item.MaLoaiPhieu == "TCODV"
+                                                        || item.MaLoaiPhieu == "TLADT" || item.MaLoaiPhieu == "NBHDV"
+                                                        || item.MaLoaiPhieu == "TKHAC" || item.MaLoaiPhieu == "TBATS"
+                                                        || item.MaLoaiPhieu == "NTAUN" || item.MaLoaiPhieu == "NHHBH"
+                                                        || item.MaLoaiPhieu == "NHHHB"
+                                                        ))
+                                                    {
+                                                        <td>@item.SoChungTu</td>
+                                                    }
+                                                    else if (item.MaLoaiPhieu == "NOTMV")
+                                                    {
+                                                        <td>@item.SoChungTu</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>@item.SoHopDong</td>
+                                                    }
+                                                    <td>@item.SoThamChieu</td>
+                                                    @if (item.MaLoaiPhieu == "TVAMU")
+                                                    {
+                                                        <td>@item.DoiTacPhieuThu</td>
+                                                    }
+                                                    else if (item.MaLoaiPhieu == "THHHB" || item.MaLoaiPhieu == "NBHDV" 
+                                                        || item.MaLoaiPhieu == "NOTMV" || item.MaLoaiPhieu == "NHHBH")
+                                                    {
+                                                        <td>@item.DoiTacPhieuThu</td>
+                                                    }
+                                                    else if (item.MaLoaiPhieu == "TLADT")
+                                                    {
+                                                        <td data-toggle="tooltip" title="@item.DoiTacDauTu" class="overflow ellipsis">@item.DoiTacDauTu</td>
+                                                    }
+                                                    else if (item.MaLoaiPhieu == "TKHAC")
+                                                    {
+                                                        <td data-toggle="tooltip" title="@item.ThongTinKhac" class="overflow ellipsis">@item.ThongTinKhac</td>
+                                                    }
+                                                    else if (item.MaLoaiPhieu == "T2GTX")
+                                                    {
+                                                        <td data-toggle="tooltip" title="@item.ThongTinKhac" class="overflow ellipsis">@item.ThongTinKhac</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td data-toggle="tooltip" title="@item.Hoten" class="overflow ellipsis">@item.Hoten</td>
+                                                    }
+                                                    @if (item.MaLoaiPhieu.Contains("HCO"))
+                                                    {
+                                                        <td data-toggle="tooltip" title="@item.GhiChu" class="overflow ellipsis">@item.GhiChu</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td data-toggle="tooltip" title="@item.NoiDung" class="overflow ellipsis">@item.NoiDung</td>
+                                                    }
+                                                    <td class="number2">@item.TongCong.ToString().Replace(",", ".")</td>
+                                                    <td data-toggle="tooltip" title="@item.HinhThucThanhToan" class="overflow ellipsis">@item.HinhThucThanhToan</td>
+                                                    <td class="number2">@item.ThanhToanNganHang.ToString().Replace(",", ".")</td>
+                                                    <td class="number2">@item.ThanhToanTienMat.ToString().Replace(",", ".")</td>
+                                                    <td class="number2">@item.ThanhToanBaoLanh.ToString().Replace(",", ".")</td>
+                                                    <td class="number2">@item.ThanhToanDungCoc.ToString().Replace(",", ".")</td>
+                                                    @{
+                                                        double conlai = item.TongCong - item.ThanhToanNganHang - item.ThanhToanTienMat - item.ThanhToanBaoLanh - item.ThanhToanDungCoc;
+                                                    }
+                                                    <td class="number2">@conlai.ToString().Replace(",", ".")</td>
+                                                    <td style="width:5%" class="center">
+                                                        @*@if (item.IsActive == true)
+                                                        {*@
+                                                        @if(item.MaLoaiPhieu == "TDIVU" && item.Flag == true)
+                                                        {
+                                                            <a href="/SoThu/DVEdit_New/@item.MaPhieuThu?a=View"><i title="Chi Tiết" class="fa fa-eye"></i></a>
+                                                        }
+                                                        else if (item.MaLoaiPhieu == "TDIVU" && item.Flag == false)
+                                                        {
+                                                            <a href="/SoThu/DVEdit/@item.MaPhieuThu?a=View"><i title="Chi Tiết" class="fa fa-eye"></i></a>
+                                                        }
+                                                        else if (item.MaLoaiPhieu == "TBAXE")
+                                                        {
+                                                            <a href="/SoThu/TBAXEEdit/@item.MaPhieuThu?a=View"><i title="Chi Tiết" class="fa fa-eye"></i></a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="/SoThu/PhieuThu/@item.MaPhieuThu?type=@item.MaLoaiPhieu&actiontype=View"><i title="Chi Tiết" class="fa fa-eye"></i></a>
+                                                        }
+
+                                                        @*}*@
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                            <div class="right">
+                                @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+    <div class="clearfix"></div>
+</div>
+
+
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            $(".ellipsis").text(function (index, currentText) {
+                if (currentText.length > 20) {
+                    return currentText.substr(0, 20) + "...";
+                }
+            });
+        });
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+
+            $.get("/SoThu/TBAXEComplete?query=" + query + "&from=" + from + "&to=" + to + "&p=" + p).success(function (response) {
+                $("#tbody").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            debugger;
+            a = $(this).attr("href");
+            var b = a.split("&");
+            p = b[2].split("=")[1];
+            console.log(p);
+            Search();
+            return false;
+        })
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id, type: 'TBAXE' };
+                $.post("/SoThu/DeletePhieuThu", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        $("#btnExportExcel").click(function () {
+            $.fileDownload("/SoThu/Export_Excel", {
+                httpMethod: "POST",
+                data: {
+                    FromDate: $("#FromDate").val(),
+                    ToDate: $("#ToDate").val(),
+                    MaLoaiPhieu: $("#maLoaiPhieu").val(),
+                    Query: $("#query").val(),
+                },
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+        $("#btnExportExcelReceipted").click(function () {
+            $.fileDownload("/SoThu/Export_Excel_Receipted", {
+                httpMethod: "POST",
+                data: {
+                    FromDate: $("#FromDate").val(),
+                    ToDate: $("#ToDate").val(),
+                    MaLoaiPhieu: $("#maLoaiPhieu").val(),
+                    Query: $("#query").val(),
+                },
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+    </script>
+}

@@ -1,0 +1,249 @@
+﻿@model List<TNK.Core.Domain.View.ViewTCODV>
+@{
+    int i = 1;
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                        Danh sách cọc
+                    </a>
+                </li>
+                <li class="">
+                    <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                        Danh sách phiếu chi hoàn cọc
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày thu</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="Mã phiếu thu,Biển số,Khách hàng,Điện thoại,Số chứng từ" placeholder="Mã phiếu thu,Biển số,Khách hàng,Điện thoại,Số chứng từ" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <br/>
+                                        <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        @Html.RadioButton("tinhtrang", "", true, new { id = "All" }) Tất Cả
+                                        @Html.RadioButton("tinhtrang", "D", false, new { id = "D" }) Đang sử dụng
+                                        @Html.RadioButton("tinhtrang", "H", false, new { id = "H" }) Hoàn tất
+                                        @Html.RadioButton("tinhtrang", "C", false, new { id = "C" }) Chưa sử dụng
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Ngày đặt cọc</th>
+                                            <th>Biển số</th>
+                                            <th>Tên khách hàng</th>
+                                            <th>Điện thoại</th>
+                                            <th>Mã xe</th>
+                                            <th>Màu xe</th>
+                                            <th>Số tiền cọc</th>
+                                            <th>Đã sử dụng</th>
+                                            <th>Hoàn cọc</th>
+                                            <th>Còn lại</th>
+                                            <th>Trạng thái cọc</th>
+                                            <th></th>
+                                            @*<th></th>*@
+                                            @*<th></th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                @if (item.TinhTrangPhieu == "H")
+                                                {
+                                                    <td >@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                                        <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                                        <td>@item.BienSo</td>
+                                                        <td>@item.HoTen</td>
+                                                        <td>@item.DienThoai</td>
+                                                        <td>@item.MaXe</td>
+                                                        <td>@item.MauXe</td>
+                                                        <td class="number2">@item.TongCong</td>
+                                                        <td class="number2">@item.SoTienDaSuDung</td>
+                                                        <td class="number2">@item.SoTienChiTra</td>
+                                                        <td class="number2">@item.ConLai</td>
+                                                        <td>Hoàn tất</td>
+                                                        <td style="width:5%" class="center">
+                                                            <a href="/SoChi/CHCPTCreate/@item.MaPhieuThu"><i title="Edit" class="fa fa-plus"></i></a>
+                                                        </td>
+                                                }
+                                                else if (item.TinhTrangPhieu == "D")
+                                                {
+                                                    <td >@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                                        <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                                        <td>@item.BienSo</td>
+                                                        <td>@item.HoTen</td>
+                                                        <td>@item.DienThoai</td>
+                                                        <td>@item.MaXe</td>
+                                                        <td>@item.MauXe</td>
+                                                        <td class="number2">@item.TongCong</td>
+                                                        <td class="number2">@item.SoTienDaSuDung</td>
+                                                        <td class="number2">@item.SoTienChiTra</td>
+                                                        <td class="number2">@item.ConLai</td>
+                                                        <td>Đang sử dụng</td>
+                                                        <td style="width:5%" class="center">
+                                                            <a href="/SoChi/CHCPTCreate/@item.MaPhieuThu"><i title="Edit" class="fa fa-plus"></i></a>
+                                                        </td>
+                                                }
+                                                else if (item.TinhTrangPhieu == "C")
+                                                {
+                                                    <td >@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                                        <td>@item.NgayThu.ToString("dd/MM/yyyy")</td>
+                                                        <td>@item.BienSo</td>
+                                                        <td>@item.HoTen</td>
+                                                        <td>@item.DienThoai</td>
+                                                        <td>@item.MaXe</td>
+                                                        <td>@item.MauXe</td>
+                                                        <td class="number2">@item.TongCong</td>
+                                                        <td class="number2">@item.SoTienDaSuDung</td>
+                                                        <td class="number2">@item.SoTienChiTra</td>
+                                                        <td class="number2">@item.ConLai</td>
+                                                        <td>Chưa sử dụng</td>
+                                                        <td style="width:5%" class="center">
+                                                            <a href="/SoChi/CHCPTCreate/@item.MaPhieuThu"><i title="Edit" class="fa fa-plus"></i></a>
+                                                        </td>
+                                                }
+                                                @*<td style="width:5%" class="center">
+                                                    <a href="javascript:;" onclick="Delete(this,'@item.MaPhieuThu')"><i title="Delete" class="fa fa-close"></i></a>
+                                                </td>*@
+                                            </tr>
+                                            i++;
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày</label>
+                                        <input type="text" id="from" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày </label>
+                                        <input type="text" id="to" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" id="query" title="Mã phiếu thu, Khách hàng, Điện thoại, Số chứng từ" placeholder="Mã phiếu thu, Khách hàng, Điện thoại, Số chứng từ" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" id="Search" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive" id="tbody">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="clearfix"></div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script>
+        var p = 1;
+        $("#Search").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function change() {
+            p = 1;
+        }
+        function Search(obj) {
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+            $.get("/SoChi/CHCPTComplete?query=" + query + "&from=" + from + "&to=" + to + "&p=" + p).success(function (response) {
+                $("#tbody").html(response);
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+        var a;
+        $(document).on("click", "#tbody a", function () {
+            a = $(this).attr("href");
+            var b = a.split("&");
+            p = b[3].split("=")[1];
+            Search();
+            return false;
+        })
+        function Delete(a, id) {
+            if (confirm('Xác nhận')) {
+                data = { id: id };
+                $.post("/SoChi/DeletePhieuChi", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+    </script>
+}

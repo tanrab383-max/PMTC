@@ -1,0 +1,196 @@
+﻿@model  TNK.Models.MenuDetailModel
+@{
+    ViewBag.Title = "Edit";
+    var model = Model.Detail;
+    SelectList List = new SelectList(Model.Types.Where(x => x.IsActive == true), "Name", "Name");
+    var Menus = (List<TNK.Core.Domain.MenuRole>)ViewBag.Menus;
+}
+
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b></b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    @if (ViewBag.Alert != null && ViewBag.Alert != "")
+                    {
+                        <div class="alert alert-success alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            @ViewBag.Alert
+                        </div>
+                    }
+
+                    <br>
+
+                    <form method="post" class="form-horizontal form-label-left">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(x => model.Id)
+                        @Html.HiddenFor(x => model.Parent)
+
+                        <div class="form-group">
+                            @Html.LabelFor(x => model.Name, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                @Html.EditorFor(x => model.Name, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                                @Html.ValidationMessageFor(x => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => model.Icon, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                @Html.EditorFor(x => model.Icon, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => model.Area, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                @Html.EditorFor(x => model.Area, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(x => model.Area, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => model.Controller, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                @Html.EditorFor(x => model.Controller, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(x => model.Controller, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => model.ActionDefault, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                @Html.DropDownListFor(x => model.ActionDefault, List, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => model.ActionDefault, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(x => model.OrderBy, htmlAttributes: new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                @Html.ValidationMessageFor(x => model.OrderBy, "", new { @class = "text-danger" })
+                                @Html.EditorFor(x => model.OrderBy, new { htmlAttributes = new { @class = "form-control number" } })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Menu cha</label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <select class="select2">
+                                    @foreach (var item in Menus)
+                                    {
+                                        <option value="@item.Id.ToString()" @(item.Id==model.Parent?"selected":"")>@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                        <div class="form-group">
+                            <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                                <input type="submit" value="Save" class="btn btn-success" />
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b>Actions</b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+
+                        <li>
+                            <a href="#" id="AddAction"><i class="fa fa-plus"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <form action="/Menu/AddAction/@Model.Detail.Id" id="formAddAction" style="display:none" method="get" class="form-horizontal form-label-left animated rubberBand">
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Name</label>
+                            <div class="col-md-3 col-sm-3 col-xs-12">
+                                <input class="form-control text-box single-line" id="ActionName" name="ActionName" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                                <input type="submit" value="Add" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </form>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Active</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Types)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td>
+                                        @Html.CheckBoxFor(x => item.IsActive, htmlAttributes: new { @class = " MenuTypeActive" })
+                                        @Html.HiddenFor(x => item.Id, htmlAttributes: new { @class = "id" })
+                                    </td>
+                                    <td style="width:5%" class="center">
+                                        <a href="/Menu/DeleteAction/@Model.Detail.Id?mid=@item.Id"><i title="Delete" class="fa fa-close"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.ActionLink("Quay lại", "Index")
+</div>
+@section scripts{
+    <script>
+        $(".MenuTypeActive").change(function () {
+            var checked = $(this).prop("checked");
+            var id = $(this).closest("td").children("input.id").val();
+            var mid = '@Model.Detail.Id';
+            $.ajax({
+                method: "POST",
+                url: "/Menu/UpdateActiveMenuType",
+                data: { typeid: id, isActive: checked, id: mid },
+                dataType: "json"
+            })
+              .done(function (msg) {
+                  console.log(msg.result);
+              });
+        });
+
+        $("#AddAction").click(function () {
+            $("#formAddAction").show();
+        })
+        $('.select2').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+    </script>
+}
+

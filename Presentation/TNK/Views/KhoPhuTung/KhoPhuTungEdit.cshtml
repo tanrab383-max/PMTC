@@ -1,0 +1,321 @@
+﻿@model TNK.Core.Domain.KhoPhuTung
+@{
+    var item = Model;
+}
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>Cập nhật kho phụ tùng</h3>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tabbable-line boxless tabbable-reversed">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_0" data-toggle="tab" aria-expanded="true">
+                            Thông tin
+                        </a>
+                    </li>
+                    <li class="">
+                        <a id="a_1" href="#tab_1" data-toggle="tab" aria-expanded="false">
+                            Điều chỉnh kho
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_0">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2><b>Thông tin</b></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li>
+                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form method="post" id="form-data" class="form-horizontal form-label-left">
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Mã kho</label>
+                                                @Html.EditorFor(x => item.MaKho, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "15", @readonly = "" } })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Tên kho</label>
+                                                @Html.EditorFor(x => item.TenKho, new { htmlAttributes = new { @class = "form-control input-sm " } })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Số tiền khởi tạo</label>
+                                                @Html.EditorFor(x => item.SoTienKhoiTao, new { htmlAttributes = new { @class = "number form-control input-sm", @readonly = "" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Tổng tiền</label>
+                                                @Html.EditorFor(x => item.TongTien, new { htmlAttributes = new { @class = "number form-control input-sm", @readonly = "" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Phần trăm giá vốn</label>
+                                                @Html.EditorFor(x => item.PhanTramGiaVon, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="ln_solid"></div>
+                                    <div class="form-group">
+                                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                            <input type="submit" value="Save" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                    <div class="ln_solid"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_1">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2><b>Điều chỉnh kho</b></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li>
+                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form method="post" id="form-data" class="form-horizontal form-label-left">
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Mã kho</label>
+                                                @Html.EditorFor(x => item.MaKho, new { htmlAttributes = new { @class = "form-control input-sm", @maxlength = "15", @readonly = "",@id="maKho" } })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Tên kho</label>
+                                                @Html.EditorFor(x => item.TenKho, new { htmlAttributes = new { @class = "form-control input-sm ", @readonly = "" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Tổng tiền</label>
+                                                @Html.EditorFor(x => item.TongTien, new { htmlAttributes = new { @class = "number form-control input-sm", @readonly = "" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Ngày điều chỉnh</label>
+                                                @*@Html.EditorFor(x => item.TongTien, new { htmlAttributes = new { @class = "number form-control input-sm", @readonly = "" } })*@
+                                                <input type="text" class="form-control input-sm date" id="ngayDC" value="@DateTime.Now.ToString("dd/MM/yyyy")" />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <div class="form-group">
+                                                <label>Số tiền tăng giảm</label>
+                                                <input type="text" onKeyPress="return isNumberKey(event)"  class="form-control input-sm text-box single-line" id="soTienDC" value="0" maxlength="13" onchange="change()"  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ln_solid"></div>
+                                    <div class="form-group">
+                                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                            <input type="button" id="btnLuu" value="Lưu" class="btn btn-success" onclick="Save()" />
+                                            <input type="button" id="btnList" value="Danh sách" class="btn btn-info" onclick="List()" />
+                                        </div>
+                                    </div>
+                                    <div class="ln_solid"></div>
+                                </form>
+                            </div>
+                        </div>
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr class="success">
+                                        <th>STT</th>
+                                        <th>Mã kho</th>
+                                        <th>Ngày điều chỉnh</th>
+                                        <th>Số tiền điều chỉnh</th>
+                                        <th>Người điều chỉnh</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultData"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+                </div>
+            </div>
+    </div>
+</div>
+<a href="/KhoPhuTung/Index">Quay lại</a>
+@section scripts
+{
+    <link href="~/assests/plugins/select2/select2.css" rel="stylesheet" />
+    <script src="~/assests/plugins/select2/select2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/SoThuCommon.js"></script>
+    <script>
+        //var tr = $("#tr").html();
+        //$('.select2').select2({
+        //    placeholder: "Select an option",
+        //    allowClear: true
+        //});
+        //removeSelect();
+        //function removeSelect() {
+        //    setTimeout(function () {
+        //        var a = $('select.select2');
+        //        a.map(function (key, val) {
+        //            $(val).removeClass("select2");
+        //        });
+        //    }, 100);
+        //}
+        //$('.date').datepicker({
+        //    orientation: "left",
+        //    autoclose: true
+        //});
+        function change()
+        {
+            debugger;
+            var sotien = $("#soTienDC").val();
+            if (sotien == "" || sotien == undefined)
+                sotien = 0;
+            else
+            {
+                sotien = sotien.split(",").join("");
+                sotien = parseInt(sotien);
+            }
+            $("#soTienDC").val(sotien.toLocaleString('en-us'));
+            $("#soTienDC").html(sotien.toLocaleString("en-us"));
+            //$("#soTienDC").val(sotien.toLocaleString("en-us"));
+        }
+        function Remove(a) {
+            var tr = $(a.closest("tr"));
+            tr.find(".IsDeleted").val("true");
+            tr.hide();
+        }
+        var a;
+        $(document).ready(function () {
+            List();
+        });
+        $(document).on("click", ".chkTinhTrang", function () {
+            a = this;
+            $(this).closest("td").children(".TinhTrang").val($(this).is(":checked"));
+        })
+        var Save = function () {
+            debugger;
+            var maKho = $("#maKho").val();
+            var ngayDC = $("#ngayDC").val();
+            var soTien = $("#soTienDC").val();
+            soTien = soTien.split(",").join("");
+            soTien = parseInt(soTien);
+            if (soTien == "0")
+            {
+                toastWarning("Bạn cần nhập số tiền điều chỉnh.");
+            }
+            else
+            {
+                $.ajax({
+                    url: "/KhoPhuTung/EditKPT",
+                    type: "POST",
+                    data: { MaKho: maKho, NgayDC: ngayDC, SoTien: soTien },
+                    success: function (result) {
+
+                        if (result.IsError == false) {
+                            toastSuccess("Thêm điều chỉnh kho thành công.");
+                            var sotien = 0;
+                            $("#soTienDC").html(sotien.toLocaleString("en-us"));
+                            $("#soTienDC").val(sotien.toLocaleString("en-us"));
+                            List();
+                        }
+                        else {
+                            toastWarning(result.Message);
+                            List();
+                        }
+                    }
+                });
+                //window.location.href = "/KhoPhuTung/Index";
+            }
+        }
+        var List = function()
+        {
+            $.ajax({
+                url: "/KhoPhuTung/DanhSachKPT",
+                type: "POST",
+                dataType: "json",
+                success: function (result) {
+                    var html = "";
+                    if (result != null) {
+                        $("#resultData").empty();
+                        for (var i = 0; i < result.length; i++) {
+                            //var ma = "'" + result[i].Id + "'";
+                            //alert(ma);
+                            var j = i + 1;
+                            html += "<tr>";
+                            html += "<td>" + j + "</td>";
+                            html += "<td>" + result[i].MaKho + "</td>";
+                            html += "<td>" + result[i].NgayDieuChinh + "</td>";
+                            html += "<td>" + result[i].SoTienDieuChinh.toLocaleString("en-us") + "</td>";
+                            html += "<td>" + result[i].NguoiDieuChinh + "</td>";
+                            html += "<td><a href='#'><i title='Delete' onclick=Delete('"+result[i].Id + "'); class='fa fa-remove'></i></a></td>";
+                            html += "</tr>";
+                        }
+                        $("#resultData").append(html);
+                    }
+                }
+            });
+        }
+        function Delete(Id) {
+            if (confirm('Xác nhận xóa mục điều chỉnh kho ')) {
+                data = { Id: Id };
+                $.post("/KhoPhuTung/Delete", data).success(function (response) {
+                    if (response.IsError == false) {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                        List();
+                    }
+                    else {
+                        toastSuccess("Xóa thất bại:" + response.Message);
+                    }
+                });
+            }
+        }
+        function isNumberKey(evt) {
+            debugger;
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57))
+            {
+                if (charCode == 45)
+                    return true;
+                return false;
+            }
+            return true;
+        }
+    </script>
+}
+
+
+

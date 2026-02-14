@@ -1,0 +1,109 @@
+﻿@using System.Data;
+<style>
+    #main :last-child > :last-child > td {
+        background-color: lightblue;
+        font-weight: bold;
+    }
+</style>
+<div id="BCNHHGP">
+    <div class="x_content">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed" id="main">
+                <thead>
+                    <tr class="headings">
+                        <th colspan='11' class="tile">DANH SÁCH PHIẾU NỢ HOA HỒNG GÓP @ViewBag.ShowRoom</th>
+                    </tr>
+                    <tr>
+                        <th colspan='11' class="tile">Đến ngày @ViewBag.ToDate</th>
+                    </tr>
+                    <tr class="headings">
+                        <th class="column-title">STT</th>
+                        <th class="column-title">NGÀY NỢ</th>
+                        <th class="column-title">MÃ PHIẾU NỢ</th>
+                        <th class="column-title">KHÁCH HÀNG</th>
+                        <th class="column-title">SỐ HỢP ĐỒNG</th>
+                        <th class="column-title">NGÂN HÀNG GÓP</th>
+                        <th class="column-title">NỘI DUNG</th>
+                        <th class="column-title">SỐ TIỀN NỢ</th>
+                        <th class="column-title">ĐÃ THANH TOÁN</th>
+                        <th class="column-title">CÒN LẠI</th>
+                        <th class="column-title">NGÀY THANH TOÁN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        foreach (DataRow row in (ViewBag.Data[0] as DataTable).Rows)
+                        {
+                            <tr class="even pointer">
+                                <td>@row["STT"]</td>
+                                <td>@row["NgayNo"]</td>
+                                <td>@row["MaPhieuNo"]</td>
+                                <td>@row["KhachHang"].ToString()</td>
+                                <td>@row["SoHopDong"].ToString()</td>
+                                <td>@row["TenDoiTac"].ToString()</td>
+                                <td>@row["NoiDung"].ToString()</td>
+                                <td class="number">@row["SoTienNo"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["DaThu"].ToString().Replace(",", ".")</td>
+                                <td class="number">@row["ConLai"].ToString().Replace(",", ".")</td>
+                                <td>@row["NgayThanhToan"]</td>
+                            </tr>
+                        }
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br />
+    <div class="x_content">
+        <table class="table table-striped table-bordered table-condensed" style="width:50%;margin-top:2%">
+            <tbody>
+                @if (Model != null)
+                {
+                    foreach (DataRow row in (ViewBag.Data[1] as DataTable).Rows)
+                    {
+                        <tr class="even pointer">
+                            <td>Đầu kỳ</td>
+                            <td class="number">@row["DauKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                        <tr class="even pointer">
+                            <td>Phát sinh trong kỳ</td>
+                            <td class="number">@row["PSTangTrongKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                        <tr class="even pointer">
+                            <td>Thu nợ trong kỳ</td>
+                            <td class="number">@row["PSGiamTrongKy"].ToString().Replace(",", ".")</td>
+                        </tr>
+                        <tr class="even pointer">
+                            <td>Tồn cuối</td>
+                            <td class="number">@row["ConLai"].ToString().Replace(",", ".")</td>
+                        </tr>
+                    }
+
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+    $("td.numberRE").map(function (key, val) {
+        var val = $(this).html();
+        val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>
+
+
+
+

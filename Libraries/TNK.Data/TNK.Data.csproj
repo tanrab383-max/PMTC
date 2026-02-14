@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{86E30D69-5B46-4AEF-A72B-D562CA12675B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TNK.Data</RootNamespace>
+    <AssemblyName>TNK.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AF.Library">
+      <HintPath>C:\Users\Administrator\Downloads\AF.Library.dll</HintPath>
+      <HintPath>..\..\..\..\Source\TNK\TNK\Presentation\TNK\bin\AF.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="AF_ORM.CORE">
+      <HintPath>..\..\..\..\Source\TNK\TNK\Libraries\TNK.Data\bin\Debug\AF_ORM.CORE.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac, Version=4.4.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Source\TNK\TNK\Presentation\TNK\bin\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Source\TNK\TNK\Presentation\TNK\bin\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\..\..\Source\TNK\TNK\Presentation\TNK\bin\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\..\..\Source\TNK\TNK\Presentation\TNK\bin\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\..\..\Source\TNK\TNK\Presentation\TNK\bin\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CRMObjectContext.cs" />
+    <Compile Include="DependencyResolver.cs" />
+    <Compile Include="EfRepository.cs" />
+    <Compile Include="IDbContext.cs" />
+    <Compile Include="Mapping\ActionLogMapping.cs" />
+    <Compile Include="Mapping\CategoryItemMapping.cs" />
+    <Compile Include="Mapping\CategoryMapping.cs" />
+    <Compile Include="Mapping\ChiTietBanPhuKienMapping.cs" />
+    <Compile Include="Mapping\ChiTietBanTaiSanMapping.cs" />
+    <Compile Include="Mapping\ChiTietBaoDuongTietKiemMapping.cs" />
+    <Compile Include="Mapping\ChiTietGopVonMapping.cs" />
+    <Compile Include="Mapping\CHI_TIET_KHAU_HAOMapping.cs" />
+    <Compile Include="Mapping\CHI_TIET_PHIEU_CHIMapping.cs" />
+    <Compile Include="Mapping\DanhMucDienGiaiMapping.cs" />
+    <Compile Include="Mapping\DataHistoryMapping.cs" />
+    <Compile Include="Mapping\DieuChinhKhoPhuTungMapping.cs" />
+    <Compile Include="Mapping\DotGopVonMapping.cs" />
+    <Compile Include="Mapping\LichSuThaoTacMapping.cs" />
+    <Compile Include="Mapping\LichSuTheChapXeMapping.cs" />
+    <Compile Include="Mapping\LoginMapping.cs" />
+    <Compile Include="Mapping\PhieuQuyetToanMapping.cs" />
+    <Compile Include="Mapping\ReportListMapping.cs" />
+    <Compile Include="Mapping\UserMapping.cs" />
+    <Compile Include="Mapping\ViewCHCNOMapping.cs" />
+    <Compile Include="Mapping\ViewChiTietKhuyenMaiMapping.cs" />
+    <Compile Include="Mapping\ChiTietNhapKhoPhuTungMapping.cs" />
+    <Compile Include="Mapping\ChiTietKhuyenMaiMapping.cs" />
+    <Compile Include="Mapping\ChiTietPhieuChuyenTienNoiBoMapping.cs" />
+    <Compile Include="Mapping\ChiTietPhieuDichVuMapping.cs" />
+    <Compile Include="Mapping\ChiTietPhieuChiMapping.cs" />
+    <Compile Include="Mapping\ChiTietPhieuThuMapping.cs" />
+    <Compile Include="Mapping\CRMEntityTypeConfiguration.cs" />
+    <Compile Include="Mapping\ConfigMapping.cs" />
+    <Compile Include="Mapping\DoiTacMapping.cs" />
+    <Compile Include="Mapping\KhoPhuTungMapping.cs" />
+    <Compile Include="Mapping\NhanVienMapping.cs" />
+    <Compile Include="Mapping\PhieuChuyenTienNoiBoMapping.cs" />
+    <Compile Include="Mapping\PhieuNhapKhoMapping.cs" />
+    <Compile Include="Mapping\ReportCongNoMapping.cs" />
+    <Compile Include="Mapping\ViewCKHHAMapping.cs" />
+    <Compile Include="Mapping\ViewCongNoMapping.cs" />
+    <Compile Include="Mapping\ViewDoiTacMapping.cs" />
+    <Compile Include="Mapping\ViewCTAUNMapping.cs" />
+    <Compile Include="Mapping\ViewGetListLichSuThaoTacMapping.cs" />
+    <Compile Include="Mapping\ViewGiaoDichCocMapping.cs" />
+    <Compile Include="Mapping\ViewListPhieuChiMapping.cs" />
+    <Compile Include="Mapping\ViewMenuActionMapping.cs" />
+    <Compile Include="Mapping\ViewNKMPKMapping.cs" />
+    <Compile Include="Mapping\ViewNoPhaiThuBHDVMapping.cs" />
+    <Compile Include="Mapping\ViewDanhSachPhieuNhapKhoPhuTung.cs" />
+    <Compile Include="Mapping\ViewPhieuThuBDTKCyberMapping.cs" />
+    <Compile Include="Mapping\ViewPhieuThuTCNOMapping.cs" />
+    <Compile Include="Mapping\ViewPhieuThuMapping.cs" />
+    <Compile Include="Mapping\ViewREPAIR_ORDER_PYSMapping.cs" />
+    <Compile Include="Mapping\ViewChiTietPhieuChuyenTienNoiBoMapping.cs" />
+    <Compile Include="Mapping\ViewTaiKhoanTien_NganHangMapping.cs" />
+    <Compile Include="Mapping\ViewTBATSMapping.cs" />
+    <Compile Include="Mapping\ViewTBDTKMapping.cs" />
+    <Compile Include="Mapping\ViewTBHXHMapping.cs" />
+    <Compile Include="Mapping\ViewTCOCMapping.cs" />
+    <Compile Include="Mapping\ViewThongKeKhoMapping.cs" />
+    <Compile Include="Mapping\ViewTuiHangTrenDuongMapping.cs" />
+    <Compile Include="Mapping\ViewCHCPTMapping.cs" />
+    <Compile Include="Mapping\KhoTaiSanMapping.cs" />
+    <Compile Include="Mapping\ViewCOCDTMapping.cs" />
+    <Compile Include="Mapping\ViewChiTietXuatNhapKhoPhuTungMapping.cs" />
+    <Compile Include="Mapping\ViewGiaoDichTuiTienMapping.cs" />
+    <Compile Include="Mapping\ViewKhoTaiSanMapping.cs" />
+    <Compile Include="Mapping\ViewKhoXeMapping.cs" />
+    <Compile Include="Mapping\KhoXeMapping.cs" />
+    <Compile Include="Mapping\LoggingMapping.cs" />
+    <Compile Include="Mapping\MenuActionMapping.cs" />
+    <Compile Include="Mapping\MenuMapping.cs" />
+    <Compile Include="Mapping\NoPhaiThuMapping.cs" />
+    <Compile Include="Mapping\TuiDinhKhoanMapping.cs" />
+    <Compile Include="Mapping\LoaiXeMapping.cs" />
+    <Compile Include="Mapping\ViewLoaiXeMapping.cs" />
+    <Compile Include="Mapping\ViewNoDaThuMapping.cs" />
+    <Compile Include="Mapping\ViewNoDaTraMapping.cs" />
+    <Compile Include="Mapping\ViewNoPhaiThuMapping.cs" />
+    <Compile Include="Mapping\ViewNoPhaiTraMapping.cs" />
+    <Compile Include="Mapping\ViewNoPhaiTraTuPhieuThuMapping.cs" />
+    <Compile Include="Mapping\NoPhaiTraMapping.cs" />
+    <Compile Include="Mapping\PhieuChiMapping.cs" />
+    <Compile Include="Mapping\PhieuThuMapping.cs" />
+    <Compile Include="Mapping\REPAIR_ORDER_PYSMapping.cs" />
+    <Compile Include="Mapping\RoleInMenuActionMapping.cs" />
+    <Compile Include="Mapping\RoleInMenuMapping.cs" />
+    <Compile Include="Mapping\RoleMapping.cs" />
+    <Compile Include="Mapping\UserInRoleMapping.cs" />
+    <Compile Include="Mapping\ViewHinhThucThanhToanMapping.cs" />
+    <Compile Include="Mapping\ViewNguonKhuyenMaiMapping.cs" />
+    <Compile Include="Mapping\ViewPhieuDichVuTamMapping.cs" />
+    <Compile Include="Mapping\ViewPhieuChiMapping.cs" />
+    <Compile Include="Mapping\ViewPhieuTreoMapping.cs" />
+    <Compile Include="Mapping\ViewTBAHIMapping.cs" />
+    <Compile Include="Mapping\ViewTBAXEMapping.cs" />
+    <Compile Include="Mapping\ViewTCOBXMapping.cs" />
+    <Compile Include="Mapping\ViewTCODVMapping.cs" />
+    <Compile Include="Mapping\ViewTDIVUMapping.cs" />
+    <Compile Include="Mapping\ViewTHHHBMapping.cs" />
+    <Compile Include="Mapping\ViewTKHACMapping.cs" />
+    <Compile Include="Mapping\ViewTLADTMapping.cs" />
+    <Compile Include="Mapping\ViewTPHKIMapping.cs" />
+    <Compile Include="Mapping\ViewTVAMUMapping.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TNK.Core\TNK.Core.csproj">
+      <Project>{a534729a-0e2f-4f81-bee9-1814a35897fa}</Project>
+      <Name>TNK.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="DLL\ApplicationInsights.config" />
+    <None Include="DLL\roslyn\Microsoft.CSharp.Core.targets" />
+    <None Include="DLL\roslyn\Microsoft.VisualBasic.Core.targets" />
+    <None Include="DLL\roslyn\VBCSCompiler.exe.config" />
+    <None Include="DLL\TNK.Core.dll.config" />
+    <None Include="DLL\TNK.Data.dll.config" />
+    <None Include="DLL\TNK.dll.config" />
+    <None Include="DLL\TNK.Services.dll.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="DLL\AF.Library.dll" />
+    <Content Include="DLL\AF_ORM.CORE.dll" />
+    <Content Include="DLL\Antlr3.Runtime.dll" />
+    <Content Include="DLL\Antlr3.Runtime.pdb" />
+    <Content Include="DLL\Autofac.dll" />
+    <Content Include="DLL\Autofac.Integration.Mvc.dll" />
+    <Content Include="DLL\EntityFramework.dll" />
+    <Content Include="DLL\EntityFramework.SqlServer.dll" />
+    <Content Include="DLL\EntityFramework.SqlServer.xml" />
+    <Content Include="DLL\EntityFramework.xml" />
+    <Content Include="DLL\EPPlus.dll" />
+    <Content Include="DLL\log4net.dll" />
+    <Content Include="DLL\Microsoft.AI.Agent.Intercept.dll" />
+    <Content Include="DLL\Microsoft.AI.DependencyCollector.dll" />
+    <Content Include="DLL\Microsoft.AI.DependencyCollector.xml" />
+    <Content Include="DLL\Microsoft.AI.PerfCounterCollector.dll" />
+    <Content Include="DLL\Microsoft.AI.ServerTelemetryChannel.dll" />
+    <Content Include="DLL\Microsoft.AI.ServerTelemetryChannel.xml" />
+    <Content Include="DLL\Microsoft.AI.Web.dll" />
+    <Content Include="DLL\Microsoft.AI.Web.xml" />
+    <Content Include="DLL\Microsoft.AI.WindowsServer.dll" />
+    <Content Include="DLL\Microsoft.AI.WindowsServer.xml" />
+    <Content Include="DLL\Microsoft.ApplicationInsights.dll" />
+    <Content Include="DLL\Microsoft.ApplicationInsights.xml" />
+    <Content Include="DLL\Microsoft.AspNet.Identity.Core.dll" />
+    <Content Include="DLL\Microsoft.AspNet.Identity.Core.xml" />
+    <Content Include="DLL\Microsoft.AspNet.Identity.EntityFramework.dll" />
+    <Content Include="DLL\Microsoft.AspNet.Identity.EntityFramework.xml" />
+    <Content Include="DLL\Microsoft.AspNet.Identity.Owin.dll" />
+    <Content Include="DLL\Microsoft.AspNet.Identity.Owin.xml" />
+    <Content Include="DLL\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" />
+    <Content Include="DLL\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml" />
+    <Content Include="DLL\Microsoft.Owin.dll" />
+    <Content Include="DLL\Microsoft.Owin.Host.SystemWeb.dll" />
+    <Content Include="DLL\Microsoft.Owin.Host.SystemWeb.xml" />
+    <Content Include="DLL\Microsoft.Owin.Security.Cookies.dll" />
+    <Content Include="DLL\Microsoft.Owin.Security.Cookies.xml" />
+    <Content Include="DLL\Microsoft.Owin.Security.dll" />
+    <Content Include="DLL\Microsoft.Owin.Security.Facebook.dll" />
+    <Content Include="DLL\Microsoft.Owin.Security.Facebook.xml" />
+    <Content Include="DLL\Microsoft.Owin.Security.Google.dll" />
+    <Content Include="DLL\Microsoft.Owin.Security.Google.xml" />
+    <Content Include="DLL\Microsoft.Owin.Security.MicrosoftAccount.dll" />
+    <Content Include="DLL\Microsoft.Owin.Security.MicrosoftAccount.xml" />
+    <Content Include="DLL\Microsoft.Owin.Security.OAuth.dll" />
+    <Content Include="DLL\Microsoft.Owin.Security.OAuth.xml" />
+    <Content Include="DLL\Microsoft.Owin.Security.Twitter.dll" />
+    <Content Include="DLL\Microsoft.Owin.Security.Twitter.xml" />
+    <Content Include="DLL\Microsoft.Owin.Security.xml" />
+    <Content Include="DLL\Microsoft.Owin.xml" />
+    <Content Include="DLL\Microsoft.Practices.ServiceLocation.dll" />
+    <Content Include="DLL\Microsoft.Practices.ServiceLocation.pdb" />
+    <Content Include="DLL\Microsoft.Practices.ServiceLocation.xml" />
+    <Content Include="DLL\Microsoft.Practices.Unity.Configuration.dll" />
+    <Content Include="DLL\Microsoft.Practices.Unity.dll" />
+    <Content Include="DLL\Microsoft.Practices.Unity.RegistrationByConvention.dll" />
+    <Content Include="DLL\Microsoft.Practices.Unity.xml" />
+    <Content Include="DLL\Microsoft.Web.Infrastructure.dll" />
+    <Content Include="DLL\Newtonsoft.Json.dll" />
+    <Content Include="DLL\Newtonsoft.Json.xml" />
+    <Content Include="DLL\Owin.dll" />
+    <Content Include="DLL\roslyn\csc.exe" />
+    <Content Include="DLL\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll" />
+    <Content Include="DLL\roslyn\Microsoft.CodeAnalysis.CSharp.dll" />
+    <Content Include="DLL\roslyn\Microsoft.CodeAnalysis.dll" />
+    <Content Include="DLL\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll" />
+    <Content Include="DLL\roslyn\System.Collections.Immutable.dll" />
+    <Content Include="DLL\roslyn\System.Reflection.Metadata.dll" />
+    <Content Include="DLL\roslyn\vbc.exe" />
+    <Content Include="DLL\roslyn\VBCSCompiler.exe" />
+    <Content Include="DLL\System.Diagnostics.Tracing.dll" />
+    <Content Include="DLL\System.Runtime.dll" />
+    <Content Include="DLL\System.Runtime.InteropServices.dll" />
+    <Content Include="DLL\System.Web.Helpers.dll" />
+    <Content Include="DLL\System.Web.Helpers.xml" />
+    <Content Include="DLL\System.Web.Mvc.dll" />
+    <Content Include="DLL\System.Web.Mvc.xml" />
+    <Content Include="DLL\System.Web.Optimization.dll" />
+    <Content Include="DLL\System.Web.Optimization.xml" />
+    <Content Include="DLL\System.Web.Razor.dll" />
+    <Content Include="DLL\System.Web.Razor.xml" />
+    <Content Include="DLL\System.Web.WebPages.Deployment.dll" />
+    <Content Include="DLL\System.Web.WebPages.Deployment.xml" />
+    <Content Include="DLL\System.Web.WebPages.dll" />
+    <Content Include="DLL\System.Web.WebPages.Razor.dll" />
+    <Content Include="DLL\System.Web.WebPages.Razor.xml" />
+    <Content Include="DLL\System.Web.WebPages.xml" />
+    <Content Include="DLL\TNK.Core.dll" />
+    <Content Include="DLL\TNK.Core.pdb" />
+    <Content Include="DLL\TNK.Data.dll" />
+    <Content Include="DLL\TNK.Data.pdb" />
+    <Content Include="DLL\TNK.dll" />
+    <Content Include="DLL\TNK.Model.dll" />
+    <Content Include="DLL\TNK.Model.pdb" />
+    <Content Include="DLL\TNK.pdb" />
+    <Content Include="DLL\TNK.Services.dll" />
+    <Content Include="DLL\TNK.Services.pdb" />
+    <Content Include="DLL\WebGrease.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

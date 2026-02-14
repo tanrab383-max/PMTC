@@ -1,0 +1,58 @@
+﻿@{
+    var CTGV = (List<TNK.Core.Domain.ChiTietGopVon>)ViewData["CTGV"];
+    var DT = (List<TNK.Core.Domain.View.ViewDoiTac>)ViewData["DT"];
+}
+
+<div class="form-group  table-responsive">
+    <label>Danh sách góp vốn</label>
+    <table id="ThanhToan" class="table table-striped jambo_table bulk_action">
+        <thead>
+            <tr>
+                <th style="width:30%">Nhà đầu tư</th>
+                <th style="width:20%">Số tiền</th>
+                <th style="width:15%">Tỷ lệ</th>
+                <th style="width:20%">Số tiền đợt trước</th>
+                <th style="width:15%">Tỷ lệ đợt trước</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+            @for (int j = 0; j < CTGV.Count; j++)
+            {
+                <tr id="tr" class="animated fadeIn">
+                    <td>
+                        <input type="hidden" name="CTGV[j].ID" class="CTGVID"  value="@CTGV[j].ID" />
+                        <select class="select2 fullwidth MaDoiTac" name="CTGV[@j].MaDoiTac" >
+                            <option value="">Chọn</option>
+                            @foreach (var i in DT)
+                            {
+                                <option value="@i.madoitac" @(CTGV[j].MaDoiTac == i.madoitac ? "selected" : "")>@i.TenDoiTac</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input type="text" name="CTGV[@j].SoTien"  onchange="CalThanhToan(this)" value="@CTGV[@j].SoTien" class="form-control input-sm number" maxlength="15" /></td>
+                    <td><input  value="@CTGV[@j].TyLe" name="CTGV[@j].TyLe" class="form-control input-sm" maxlength="4" /></td>
+                    <td><input type="text" onchange="CalThanhToan(this)" value="@CTGV[@j].SoTienThucTe" name="CTGV[@j].SoTienThucTe" class="form-control input-sm number" maxlength="15" /></td>
+                    <td><input  value="" class="form-control input-sm number" maxlength="4" /></td>
+                    <td>
+                        <input type="hidden" class="IsDeleted" name="CTGV[@j].IsDeleted"  value="false" />
+                    </td>
+                    <td><i class="fa fa-remove" onclick="Remove(this)" style="cursor:pointer"></i></td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="right"><i class="fa fa-plus addHTTT" style="cursor:pointer"></i></td>
+        </tr>
+    </tfoot>
+</table>
+</div>
+

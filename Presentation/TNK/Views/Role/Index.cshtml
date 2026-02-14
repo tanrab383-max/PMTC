@@ -1,0 +1,78 @@
+﻿@model IEnumerable<TNK.Core.Domain.Role>
+
+@{
+    ViewBag.Title = "Quản lý role";
+}
+<div class="">
+    <div class="page-title">
+        <div class="title_left">
+            <h3>@ViewBag.Title</h3>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><b></b></h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li>
+                            <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li>
+                            <a href="/Role/Create"><i class="fa fa-plus"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Role Name</th>
+                                @*<th>Create</th>*@
+                                <th>Edit Reports</th>
+                                <th>Edit</th>
+                                <th>Details</th>
+                                <th>Delete</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td style="width:80%">
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    @*<td style="width:5%" class="center">
+                                        <a href="/Role/Create"><i title="Edit" class="fa fa-plus"></i></a>
+                                    </td>*@
+                                     <td style="width:10%" class="center">
+                                        <a href="/Role/EditRoleReport/@item.Id"><i title="Edit" class="fa fa-edit"></i></a>
+                                    </td>
+                                    <td style="width:5%" class="center">
+                                        <a href="/Role/Edit/@item.Id"><i title="Edit" class="fa fa-edit"></i></a>
+                                    </td>
+                                    <td style="width:5%" class="center">
+                                        <a href="/Role/Details/@item.Id"><i title="Details" class="fa fa-building-o"></i></a>
+                                    </td>
+                                    <td style="width:5%" class="center">
+                                        <a href="/Role/Delete/@item.Id"><i title="Delete" class="fa fa-close"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+

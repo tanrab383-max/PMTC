@@ -1,0 +1,91 @@
+﻿@model List<TNK.Core.Domain.DataHistory>
+@{
+    
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title </h3>
+
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+
+            <div class="x_content">
+                <form method="get" class="row">
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <div class="form-group">
+                            <label>Đến ngày</label>
+                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-sm-5 col-xs-12">
+                        <div class="form-group">
+                            <label>Từ khóa</label>
+                            <input type="text" title="SessionId" placeholder="SessionId" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12">
+                        <div class="form-group">
+                            <br />
+                            <input type="submit" value="Tìm kiếm" class="btn btn-success" />
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="success">
+                                <th>SessoinId</th>
+                                <th>Người thay đổi</th>
+                                <th>Ngày thay đổi</th>
+                                <th>Bảng thay đổi</th>
+                                <th>Mã phiếu</th>
+                                <th>Chi tiết</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.SessionId</td>
+                                        <td>@item.UserChang</td>
+                                        <td>@item.ChangedDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                        <td>@item.TableName</td>
+                                        <td>@item.MaPhieu</td>
+                                        <td>@item.XmlValue</td>
+                                        <td>@item.Action</td>
+                                    </tr>
+                                }
+                            }
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<a href="/Log/Index">Quay lại</a>
+@section scripts
+{
+    <script>
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+    </script>
+}

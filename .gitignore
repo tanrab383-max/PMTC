@@ -1,0 +1,24 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# Node
+node_modules/
+dist/
+
+# SVN
+.svn/
+
+# Logs
+*.log
+
+# User files
+*.user
+*.suo
+
+# Database / Backup
+*.bak
+*.mdf
+*.ldf
+*.sql

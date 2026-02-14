@@ -1,0 +1,144 @@
+﻿@model List<TNK.Core.Domain.View.ViewPhieuChi>
+@{
+    ViewBag.Title = "Danh Sách Cọc Mua Xe";
+}
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2><b>Danh sách</b></h2>
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li>
+                                    <a href="/SoChi/CocMuaXeCreate"><i class="fa fa-plus addNew addNew"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày chi</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày chi</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="Số chứng từ, Nhà cung cấp" placeholder="Số chứng từ, Nhà cung cấp" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="success">
+                                            <th>STT</th>
+                                            <th>Ngày Chi</th>
+                                            <th>Mã Phiếu Chi</th>
+                                            @*<th>Loại Phiếu Chi</th>*@
+                                            <th>Số Chứng Từ</th>
+                                            <th>Nhà Cung Cấp</th>
+                                            <th>Người Duyệt</th>
+                                            <th>Tổng Cộng Tiền</th>
+                                            <th>Còn Lại</th>
+                                            <th colspan="2">Thao Tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            int i = 1;
+                                            if (Model != null)
+                                            {
+                                                foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i++)</td>
+                                                        <td>@item.NgayChi.ToString("dd/MM/yyyy")</td>
+                                                        <td>@item.MaPhieuChi</td>
+                                                        @*<td>@item.MaLoaiPhieu</td>*@
+                                                        <td>@item.SoChungTu</td>
+                                                        <td>@item.DoiTac</td>
+                                                        <td>@item.NguoiDuyet</td>
+                                                        <td>@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>
+                                                        <td>@TNK.Core.Common.ToCurrencyString(item.ConLai)</td>
+                                                        <td>
+                                                            <a href="/SoChi/CocMuaXeEdit/@item.MaPhieuChi"><i title="Edit" class="fa fa-edit"></i></a>
+                                                        </td>
+                                                        <td>
+                                                            <a onclick="Delete('@item.MaPhieuChi')"><i title="Delete" class="fa fa-remove"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    </div>
+    <div class="clearfix"></div>
+</div>
+<script src="~/Scripts/IndexCommon.js"></script>
+@section scripts
+{
+<script type="text/javascript">
+    $('.date').datepicker({
+        orientation: "left",
+        autoclose: true
+    });
+    var Delete = function (MaPhieuChi) {
+        debugger;
+        var result = confirm("Bạn Có Chắc Chắn Muốn Xóa !!!");
+        if (result == true) {
+            $.ajax({
+                url: "/SoChi/DeleteCOC",
+                data: {id : MaPhieuChi},
+                type: 'post',
+                success: function (result) {
+                    //alert(result);
+                    if (result == "success") {
+                        toastr.success("Đã xóa thành công");
+                        window.location.reload();
+                    }
+                    else
+                        toastr.error(result);
+                }
+            });
+        }
+    }
+</script>
+}

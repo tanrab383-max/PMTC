@@ -1,0 +1,432 @@
+﻿@model List<TNK.Core.Domain.View.ViewDanhSachPhieuNhapKhoPhuTung>
+@{
+    ViewBag.Title = "Mua phụ tùng";
+    int i = 1;
+}
+
+<div class="page-title">
+    <div class="title_left">
+        <h3>@ViewBag.Title</h3>
+    </div>
+    @*<div class="title_right" style="margin-left:88%">
+        <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu(*.xlxs)</span></a>
+    </div>*@
+</div>
+<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="tabbable-line boxless tabbable-reversed">
+            <ul class="nav nav-tabs">
+                <li class="">
+                    <a href="#tab_1" data-toggle="tab" aria-expanded="true">
+                        Phiếu tạm
+                    </a>
+                </li>
+                <li class="active">
+                    <a id="a_1" href="#tab_0" data-toggle="tab" aria-expanded="false">
+                        Phiếu hoàn thành
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane" id="tab_1">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            @*<div class="title_right" style="margin-left:78%">
+            <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileMau">Lấy file mẫu DV Cyber(*.xlxs)</span></a>
+        </div>*@
+                            @*<div class="title_right" style="margin-left:78%">
+            <a href="#" download><span style="font-style:italic;color:blue;font-size:15px" id="FileExportCyber">Export cyber(*.xlsx)</span></a>
+        </div>*@
+                            <form id="formSearch" method="get" class="row">
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ ngày chi</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" id="from" />
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Đến ngày chi</label>
+                                        <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" id="to" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="form-group">
+                                        <label>Từ khóa</label>
+                                        <input type="text" title="Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" placeholder="Số phiếu, Khách hàng, BSX, SK/SM, Số điện thoại" class="form-control input-sm " value="@ViewBag.Query" name="query" id="query" />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="button" value="Tìm kiếm" class="btn btn-success search" id="btnSearchTemp" />
+                                        @*<input style="width:45%" onclick="ImportData()" title="Import dữ liệu" id="btnImportCyber" value="Import Cyber" class="btn btn-primary" />*@
+                                        @*<a href="/SoThu/DVCreate" class="btn btn-success"> <i class="fa fa-plus addNew" style="cursor:pointer"> Thêm</i></a>*@
+                                    </div>
+                                </div>
+                            </form>
+                            @*<div class="right">
+            <a href="" class="btn btn-dark" id="ThemMoi"> <i class="" style="cursor:pointer"></i>Đồng bộ</a>
+        </div>*@
+                            <div class="right" style="margin-bottom: 10px">
+                                <i class="fa fa-plus" style="cursor:pointer" id="ThemMoi"></i>
+                            </div>
+                            <div class="table-responsive" >
+                                <div class="table-responsive" id="@ViewBag.Type">
+
+                                    <div>
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="success">
+                                                    <th>STT</th>
+                                                    <th>
+                                                        <input type="checkbox" id="CHKALL" />
+                                                    </th>
+                                                    <th>Số chứng từ</th>
+                                                    <th>Mã kho</th>
+                                                    <th>Ngày chứng từ</th>
+                                                    <th>Diễn giải</th>
+                                                    <th>Nhà cung cấp</th>
+
+                                                    <th>Thành tiền</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    @Html.Partial("~/Views/Shared/_Paging_v2.cshtml")
+                                </div>
+
+                            </div>
+                                </div>
+                            </div>
+                </div>
+                <div class="tab-pane active" id="tab_0">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div class="x_title">
+                                <h2><b>Danh sách</b></h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li>
+                                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="@ViewBag.LinkCreate"><i class="fa fa-plus addNew addNew" id="addNewPTU"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <form id="formSearch" method="get" class="row">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ ngày chi</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.From" name="from" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Đến ngày chi</label>
+                                            <input type="text" class="form-control input-sm date" value="@ViewBag.To" name="to" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5 col-sm-5 col-xs-12">
+                                        <div class="form-group">
+                                            <label>Từ khóa</label>
+                                            <input type="text" title="Mã phiếu chi,Số chứng từ, Nhà cung cấp" placeholder="Mã phiếu chi, Số chứng từ, Nhà cung cấp" class="form-control input-sm " value="@ViewBag.Query" name="query" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 col-sm-3 col-xs-12">
+                                        <div class="form-group">
+                                            <br />
+                                            <input type="submit" value="Tìm kiếm" class="btn btn-success search" />
+                                            <input style="width:50%" onclick="ImportData_PhuTung()" title="Import dữ liệu" value="Import Excel" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="x_content">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="success">
+                                                    <th>STT</th>
+                                                    <th>Số chứng từ</th>
+                                                    <th>Mã kho</th>
+                                                    <th>Mã phiếu</th>
+                                                    <th>Ngày nhập kho</th>
+                                                    <th>Nhà cung cấp</th>
+                                                    <th>Nội Dung</th>
+                                                    <th>Số tiền</th>
+                                                    <th>Thanh toán</th>
+                                                    <th>Còn lại</th>
+                                                    <th>Tình trạng</th>
+
+                                                    <th colspan="3">Thao Tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@(ViewBag.PageSize * (ViewBag.PageIndex - 1) + i)</td>
+                                                        <td>@item.SoChungTu</td>
+                                                        <td>@item.MaKho</td>
+                                                        <td>@item.MaPhieuChi</td>
+                                                        <td>@item.NgayNhapKho.ToString("dd/MM/yyyy")</td>                                                        
+                                                        <td>@item.TenDoiTac</td>
+                                                        <td>@item.NoiDung</td>
+                                                        <td>@TNK.Core.Common.ToCurrencyString(item.TongCong)</td>
+                                                        <td>@TNK.Core.Common.ToCurrencyString(item.SoTienChi)</td>
+                                                        <td>@TNK.Core.Common.ToCurrencyString(item.ConLaiPhaiTra)</td>
+
+                                                        @if (item.ConLaiPhaiTra <= 0)
+                                                        {
+                                                            <td>Hoàn thành</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>Còn nợ</td>
+                                                        }
+                                                        <td style="width:5%" class="center">
+                                                            <a href="@ViewBag.LinkEdit/@item.MaPhieuChi"><i title="Edit" class="fa fa-edit"></i></a>
+                                                        </td>
+                                                        <td style="width:5%" class="center">
+                                                            @*<a href="@ViewBag.LinkDelete/@item.MaPhieuChi"><i title="Delete" class="fa fa-close"></i></a>*@
+                                                            <a href="" onclick="Delete('@item.MaPhieuChi')"><i title="Delete" class="fa fa-close"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                    i++;
+                                                }
+                                            </tbody>
+                                        </table>
+                                        <div class="right">
+                                            @Html.Partial("~/Views/Shared/_Paging.cshtml")
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div style="display:none"><input type="file" id="txtUploadFile" /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/IndexCommon.js"></script>
+    <script src="~/Scripts/jquery.fileDownload.js"></script>
+    <script>
+
+        //$(document).ready(function () {
+        //    $('#SearchGiaiTrinh').trigger('click');
+        //})
+        $("#CHKALL").change(function () {
+          
+            debugger;
+            $("input:checkbox").prop('checked', $(this).prop("checked"));
+        });
+        var chk = "";
+        var flag = true;
+        $(".checkbox").change(function () {
+            debugger;
+            chk = "";
+            $(".checkbox").map(function (key, val) {
+                flag = true;
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                    if (chk == "") {
+                        chk = a;
+                    }
+
+                }
+            })
+
+        })
+
+        function DongBoPhieuThuCyber() {
+            debugger;
+            var result = "";
+            var flag = true;
+            var ctbh = "";
+            $(".checkbox").map(function (key, val) {
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+
+                    result += $(val).val() + ",";
+                }
+            })
+            if (result != "") {
+                result = result.substring(0, result.length - 1);
+            }
+        }
+
+
+
+        $('.date').datepicker({
+            orientation: "left",
+            autoclose: true
+        });
+        $("#FileMau").click(function () {
+            debugger;
+            $.fileDownload("/SoChi/ExportFile_CMPT", {
+                httpMethod: "POST",
+                data: {},
+                failMessageHtml: "Có lỗi trong khi tải file excel."
+            });
+            return false;
+        });
+        var datafile = new FormData();
+        function ImportData_PhuTung() {
+            $("#txtUploadFile").trigger('click');
+        }
+        $('#txtUploadFile').on('change', function (e) {
+            if (document.getElementById("txtUploadFile").value != "") {
+                var files = e.target.files;
+                if (files.length > 0) {
+                    if (window.FormData !== undefined) {
+                        for (var x = 0; x < files.length; x++) {
+                            datafile.append('file', files[x]);
+                        }
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/SoChi/ImportData_CMPT",
+                    contentType: false,
+                    processData: false,
+                    data: datafile,
+                    beforeSend: function () {
+                        // Đang thực hiện ajax
+                        //để Loading...
+                    },
+                    complete: function () {
+                        // Hoàn tất ajax
+                        document.getElementById("txtUploadFile").value = "";
+                        datafile.delete('file');
+                    },
+                    success: function (result) {
+                        if (result.IsError)
+                            toastError(result.Message);
+                        else {
+                            toastSuccess("Import thành công");
+                            //window.location.reload();
+                        }
+                    },
+                    error: function (xhr, status, p3, p4) {
+                        toastError("Lỗi: Import file excel.");
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
+
+        function Delete(id) {
+            if (confirm('Bạn có chắc chắn xóa')) {
+                data = { id: id };
+                $.post("/SoChi/CMPTUDelete", data).success(function (response) {
+                    if (response == "success") {
+                        $(a).closest("tr").remove();
+                        toastSuccess("Đã xóa thành công");
+                    }
+                    else
+                        toastError(response);
+                });
+            }
+        }
+        var p = 1;
+        function change() {
+            debugger;
+            p = 1;
+        }
+        $("#btnSearchTemp").click(function () {
+            $(this).val("Loading...");
+            $(this).prop('disabled', true);
+            Search(this);
+        })
+        function Search(obj) {
+            var pageSizes = document.getElementById('pageSizeCMPTUTemp');
+            var size = pageSizes != undefined ? pageSizes.value : '';
+            var from = $("#from").val();
+            var to = $("#to").val();
+            var query = $("#query").val();
+            $.get("/SoChi/CMPTUTemp?query=" + query + "&from=" + from + "&to=" + to + "&p=" + p + "&pageSize=" + size).success(function (response) {
+                $("#tbody").html(response);
+                //debugger;
+                $(obj).val("Tìm kiếm");
+                $(obj).prop('disabled', false);
+            })
+        }
+        $("#ThemMoi").click(function () {
+
+            debugger;
+            var result = "";
+            var flag = true;
+            var ctbh = "";
+            var soLuong = 0;
+            $(".checkbox").map(function (key, val) {
+
+                if ($(val).is(":checked")) {
+                    let a = $(val).closest("th").find("input[type=hidden]").val();
+                   
+                    if (result != "")
+                        result += ",";
+                    result += $(val).val();
+                    soLuong++;
+
+
+                }
+            })
+           // alert(result);
+            if (result != "") {
+                //result = result.substring(0, result.length - 1);
+                //goi ajax lưu
+                if (confirm("Bạn muốn đồng bộ " + soLuong + " phiếu phụ tùng từ Cyber qua phần mềm tài chính?") == true) {
+                    // alert("dong bo")
+                  //  $.post("/SoChi/CMPTU_DongBoTuCyber?soChungTu=" + result).success(function (response) {
+                  //      alert(response.Message);
+                  //  })
+
+                    data = { soChungTu: result };
+                    $.post("/SoChi/CMPTU_DongBoTuCyber", data).success(function (response) {
+                      /*  if (response.IsError == false) {                          
+                            toastSuccess(response.Message);
+                        }
+                        else
+                            toastError(response.Message);
+                        */
+                        if (response.Message == "") {
+                            toastSuccess("Đồng bộ thành công");
+                            $(this).val("Loading...");
+                            $(this).prop('disabled', true);
+                            Search(this);
+                        }
+                        else
+                            toastError(response.Message);
+                    });
+                   
+                }
+                else {
+                   // alert("khong dong bo");
+                }
+
+            }
+            else {
+                toastWarning("Vui lòng chọn phiếu đong bộ.");
+                return;
+            }
+
+
+        })
+
+    </script>
+}

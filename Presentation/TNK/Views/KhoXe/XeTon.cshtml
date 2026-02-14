@@ -1,0 +1,135 @@
+﻿@model List<TNK.Core.Domain.View.ViewKhoXe>
+@{
+    Layout = null;
+    int i = 0;
+}
+
+    <table class="table" style="width:150%; max-width:150%">
+        <thead>
+            <tr class="success">
+                <th>STT</th>
+                <th>Ngày nhập</th>
+                <th>Ngày xuất</th>
+                <th>Phiếu nhập</th>
+                <th style="width:200px">Số khung</th>
+                <th style="width:500px">Số máy</th>
+                <th style="width:500px">Số Hóa Đơn</th>
+                <th style="width:500px">Số TMSS</th>
+                <th>Giá mua</th>
+                <th>Giá niêm yết</th>
+                <th style="width:300px">Loại xe</th>
+                <th style="width:300px">Thế chấp</th>
+                <th style="width:500px">Ngày thế chấp</th>
+                <th style="width:500px">Ngày hết thế chấp</th>
+                <th>Nhà cung cấp</th>
+                <th>Tình trạng</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @if (item.TinhTrang == "N" || string.IsNullOrEmpty(item.MaPhieuXuat) || item.TinhTrang == "TC")
+                    {
+                        <td>@i</td>
+                                            <td>@item.NgayNhapKho.ToString("dd/MM/yyyy")</td>
+                                            <td></td>
+                                            <td>@item.MaPhieuNhap</td>
+                                            <td>@item.SoKhung</td>
+                                            <td style="width:200px">
+                                                @Html.EditorFor(x => item.SoMay, new { htmlAttributes = new { @class = "SoMay_" + item.SoKhung + " form-control number input-sm" } })
+                                            </td>
+                                            <td>
+                                                @Html.EditorFor(x => item.SoHoaDon, new { htmlAttributes = new { @class = "SoHD_" + item.SoKhung + " form-control number input-sm" } })
+                                            </td>
+                                            <td>
+                                                @Html.EditorFor(x => item.SoTMSS, new { htmlAttributes = new { @class = "SoTMSS_" + item.SoKhung + " form-control number input-sm" } })
+                                            </td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.GiaVon)</td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.GiaNiemYet)</td>
+                                            <td>
+                                                <select class="select2 fullwidth" id="MaLX_@item.SoKhung.Trim()">
+                                                    <option value="">Chọn</option>
+                                                    @foreach(TNK.Core.Domain.View.ViewLoaiXe obj in ViewBag.LoaiXe)
+                                                {
+                                                        <option value="@obj.MaLoaiXe" @Html.Raw(obj.MaLoaiXe == item.MaLoaiXe ? "selected" : "")>@obj.MaLoaiXe</option>
+                                                }
+                                                </select>
+                                            </td>
+                                            <td>@item.NhaCungCap</td>
+                        if (item.TinhTrang == "TC")
+                        {
+                            <td>Đang Thế Chấp</td>
+                        }
+                        else if (item.TinhTrang == "N")
+                        {
+                            <td>Trong kho</td>
+                        }
+                        <td style="width:5%" class="center">
+                            <a href="#" onclick="Edit('@item.Id','@item.SoKhung')"><i title="Lưu" class="fa fa-save"></i></a>
+                        </td>
+                                            <td style="width:5%" class="center">
+                                                @if (item.PhanLoaiNhap == "HTD")
+                                                {
+                                                    <a href="#" onclick="Delete(this, '@item.Id','@item.SoKhung')"><i title="Delete" class="fa fa-close"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="#" onclick="toastWarning('Không thể xóa xe nhập từ phiếu mua xe thực tế. Vui lòng xóa phiếu mua xe thực tế đã nhập xe này.');">
+                                                        <i title="Không thể xóa xe nhập từ phiếu mua xe thực tế. Vui lòng xóa phiếu mua xe thực tế đã nhập xe này." class="fa fa-ban"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="/KhoXe/TheChap/@item.SoKhung"><input type="button" class="btn btn-success" value="Thế Chấp" /></a>
+                                            </td>
+                    }
+                    else
+                    {
+                        <td>@i</td>
+                                            <td>@item.NgayNhapKho.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.NgayXuatKho.Value.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.MaPhieuNhap</td>
+                                            <td>@item.SoKhung</td>
+                                            <td>@item.SoMay</td>
+                                            <td>@item.SoHoaDon</td>
+                                            <td>@item.SoTMSS</td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.GiaVon)</td>
+                                            <td class="number2">@TNK.Core.Common.ToCurrencyString(item.GiaNiemYet)</td>
+                                            <td>@item.MaLoaiXe</td>
+                                            <td>@item.NhaCungCap</td>
+                                            <td> Đã xuất </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                    }
+                </tr>
+                i++;
+            }
+        </tbody>
+    </table>
+    <div class="right">
+        @Html.Partial("~/Views/Shared/_Paging.cshtml")
+    </div>
+@*<script type="text/javascript">
+    $("td.number").map(function (key, val) {
+        var val = $(this).html();
+        //val = val.replace(",", ".");
+        val = val.split(",").join("");
+        val = parseFloat(val);
+        $(this).html(val.toLocaleString('en-us'));
+    })
+</script>*@
+<script type="text/javascript">
+    $("#CHKALL").change(function () {
+        debugger;
+        $("input:checkbox").prop('checked', $(this).prop("checked"));
+    });
+</script>
+
+
+
+
